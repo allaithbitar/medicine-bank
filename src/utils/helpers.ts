@@ -2,7 +2,7 @@ import {
   MODAL_PUBSUB_EVENT_NAMES,
   modalPubsub,
   type ModalPropsMap,
-} from "../components/common/modal/modal";
+} from "../components/common/modal/modalTypes";
 import { apiSlice } from "../redux/api/apiSlice";
 import { logout } from "../redux/slices/authSlice";
 import { store } from "../redux/store";

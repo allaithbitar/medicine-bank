@@ -43,19 +43,21 @@ const ReusableCard: React.FC<ReusableCardProps> = ({
         }}
       />
       <CardContent sx={{ pb: 0 }}>{bodyContent}</CardContent>
-      <CardActions
-        sx={{
-          bgcolor: "grey.50",
-          p: 2,
-          borderTop: "1px solid",
-          borderColor: "grey.100",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {footerContent}
-      </CardActions>
+      {footerContent && (
+        <CardActions
+          sx={{
+            bgcolor: "grey.50",
+            p: 2,
+            borderTop: "1px solid",
+            borderColor: "grey.100",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {footerContent}
+        </CardActions>
+      )}
     </Card>
   );
 };

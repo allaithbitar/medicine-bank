@@ -1,5 +1,5 @@
 // src/pages/EmployeeManagement.tsx
-import { AppBar, Typography, Toolbar, Stack, Button, Box } from "@mui/material";
+import { AppBar, Typography, Toolbar, Stack, Box, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -51,14 +51,6 @@ const EmployeeManagement = () => {
                 Manage employee accounts
               </Typography>
             </Box>
-            <Button
-              variant="outlined"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={handleAddEmployee}
-            >
-              Add
-            </Button>
           </Stack>
           <SearchFilter
             onSearch={handleSearch}
@@ -67,6 +59,18 @@ const EmployeeManagement = () => {
         </Toolbar>
       </AppBar>
       <EmployeeCards />
+      <Fab
+        color="primary"
+        aria-label="add"
+        sx={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+        }}
+        onClick={handleAddEmployee}
+      >
+        <AddIcon />
+      </Fab>
     </Stack>
   );
 };

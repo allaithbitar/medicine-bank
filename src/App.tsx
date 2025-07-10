@@ -15,6 +15,7 @@ import AppUiWrapper from "./components/layout/appUiWrapper";
 import EmployeeManagement from "./pages/employeeManagement";
 import EmployeeAccountForm from "./pages/accountManagement/employeeAccountForm";
 import WorkAreaManagement from "./pages/banks/workAreas";
+import CitiesManagement from "./pages/banks/cities-management";
 
 function App() {
   const router = createBrowserRouter(
@@ -42,6 +43,7 @@ function App() {
               element={<EmployeeManagement />}
             />
             <Route path="/area-management" element={<WorkAreaManagement />} />
+            <Route path="/cities-management" element={<CitiesManagement />} />
           </Route>
         </Route>
       </Route>

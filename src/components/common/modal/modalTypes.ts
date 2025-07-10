@@ -1,38 +1,41 @@
 import type { ComponentType } from "react";
 import { createPubsub } from "../../../utils/pubsub";
 
+export type ModalSeverity = "info" | "warning" | "error" | "success";
+
 export type ModalPropsMap = {
   confirmation: {
+    title?: string;
     message: string;
-    onConfirm: () => void;
+    description?: string | React.ReactNode;
+    severity?: ModalSeverity;
+    confirmText?: string;
+    cancelText?: string;
+    onConfirm: () => Promise<void> | void;
     onCancel?: () => void;
   };
-  // to not error out if type not added yet
-  [key: string]: any;
 };
 
-export type ModalPubsubEvents = {
-  [MODAL_PUBSUB_EVENTS.OPEN]: {
-    type: keyof ModalPropsMap;
-    props: ModalPropsMap[keyof ModalPropsMap];
-  };
-  // true to close all  false undefined to close last
-  [MODAL_PUBSUB_EVENTS.CLOSE]: boolean;
-};
 export const MODAL_PUBSUB_EVENT_NAMES = {
   OPEN: "MODAL_OPEN",
   CLOSE: "MODAL_CLOSE",
 } as const;
-export type ModalPubsubEventName =
+
+export type ModalPubsubEvent =
   | (typeof MODAL_PUBSUB_EVENT_NAMES)["OPEN"]
   | (typeof MODAL_PUBSUB_EVENT_NAMES)["CLOSE"];
 
-export const MODAL_PUBSUB_EVENTS = MODAL_PUBSUB_EVENT_NAMES;
+export type ModalPubsubEvents = {
+  [MODAL_PUBSUB_EVENT_NAMES.OPEN]: {
+    type: keyof ModalPropsMap;
+    props: ModalPropsMap[keyof ModalPropsMap];
+  };
+  [MODAL_PUBSUB_EVENT_NAMES.CLOSE]: boolean;
+};
 
 export type ModalsMap = {
   [K in keyof ModalPropsMap]: ComponentType<
     ModalPropsMap[K] & { _close: () => void }
   >;
 };
-
 export const modalPubsub = createPubsub<ModalPubsubEvents>();

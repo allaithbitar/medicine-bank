@@ -1,10 +1,10 @@
-import React, { useState, useLayoutEffect, useCallback } from "react";
+import { useState, useLayoutEffect, useCallback } from "react";
 import {
-  ModalPropsMap,
-  ModalsMap,
+  MODAL_PUBSUB_EVENT_NAMES,
+  type ModalPropsMap,
+  type ModalsMap,
   modalPubsub,
-  MODAL_PUBSUB_EVENTS,
-} from "./modal.ts";
+} from "./modalTypes.ts";
 import { Box } from "@mui/material";
 import ConfirmModal from "./confirmModal.tsx";
 
@@ -24,12 +24,12 @@ const Modal = () => {
   >([]);
 
   const close = useCallback((closeAll?: boolean) => {
-    modalPubsub.publish(MODAL_PUBSUB_EVENTS.CLOSE, closeAll ?? false);
+    modalPubsub.publish(MODAL_PUBSUB_EVENT_NAMES.CLOSE, closeAll ?? false);
   }, []);
 
   useLayoutEffect(() => {
     const unsubOpen = modalPubsub.subscribe(
-      MODAL_PUBSUB_EVENTS.OPEN,
+      MODAL_PUBSUB_EVENT_NAMES.OPEN,
       (state) => {
         setOpenedModals((prev) => [
           ...prev,
@@ -42,7 +42,7 @@ const Modal = () => {
     );
 
     const unsubClose = modalPubsub.subscribe(
-      MODAL_PUBSUB_EVENTS.CLOSE,
+      MODAL_PUBSUB_EVENT_NAMES.CLOSE,
       (closeAll) => {
         setOpenedModals((prev) => {
           if (closeAll) {
@@ -63,20 +63,7 @@ const Modal = () => {
   if (!openedModals.length) return null;
 
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 9999,
-        pointerEvents: "none",
-      }}
-    >
+    <Box>
       {openedModals.map((m) => {
         const { type, props, id } = m;
         const ModalComponent = MODALS[type];
@@ -85,23 +72,11 @@ const Modal = () => {
           return null;
         }
         return (
-          <Box
+          <ModalComponent
             key={id}
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              pointerEvents: "auto",
-            }}
-          >
-            <ModalComponent {...(props as any)} _close={() => close(false)} />
-          </Box>
+            {...(props as any)}
+            _close={() => close(false)}
+          />
         );
       })}
     </Box>

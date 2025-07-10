@@ -22,7 +22,6 @@ const contentWrapperStyles: SxProps<Theme> = {
 
 const Layout = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
-  // const [value, setValue] = useState(0);
   return (
     <Box sx={{ display: "flex" }}>
       <Navbar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
@@ -41,18 +40,6 @@ const Layout = () => {
           </ErrorBoundary>
         </Box>
       </Box>
-      {/* <Box sx={{ flex: 1, overflow: "auto" }}>{children}</Box> */}
-      {/* <BottomNavigation
-        showLabels
-        value={value}
-        onChange={(_, newValue) => {
-          setValue(newValue);
-        }}
-      >
-        <BottomNavigationAction label="Home" icon={<HomeIcon />} />
-        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
-      </BottomNavigation> */}
     </Box>
   );
 };

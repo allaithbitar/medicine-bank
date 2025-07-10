@@ -7,6 +7,7 @@ import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import FeaturedPlayListIcon from "@mui/icons-material/FeaturedPlayList";
 import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
 import SidebarExpandableItem from "./sidebarExandableItem";
+import { Business as BuildingOfficeIcon } from "@mui/icons-material";
 
 type BaseItem = {
   label: string;
@@ -55,6 +56,12 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
           label: "Area",
           href: "/area-management",
           icon: <EditLocationAltIcon />,
+          permissions: [],
+        },
+        {
+          label: "Cities",
+          href: "/cities-management",
+          icon: <BuildingOfficeIcon />,
           permissions: [],
         },
       ],

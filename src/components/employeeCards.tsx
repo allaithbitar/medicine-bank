@@ -5,7 +5,7 @@ import { Person as UserIcon } from "@mui/icons-material";
 import Nodata from "./common/nodata";
 import EmployeeCard from "./employeeCard";
 import type { TEmployeeAccount } from "../pages/accountManagement/schema/employeeSchema";
-import { closeModal, openModal } from "../utils/helpers";
+import { openModal } from "../utils/helpers";
 
 const employees: (TEmployeeAccount & { id: string })[] = [
   {
@@ -94,14 +94,9 @@ const EmployeeCards = () => {
     openModal("confirmation", {
       message: "Are you sure you want to delete this item?",
       onConfirm: () => {
-        console.log("Item deleted!");
-        closeModal();
-      },
-      onCancel: () => {
-        console.log("Deletion cancelled.");
+        console.log("🚀 ~ handleDeleteEmployeeClick ~ id:", id);
       },
     });
-    console.log("🚀 ~ handleDeleteEmployeeClick ~ id:", id);
   }, []);
 
   return (
