@@ -1,3 +1,5 @@
+import { Login } from "@mui/icons-material";
+import { Box } from "@mui/material";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -5,17 +7,15 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import FallbackUI from "./components/errorBoundary/fallback-ui.component";
-import Layout from "./components/layout/layout.component";
-import RequireAuth from "./components/require-auth.component";
-import Login from "./pages/login.page.tsx";
-import Unauthorized from "./pages/unauthorized.page.tsx";
-import { Box } from "@mui/material";
-import AppUiWrapper from "./components/layout/app-ui-wrapper.component";
-import ErrorPage from "./pages/error.page.tsx";
-import EmployeeAccountForm from "./pages/accounts-management/employee-account-form.page.tsx";
-import EmployeeManagement from "./pages/employees-management/employees-management.page.tsx";
-import WorkAreaManagement from "./pages/banks/work-areas-management.page.tsx";
-import CitiesManagement from "./pages/banks/cities-management.page.tsx";
+import AppUiWrapper from "./core/components/layout/app-ui-wrapper/app-ui-wrapper.component";
+import Layout from "./core/components/layout/layout/layout.component";
+import EmployeeAccountForm from "./features/accounts-management/pages/employee-account-form.page";
+import RequireAuth from "./features/auth/components/require-auth/require-auth.component";
+import CitiesManagement from "./features/banks/pages/cities-management.page";
+import WorkAreaManagement from "./features/banks/pages/work-areas-management.page";
+import EmployeeManagement from "./features/employees-management/pages/employees-management.page";
+import ErrorPage from "./pages/error.page";
+import Unauthorized from "./pages/unauthorized.page";
 
 function App() {
   const router = createBrowserRouter(

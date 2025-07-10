@@ -1,22 +1,8 @@
 import {
   MODAL_PUBSUB_EVENT_NAMES,
-  modalPubsub,
   type ModalPropsMap,
-} from "../components/common/modal/modal-types";
-import { removeAllToasts } from "../components/common/toast/toast";
-import { rootApi } from "../redux/api/root.api";
-import { logout } from "../redux/slices/auth.slice";
-import { store } from "../redux/store";
-
-/**
- * log out and delete local store
- */
-export const handleLogout = () => {
-  removeAllToasts();
-  store.dispatch(logout());
-  store.dispatch(rootApi.util.resetApiState());
-  sessionStorage.clear();
-};
+  modalPubsub,
+} from "@/core/components/common/modal/modal-types";
 
 /**
  * Opens a modal of the specified type with the given props.
