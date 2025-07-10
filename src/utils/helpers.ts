@@ -4,7 +4,7 @@ import {
   type ModalPropsMap,
 } from "../components/common/modal/modal";
 import { removeAllToasts } from "../components/common/toast/toast";
-import { indexApi } from "../redux/api/index.api";
+import { rootApi } from "../redux/api/root.api";
 import { logout } from "../redux/slices/auth.slice";
 import { store } from "../redux/store";
 
@@ -14,7 +14,7 @@ import { store } from "../redux/store";
 export const handleLogout = () => {
   removeAllToasts();
   store.dispatch(logout());
-  store.dispatch(indexApi.util.resetApiState());
+  store.dispatch(rootApi.util.resetApiState());
   sessionStorage.clear();
 };
 

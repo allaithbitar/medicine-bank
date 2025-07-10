@@ -1,8 +1,8 @@
-import { indexApi } from "./index.api";
+import { rootApi } from "./root.api";
 import type { ApiResponse } from "./common";
 import type { TEmployeeAccount } from "../../form-schemas/employeeSchema";
 
-export const accountManagementApi = indexApi.injectEndpoints({
+export const accountManagementApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
     addEmployee: builder.mutation<any, TEmployeeAccount>({
       query: (data) => ({

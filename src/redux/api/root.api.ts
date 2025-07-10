@@ -3,7 +3,7 @@ import type { RootState } from "../store";
 
 const baseUrl = "http://localhost:3000/";
 
-export const indexApi = createApi({
+export const rootApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl,
@@ -21,6 +21,6 @@ export const indexApi = createApi({
   endpoints: (_builder) => ({}),
 });
 
-export const middleware = indexApi.middleware;
+export const middleware = rootApi.middleware;
 
-export default indexApi.reducer;
+export default rootApi.reducer;

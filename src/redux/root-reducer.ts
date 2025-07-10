@@ -1,7 +1,7 @@
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import { combineReducers } from "@reduxjs/toolkit";
-import { indexApi } from "./api/index.api";
+import { rootApi } from "./api/root.api";
 import authSlice from "./slices/auth.slice";
 
 const authPersistConfig = {
@@ -11,7 +11,7 @@ const authPersistConfig = {
 };
 
 const reducer = combineReducers({
-  [indexApi.reducerPath]: indexApi.reducer,
+  [rootApi.reducerPath]: rootApi.reducer,
   auth: persistReducer(authPersistConfig, authSlice),
 });
 
