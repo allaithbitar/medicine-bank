@@ -1,23 +1,48 @@
+// import BottomNavigation from "@mui/material/BottomNavigation";
+// import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+// import FavoriteIcon from "@mui/icons-material/Favorite";
+// import LocationOnIcon from "@mui/icons-material/LocationOn";
+// import HomeIcon from "@mui/icons-material/Home";
 import Box from "@mui/material/Box";
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { useState, type ReactNode } from "react";
-import HomeIcon from "@mui/icons-material/Home";
-import { Stack } from "@mui/material";
+import { Suspense, useState } from "react";
+import Navbar from "./navbar/components/navbar";
+import Sidebar from "./sidebar/sidebar";
+import ErrorBoundary from "../errorBoundary/errorBoundary";
+import { Outlet } from "react-router-dom";
+import PageLoading from "../common/pageLoading";
+import type { SxProps, Theme } from "@mui/material";
 
-const Layout = ({ children }: { children: ReactNode }) => {
-  const [value, setValue] = useState(0);
+const contentWrapperStyles: SxProps<Theme> = {
+  flexGrow: 1,
+  p: 1,
+  paddingTop: "65px",
+  minHeight: "100vh",
+  background: (theme) => theme.palette.grey[50],
+};
+
+const Layout = () => {
+  const [openSidebar, setOpenSidebar] = useState(false);
+  // const [value, setValue] = useState(0);
   return (
-    <Stack
-      sx={{
-        height: "100dvh",
-        backgroundColor: (theme) => theme.palette.grey[100],
-      }}
-    >
-      <Box sx={{ flex: 1, overflow: "auto" }}>{children}</Box>
-      <BottomNavigation
+    <Box sx={{ display: "flex" }}>
+      <Navbar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+      <Sidebar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+      <Box
+        component="main"
+        sx={{
+          ...contentWrapperStyles,
+        }}
+      >
+        <Box sx={{ position: "relative" }}>
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoading />}>
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
+        </Box>
+      </Box>
+      {/* <Box sx={{ flex: 1, overflow: "auto" }}>{children}</Box> */}
+      {/* <BottomNavigation
         showLabels
         value={value}
         onChange={(_, newValue) => {
@@ -27,8 +52,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <BottomNavigationAction label="Home" icon={<HomeIcon />} />
         <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
         <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
-      </BottomNavigation>
-    </Stack>
+      </BottomNavigation> */}
+    </Box>
   );
 };
 
