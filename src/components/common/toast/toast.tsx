@@ -1,5 +1,5 @@
 import hotToast, { type ToastOptions } from "react-hot-toast";
-import CustomToast from "./CustomToast";
+import CustomToast from "./custom-toast.component.tsx";
 
 type CustomToastOptions = ToastOptions;
 
@@ -67,7 +67,7 @@ export const showSuccess = (message?: string, options?: CustomToastOptions) => {
         type="success"
       />
     ),
-    mergedOptions
+    mergedOptions,
   );
 };
 
@@ -79,12 +79,12 @@ export const showSuccess = (message?: string, options?: CustomToastOptions) => {
  */
 export const showError = (
   message: string,
-  options?: CustomToastOptions
+  options?: CustomToastOptions,
 ): string => {
   const mergedOptions = { ...defaultErrorOptions, ...options };
   return hotToast.custom(
     (t) => <CustomToast t={t} message={message} type="error" />,
-    mergedOptions
+    mergedOptions,
   );
 };
 
@@ -96,12 +96,12 @@ export const showError = (
  */
 export const showInfo = (
   message: string,
-  options?: CustomToastOptions
+  options?: CustomToastOptions,
 ): string => {
   const mergedOptions = { ...defaultInfoOptions, ...options };
   return hotToast.custom(
     (t) => <CustomToast t={t} message={message} type="info" />,
-    mergedOptions
+    mergedOptions,
   );
 };
 
@@ -113,12 +113,12 @@ export const showInfo = (
  */
 export const showLoading = (
   message: string,
-  options?: CustomToastOptions
+  options?: CustomToastOptions,
 ): string => {
   const mergedOptions = { ...defaultLoadingOptions, ...options };
   return hotToast.custom(
     (t) => <CustomToast t={t} message={message} type="loading" />,
-    mergedOptions
+    mergedOptions,
   );
 };
 
@@ -130,12 +130,12 @@ export const showLoading = (
  */
 export const showDefault = (
   message: string,
-  options?: CustomToastOptions
+  options?: CustomToastOptions,
 ): string => {
   const mergedOptions = { ...defaultDefaultOptions, ...options };
   return hotToast.custom(
     (t) => <CustomToast t={t} message={message} type="default" />,
-    mergedOptions
+    mergedOptions,
   );
 };
 

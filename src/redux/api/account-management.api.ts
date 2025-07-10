@@ -1,8 +1,8 @@
-import type { TEmployeeAccount } from "../../pages/accountManagement/schema/employeeSchema";
-import { apiSlice } from "./apiSlice";
+import { indexApi } from "./index.api";
 import type { ApiResponse } from "./common";
+import type { TEmployeeAccount } from "../../form-schemas/employeeSchema";
 
-export const accountManagementSlice = apiSlice.injectEndpoints({
+export const accountManagementApi = indexApi.injectEndpoints({
   endpoints: (builder) => ({
     addEmployee: builder.mutation<any, TEmployeeAccount>({
       query: (data) => ({
@@ -15,6 +15,4 @@ export const accountManagementSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useAddEmployeeMutation } = accountManagementSlice;
-
-export default accountManagementSlice;
+export default accountManagementApi;

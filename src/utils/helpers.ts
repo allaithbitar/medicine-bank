@@ -3,10 +3,10 @@ import {
   modalPubsub,
   type ModalPropsMap,
 } from "../components/common/modal/modal";
-import { apiSlice } from "../redux/api/apiSlice";
-import { logout } from "../redux/slices/authSlice";
+import { removeAllToasts } from "../components/common/toast/toast";
+import { indexApi } from "../redux/api/index.api";
+import { logout } from "../redux/slices/auth.slice";
 import { store } from "../redux/store";
-import { removeAllToasts } from "./toast";
 
 /**
  * log out and delete local store
@@ -14,7 +14,7 @@ import { removeAllToasts } from "./toast";
 export const handleLogout = () => {
   removeAllToasts();
   store.dispatch(logout());
-  store.dispatch(apiSlice.util.resetApiState());
+  store.dispatch(indexApi.util.resetApiState());
   sessionStorage.clear();
 };
 
@@ -26,7 +26,7 @@ export const handleLogout = () => {
  */
 export function openModal<T extends keyof ModalPropsMap>(
   type: T,
-  props: ModalPropsMap[T]
+  props: ModalPropsMap[T],
 ): void {
   modalPubsub.publish(MODAL_PUBSUB_EVENT_NAMES.OPEN, { type, props });
 }

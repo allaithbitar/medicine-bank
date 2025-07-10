@@ -1,5 +1,5 @@
-import { apiSlice } from "./apiSlice";
 import type { ApiResponse } from "./common";
+import { indexApi } from "./index.api";
 
 interface LoginRes {
   id: number;
@@ -7,7 +7,7 @@ interface LoginRes {
   token: string;
 }
 
-export const userSlice = apiSlice.injectEndpoints({
+export const userSlice = indexApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<LoginRes, { username: string; password: string }>({
       query: (data) => ({

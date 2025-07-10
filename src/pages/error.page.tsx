@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import { useRouteError } from "react-router-dom";
 
-function AuthenticatedErrorPage() {
+function ErrorPage() {
   const error = useRouteError() as any;
   return (
     <>
@@ -15,4 +15,4 @@ function AuthenticatedErrorPage() {
   );
 }
 
-export default AuthenticatedErrorPage;
+export default ErrorPage;

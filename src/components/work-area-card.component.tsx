@@ -7,10 +7,10 @@ import {
   Edit as PencilIcon,
   Delete as TrashIcon,
 } from "@mui/icons-material";
-import CustomIconButton from "./common/customIconButton";
-import DetailItem from "./common/detailItem";
-import ReusableCard from "./common/reusableCard";
-import type { WorkArea } from "../pages/banks/workAreas";
+import type { WorkArea } from "../pages/banks/work-areas-management.page";
+import CustomIconButton from "./common/custom-icon-button.component";
+import DetailItem from "./common/detail-item.component";
+import ReusableCard from "./common/reusable-card.component";
 
 interface WorkAreaCardProps {
   workArea: WorkArea;

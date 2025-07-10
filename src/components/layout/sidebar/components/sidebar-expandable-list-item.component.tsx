@@ -11,8 +11,8 @@ import {
 import { useState, type ReactElement } from "react";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
-import SideBarListItem from "./sideBarListItem";
-import type { IItem } from "./sideBarItems";
+import type { IItem } from "./sidebar-items.component";
+import SideBarListItem from "./sidebar-list-item.component";
 
 const SidebarExpandableItem = ({
   level,
@@ -99,7 +99,7 @@ const SidebarExpandableItem = ({
                 level={2}
                 icon={c.icon}
               />
-            ) : null
+            ) : null,
           )}
         </List>
       </Collapse>

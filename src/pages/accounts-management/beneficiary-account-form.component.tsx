@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, TextField } from "@mui/material";
-import useReducerState from "../../hooks/useReducerState";
+import useReducerState from "../../hooks/use-reducer.hook";
 
 interface BeneficiaryAccount {
   id?: string;
@@ -23,7 +23,7 @@ const BeneficiaryAccountForm = () => {
 
   const handleBeneficiaryChange = (
     field: keyof BeneficiaryAccount,
-    value: string
+    value: string,
   ) => {
     setBeneficiaryData({ [field]: value });
   };

@@ -10,8 +10,7 @@ import {
 } from "@mui/material";
 import { Business as BuildingOfficeIcon } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-
-import WorkAreaCard from "../../components/workAreaCard";
+import WorkAreaCard from "../../components/work-area-card.component";
 
 export interface WorkArea {
   id: string;
@@ -97,8 +96,8 @@ const WorkAreaManagement: React.FC = () => {
               name: workAreaForm.name.trim(),
               description: workAreaForm.description.trim() || undefined,
             }
-          : wa
-      )
+          : wa,
+      ),
     );
     resetForm();
   };
@@ -107,7 +106,7 @@ const WorkAreaManagement: React.FC = () => {
     const workAreaToDelete = workAreas.find((wa) => wa.id === id);
     if (workAreaToDelete && workAreaToDelete.employeeCount > 0) {
       alert(
-        "Cannot delete work area with assigned employees. Please reassign employees first."
+        "Cannot delete work area with assigned employees. Please reassign employees first.",
       );
       return;
     }

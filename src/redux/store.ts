@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import reducer from "./reducer";
-import { middleware as apiMiddleware } from "./api/apiSlice";
+import reducer from "./root-reducer";
+import { middleware as apiMiddleware } from "./api/index.api";
 
 import {
   FLUSH,

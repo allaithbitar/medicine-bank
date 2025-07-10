@@ -15,7 +15,7 @@ import {
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../../../redux/slices/authSlice";
+import { selectCurrentUser } from "../../../../redux/slices/auth.slice";
 import { handleLogout } from "../../../../utils/helpers";
 
 function UserSection() {

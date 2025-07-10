@@ -9,18 +9,19 @@ import {
   AppBar,
   Toolbar,
 } from "@mui/material";
-import useReducerState from "../../hooks/useReducerState";
 import { useState } from "react";
 import { z } from "zod";
-import { showError, showSuccess } from "../../utils/toast";
 import { Check as CheckIcon, Close as XMarkIcon } from "@mui/icons-material";
-import WorkAreaAutoComplete from "../../components/autoComplete/workAreaAutoComplete";
 import type { IOptions } from "../../utils/commontypes";
+
+import useReducerState from "../../hooks/use-reducer.hook";
 import {
   employeeAccountSchema,
   type TEmployeeAccount,
-} from "./schema/employeeSchema";
-import { useAddEmployeeMutation } from "../../redux/api/accountManagementSlice";
+} from "../../form-schemas/employeeSchema";
+import accountManagementApi from "../../redux/api/account-management.api";
+import { showError, showSuccess } from "../../components/common/toast/toast";
+import WorkAreaAutoComplete from "../../components/autoComplete/work-area-autocomplete.component";
 
 const initialEmployeeAccountData: TEmployeeAccount = {
   employeeName: "",
@@ -33,19 +34,19 @@ const initialEmployeeAccountData: TEmployeeAccount = {
 
 const EmployeeAccountForm = () => {
   const [employeeData, setEmployeeData] = useReducerState<TEmployeeAccount>(
-    initialEmployeeAccountData
+    initialEmployeeAccountData,
   );
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
-  const [addEmployee] = useAddEmployeeMutation();
+  const [addEmployee] = accountManagementApi.useAddEmployeeMutation();
 
   const handleEmployeeChange = (
     field: keyof TEmployeeAccount,
-    value: string | IOptions | null
+    value: string | IOptions | null,
   ) => {
     setEmployeeData({ [field]: value });
     setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== field)
+      prevErrors.filter((error) => error.path[0] !== field),
     );
   };
 

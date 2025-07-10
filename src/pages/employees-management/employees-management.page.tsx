@@ -3,8 +3,8 @@ import { AppBar, Typography, Toolbar, Stack, Button, Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import SearchFilter from "../components/common/searchFilter";
-import EmployeeCards from "../components/employeeCards";
+import SearchFilter from "../../components/common/search-filter.component";
+import EmployeeCards from "../../components/employee-cards.component";
 
 const EmployeeManagement = () => {
   const navigate = useNavigate();

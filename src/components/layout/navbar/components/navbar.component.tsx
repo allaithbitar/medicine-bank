@@ -1,8 +1,8 @@
 import { AppBar, Box, Toolbar, useTheme } from "@mui/material";
 import type { Dispatch } from "react";
 import { MdMenuOpen } from "react-icons/md";
-import CustomIconButton from "../../../common/customIconButton";
-import UserSection from "./userSection";
+import UserSection from "./user-selection.component";
+import CustomIconButton from "../../../common/custom-icon-button.component";
 
 function Navbar({
   setOpenSidebar,

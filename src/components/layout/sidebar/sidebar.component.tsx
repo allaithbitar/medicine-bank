@@ -1,6 +1,6 @@
 import { Box, Drawer, IconButton, styled, SvgIcon } from "@mui/material";
-import SideBarItems from "./components/sideBarItems";
 import type { Dispatch } from "react";
+import SideBarItems from "./components/sidebar-items.component";
 
 const drawerWidth = 300;
 

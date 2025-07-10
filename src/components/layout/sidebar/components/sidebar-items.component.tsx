@@ -1,12 +1,12 @@
 import { List } from "@mui/material";
 import type { ReactElement } from "react";
 import HomeIcon from "@mui/icons-material/Home";
-import SideBarListItem from "./sideBarListItem";
+import SideBarListItem from "./sidebar-list-item.component";
 import BadgeIcon from "@mui/icons-material/Badge";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import FeaturedPlayListIcon from "@mui/icons-material/FeaturedPlayList";
 import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
-import SidebarExpandableItem from "./sidebarExandableItem";
+import SidebarExpandableItem from "./sidebar-expandable-list-item.component";
 
 type BaseItem = {
   label: string;
@@ -84,7 +84,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
               level={1}
               href={i.href}
             />
-          )
+          ),
         )}
     </List>
   );

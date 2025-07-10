@@ -1,12 +1,8 @@
-import React, { useState, useLayoutEffect, useCallback } from "react";
-import {
-  ModalPropsMap,
-  ModalsMap,
-  modalPubsub,
-  MODAL_PUBSUB_EVENTS,
-} from "./modal.ts";
+import { useState, useLayoutEffect, useCallback } from "react";
+import { modalPubsub, MODAL_PUBSUB_EVENTS } from "./modal.ts";
+import type { ModalPropsMap, ModalsMap } from "./modal.ts";
 import { Box } from "@mui/material";
-import ConfirmModal from "./confirmModal.tsx";
+import ConfirmModal from "./confirm.modal.tsx";
 
 const MODALS: ModalsMap = {
   confirmation: ConfirmModal,
@@ -38,7 +34,7 @@ const Modal = () => {
             id: String((Math.random() + 1) * 100),
           } as OpenedModalInstance<keyof ModalPropsMap>,
         ]);
-      }
+      },
     );
 
     const unsubClose = modalPubsub.subscribe(
@@ -51,7 +47,7 @@ const Modal = () => {
             return prev.slice(0, -1);
           }
         });
-      }
+      },
     );
 
     return () => {

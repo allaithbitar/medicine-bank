@@ -12,10 +12,10 @@ import {
   DeleteOutline as DeleteOutlineIcon,
 } from "@mui/icons-material";
 
-import type { TEmployeeAccount } from "../pages/accountManagement/schema/employeeSchema";
-import CustomIconButton from "./common/customIconButton";
-import DetailItem from "./common/detailItem";
-import ReusableCard from "./common/reusableCard";
+import type { TEmployeeAccount } from "../form-schemas/employeeSchema";
+import CustomIconButton from "./common/custom-icon-button.component";
+import DetailItem from "./common/detail-item.component";
+import ReusableCard from "./common/reusable-card.component";
 
 interface EmployeeCardProps {
   employee: TEmployeeAccount;

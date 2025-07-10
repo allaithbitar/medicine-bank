@@ -2,10 +2,10 @@ import { useState, useCallback } from "react";
 import { Box, Grid } from "@mui/material";
 import { Person as UserIcon } from "@mui/icons-material";
 
-import Nodata from "./common/nodata";
-import EmployeeCard from "./employeeCard";
-import type { TEmployeeAccount } from "../pages/accountManagement/schema/employeeSchema";
 import { closeModal, openModal } from "../utils/helpers";
+import type { TEmployeeAccount } from "../form-schemas/employeeSchema";
+import EmployeeCard from "./employee-card.component";
+import Nodata from "./common/no-data.component";
 
 const employees: (TEmployeeAccount & { id: string })[] = [
   {
@@ -66,7 +66,7 @@ const employees: (TEmployeeAccount & { id: string })[] = [
 
 const EmployeeCards = () => {
   const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   const togglePasswordVisibility = useCallback((employeeId: string) => {

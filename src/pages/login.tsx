@@ -10,11 +10,11 @@ import {
 import KeyIcon from "@mui/icons-material/Key";
 import PersonIcon from "@mui/icons-material/Person";
 import { useDispatch } from "react-redux";
-import { setUserCredentials } from "../redux/slices/authSlice";
+import { setUserCredentials } from "../redux/slices/auth.slice";
 import { useLocation, useNavigate } from "react-router-dom";
 // import { useLoginMutation } from "../redux/api/userSlice";
-import { showSuccess } from "../utils/toast";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../hooks/use-auth.hook";
+import { showSuccess } from "../components/common/toast/toast";
 
 interface LoginProps {
   onLoginSuccess?: (username: string) => void;
@@ -93,7 +93,7 @@ const Login = ({ onLoginSuccess }: LoginProps) => {
               username: credentials.username,
             },
             token: "tokenOfGranitite",
-          })
+          }),
         );
         showSuccess("Form submitted successfully!");
         handleAfterLogin();

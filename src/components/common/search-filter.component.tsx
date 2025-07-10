@@ -2,7 +2,7 @@
 import { useState, useEffect, type ChangeEvent } from "react";
 import { TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import useDebounce from "../../hooks/useDebounce";
+import useDebounce from "../../hooks/use-debounce.hook";
 
 interface SearchFilterProps {
   onSearch: (query: string) => void;

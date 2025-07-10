@@ -1,5 +1,5 @@
 import { Component, type ReactNode } from "react";
-import FallbackUI from "./fallbackUI";
+import FallbackUI from "./fallback-ui.component";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
