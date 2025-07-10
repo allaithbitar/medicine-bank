@@ -1,6 +1,6 @@
 import { rootApi } from "./root.api";
-import type { ApiResponse } from "./common";
 import type { TEmployeeAccount } from "../../form-schemas/employeeSchema";
+import type { ApiResponse } from "../../types/common.types";
 
 export const accountManagementApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({

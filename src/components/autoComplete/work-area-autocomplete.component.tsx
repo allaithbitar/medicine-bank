@@ -1,6 +1,6 @@
 import { Autocomplete, TextField, type AutocompleteProps } from "@mui/material";
 import { useEffect, useRef } from "react";
-import type { IOptions } from "../../utils/commontypes";
+import type { IOptions } from "../../types/common.types";
 
 interface OcrMappingAutoCompleteProps {
   value: IOptions | null;

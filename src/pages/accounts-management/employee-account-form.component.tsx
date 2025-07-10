@@ -12,7 +12,6 @@ import {
 import { useState } from "react";
 import { z } from "zod";
 import { Check as CheckIcon, Close as XMarkIcon } from "@mui/icons-material";
-import type { IOptions } from "../../utils/commontypes";
 
 import useReducerState from "../../hooks/use-reducer.hook";
 import {
@@ -22,6 +21,7 @@ import {
 import accountManagementApi from "../../redux/api/account-management.api";
 import { showError, showSuccess } from "../../components/common/toast/toast";
 import WorkAreaAutoComplete from "../../components/autoComplete/work-area-autocomplete.component";
+import type { IOptions } from "../../types/common.types";
 
 const initialEmployeeAccountData: TEmployeeAccount = {
   employeeName: "",

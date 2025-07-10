@@ -1,4 +1,4 @@
-import type { ApiResponse } from "./common";
+import type { ApiResponse } from "../../types/common.types";
 import { rootApi } from "./root.api";
 
 interface LoginRes {
