@@ -1,10 +1,10 @@
 import { useCallback } from "react";
-import type { WorkArea } from "../pages/banks/workAreas";
 import { openModal } from "../utils/helpers";
 import { Grid } from "@mui/material";
-import WorkAreaCard from "./workAreaCard";
-import Nodata from "./common/nodata";
 import { Business as BuildingOfficeIcon } from "@mui/icons-material";
+import WorkAreaCardComponent from "./work-area-card.component";
+import Nodata from "./common/no-data.component";
+import type { WorkArea } from "../pages/banks/work-areas-management.page";
 const workAreas: WorkArea[] = [
   {
     id: "1",
@@ -41,7 +41,7 @@ const WorkAreasCards = () => {
       <Grid container spacing={2} justifyContent="center">
         {workAreas.map((wa) => (
           <Grid key={wa.id}>
-            <WorkAreaCard
+            <WorkAreaCardComponent
               workArea={wa}
               onEdit={() => handleEditWorkArea(wa.id)}
               onDelete={() => handleDeleteWorkAreaClick(wa.id)}

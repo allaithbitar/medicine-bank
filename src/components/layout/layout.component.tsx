@@ -5,11 +5,11 @@
 // import HomeIcon from "@mui/icons-material/Home";
 import Box from "@mui/material/Box";
 import { Suspense, useState } from "react";
-import Navbar from "./navbar/components/navbar";
-import Sidebar from "./sidebar/sidebar";
-import ErrorBoundary from "../errorBoundary/errorBoundary";
+import Navbar from "./navbar/components/navbar.component";
+import Sidebar from "./sidebar/sidebar.component";
+import ErrorBoundary from "../errorBoundary/error-boundary.component";
 import { Outlet } from "react-router-dom";
-import PageLoading from "../common/pageLoading";
+import PageLoading from "../common/page-loading.component";
 import type { SxProps, Theme } from "@mui/material";
 
 const contentWrapperStyles: SxProps<Theme> = {

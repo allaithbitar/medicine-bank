@@ -2,11 +2,11 @@ import {
   MODAL_PUBSUB_EVENT_NAMES,
   modalPubsub,
   type ModalPropsMap,
-} from "../components/common/modal/modalTypes";
-import { apiSlice } from "../redux/api/apiSlice";
-import { logout } from "../redux/slices/authSlice";
+} from "../components/common/modal/modal-types";
+import { removeAllToasts } from "../components/common/toast/toast";
+import { rootApi } from "../redux/api/root.api";
+import { logout } from "../redux/slices/auth.slice";
 import { store } from "../redux/store";
-import { removeAllToasts } from "./toast";
 
 /**
  * log out and delete local store
@@ -14,7 +14,7 @@ import { removeAllToasts } from "./toast";
 export const handleLogout = () => {
   removeAllToasts();
   store.dispatch(logout());
-  store.dispatch(apiSlice.util.resetApiState());
+  store.dispatch(rootApi.util.resetApiState());
   sessionStorage.clear();
 };
 
