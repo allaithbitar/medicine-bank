@@ -29,7 +29,7 @@ const CitySelect = ({
   disabled = false,
 }: ICitySelectProps) => {
   const {
-    data: cities = [],
+    data: { items: cities = [] } = { items: [] },
     isFetching,
     isLoading,
     error: fetchError,

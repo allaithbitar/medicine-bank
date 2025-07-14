@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Box, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { Person as UserIcon } from "@mui/icons-material";
 
 import type { TEmployeeAccount } from "@/features/accounts-forms/types/employee.types";
@@ -69,7 +69,7 @@ const EmployeesList = () => {
   const { openModal } = useModal();
   const navigate = useNavigate();
   const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const togglePasswordVisibility = useCallback((employeeId: string) => {
     setVisiblePasswords((prev) => {
@@ -93,7 +93,7 @@ const EmployeesList = () => {
         state: { employee: employeeData },
       });
     },
-    [navigate]
+    [navigate],
   );
 
   const handleDeleteEmployeeClick = useCallback(
@@ -109,16 +109,12 @@ const EmployeesList = () => {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-      }}
-    >
-      <Grid container spacing={2} justifyContent="center">
+    <>
+      <Grid container gap={2} justifyContent="center">
         {employees.map((employee) => (
           <Grid key={employee.id}>
             <EmployeeCardComponent
@@ -133,7 +129,7 @@ const EmployeesList = () => {
         ))}
       </Grid>
       {employees.length === 0 && <Nodata icon={<UserIcon />} />}
-    </Box>
+    </>
   );
 };
 export default EmployeesList;

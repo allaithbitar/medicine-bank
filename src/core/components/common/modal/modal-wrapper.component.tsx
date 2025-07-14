@@ -38,6 +38,7 @@ const ModalWrapper = ({
 
   return (
     <Dialog
+      dir="rtl"
       open
       maxWidth="md"
       onClose={handleClose}

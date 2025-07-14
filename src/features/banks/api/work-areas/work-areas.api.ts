@@ -1,6 +1,9 @@
 // src/features/work-areas/api/work-areas.api.ts
 import { rootApi } from "@/core/api/root.api";
-import type { ApiResponse } from "@/core/types/common.types";
+import type {
+  ApiResponse,
+  TPaginatedResponse,
+} from "@/core/types/common.types";
 import type {
   IWorkArea,
   TAddWorkAreaPayload,
@@ -10,7 +13,7 @@ import type {
 export const workAreasApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
     getWorkAreas: builder.query<
-      IWorkArea[],
+      TPaginatedResponse<IWorkArea>,
       {
         cityId: string;
         name?: string | null;
@@ -23,7 +26,8 @@ export const workAreasApi = rootApi.injectEndpoints({
         method: "GET",
         params: { cityId, ...params },
       }),
-      transformResponse: (res: ApiResponse<IWorkArea[]>) => res.items,
+      transformResponse: (res: ApiResponse<TPaginatedResponse<IWorkArea>>) =>
+        res.data,
       providesTags: [{ type: "Work-areas" }],
     }),
     addWorkArea: builder.mutation<void, TAddWorkAreaPayload>({

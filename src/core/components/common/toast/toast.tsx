@@ -57,7 +57,10 @@ const defaultDefaultOptions: ToastOptions = {
  * @param options Optional: Additional react-hot-toast options to merge.
  * @returns The ID of the displayed toast.
  */
-export const showSuccess = (message?: string, options?: CustomToastOptions) => {
+export const notifySuccess = (
+  message?: string,
+  options?: CustomToastOptions,
+) => {
   const mergedOptions = { ...defaultSuccessOptions, ...options };
   return hotToast.custom(
     (t) => (
@@ -77,7 +80,7 @@ export const showSuccess = (message?: string, options?: CustomToastOptions) => {
  * @param options Optional: Additional react-hot-toast options to merge.
  * @returns The ID of the displayed toast.
  */
-export const showError = (
+export const notifyError = (
   message: string,
   options?: CustomToastOptions,
 ): string => {
@@ -94,7 +97,7 @@ export const showError = (
  * @param options Optional: Additional react-hot-toast options to merge.
  * @returns The ID of the displayed toast.
  */
-export const showInfo = (
+export const notifyInfo = (
   message: string,
   options?: CustomToastOptions,
 ): string => {
@@ -111,7 +114,7 @@ export const showInfo = (
  * @param options Optional: Additional react-hot-toast options to merge.
  * @returns The ID of the displayed toast.
  */
-export const showLoading = (
+export const notifyLoading = (
   message: string,
   options?: CustomToastOptions,
 ): string => {
@@ -128,7 +131,7 @@ export const showLoading = (
  * @param options Optional: Additional react-hot-toast options to merge.
  * @returns The ID of the displayed toast.
  */
-export const showDefault = (
+export const notifyDefault = (
   message: string,
   options?: CustomToastOptions,
 ): string => {

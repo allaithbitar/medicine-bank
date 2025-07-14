@@ -13,14 +13,16 @@ const WorkAreaManagement = () => {
   const [selectedCityId, setSelectedCityId] = useState<string>("");
   const [query, setQuery] = useState<string | null>("");
 
-  const { data: workAreas = [], isLoading: isLoadingWorkAreas } =
-    workAreasApi.useGetWorkAreasQuery(
-      {
-        name: query,
-        cityId: selectedCityId,
-      },
-      { skip: !selectedCityId }
-    );
+  const {
+    data: { items: workAreas = [] } = { items: [] },
+    isLoading: isLoadingWorkAreas,
+  } = workAreasApi.useGetWorkAreasQuery(
+    {
+      name: query,
+      cityId: selectedCityId,
+    },
+    { skip: !selectedCityId },
+  );
 
   const handleSearch = useCallback((query: string | null) => {
     setQuery(query);
@@ -37,7 +39,7 @@ const WorkAreaManagement = () => {
   };
 
   return (
-    <Stack sx={{ maxWidth: "md", mx: "auto", mt: 2 }} spacing={2}>
+    <Stack gap={2}>
       {isLoadingWorkAreas && <LoadingOverlay />}
       <WorkAreasAppBar
         handleSearch={handleSearch}

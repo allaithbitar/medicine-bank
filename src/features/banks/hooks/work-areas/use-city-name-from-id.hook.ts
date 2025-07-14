@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import citiesApi from "../../api/cities-api/cities.api";
-import { showError } from "@/core/components/common/toast/toast";
+import { notifyError } from "@/core/components/common/toast/toast";
 
 export const useCityName = (cityId: string) => {
   const [cityName, setCityName] = useState("");
-  const [getCities, { data: cities, isError, error }] =
-    citiesApi.useLazyGetCitiesQuery();
+  const [
+    getCities,
+    { data: { items: cities = [] } = { items: [] }, isError, error },
+  ] = citiesApi.useLazyGetCitiesQuery();
 
   useEffect(() => {
     if (cityId) {
@@ -24,7 +26,7 @@ export const useCityName = (cityId: string) => {
 
   useEffect(() => {
     if (isError) {
-      showError("Failed to load city data.");
+      notifyError("Failed to load city data.");
     }
   }, [isError, error]);
 

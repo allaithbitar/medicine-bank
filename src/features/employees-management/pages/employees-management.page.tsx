@@ -18,7 +18,7 @@ const EmployeeManagement = () => {
   }, []);
 
   return (
-    <Stack sx={{ maxWidth: "md", mx: "auto", mt: 2 }} spacing={2}>
+    <Stack gap={2}>
       <CustomAppBar
         title="Account Management"
         subtitle="Manage employee accounts"

@@ -15,17 +15,17 @@ import WorkAreaManagement from "./features/banks/pages/work-areas/work-areas-man
 import EmployeeManagement from "./features/employees-management/pages/employees-management.page";
 import ErrorPage from "./pages/error.page";
 import Unauthorized from "./pages/unauthorized.page";
-import Login from "./features/auth/pages/login.page";
+import LoginPage from "./features/auth/pages/login.page";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" errorElement={<FallbackUI />} element={<AppUiWrapper />}>
-        <Route path="login" element={<Login />} />
+        <Route path="login" element={<LoginPage />} />
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />} errorElement={<ErrorPage />}>
-            <Route index path="/" element={<Box sx={{ p: 10 }}>home</Box>} />
+            <Route index path="/" element={<Box>home</Box>} />
             <Route
               path="/employee-management"
               element={<EmployeeManagement />}
@@ -45,8 +45,8 @@ function App() {
             <Route path="/cities-management" element={<CitiesManagement />} />
           </Route>
         </Route>
-      </Route>
-    )
+      </Route>,
+    ),
   );
 
   return <RouterProvider router={router} />;

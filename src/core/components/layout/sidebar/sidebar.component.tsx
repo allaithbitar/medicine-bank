@@ -1,6 +1,16 @@
-import { Box, Drawer, IconButton, styled, SvgIcon } from "@mui/material";
+import {
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  styled,
+  SvgIcon,
+} from "@mui/material";
 import type { Dispatch, SetStateAction } from "react";
 import SideBarItems from "./components/sidebar-items.component";
+import { useDispatch } from "react-redux";
+import { authActions } from "@/core/slices/auth/auth.slice";
+import STRINGS from "@/core/constants/strings.constant";
 
 const drawerWidth = 300;
 
@@ -19,6 +29,7 @@ function Sidebar({
   openSidebar: boolean;
   setOpenSidebar: Dispatch<SetStateAction<boolean>>;
 }) {
+  const dispatch = useDispatch();
   return (
     <Drawer
       onClose={() => setOpenSidebar(false)}
@@ -73,6 +84,12 @@ function Sidebar({
         </Box>
       </DrawerHeader>
       <SideBarItems onClick={() => setOpenSidebar(false)} />
+      <Button
+        sx={{ mt: "auto", mb: 2 }}
+        onClick={() => dispatch(authActions.logoutUser())}
+      >
+        {STRINGS.logout}
+      </Button>
     </Drawer>
   );
 }

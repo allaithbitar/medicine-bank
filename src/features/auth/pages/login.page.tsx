@@ -1,182 +1,118 @@
 import { useEffect, useState, type FormEvent } from "react";
-import {
-  TextField,
-  Button,
-  Typography,
-  Container,
-  Alert,
-  Stack,
-} from "@mui/material";
+import { TextField, Button, Container, Stack } from "@mui/material";
 import KeyIcon from "@mui/icons-material/Key";
 import PersonIcon from "@mui/icons-material/Person";
-import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../hooks/use-auth.hook";
-import { setUser } from "@/core/slices/auth/auth.slice";
-import { showSuccess } from "@/core/components/common/toast/toast";
+import authApi from "../api/auth.api";
+import useUser from "@/core/hooks/user-user.hook";
+import { getErrorMessage } from "@/core/helpers/helpers";
+import { notifyError } from "@/core/components/common/toast/toast";
+import { useDispatch } from "react-redux";
+import { authActions } from "@/core/slices/auth/auth.slice";
+import STRINGS from "@/core/constants/strings.constant";
 
-interface ILoginProps {
-  onLoginSuccess?: (username: string) => void;
-}
-const Login = ({ onLoginSuccess }: ILoginProps) => {
-  const dispatch = useDispatch();
+const LoginPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { token, user } = useAuth();
+  const dispatch = useDispatch();
+  const { token, id } = useUser();
   const [credentials, setCredentials] = useState({
-    username: "",
     password: "",
+    phone: "",
   });
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [didLoginNow, setDidLoginNow] = useState(false);
+
+  const [loginAsync, { isLoading }] = authApi.useLoginMutation();
 
   useEffect(() => {
     const from = location?.state?.from || "/";
-    if (user && token && !didLoginNow) navigate(from, { replace: true });
-  }, [
-    location?.state?.from.pathname,
-    navigate,
-    location?.state,
-    didLoginNow,
-    user,
-    token,
-  ]);
+    if (id && token) navigate(from, { replace: true });
+  }, [navigate, id, token, location?.state?.from]);
 
   const handleChange = (e: any) => {
     setCredentials((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleAfterLogin = async () => {
-    navigate("/");
-  };
-
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      // const loginResponse = await login(credentials).unwrap();
-      // console.log("🚀 ~ handleLogin ~ loginResponse:", loginResponse);
-      if (
-        credentials.username === "zing" &&
-        credentials.password === "nignig"
-      ) {
-        setDidLoginNow(true);
-        dispatch(
-          setUser({
-            user: {
-              email: "email",
-              id: 1,
-              username: credentials.username,
-            },
-            token: "tokenOfGranitite",
-          })
-        );
-        showSuccess("Form submitted successfully!");
-        handleAfterLogin();
-        onLoginSuccess?.(credentials.username);
-      } else {
-        setError("Something is wrong");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("Login error");
-    } finally {
-      setLoading(false);
+    const { data, error } = await loginAsync(credentials);
+    if (error) {
+      return notifyError(getErrorMessage(error));
     }
+    dispatch(authActions.setUser(data));
   };
 
   return (
-    <Stack
+    <Container
       sx={{
-        flexGrow: 1,
-        minHeight: "100vh",
-        background: (theme) => theme.palette.grey[50],
-        justifyContent: "center",
-        alignItems: "center",
+        px: 2,
+        mx: "auto",
+        height: "100vh",
       }}
+      maxWidth="xs"
     >
-      <Container sx={{ px: 2, mx: "auto" }} maxWidth="xs">
+      <Stack
+        sx={{
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 4,
+        }}
+      >
         <Stack gap={1}>
-          <Typography variant="h4" component="h1" gutterBottom align="center">
-            Welcome Back!
-          </Typography>
           <img
             alt="logo"
             src={`/logo.jpeg`}
-            style={{ width: 100, margin: "0 auto", borderRadius: "8px" }}
+            style={{ width: 200, margin: "0 auto", borderRadius: "8px" }}
           />
-
-          <Typography variant="body2" color="textSecondary" align="center">
-            Please log in to continue.
-          </Typography>
         </Stack>
 
-        <form onSubmit={handleLogin}>
-          <TextField
-            name="username"
-            label="Username"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={credentials.username}
-            onChange={handleChange}
-            required
-            autoFocus
-            slotProps={{
-              input: {
-                startAdornment: <PersonIcon />,
-              },
-            }}
-            disabled={loading}
-          />
-          <TextField
-            name="password"
-            label="Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={credentials.password}
-            onChange={handleChange}
-            required
-            disabled={loading}
-            slotProps={{
-              input: {
-                startAdornment: <KeyIcon />,
-              },
-            }}
-          />
-
-          {error && (
-            <Alert
-              severity="error"
-              sx={{
-                mt: 2,
-                mb: 1,
-                borderRadius: "8px",
-                display: "flex",
-                alignItems: "center",
+        <form onSubmit={handleLogin} style={{ width: "100%" }}>
+          <Stack gap={2}>
+            <TextField
+              name="phone"
+              label={STRINGS.phone_number}
+              fullWidth
+              value={credentials.phone}
+              onChange={handleChange}
+              required
+              autoFocus
+              slotProps={{
+                input: {
+                  startAdornment: <PersonIcon />,
+                },
               }}
+              disabled={isLoading}
+            />
+            <TextField
+              name="password"
+              label={STRINGS.password}
+              type="password"
+              fullWidth
+              value={credentials.password}
+              onChange={handleChange}
+              required
+              disabled={isLoading}
+              slotProps={{
+                input: {
+                  startAdornment: <KeyIcon />,
+                },
+              }}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              disabled={
+                isLoading || !credentials.password || !credentials.password
+              }
             >
-              {error}
-            </Alert>
-          )}
-
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            size="large"
-            disabled={loading || !credentials.password || !credentials.username}
-          >
-            {loading ? "Logging In..." : "Log In"}
-          </Button>
+              {STRINGS.login}
+            </Button>
+          </Stack>
         </form>
-      </Container>
-    </Stack>
+      </Stack>
+    </Container>
   );
 };
 
-export default Login;
+export default LoginPage;

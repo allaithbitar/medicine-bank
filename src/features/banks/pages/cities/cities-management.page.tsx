@@ -13,8 +13,10 @@ import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar
 const CitiesPage = () => {
   const { openModal } = useModal();
   const [query, setQuery] = useState<string | null>("");
-  const { data: cities = [], isLoading: isLoadingCities } =
-    citiesApi.useGetCitiesQuery({ name: query });
+  const {
+    data: { items: cities = [] } = { items: [] },
+    isLoading: isLoadingCities,
+  } = citiesApi.useGetCitiesQuery({ name: query });
 
   const handleOpenCityModal = (oldCity?: TCity) => {
     openModal({
@@ -30,7 +32,7 @@ const CitiesPage = () => {
   }, []);
 
   return (
-    <Stack maxWidth="lg" gap={2} sx={{ mt: 2, mx: "auto" }}>
+    <Stack gap={2}>
       {isLoadingCities && <LoadingOverlay />}
       <CustomAppBar
         title="Manage Cities"

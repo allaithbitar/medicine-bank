@@ -18,11 +18,14 @@ import {
   employeeAccountSchema,
   updateEmployeeAccountSchema,
 } from "../schemas/employee-form-schema";
-import { showError, showSuccess } from "@/core/components/common/toast/toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import WorkAreaAutoComplete from "@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component";
 import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar.component";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import {
+  notifyError,
+  notifySuccess,
+} from "@/core/components/common/toast/toast";
 
 const initialEmployeeAccountData: TEmployeeAccount = {
   name: "",
@@ -37,7 +40,7 @@ const EmployeeAccountForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [employeeData, setEmployeeData] = useReducerState<TEmployeeAccount>(
-    initialEmployeeAccountData
+    initialEmployeeAccountData,
   );
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
@@ -58,11 +61,11 @@ const EmployeeAccountForm = () => {
 
   const handleEmployeeChange = (
     field: keyof TEmployeeAccount,
-    value: string | IOptions | null
+    value: string | IOptions | null,
   ) => {
     setEmployeeData({ [field]: value });
     setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== field)
+      prevErrors.filter((error) => error.path[0] !== field),
     );
   };
 
@@ -91,13 +94,13 @@ const EmployeeAccountForm = () => {
       }
 
       setErrors([]);
-      showSuccess();
-      navigate(-1);
+      await addEmployee(employeeData).unwrap();
+      notifySuccess();
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
       } else {
-        showError(err);
+        notifyError(err);
       }
     }
   };
@@ -114,12 +117,12 @@ const EmployeeAccountForm = () => {
       <CustomAppBar title="Add Account" subtitle="Add an Employee Account" />
       <Card sx={{ p: 2 }}>
         <form onSubmit={handleSubmit}>
-          <Stack spacing={4}>
+          <Stack gap={4}>
             <Box>
               <Typography variant="body1" sx={{ mb: 2 }}>
                 Personal Information
               </Typography>
-              <Stack spacing={2}>
+              <Stack gap={2}>
                 <TextField
                   fullWidth
                   label="Employee Name"
@@ -145,7 +148,7 @@ const EmployeeAccountForm = () => {
               <Typography variant="body1" sx={{ mb: 2 }}>
                 Work Information
               </Typography>
-              <Stack spacing={2}>
+              <Stack gap={2}>
                 <TextField
                   fullWidth
                   select

@@ -1,8 +1,6 @@
-import { AppBar, Box, Toolbar, useTheme } from "@mui/material";
+import { IconButton, Stack } from "@mui/material";
 import type { Dispatch, SetStateAction } from "react";
 import { MdMenuOpen } from "react-icons/md";
-import UserSection from "./user-selection.component";
-import CustomIconButton from "@/core/components/common/custom-icon-button/custom-icon-button.component";
 
 function Navbar({
   setOpenSidebar,
@@ -11,52 +9,26 @@ function Navbar({
   setOpenSidebar: Dispatch<SetStateAction<boolean>>;
   openSidebar: boolean;
 }) {
-  const theme = useTheme();
   return (
-    <AppBar
-      position="fixed"
-      color="inherit"
-      elevation={0}
-      sx={{
-        bgcolor: theme.palette.background.default,
-        py: 0.5,
-        zIndex: 10,
-      }}
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
+      sx={{ width: "100%", p: 1, px: 2 }}
     >
-      <Toolbar sx={{ gap: 1 }}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "end",
-            gap: 1,
-          }}
-        >
-          <img
-            src={`/logo.jpeg`}
-            style={{ width: 50, borderRadius: "8px" }}
-            alt="bank-logo"
-          />
-          <CustomIconButton
-            onClick={() => setOpenSidebar((prev: any) => !prev)}
-            sx={{ scale: `${!openSidebar && "-"}1 !important`, mr: 1 }}
-          >
-            <MdMenuOpen />
-          </CustomIconButton>
-        </Box>
-
-        <Box
-          sx={{
-            marginInlineStart: "auto",
-            display: "flex",
-            gap: 1,
-            width: "fit-content",
-          }}
-        >
-          <UserSection />
-        </Box>
-      </Toolbar>
-    </AppBar>
+      <IconButton
+        color="primary"
+        onClick={() => setOpenSidebar((prev: any) => !prev)}
+        sx={{ scale: `${!openSidebar && "-"}1 !important` }}
+      >
+        <MdMenuOpen />
+      </IconButton>
+      <img
+        src={`/logo.jpeg`}
+        style={{ width: 50, borderRadius: "8px" }}
+        alt="bank-logo"
+      />
+    </Stack>
   );
 }
 

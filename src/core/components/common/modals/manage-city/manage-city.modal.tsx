@@ -2,18 +2,18 @@ import { CitySchema } from "@/features/banks/schemas/city.schema";
 import { TextField, Stack, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import z from "zod";
-import { showError, showSuccess } from "@/core/components/common/toast/toast";
 import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TCity } from "@/features/banks/types/city.types";
 import citiesApi from "@/features/banks/api/cities-api/cities.api";
+import { notifyError, notifySuccess } from "../../toast/toast";
 
 const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
   const { closeModal } = useModal();
   const [updateCity, { isLoading: isUpdatingCity }] =
     citiesApi.useUpdateCityMutation({});
   const [addCity, { isLoading: isAddingCity }] = citiesApi.useAddCityMutation(
-    {}
+    {},
   );
 
   const [cityName, setCityName] = useState<string>("");
@@ -22,7 +22,7 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
   const handleCityNameChange = (value: string) => {
     setCityName(value);
     setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== "name")
+      prevErrors.filter((error) => error.path[0] !== "name"),
     );
   };
 
@@ -39,13 +39,13 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
       } else {
         await addCity({ name: cityName });
       }
-      showSuccess();
+      notifySuccess();
       closeModal();
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
       } else {
-        showError(err);
+        notifyError(err);
       }
     }
   };
@@ -64,6 +64,7 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
       actionButtons={
         <Stack flexDirection="row" gap={1}>
           <Button
+            variant="outlined"
             onClick={() => closeModal()}
             color="error"
             sx={{ width: { xs: "100%", sm: "auto" } }}

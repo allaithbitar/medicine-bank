@@ -15,18 +15,18 @@ const BeneficiaryAccountForm = () => {
 
   const handleBeneficiaryChange = (
     field: keyof IBeneficiaryAccount,
-    value: string
+    value: string,
   ) => {
     setBeneficiaryData({ [field]: value });
   };
 
   return (
-    <Stack spacing={4}>
+    <Stack gap={4}>
       <Box>
         <Typography variant="body1" sx={{ mb: 2 }}>
           Personal Information
         </Typography>
-        <Stack spacing={2}>
+        <Stack gap={2}>
           <TextField
             fullWidth
             label="First Name"
@@ -51,7 +51,7 @@ const BeneficiaryAccountForm = () => {
         <Typography variant="body1" sx={{ mb: 2 }}>
           Contact Information
         </Typography>
-        <Stack spacing={2}>
+        <Stack gap={2}>
           <TextField
             fullWidth
             label="Email"
@@ -73,7 +73,7 @@ const BeneficiaryAccountForm = () => {
         <Typography variant="h6" sx={{ mb: 2 }}>
           Address
         </Typography>
-        <Stack spacing={2}>
+        <Stack gap={2}>
           <TextField
             fullWidth
             label="Address"

@@ -4,18 +4,7 @@ import { createTheme } from "@mui/material/styles";
 const baseTheme = createTheme();
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
-    grey: {
-      50: "#f5f7ff",
-    },
-  },
-
+  direction: "rtl",
   spacing: 8,
   shape: {
     borderRadius: 8,
@@ -34,6 +23,13 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {},
+      },
+    },
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+        variant: "contained",
+        size: "large",
       },
     },
   },

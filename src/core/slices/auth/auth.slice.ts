@@ -1,34 +1,39 @@
-import type { IAuthState, IUser } from "@/features/auth/types/auth.types";
+/* eslint-disable react-hooks/rules-of-hooks */
+import type { RootStoreState } from "@/core/store/root.store.types";
+import type { TLogin } from "@/features/auth/types/auth.types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 
-const initialState: IAuthState = {
-  user: null,
-  token: null,
+const initialState: TLogin = {
+  areaId: null,
+  createdAt: "",
+  id: "",
+  name: "",
+  phone: "",
+  refreshToken: "",
+  role: "scout",
+  token: "",
+  updatedAt: "",
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (
-      state,
-      action: PayloadAction<{
-        user: IUser;
-        token: string;
-      }>
-    ) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-    },
+    setUser: (state, action: PayloadAction<TLogin>) => ({
+      ...state,
+      ...action.payload,
+    }),
     logoutUser: () => ({ ...initialState }),
   },
 });
 
-export const { setUser, logoutUser } = authSlice.actions;
+export const authActions = authSlice.actions;
 
 export default authSlice.reducer;
 
-export const selectCurrentUser = (state: { auth: IAuthState }) =>
-  state.auth.user as IUser;
-export const selectCurrentToken = (state: { auth: IAuthState }) =>
-  state.auth.token;
+export const selectUser = () =>
+  useSelector((state: RootStoreState) => state.auth);
+
+export const selectToken = () =>
+  useSelector((state: RootStoreState) => state.auth.token);

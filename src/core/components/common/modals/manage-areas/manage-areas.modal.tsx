@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { TextField, Stack, Button } from "@mui/material";
-import { showError, showSuccess } from "@/core/components/common/toast/toast";
+import {
+  notifyError,
+  notifySuccess,
+} from "@/core/components/common/toast/toast";
 import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import { z } from "zod";
@@ -30,7 +33,7 @@ const WorkAreaFormModal = ({
 
   const [workAreaName, setWorkAreaName] = useState<string>("");
   const [selectedCityId, setSelectedCityId] = useState<string>(
-    defaultSelectedCity || ""
+    defaultSelectedCity || "",
   );
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
@@ -44,14 +47,14 @@ const WorkAreaFormModal = ({
   const handleWorkAreaNameChange = (value: string) => {
     setWorkAreaName(value);
     setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== "name")
+      prevErrors.filter((error) => error.path[0] !== "name"),
     );
   };
 
   const handleCitySelectChange = (cityId: string) => {
     setSelectedCityId(cityId);
     setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== "cityId")
+      prevErrors.filter((error) => error.path[0] !== "cityId"),
     );
   };
 
@@ -76,18 +79,18 @@ const WorkAreaFormModal = ({
         const validatedPayload = WorkAreaSchema.parse(payload);
         await addWorkArea(validatedPayload).unwrap();
       }
-      showSuccess(
+      notifySuccess(
         oldWorkArea
           ? "Work Area updated successfully!"
-          : "Work Area added successfully!"
+          : "Work Area added successfully!",
       );
       closeModal();
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
-        showError("Please correct the form errors.");
+        notifyError("Please correct the form errors.");
       } else {
-        showError(err.data?.message || err.error || "Something went wrong.");
+        notifyError(err.data?.message || err.error || "Something went wrong.");
         console.error("error:", err);
       }
     }
@@ -119,7 +122,7 @@ const WorkAreaFormModal = ({
         </Stack>
       }
     >
-      <Stack spacing={3}>
+      <Stack gap={3}>
         <CitySelect
           value={selectedCityId}
           onChange={handleCitySelectChange}

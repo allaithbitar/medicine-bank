@@ -15,8 +15,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import WarningOutlinedIcon from "@mui/icons-material/WarningOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import { showError } from "../../toast/toast";
 import { useModal } from "../../modal/modal-provider.component";
+import { notifyError } from "../../toast/toast";
 
 type TSeverity = "info" | "warning" | "error" | "success";
 
@@ -66,7 +66,7 @@ const ConfirmModal = ({
       closeModal();
     } catch (error) {
       console.log("🚀 ~ handleConfirm ~ error:", error);
-      showError("error");
+      notifyError("error");
     } finally {
       setIsLoading(false);
     }
@@ -82,15 +82,16 @@ const ConfirmModal = ({
     severity === "error"
       ? "error.main"
       : severity === "warning"
-      ? "warning.main"
-      : severity === "success"
-      ? "success.main"
-      : "info.main";
+        ? "warning.main"
+        : severity === "success"
+          ? "success.main"
+          : "info.main";
 
   const isConfirmDisabled = isLoading;
 
   return (
     <Dialog
+      dir="rtl"
       open
       aria-labelledby="confirmation-dialog-title"
       aria-describedby="confirmation-dialog-description"
@@ -127,7 +128,7 @@ const ConfirmModal = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancel} disabled={isLoading}>
+        <Button onClick={handleCancel} disabled={isLoading} variant="outlined">
           {cancelText}
         </Button>
         <Button

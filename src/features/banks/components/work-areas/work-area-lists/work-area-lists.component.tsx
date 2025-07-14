@@ -34,7 +34,7 @@ const WorkAreasLists = ({
 
   return (
     <>
-      <Grid container spacing={2} justifyContent="center">
+      <Grid container gap={2} justifyContent="center">
         {workAreas.map((wa) => (
           <Grid key={wa.id}>
             <WorkAreaCardComponent

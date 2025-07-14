@@ -30,7 +30,7 @@ function CitiesList({ onEdit, cities, isLoadingCities }: ICitiesList) {
 
   return (
     <>
-      <Grid container spacing={2} justifyContent="center">
+      <Grid container gap={2} justifyContent="center">
         {cities.map((city) => (
           <Grid key={city.name}>
             <CityCard

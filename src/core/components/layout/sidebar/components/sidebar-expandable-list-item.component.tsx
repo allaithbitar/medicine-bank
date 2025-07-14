@@ -39,7 +39,7 @@ const SidebarExpandableItem = ({
   return (
     <Box
       sx={{
-        background: expand ? "rgba(0,0,0,0.03)" : "inherit",
+        background: (theme) => (expand ? theme.palette.grey[50] : "inherit"),
         borderRadius: 1,
       }}
     >

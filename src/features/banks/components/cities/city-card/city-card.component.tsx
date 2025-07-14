@@ -50,7 +50,7 @@ const CityCard = ({ city, onEdit, onDelete }: ICityCardProps) => {
 
       <Stack
         direction="row"
-        spacing={1}
+        gap={1}
         sx={{ color: "white", flexShrink: 0, ml: 2 }}
       >
         <Tooltip title="Delete Employee" arrow>

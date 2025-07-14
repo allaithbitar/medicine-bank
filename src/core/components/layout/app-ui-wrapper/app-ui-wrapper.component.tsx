@@ -1,12 +1,14 @@
-import theme from "@/core/theme/index.theme";
-import { ThemeProvider } from "@mui/material";
 import { Outlet } from "react-router-dom";
+import ThemeContextProvider from "@/core/context/theme.context";
+import ModalProvider from "../../common/modal/modal-provider.component";
 
 const AppUiWrapper = () => (
   <>
-    <ThemeProvider theme={theme}>
-      <Outlet />
-    </ThemeProvider>
+    <ThemeContextProvider>
+      <ModalProvider>
+        <Outlet />
+      </ModalProvider>
+    </ThemeContextProvider>
   </>
 );
 

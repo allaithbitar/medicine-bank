@@ -1,6 +1,9 @@
 // src/features/cities/api/cities.api.ts
 import { rootApi } from "@/core/api/root.api";
-import type { ApiResponse } from "@/core/types/common.types";
+import type {
+  ApiResponse,
+  TPaginatedResponse,
+} from "@/core/types/common.types";
 import type {
   TAddCityPayload,
   TCity,
@@ -9,13 +12,17 @@ import type {
 
 export const citiesApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCities: builder.query<TCity[], { name: string | null }>({
+    getCities: builder.query<
+      TPaginatedResponse<TCity>,
+      { name: string | null }
+    >({
       query: (params) => ({
         url: "/cities",
         method: "GET",
         params,
       }),
-      transformResponse: (res: ApiResponse<TCity[]>) => res.items,
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TCity>>) =>
+        res.data,
       providesTags: [{ type: "cities", id: "LIST" }],
     }),
 
