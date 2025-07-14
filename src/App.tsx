@@ -16,6 +16,7 @@ import EmployeeManagement from "./features/employees-management/pages/employees-
 import ErrorPage from "./pages/error.page";
 import Unauthorized from "./pages/unauthorized.page";
 import LoginPage from "./features/auth/pages/login.page";
+import NotFoundPage from "./core/pages/not-found.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -45,6 +46,8 @@ function App() {
             <Route path="/cities-management" element={<CitiesManagement />} />
           </Route>
         </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
       </Route>,
     ),
   );
