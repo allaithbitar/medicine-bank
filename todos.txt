@@ -12,3 +12,14 @@ for every like one pray to the forgotten corner
 
 
 and more
+
+
+///back
+
+returns from areas api created date and the employeeCount that is connected to just the count
+
+add get all employees 
+
+areaId in add employee should take an array of ids
+
+
