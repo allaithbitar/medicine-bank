@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo, type ReactNode } from "react";
 import { Avatar, Box, Typography } from "@mui/material";
 import {
   deepPurple,
@@ -9,19 +9,14 @@ import {
   grey,
 } from "@mui/material/colors";
 
-interface DetailItemProps {
-  icon: React.ReactNode;
+interface IDetailItemProps {
+  icon: ReactNode;
   label: string;
   value: string;
-  actions?: React.ReactNode;
+  actions?: ReactNode;
 }
 
-const DetailItem: React.FC<DetailItemProps> = ({
-  icon,
-  label,
-  value,
-  actions,
-}) => {
+const DetailItem = ({ icon, label, value, actions }: IDetailItemProps) => {
   const getColors = (itemLabel: string) => {
     switch (itemLabel) {
       case "Position":

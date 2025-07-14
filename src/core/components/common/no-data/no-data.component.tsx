@@ -1,4 +1,4 @@
-import React from "react";
+import { cloneElement, type ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
 
 function Nodata({
@@ -6,11 +6,11 @@ function Nodata({
   title = "No Data Found !",
   subTitle = "Add some employees to see them displayed here.",
 }: {
-  icon: React.ReactElement<{ sx?: object }>;
+  icon: ReactElement<{ sx?: object }>;
   title?: string;
   subTitle?: string;
 }) {
-  const iconWithStyle = React.cloneElement(icon, {
+  const iconWithStyle = cloneElement(icon, {
     sx: {
       fontSize: 60,
       color: "text.disabled",

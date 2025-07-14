@@ -1,4 +1,3 @@
-import React from "react";
 import hotToast, { type Toast } from "react-hot-toast";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import IconButton from "@mui/material/IconButton";
@@ -10,15 +9,16 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import { Stack } from "@mui/material";
+import type { ReactNode } from "react";
 
-interface CustomToastProps {
+interface ICustomToastProps {
   t: Toast;
   message: string;
   type: "success" | "error" | "info" | "loading" | "default";
 }
 
-const CustomToast: React.FC<CustomToastProps> = ({ t, message, type }) => {
-  let iconComponent: React.ReactNode | null = null;
+const CustomToast = ({ t, message, type }: ICustomToastProps) => {
+  let iconComponent: ReactNode | null = null;
   let snackbarBgColor: string;
   let textColor: string = "#fff";
 

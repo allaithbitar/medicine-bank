@@ -11,7 +11,7 @@ import {
   Edit as EditIcon,
   DeleteOutline as DeleteOutlineIcon,
 } from "@mui/icons-material";
-import type { TEmployeeAccount } from "@/features/accounts-management/types/employee.types";
+import type { TEmployeeAccount } from "@/features/accounts-forms/types/employee.types";
 import CustomIconButton from "@/core/components/common/custom-icon-button/custom-icon-button.component";
 import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
@@ -28,7 +28,7 @@ interface IEmployeeCardProps {
 const EmployeeCard = ({
   employee,
   isVisible,
-  onToggleVisibility,
+  // onToggleVisibility,
   maskPassword,
   onDelete,
   onEdit,
@@ -63,7 +63,7 @@ const EmployeeCard = ({
           noWrap
           sx={{ flexShrink: 1, overflow: "hidden", textOverflow: "ellipsis" }}
         >
-          {employee.employeeName}
+          {employee.name}
         </Typography>
       </Box>
 
@@ -91,7 +91,7 @@ const EmployeeCard = ({
       <DetailItemComponent
         icon={<BriefcaseIcon fontSize="small" />}
         label="Position"
-        value={employee.position}
+        value={employee.role}
       />
       <DetailItemComponent
         icon={<BuildingOfficeIcon fontSize="small" />}
@@ -109,7 +109,7 @@ const EmployeeCard = ({
         value={isVisible ? employee.password : maskPassword(employee.password)}
         actions={
           <CustomIconButton
-            onClick={() => (employee.id ? onToggleVisibility(employee.id) : {})}
+            // onClick={() => (employee.id ? onToggleVisibility(employee.id) : {})}
             size="small"
             aria-label={isVisible ? "Hide password" : "Show password"}
           >

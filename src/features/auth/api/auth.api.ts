@@ -11,11 +11,11 @@ export const authApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<LoginRes, { username: string; password: string }>({
       query: (data) => ({
-        url: "login",
+        url: "/auth/login​",
         method: "POST",
         body: data,
       }),
-      transformResponse: (res: ApiResponse<LoginRes>) => res.data,
+      transformResponse: (res: ApiResponse<LoginRes>) => res.items,
     }),
     refreshToken: builder.mutation({
       query: () => ({

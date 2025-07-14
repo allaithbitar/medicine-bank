@@ -1,7 +1,8 @@
 export interface ApiResponse<T> {
-  data: T;
-  message?: string;
-  status: string;
+  items: T;
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
 }
 export interface IOptions {
   id: string;

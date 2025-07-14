@@ -53,15 +53,15 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       permissions: [],
       childrens: [
         {
-          label: "Area",
-          href: "/area-management",
-          icon: <EditLocationAltIcon />,
-          permissions: [],
-        },
-        {
           label: "Cities",
           href: "/cities-management",
           icon: <BuildingOfficeIcon />,
+          permissions: [],
+        },
+        {
+          label: "Area",
+          href: "/work-area-management",
+          icon: <EditLocationAltIcon />,
           permissions: [],
         },
       ],

@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import type { SxProps, Theme } from "@mui/material";
 import ErrorBoundary from "@/components/errorBoundary/error-boundary.component";
 import PageLoading from "../../common/page-loading/page-loading.component";
+import ModalProvider from "../../common/modal/modal-provider.component";
 
 const contentWrapperStyles: SxProps<Theme> = {
   flexGrow: 1,
@@ -19,22 +20,24 @@ const Layout = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   return (
     <Box sx={{ display: "flex" }}>
-      <Navbar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
-      <Sidebar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
-      <Box
-        component="main"
-        sx={{
-          ...contentWrapperStyles,
-        }}
-      >
-        <Box sx={{ position: "relative" }}>
-          <ErrorBoundary>
-            <Suspense fallback={<PageLoading />}>
-              <Outlet />
-            </Suspense>
-          </ErrorBoundary>
+      <ModalProvider>
+        <Navbar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+        <Sidebar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+        <Box
+          component="main"
+          sx={{
+            ...contentWrapperStyles,
+          }}
+        >
+          <Box sx={{ position: "relative" }}>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoading />}>
+                <Outlet />
+              </Suspense>
+            </ErrorBoundary>
+          </Box>
         </Box>
-      </Box>
+      </ModalProvider>
     </Box>
   );
 };

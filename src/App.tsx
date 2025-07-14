@@ -1,4 +1,3 @@
-import { Login } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import {
   createBrowserRouter,
@@ -9,13 +8,14 @@ import {
 import FallbackUI from "./components/errorBoundary/fallback-ui.component";
 import AppUiWrapper from "./core/components/layout/app-ui-wrapper/app-ui-wrapper.component";
 import Layout from "./core/components/layout/layout/layout.component";
-import EmployeeAccountForm from "./features/accounts-management/pages/employee-account-form.page";
+import EmployeeAccountForm from "./features/accounts-forms/pages/employee-account-form.page";
 import RequireAuth from "./features/auth/components/require-auth/require-auth.component";
-import CitiesManagement from "./features/banks/pages/cities-management.page";
-import WorkAreaManagement from "./features/banks/pages/work-areas-management.page";
+import CitiesManagement from "./features/banks/pages/cities/cities-management.page";
+import WorkAreaManagement from "./features/banks/pages/work-areas/work-areas-management.page";
 import EmployeeManagement from "./features/employees-management/pages/employees-management.page";
 import ErrorPage from "./pages/error.page";
 import Unauthorized from "./pages/unauthorized.page";
+import Login from "./features/auth/pages/login.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -31,14 +31,17 @@ function App() {
               element={<EmployeeManagement />}
             />
             <Route
-              path="/employee-management/manage"
+              path="/employee-management/manage/:type"
               element={<EmployeeAccountForm />}
             />
             <Route
               path="/beneficiary-management"
               element={<EmployeeManagement />}
             />
-            <Route path="/area-management" element={<WorkAreaManagement />} />
+            <Route
+              path="/work-area-management"
+              element={<WorkAreaManagement />}
+            />
             <Route path="/cities-management" element={<CitiesManagement />} />
           </Route>
         </Route>

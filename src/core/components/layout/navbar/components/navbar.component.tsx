@@ -1,5 +1,5 @@
 import { AppBar, Box, Toolbar, useTheme } from "@mui/material";
-import type { Dispatch } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { MdMenuOpen } from "react-icons/md";
 import UserSection from "./user-selection.component";
 import CustomIconButton from "@/core/components/common/custom-icon-button/custom-icon-button.component";
@@ -8,7 +8,7 @@ function Navbar({
   setOpenSidebar,
   openSidebar,
 }: {
-  setOpenSidebar: Dispatch<React.SetStateAction<boolean>>;
+  setOpenSidebar: Dispatch<SetStateAction<boolean>>;
   openSidebar: boolean;
 }) {
   const theme = useTheme();

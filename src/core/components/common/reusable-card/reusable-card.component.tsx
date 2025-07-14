@@ -1,21 +1,21 @@
-import React, { memo } from "react";
+import { memo, type ReactNode } from "react";
 import { Card, CardHeader, CardContent, CardActions } from "@mui/material";
 
-interface ReusableCardProps {
+interface IReusableCardProps {
   headerBackground?: string;
-  headerContent: React.ReactNode;
-  bodyContent: React.ReactNode;
-  footerContent: React.ReactNode;
+  headerContent: ReactNode;
+  bodyContent: ReactNode;
+  footerContent: ReactNode;
   cardSx?: object;
 }
 
-const ReusableCard: React.FC<ReusableCardProps> = ({
+const ReusableCard = ({
   headerBackground,
   headerContent,
   bodyContent,
   footerContent,
   cardSx,
-}) => {
+}: IReusableCardProps) => {
   return (
     <Card
       sx={{
@@ -42,7 +42,7 @@ const ReusableCard: React.FC<ReusableCardProps> = ({
           },
         }}
       />
-      <CardContent sx={{ pb: 0 }}>{bodyContent}</CardContent>
+      {bodyContent && <CardContent sx={{ pb: 0 }}>{bodyContent}</CardContent>}
       {footerContent && (
         <CardActions
           sx={{

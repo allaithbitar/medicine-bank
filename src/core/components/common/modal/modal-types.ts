@@ -1,41 +1,29 @@
-import { createPubsub } from "@/utils/pubsub";
-import type { ComponentType } from "react";
+import type { ComponentProps } from "react";
+import type ConfirmModal from "../modals/confirm/confirm.modal";
+import type CityFormModal from "@/core/components/common/modals/manage-city/manage-city.modal";
+import type WorkAreaFormModal from "../modals/manage-areas/manage-areas.modal";
 
-export type ModalSeverity = "info" | "warning" | "error" | "success";
-
-export type ModalPropsMap = {
-  confirmation: {
-    title?: string;
-    message: string;
-    description?: string | React.ReactNode;
-    severity?: ModalSeverity;
-    confirmText?: string;
-    cancelText?: string;
-    onConfirm: () => Promise<void> | void;
-    onCancel?: () => void;
-  };
+export type TModalExtraProps = {
+  // it will always be sent but just to stop the ts compiler from parking
+  modalId?: number;
 };
 
-export const MODAL_PUBSUB_EVENT_NAMES = {
-  OPEN: "MODAL_OPEN",
-  CLOSE: "MODAL_CLOSE",
+export const MODAL_NAMES = {
+  CONFIRM_MODAL: "CONFIRM_MODAL",
+  CITY_FORM_MODAL: "CITY_FORM_MODAL",
+  WORK_AREA_FORM_MODAL: "WORK_AREA_FORM_MODAL",
 } as const;
 
-export type ModalPubsubEvent =
-  | (typeof MODAL_PUBSUB_EVENT_NAMES)["OPEN"]
-  | (typeof MODAL_PUBSUB_EVENT_NAMES)["CLOSE"];
-
-export type ModalPubsubEvents = {
-  [MODAL_PUBSUB_EVENT_NAMES.OPEN]: {
-    type: keyof ModalPropsMap;
-    props: ModalPropsMap[keyof ModalPropsMap];
-  };
-  [MODAL_PUBSUB_EVENT_NAMES.CLOSE]: boolean;
-};
-
-export type ModalsMap = {
-  [K in keyof ModalPropsMap]: ComponentType<
-    ModalPropsMap[K] & { _close: () => void }
-  >;
-};
-export const modalPubsub = createPubsub<ModalPubsubEvents>();
+export type TOpenModalPayload =
+  | {
+      name: typeof MODAL_NAMES.CONFIRM_MODAL;
+      props: ComponentProps<typeof ConfirmModal>;
+    }
+  | {
+      name: typeof MODAL_NAMES.CITY_FORM_MODAL;
+      props: ComponentProps<typeof CityFormModal>;
+    }
+  | {
+      name: typeof MODAL_NAMES.WORK_AREA_FORM_MODAL;
+      props: ComponentProps<typeof WorkAreaFormModal>;
+    };

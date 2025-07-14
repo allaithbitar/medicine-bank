@@ -1,62 +1,36 @@
 import SearchFilter from "@/core/components/common/search-filter/search-filter.component";
-import { AppBar, Box, Fab, Stack, Toolbar, Typography } from "@mui/material";
-import { useCallback } from "react";
+import { Fab, Stack } from "@mui/material";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EmployeesList from "../components/employee-lists/employee-lists.component";
 import AddIcon from "@mui/icons-material/Add";
+import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar.component";
 
 const EmployeeManagement = () => {
   const navigate = useNavigate();
-
+  const [query, setQuery] = useState<string | null>("");
   const handleAddEmployee = useCallback(() => {
-    navigate(`/employee-management/manage`);
+    navigate(`/employee-management/manage/add`);
   }, [navigate]);
 
-  const handleSearch = useCallback((query: string) => {
-    console.log("🚀 ~ handleSearch ~ query:", query);
+  const handleSearch = useCallback((query: string | null) => {
+    setQuery(query);
   }, []);
 
   return (
-    <Stack sx={{ maxWidth: "md", mx: "auto", mt: 2 }}>
-      <AppBar
-        position="static"
-        color="inherit"
-        sx={{ borderRadius: 1, py: 1, mb: 2 }}
-        elevation={0}
-      >
-        <Toolbar
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          <Stack
-            sx={{
-              flexGrow: 1,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Box>
-              <Typography variant="h5" component="h3">
-                Account Management
-              </Typography>
-              <Typography variant="subtitle2" color="textSecondary">
-                Manage employee accounts
-              </Typography>
-            </Box>
-          </Stack>
+    <Stack sx={{ maxWidth: "md", mx: "auto", mt: 2 }} spacing={2}>
+      <CustomAppBar
+        title="Account Management"
+        subtitle="Manage employee accounts"
+        children={
           <SearchFilter
+            initialQuery={query}
             onSearch={handleSearch}
             placeholder="Search employees..."
           />
-        </Toolbar>
-      </AppBar>
+        }
+      />
+
       <EmployeesList />
       <Fab
         color="primary"

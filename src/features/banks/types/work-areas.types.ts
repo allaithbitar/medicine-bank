@@ -4,10 +4,21 @@ import type { AutocompleteProps } from "@mui/material";
 export interface IWorkArea {
   id: string;
   name: string;
-  city: string;
+  cityId: string;
   employeeCount: number;
   createdDate: string;
 }
+
+export type TAddWorkAreaPayload = {
+  name: string;
+  cityId: string;
+};
+
+export type TUpdateWorkAreaPayload = {
+  id: string;
+  name: string;
+  cityId: string;
+};
 
 export interface IOcrMappingAutoCompleteProps {
   value: IOptions | null;

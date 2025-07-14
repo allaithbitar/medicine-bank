@@ -5,20 +5,23 @@ import SearchIcon from "@mui/icons-material/Search";
 import useDebounce from "@/core/hooks/use-debounce.hook";
 
 interface SearchFilterProps {
-  onSearch: (query: string) => void;
+  onSearch: (query: string | null) => void;
   placeholder?: string;
-  initialQuery?: string;
+  initialQuery: string | null;
   debounceDelay?: number;
 }
 
 const SearchFilter = ({
   onSearch,
   placeholder = "Search...",
-  initialQuery = "",
+  initialQuery = null,
   debounceDelay = 300,
 }: SearchFilterProps) => {
-  const [searchTerm, setSearchTerm] = useState<string>(initialQuery);
-  const debouncedSearchTerm = useDebounce<string>(searchTerm, debounceDelay);
+  const [searchTerm, setSearchTerm] = useState<string | null>(initialQuery);
+  const debouncedSearchTerm = useDebounce<string | null>(
+    searchTerm,
+    debounceDelay
+  );
 
   useEffect(() => {
     onSearch(debouncedSearchTerm);

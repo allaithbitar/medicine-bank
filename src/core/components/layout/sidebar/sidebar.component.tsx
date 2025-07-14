@@ -1,5 +1,5 @@
 import { Box, Drawer, IconButton, styled, SvgIcon } from "@mui/material";
-import type { Dispatch } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import SideBarItems from "./components/sidebar-items.component";
 
 const drawerWidth = 300;
@@ -17,7 +17,7 @@ function Sidebar({
   setOpenSidebar,
 }: {
   openSidebar: boolean;
-  setOpenSidebar: Dispatch<React.SetStateAction<boolean>>;
+  setOpenSidebar: Dispatch<SetStateAction<boolean>>;
 }) {
   return (
     <Drawer

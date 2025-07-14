@@ -90,14 +90,14 @@ const Login = ({ onLoginSuccess }: ILoginProps) => {
   return (
     <Stack
       sx={{
+        flexGrow: 1,
+        minHeight: "100vh",
+        background: (theme) => theme.palette.grey[50],
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: (theme) => theme.palette.grey[100],
-        padding: { xs: 2, sm: 3, md: 4 },
       }}
     >
-      <Container maxWidth="sm">
+      <Container sx={{ px: 2, mx: "auto" }} maxWidth="xs">
         <Stack gap={1}>
           <Typography variant="h4" component="h1" gutterBottom align="center">
             Welcome Back!
@@ -108,12 +108,7 @@ const Login = ({ onLoginSuccess }: ILoginProps) => {
             style={{ width: 100, margin: "0 auto", borderRadius: "8px" }}
           />
 
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            align="center"
-            sx={{ mb: 3 }}
-          >
+          <Typography variant="body2" color="textSecondary" align="center">
             Please log in to continue.
           </Typography>
         </Stack>
@@ -174,7 +169,6 @@ const Login = ({ onLoginSuccess }: ILoginProps) => {
             variant="contained"
             fullWidth
             size="large"
-            sx={{ mt: 3, py: 1.5 }}
             disabled={loading || !credentials.password || !credentials.username}
           >
             {loading ? "Logging In..." : "Log In"}

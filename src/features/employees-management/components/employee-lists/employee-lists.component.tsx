@@ -2,73 +2,75 @@ import { useState, useCallback } from "react";
 import { Box, Grid } from "@mui/material";
 import { Person as UserIcon } from "@mui/icons-material";
 
-import type { TEmployeeAccount } from "@/features/accounts-management/types/employee.types";
-import { openModal } from "@/utils/helpers";
+import type { TEmployeeAccount } from "@/features/accounts-forms/types/employee.types";
 import EmployeeCardComponent from "../employee-card/employee-card.component";
 import Nodata from "@/core/components/common/no-data/no-data.component";
+import { useModal } from "@/core/components/common/modal/modal-provider.component";
+import { useNavigate } from "react-router-dom";
 
 const employees: (TEmployeeAccount & { id: string })[] = [
   {
     id: "1",
-    employeeName: "Sarah Johnson",
+    name: "Sarah Johnson",
     password: "SecurePass123!",
     confirmPassword: "SecurePass123!",
     phone: "+1 (555) 123-4567",
-    position: "Senior Software Engineer",
-    workArea: "Development Team",
+    role: "manager",
+    workArea: "street1",
   },
   {
     id: "2",
-    employeeName: "Michael Chen",
+    name: "Michael Chen",
     password: "MyPassword456@",
     confirmPassword: "MyPassword456@",
     phone: "+1 (555) 234-5678",
-    position: "Product Manager",
-    workArea: "Product Strategy",
+    role: "manager",
+    workArea: "street2",
   },
   {
     id: "3",
-    employeeName: "Emily Rodriguez",
+    name: "Emily Rodriguez",
     password: "StrongPass789#",
     confirmPassword: "StrongPass789#",
     phone: "+1 (555) 345-6789",
-    position: "UX Designer",
-    workArea: "Design Team",
+    role: "manager",
+    workArea: "street2",
   },
   {
     id: "4",
-    employeeName: "David Thompson",
+    name: "David Thompson",
     password: "AdminPass321$",
     confirmPassword: "AdminPass321$",
     phone: "+1 (555) 456-7890",
-    position: "DevOps Engineer",
-    workArea: "Infrastructure",
+    role: "scout",
+    workArea: "street2",
   },
   {
     id: "5",
-    employeeName: "Lisa Wang",
+    name: "Lisa Wang",
     password: "UserPass654%",
     confirmPassword: "UserPass654%",
     phone: "+1 (555) 567-8901",
-    position: "Data Analyst",
-    workArea: "Analytics Team",
+    role: "supervisor",
+    workArea: "street3",
   },
   {
     id: "6",
-    employeeName: "James Wilson",
+    name: "James Wilson",
     password: "TechPass987^",
     confirmPassword: "TechPass987^",
     phone: "+1 (555) 678-9012",
-    position: "Marketing Specialist",
-    workArea: "Marketing Department",
+    role: "supervisor",
+    workArea: "street3",
   },
 ];
 
 const EmployeesList = () => {
+  const { openModal } = useModal();
+  const navigate = useNavigate();
   const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(
     new Set()
   );
-
   const togglePasswordVisibility = useCallback((employeeId: string) => {
     setVisiblePasswords((prev) => {
       const newSet = new Set(prev);
@@ -85,19 +87,30 @@ const EmployeesList = () => {
     return "•".repeat(password.length);
   }, []);
 
-  const handleEditEmployee = useCallback((id: string) => {
-    console.log("🚀 ~ handleEditEmployee ~ id:", id);
-    // navigate(`/employees/edit/${employee.id}`);
-  }, []);
+  const handleEditEmployee = useCallback(
+    (employeeData: TEmployeeAccount) => {
+      navigate(`/employee-management/manage/edit`, {
+        state: { employee: employeeData },
+      });
+    },
+    [navigate]
+  );
 
-  const handleDeleteEmployeeClick = useCallback((id: string) => {
-    openModal("confirmation", {
-      message: "Are you sure you want to delete this item?",
-      onConfirm: () => {
-        console.log("🚀 ~ handleDeleteEmployeeClick ~ id:", id);
-      },
-    });
-  }, []);
+  const handleDeleteEmployeeClick = useCallback(
+    (id: string) => {
+      openModal({
+        name: "CONFIRM_MODAL",
+        props: {
+          message: "Are you sure you want to delete this item?",
+          onConfirm: () => {
+            console.log("🚀 ~ handleDeleteEmployeeClick ~ id:", id);
+          },
+        },
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   return (
     <Box
@@ -113,7 +126,7 @@ const EmployeesList = () => {
               isVisible={visiblePasswords.has(employee.id)}
               onToggleVisibility={togglePasswordVisibility}
               maskPassword={maskPassword}
-              onEdit={() => handleEditEmployee(employee.id)}
+              onEdit={() => handleEditEmployee(employee)}
               onDelete={() => handleDeleteEmployeeClick(employee.id)}
             />
           </Grid>

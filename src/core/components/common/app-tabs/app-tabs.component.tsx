@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, type ReactElement, type ReactNode } from "react";
 import {
   Tabs,
   Tab,
@@ -12,8 +12,8 @@ import { styled } from "@mui/material/styles";
 
 interface AppTabItem {
   value: string;
-  label: React.ReactNode;
-  icon?: React.ReactElement;
+  label: ReactNode;
+  icon?: ReactElement;
   tabProps?: Omit<TabProps, "value" | "label">;
 }
 

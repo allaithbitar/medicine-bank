@@ -2,7 +2,7 @@ import {
   useVirtualizer,
   type VirtualizerOptions,
 } from "@tanstack/react-virtual";
-import { useRef, type ReactNode } from "react";
+import { useRef, type HtmlHTMLAttributes, type ReactNode } from "react";
 
 function VirtualizedList<T>({
   containerStyle,
@@ -10,7 +10,7 @@ function VirtualizedList<T>({
   virtualizationOptions,
   items,
 }: {
-  containerStyle?: React.HtmlHTMLAttributes<HTMLDivElement>["style"];
+  containerStyle?: HtmlHTMLAttributes<HTMLDivElement>["style"];
   virtualizationOptions: Partial<VirtualizerOptions<Element, Element>>;
   children: (props: { index: number; item: T; size: number }) => ReactNode;
   items: T[];
