@@ -5,7 +5,7 @@ import type {
   TPaginatedResponse,
 } from "@/core/types/common.types";
 import type {
-  IWorkArea,
+  TArea,
   TAddWorkAreaPayload,
   TUpdateWorkAreaPayload,
 } from "../../types/work-areas.types";
@@ -13,7 +13,7 @@ import type {
 export const workAreasApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
     getWorkAreas: builder.query<
-      TPaginatedResponse<IWorkArea>,
+      TPaginatedResponse<TArea>,
       {
         cityId: string;
         name?: string | null;
@@ -26,7 +26,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         method: "GET",
         params: { cityId, ...params },
       }),
-      transformResponse: (res: ApiResponse<TPaginatedResponse<IWorkArea>>) =>
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TArea>>) =>
         res.data,
       providesTags: [{ type: "Work-areas" }],
     }),

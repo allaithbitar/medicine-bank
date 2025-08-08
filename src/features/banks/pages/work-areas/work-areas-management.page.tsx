@@ -6,7 +6,7 @@ import WorkAreasAppBar from "../../components/work-areas/work-area-hidder/work-a
 import workAreasApi from "../../api/work-areas/work-areas.api";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
-import type { IWorkArea } from "../../types/work-areas.types";
+import type { TArea } from "../../types/work-areas.types";
 
 const WorkAreaManagement = () => {
   const { openModal } = useModal();
@@ -28,7 +28,7 @@ const WorkAreaManagement = () => {
     setQuery(query);
   }, []);
 
-  const handleWorkAreaAction = (oldWorkArea?: IWorkArea) => {
+  const handleWorkAreaAction = (oldWorkArea?: TArea) => {
     openModal({
       name: "WORK_AREA_FORM_MODAL",
       props: {

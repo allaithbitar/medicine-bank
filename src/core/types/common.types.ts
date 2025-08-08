@@ -26,3 +26,8 @@ export interface IOptions {
   id: string;
   name: string;
 }
+
+export type TPaginationDto = {
+  pageSize?: number;
+  pageNumber?: number;
+};

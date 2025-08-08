@@ -10,11 +10,11 @@ import LocationCityIcon from "@mui/icons-material/LocationCity";
 import CustomIconButton from "@/core/components/common/custom-icon-button/custom-icon-button.component";
 import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
-import type { IWorkArea } from "@/features/banks/types/work-areas.types";
+import type { TArea } from "@/features/banks/types/work-areas.types";
 import { useCityName } from "@/features/banks/hooks/work-areas/use-city-name-from-id.hook";
 
 interface IWorkAreaCardProps {
-  workArea: IWorkArea;
+  workArea: TArea;
   onEdit: () => void;
   onDelete: () => void;
 }

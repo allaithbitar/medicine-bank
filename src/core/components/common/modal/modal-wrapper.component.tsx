@@ -1,16 +1,21 @@
 import { type ReactNode } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  Box,
-} from "@mui/material";
+import { DialogActions, Modal, Card, Stack, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useModal } from "./modal-provider.component";
 import type { TModalExtraProps } from "./modal-types";
 import LoadingOverlay from "../loading-overlay/loading-overlay";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "100vw",
+  height: "100dvh",
+  border: "none",
+  borderRadius: 0,
+};
 const ModalWrapper = ({
   children,
   title,
@@ -37,62 +42,15 @@ const ModalWrapper = ({
   };
 
   return (
-    <Dialog
+    <Modal
       dir="rtl"
       open
-      maxWidth="md"
-      onClose={handleClose}
-      aria-labelledby={`modal-title-${modalId}`}
-      slotProps={{
-        paper: {
-          sx: {
-            display: "flex",
-            flexDirection: "column",
-            gap: 0,
-            overflow: "hidden",
-            borderRadius: 1,
-            padding: 0,
-            width: { xs: "100%", sm: "100%", xxl: "40dvh" },
-          },
-        },
-      }}
+      // maxWidth="md"
+      // onClose={(_, reason) => {}}
     >
-      <DialogTitle
-        id={`modal-title-${modalId}`}
+      <Card
         sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          backgroundColor: "primary.main",
-          color: "primary.contrastText",
-          p: 2,
-        }}
-      >
-        <Box sx={{ py: 0 }}>{title}</Box>
-        {!disableClosing && (
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{
-              color: "primary.contrastText",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        )}
-      </DialogTitle>
-      <DialogContent
-        dividers
-        sx={{
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          overflowY: "auto",
-          padding: 2,
-          width: "auto",
-          maxHeight: "90dvh",
+          ...style,
           ...(isLoading && {
             pointerEvents: "none",
             userSelect: "none",
@@ -100,27 +58,52 @@ const ModalWrapper = ({
           }),
         }}
       >
-        {children}
-        {isLoading && (
-          <LoadingOverlay sx={{ position: "fixed", top: "52px" }} />
-        )}
-      </DialogContent>
-      {actionButtons && (
-        <DialogActions
-          sx={{
-            position: "sticky",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            p: 1.5,
-            justifyContent: "flex-end",
-            backgroundColor: "background.paper",
-          }}
-        >
-          {actionButtons}
-        </DialogActions>
-      )}
-    </Dialog>
+        <Stack sx={{ height: "100%", position: "relative" }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{
+              bgcolor: (theme) => theme.palette.primary.dark,
+              color: (theme) => theme.palette.primary.contrastText,
+              p: 1.5,
+            }}
+          >
+            <Typography>{title}</Typography>
+            {!disableClosing && (
+              <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={{
+                  color: "primary.contrastText",
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            )}
+          </Stack>
+
+          <Stack sx={{ flex: 1, overflow: "auto", p: 1 }}>{children}</Stack>
+
+          {actionButtons && (
+            <DialogActions
+              sx={{
+                position: "sticky",
+                bottom: 0,
+                left: 0,
+                width: "100%",
+                p: 1,
+                justifyContent: "flex-end",
+                backgroundColor: "background.paper",
+              }}
+            >
+              {actionButtons}
+            </DialogActions>
+          )}
+          {isLoading && <LoadingOverlay />}
+        </Stack>
+      </Card>
+    </Modal>
   );
 };
 

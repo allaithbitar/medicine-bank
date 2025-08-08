@@ -8,9 +8,9 @@ import {
 } from "@mui/material";
 import type { Dispatch, SetStateAction } from "react";
 import SideBarItems from "./components/sidebar-items.component";
-import { useDispatch } from "react-redux";
 import { authActions } from "@/core/slices/auth/auth.slice";
 import STRINGS from "@/core/constants/strings.constant";
+import { useAppDispatch } from "@/core/store/root.store.types";
 
 const drawerWidth = 300;
 
@@ -29,7 +29,7 @@ function Sidebar({
   openSidebar: boolean;
   setOpenSidebar: Dispatch<SetStateAction<boolean>>;
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   return (
     <Drawer
       onClose={() => setOpenSidebar(false)}

@@ -4,12 +4,12 @@ import { Business as BuildingOfficeIcon } from "@mui/icons-material";
 import WorkAreaCardComponent from "../work-area-card/work-area-card.component";
 import Nodata from "@/core/components/common/no-data/no-data.component";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
-import type { IWorkArea } from "@/features/banks/types/work-areas.types";
+import type { TArea } from "@/features/banks/types/work-areas.types";
 
 interface IWorkAreasLists {
-  workAreas: IWorkArea[];
+  workAreas: TArea[];
   isLoadingWorkAreas: boolean;
-  handleEditWorkArea: (workArea: IWorkArea) => void;
+  handleEditWorkArea: (workArea: TArea) => void;
 }
 
 const WorkAreasLists = ({
@@ -47,7 +47,7 @@ const WorkAreasLists = ({
       </Grid>
       {!isLoadingWorkAreas && workAreas.length === 0 && (
         <Nodata
-          icon={<BuildingOfficeIcon />}
+          icon={BuildingOfficeIcon}
           title="No work areas found"
           subTitle="Add some work areas to see them."
         />

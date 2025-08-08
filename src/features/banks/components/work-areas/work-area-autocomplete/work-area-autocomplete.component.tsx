@@ -1,72 +1,39 @@
-import { Autocomplete, TextField } from "@mui/material";
-import { useEffect, useRef } from "react";
-import type { IOptions } from "@/core/types/common.types";
-import type { IOcrMappingAutoCompleteProps } from "@/features/banks/types/work-areas.types";
+import { type ComponentProps } from "react";
+import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
+import { getErrorMessage } from "@/core/helpers/helpers";
+import workAreasApi from "@/features/banks/api/work-areas/work-areas.api";
+import type { TArea } from "@/features/banks/types/work-areas.types";
+import STRINGS from "@/core/constants/strings.constant";
 
-const WorkAreaAutoComplete = ({
-  value,
-  onChange,
-  autoCompleteProps,
-  defaultValueId,
-  helperText,
-  textFieldError,
-}: IOcrMappingAutoCompleteProps) => {
-  const didSetDefaultValue = useRef(false);
+type TAreasAutocompleteProps = Partial<
+  ComponentProps<typeof FormAutocompleteInput<TArea, false>>
+> & {
+  cityId?: string;
+};
 
-  const workAreaOptions: IOptions[] = [
-    {
-      id: "1",
-      name: "street1",
-    },
-    {
-      id: "2",
-      name: "street2",
-    },
-    {
-      id: "3",
-      name: "street3",
-    },
-  ];
-
-  useEffect(() => {
-    if (
-      workAreaOptions.length > 0 &&
-      !didSetDefaultValue.current &&
-      defaultValueId
-    ) {
-      const defVal = workAreaOptions.find((c) => c.id === defaultValueId);
-      if (defVal) {
-        onChange(defVal);
-        didSetDefaultValue.current = true;
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [workAreaOptions, defaultValueId]);
+const AreasAutocomplete = ({ cityId, ...props }: TAreasAutocompleteProps) => {
+  const {
+    data: { items: areas = [] } = { items: [] },
+    isFetching,
+    isLoading,
+    error,
+  } = workAreasApi.useGetWorkAreasQuery(
+    { cityId: cityId as any },
+    { skip: !cityId },
+  );
 
   return (
-    <Autocomplete
-      //   loading={isFetching}
-      //   value={!isFetching ? value : null}
-      //   disabled={isFetching || autoCompleteProps?.disabled}
-      value={value}
-      onChange={(_, v) => onChange(v)}
+    <FormAutocompleteInput
+      label={STRINGS.area}
+      loading={isFetching || isLoading}
       getOptionLabel={(option) => option.name}
       isOptionEqualToValue={(option, val) => option.id === val.id}
-      options={workAreaOptions}
-      {...autoCompleteProps}
-      disabled={autoCompleteProps?.disabled}
-      fullWidth
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          helperText={helperText}
-          error={textFieldError}
-          label="Work Area"
-        />
-        // <TextField {...params} label={`${isFetching ? t("Loading") }`} />
-      )}
+      options={areas}
+      errorText={error ? getErrorMessage(error) : props.errorText || ""}
+      disabled={props.disabled || !cityId}
+      {...props}
     />
   );
 };
 
-export default WorkAreaAutoComplete;
+export default AreasAutocomplete;

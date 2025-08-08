@@ -7,16 +7,15 @@ import {
 import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import { z } from "zod";
-import type { IWorkArea } from "@/features/banks/types/work-areas.types";
+import type { TArea } from "@/features/banks/types/work-areas.types";
 import workAreasApi from "@/features/banks/api/work-areas/work-areas.api";
 import {
   UpdateWorkAreaSchema,
   WorkAreaSchema,
 } from "@/features/banks/schemas/work-area.schema";
-import CitySelect from "@/features/banks/components/work-areas/city-select/city-select.component";
 
 interface IWorkAreaFormModalProps {
-  oldWorkArea?: IWorkArea;
+  oldWorkArea?: TArea;
   defaultSelectedCity?: string;
 }
 
@@ -51,12 +50,12 @@ const WorkAreaFormModal = ({
     );
   };
 
-  const handleCitySelectChange = (cityId: string) => {
-    setSelectedCityId(cityId);
-    setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== "cityId"),
-    );
-  };
+  // const handleCitySelectChange = (cityId: string) => {
+  //   setSelectedCityId(cityId);
+  //   setErrors((prevErrors) =>
+  //     prevErrors.filter((error) => error.path[0] !== "cityId"),
+  //   );
+  // };
 
   const getErrorForField = (fieldName: string) => {
     const error = errors.find((err) => err.path[0] === fieldName);
@@ -123,14 +122,14 @@ const WorkAreaFormModal = ({
       }
     >
       <Stack gap={3}>
-        <CitySelect
+        {/*  <CitiesAutocomplete
           value={selectedCityId}
           onChange={handleCitySelectChange}
           label="Select Parent City"
           error={!!getErrorForField("cityId")}
           helperText={getErrorForField("cityId")}
           disabled={isLoading}
-        />
+        /> */}
         <TextField
           fullWidth
           label="Work Area Name"

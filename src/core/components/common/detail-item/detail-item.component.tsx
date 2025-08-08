@@ -1,47 +1,42 @@
 import { memo, type ReactNode } from "react";
 import { Avatar, Box, Typography } from "@mui/material";
-import {
-  deepPurple,
-  green,
-  red,
-  orange,
-  blue,
-  grey,
-} from "@mui/material/colors";
+import { deepPurple, green, red, blue, grey } from "@mui/material/colors";
+
+const iconColorPresets = {
+  blue: { bgcolor: blue[50], color: blue[600] },
+  green: { bgcolor: green[50], color: green[600] },
+  deepPurple: { bgcolor: deepPurple[50], color: deepPurple[600] },
+  red: { bgcolor: red[50], color: red[600] },
+};
 
 interface IDetailItemProps {
   icon: ReactNode;
   label: string;
-  value: string;
+  iconColorPreset?: keyof typeof iconColorPresets;
+  value: ReactNode;
   actions?: ReactNode;
 }
 
-const DetailItem = ({ icon, label, value, actions }: IDetailItemProps) => {
-  const getColors = (itemLabel: string) => {
-    switch (itemLabel) {
-      case "Position":
-        return { bgcolor: blue[50], color: blue[600] };
-      case "Work Area":
-        return { bgcolor: green[50], color: green[600] };
-      case "Phone":
-        return { bgcolor: deepPurple[50], color: deepPurple[600] };
-      case "Password":
-        return { bgcolor: red[50], color: red[600] };
-      case "Confirm Password":
-        return { bgcolor: orange[50], color: orange[600] };
-      default:
-        return { bgcolor: grey[50], color: grey[600] };
-    }
-  };
-
-  const { bgcolor, color } = getColors(label);
-
+const DetailItem = ({
+  icon,
+  label,
+  value,
+  actions,
+  iconColorPreset,
+}: IDetailItemProps) => {
   return (
-    <Box display="flex" alignItems="flex-start" sx={{ mb: 2 }}>
+    <Box display="flex" alignItems="flex-start">
       <Avatar
         sx={{
-          bgcolor: bgcolor,
-          color: color,
+          bgcolor:
+            iconColorPreset && iconColorPresets[iconColorPreset]
+              ? iconColorPresets[iconColorPreset].bgcolor
+              : grey[100],
+          color:
+            iconColorPreset && iconColorPresets[iconColorPreset]
+              ? iconColorPresets[iconColorPreset].color
+              : grey[700],
+
           width: 36,
           height: 36,
           p: 0.5,
@@ -54,20 +49,20 @@ const DetailItem = ({ icon, label, value, actions }: IDetailItemProps) => {
       </Avatar>
       <Box flexGrow={1}>
         <Typography
-          variant="caption"
+          variant="subtitle1"
           color="primary"
-          sx={{ textTransform: "uppercase", fontWeight: "medium" }}
+          sx={{ textTransform: "uppercase" }}
         >
           {label}
         </Typography>
-        <Box display="flex" alignItems="center" flexWrap="wrap">
-          <Typography
-            variant="body1"
-            color="text.primary"
-            sx={{ fontWeight: "medium", flexGrow: 1 }}
-          >
-            {value}
-          </Typography>
+        <Box display="flex" alignItems="center">
+          {typeof value === "string" ? (
+            <Typography variant="subtitle2" color="text.primary">
+              {value}
+            </Typography>
+          ) : (
+            value
+          )}
           {actions}
         </Box>
       </Box>

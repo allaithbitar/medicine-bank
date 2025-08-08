@@ -1,5 +1,5 @@
 import { memo, type ReactNode } from "react";
-import { Card, CardHeader, CardContent, CardActions } from "@mui/material";
+import { Card, Stack, Divider } from "@mui/material";
 
 interface IReusableCardProps {
   headerBackground?: string;
@@ -19,44 +19,36 @@ const ReusableCard = ({
   return (
     <Card
       sx={{
-        minWidth: 400,
-        mx: "auto",
+        width: "100%",
         transition: "all 0.3s ease-in-out",
-        overflow: "hidden",
-        boxShadow: 3,
-        "&:hover": { boxShadow: 6 },
+        // boxShadow: 3,
         ...cardSx,
       }}
     >
-      <CardHeader
-        title={headerContent}
+      <Stack
         sx={{
+          height: 70,
+          width: "100%",
+          justifyContent: "center",
+          px: 2,
           background: (theme) =>
             headerBackground ||
             `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
-          "& .MuiCardHeader-title": {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-          },
         }}
-      />
-      {bodyContent && <CardContent sx={{ pb: 0 }}>{bodyContent}</CardContent>}
+      >
+        {headerContent}
+      </Stack>
+      {bodyContent && <Stack sx={{ p: 2 }}>{bodyContent}</Stack>}
+      <Divider />
       {footerContent && (
-        <CardActions
+        <Stack
           sx={{
-            bgcolor: "grey.50",
-            p: 2,
-            borderTop: "1px solid",
+            p: 1.5,
             borderColor: "grey.100",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
           }}
         >
           {footerContent}
-        </CardActions>
+        </Stack>
       )}
     </Card>
   );

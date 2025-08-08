@@ -10,11 +10,13 @@ import { MODAL_NAMES, type TOpenModalPayload } from "./modal-types";
 import ConfirmModal from "../modals/confirm/confirm.modal";
 import CityFormModal from "@/core/components/common/modals/manage-city/manage-city.modal";
 import WorkAreaFormModal from "../modals/manage-areas/manage-areas.modal";
+import EmployeeActionModal from "@/features/employees/components/employee-action.modal";
 
 const MODALS = {
   [MODAL_NAMES.CONFIRM_MODAL]: ConfirmModal,
   [MODAL_NAMES.CITY_FORM_MODAL]: CityFormModal,
   [MODAL_NAMES.WORK_AREA_FORM_MODAL]: WorkAreaFormModal,
+  [MODAL_NAMES.EMPLOYEE_ACTION_MODAL]: EmployeeActionModal,
 } as const;
 
 const ModalContext = createContext<{
@@ -41,7 +43,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
 
   const contextValue = useMemo(
     () => ({ openModal, closeModal }),
-    [closeModal, openModal]
+    [closeModal, openModal],
   );
 
   return (

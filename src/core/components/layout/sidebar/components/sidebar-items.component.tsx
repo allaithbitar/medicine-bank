@@ -8,6 +8,7 @@ import FeaturedPlayListIcon from "@mui/icons-material/FeaturedPlayList";
 import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
 import SidebarExpandableItem from "./sidebar-expandable-list-item.component";
 import { Business as BuildingOfficeIcon } from "@mui/icons-material";
+import STRINGS from "@/core/constants/strings.constant";
 
 type BaseItem = {
   label: string;
@@ -36,17 +37,24 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       permissions: [],
     },
     {
-      label: "EmployeeManagement",
+      label: STRINGS.employees,
       href: "/employee-management",
       icon: <BadgeIcon />,
       permissions: [],
     },
     {
-      label: "BeneficiaryManagement",
-      href: "/beneficiary-management",
+      label: STRINGS.beneficiaries,
+      href: "/beneficiaries",
       icon: <SupervisedUserCircleIcon />,
       permissions: [],
     },
+    {
+      label: STRINGS.disclosures,
+      href: "/disclosures",
+      icon: <SupervisedUserCircleIcon />,
+      permissions: [],
+    },
+
     {
       label: "banks",
       icon: <FeaturedPlayListIcon />,
@@ -91,7 +99,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
               level={1}
               href={i.href}
             />
-          )
+          ),
         )}
     </List>
   );

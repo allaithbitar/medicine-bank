@@ -12,11 +12,16 @@ import EmployeeAccountForm from "./features/accounts-forms/pages/employee-accoun
 import RequireAuth from "./features/auth/components/require-auth/require-auth.component";
 import CitiesManagement from "./features/banks/pages/cities/cities-management.page";
 import WorkAreaManagement from "./features/banks/pages/work-areas/work-areas-management.page";
-import EmployeeManagement from "./features/employees-management/pages/employees-management.page";
-import ErrorPage from "./pages/error.page";
 import Unauthorized from "./pages/unauthorized.page";
 import LoginPage from "./features/auth/pages/login.page";
 import NotFoundPage from "./core/pages/not-found.page";
+import DisclosuresPage from "./features/disclosures/pages/disclosures.page";
+import DisclosureActionPage from "./features/disclosures/pages/disclosure-action.page";
+import BeneficiariesPage from "./features/beneficiaries/pages/beneficiaries.page";
+import BeneficiaryPage from "./features/beneficiaries/pages/beneficiary.page";
+import EmployeesPage from "./features/employees/pages/employees.page";
+import BeneficiaryActionPage from "./features/beneficiaries/pages/beneficiary-action.page";
+import DisclosurePage from "./features/disclosures/pages/disclosure.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -25,20 +30,37 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route element={<RequireAuth />}>
-          <Route path="/" element={<Layout />} errorElement={<ErrorPage />}>
+          <Route path="/" element={<Layout />}>
             <Route index path="/" element={<Box>home</Box>} />
-            <Route
-              path="/employee-management"
-              element={<EmployeeManagement />}
-            />
+
+            <Route path="/employee-management" element={<EmployeesPage />} />
+
             <Route
               path="/employee-management/manage/:type"
               element={<EmployeeAccountForm />}
             />
+
+            <Route path="/disclosures" element={<DisclosuresPage />} />
+
             <Route
-              path="/beneficiary-management"
-              element={<EmployeeManagement />}
+              path="/disclosures/action"
+              element={<DisclosureActionPage />}
             />
+
+            <Route
+              path="/disclosures/:disclosureId"
+              element={<DisclosurePage />}
+            />
+
+            <Route path="/beneficiaries" element={<BeneficiariesPage />} />
+
+            <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
+
+            <Route
+              path="/beneficiaries/:id/action"
+              element={<BeneficiaryActionPage />}
+            />
+
             <Route
               path="/work-area-management"
               element={<WorkAreaManagement />}
