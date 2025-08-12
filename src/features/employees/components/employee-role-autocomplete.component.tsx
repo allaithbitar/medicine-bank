@@ -3,7 +3,7 @@ import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomp
 import STRINGS from "@/core/constants/strings.constant";
 
 import type { TEmployeeRole } from "@/features/accounts-forms/types/employee.types";
-import { EmployeeStatus } from "../types/employee.types";
+import { EmployeeRole } from "../types/employee.types";
 
 type TEmployeeRoleAutocompleteProps<T extends boolean> = Partial<
   ComponentProps<
@@ -17,15 +17,15 @@ function EmployeeRoleAutocomplete<T extends boolean>({
   const options = [
     {
       label: STRINGS.manager,
-      id: EmployeeStatus.manager,
+      id: EmployeeRole.manager,
     },
     {
       label: STRINGS.supervisor,
-      id: EmployeeStatus.supervisor,
+      id: EmployeeRole.supervisor,
     },
     {
       label: STRINGS.scout,
-      id: EmployeeStatus.scout,
+      id: EmployeeRole.scout,
     },
   ];
 

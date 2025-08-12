@@ -8,7 +8,7 @@ import type {
   TUpdatePriorityDegreeDto,
 } from "../types/priority-degree.types";
 
-export const prioriryDegreesApi = rootApi.injectEndpoints({
+export const priorityDegreesApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
     getPriorityDegrees: builder.query<
       TPriorityDegree[],
@@ -42,4 +42,4 @@ export const prioriryDegreesApi = rootApi.injectEndpoints({
   }),
 });
 
-export default prioriryDegreesApi;
+export default priorityDegreesApi;

@@ -1,9 +1,15 @@
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import disclosuresApi from "../api/disclosures.api";
 import { Button, Card, Stack, Tab, Tabs } from "@mui/material";
 import STRINGS from "@/core/constants/strings.constant";
 import DetailItem from "@/core/components/common/detail-item/detail-item.component";
 import {
+  Add,
   DirectionsWalk,
   Edit,
   EmojiPeople,
@@ -15,10 +21,14 @@ import { formatDateTime } from "@/core/helpers/helpers";
 import PageLoading from "@/core/components/common/page-loading/page-loading.component";
 import DisclosureRatings from "../components/disclosure-ratings.component";
 import DisclosureVisists from "../components/disclosure-visits.component";
+import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
   const currentTab = Number(searchParams.get("tab") ?? 0);
+
+  const navigate = useNavigate();
 
   const { disclosureId } = useParams();
   const { data: disclosure, isLoading } = disclosuresApi.useGetDisclosureQuery(
@@ -99,6 +109,22 @@ const DisclosurePage = () => {
       </Card>
       {currentTab === 0 && <DisclosureRatings disclosureId={disclosureId} />}
       {currentTab === 1 && <DisclosureVisists disclosureId={disclosureId} />}
+      <ActionsFab
+        actions={[
+          {
+            icon: <Add />,
+            label: STRINGS.add_visit,
+            onClick: () =>
+              navigate(`/disclosures/${disclosureId}/visit/action`),
+          },
+          {
+            icon: <Add />,
+            label: STRINGS.add_rating,
+            onClick: () =>
+              navigate(`/disclosures/${disclosureId}/rating/action`),
+          },
+        ]}
+      />
     </Stack>
   );
 };

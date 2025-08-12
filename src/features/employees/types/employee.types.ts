@@ -1,12 +1,12 @@
 import type { TArea } from "@/features/banks/types/work-areas.types";
 
-export const EmployeeStatus = {
+export const EmployeeRole = {
   manager: "manager",
   supervisor: "supervisor",
   scout: "scout",
 } as const;
 
-export type TEmployeeRole = keyof typeof EmployeeStatus;
+export type TEmployeeRole = keyof typeof EmployeeRole;
 
 export type TAddEmployeeDto = {
   name: string;

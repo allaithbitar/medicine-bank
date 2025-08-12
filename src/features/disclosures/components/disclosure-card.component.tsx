@@ -12,14 +12,9 @@ import { formatDateTime } from "@/core/helpers/helpers";
 import STRINGS from "@/core/constants/strings.constant";
 import { purple } from "@mui/material/colors";
 import CardAvatar from "@/core/components/common/reusable-card/card-avatar.component";
+import { Link } from "react-router-dom";
 
-const DisclosureCard = ({
-  disclosure,
-  onEnterClick,
-}: {
-  disclosure: TDisclosure;
-  onEnterClick: (id: string) => void;
-}) => {
+const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const headerContent = <CardAvatar name={disclosure.patient.name} />;
 
   const bodyContent = (
@@ -60,21 +55,19 @@ const DisclosureCard = ({
         >
           <Chip
             variant="filled"
-            label={disclosure.prioriy.name}
+            label={disclosure.priority.name}
             sx={{
-              background: `${disclosure.prioriy.color}`,
+              background: `${disclosure.priority.color}`,
               color: (theme) => theme.palette.info.contrastText,
               zIndex: 1,
             }}
           />
 
-          <Button
-            onClick={() => onEnterClick?.(disclosure.id)}
-            variant="outlined"
-            startIcon={<Visibility />}
-          >
-            عرض
-          </Button>
+          <Link to={`/disclosures/${disclosure.id}`}>
+            <Button variant="outlined" startIcon={<Visibility />}>
+              عرض
+            </Button>
+          </Link>
         </Stack>
       }
     />

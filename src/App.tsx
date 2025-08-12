@@ -22,6 +22,10 @@ import BeneficiaryPage from "./features/beneficiaries/pages/beneficiary.page";
 import EmployeesPage from "./features/employees/pages/employees.page";
 import BeneficiaryActionPage from "./features/beneficiaries/pages/beneficiary-action.page";
 import DisclosurePage from "./features/disclosures/pages/disclosure.page";
+import DisclosureRatingActionPage from "./features/disclosures/pages/disclosure-rating-action.page";
+import RatingsPage from "./features/ratings/pages/ratings.page";
+import DisclosureVisitActionPage from "./features/disclosures/pages/disclosure-visit-action.page";
+import SyncPage from "./features/offline/pages/sync.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -52,6 +56,16 @@ function App() {
               element={<DisclosurePage />}
             />
 
+            <Route
+              path="/disclosures/:disclosureId/rating/action"
+              element={<DisclosureRatingActionPage />}
+            />
+
+            <Route
+              path="/disclosures/:disclosureId/visit/action"
+              element={<DisclosureVisitActionPage />}
+            />
+
             <Route path="/beneficiaries" element={<BeneficiariesPage />} />
 
             <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
@@ -66,6 +80,10 @@ function App() {
               element={<WorkAreaManagement />}
             />
             <Route path="/cities-management" element={<CitiesManagement />} />
+
+            <Route path="/ratings" element={<RatingsPage />} />
+
+            <Route path="/sync" element={<SyncPage />} />
           </Route>
         </Route>
 

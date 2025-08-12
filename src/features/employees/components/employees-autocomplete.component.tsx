@@ -2,14 +2,18 @@ import { type ComponentProps } from "react";
 import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
 import { getErrorMessage } from "@/core/helpers/helpers";
 import STRINGS from "@/core/constants/strings.constant";
-import type { TEmployee } from "../types/employee.types";
+import { EmployeeRole, type TEmployee } from "../types/employee.types";
 import employeesApi from "../api/employees.api";
+import type { TEmployeeRole } from "@/features/accounts-forms/types/employee.types";
 
 type TEmployeesAutocomplete<T extends boolean> = Partial<
   ComponentProps<typeof FormAutocompleteInput<TEmployee, T>>
->;
+> & {
+  roles?: TEmployeeRole[];
+};
 
 function EmployeesAutocomplete<T extends boolean>({
+  roles = [EmployeeRole.manager, EmployeeRole.supervisor, EmployeeRole.scout],
   ...props
 }: TEmployeesAutocomplete<T>) {
   const {
@@ -17,7 +21,7 @@ function EmployeesAutocomplete<T extends boolean>({
     isFetching,
     isLoading,
     error,
-  } = employeesApi.useGetEmployeesQuery({});
+  } = employeesApi.useGetEmployeesQuery({ role: roles });
 
   return (
     <FormAutocompleteInput

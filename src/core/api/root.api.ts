@@ -25,7 +25,10 @@ export const rootApi = createApi({
     "Priority_Degrees",
     "Disclosures",
     "Disclosure_Ratings",
+    "Disclosure_Rating",
     "Disclosure_Visits",
+    "Disclosure_Visit",
+    "Ratings",
   ],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   endpoints: (_builder) => ({}),

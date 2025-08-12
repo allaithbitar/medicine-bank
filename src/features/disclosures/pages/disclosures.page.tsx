@@ -1,29 +1,49 @@
-import { Grid, Stack } from "@mui/material";
-import disclosuresApi from "../api/disclosures.api";
-
+import { Button, Card, Grid, Stack } from "@mui/material";
 import { DEFAULT_GRID_SIZES } from "@/core/constants/properties.constant";
-import DisclosureFilters from "../components/disclosure-filters.component";
-import { Link, useNavigate } from "react-router-dom";
+import DisclosureFilters, {
+  type TDisclosureFiltesHandlers,
+} from "../components/disclosure-filters.component";
+import { Link } from "react-router-dom";
 import DisclosureCard from "../components/disclosure-card.component";
 import { Add } from "@mui/icons-material";
 import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { useDisclosuresLoader } from "../hooks/disclosures-loader.hook";
+import { useRef, useState } from "react";
+import type { TGetDisclosuresDto } from "../types/disclosure.types";
+import STRINGS from "@/core/constants/strings.constant";
 
 const DisclosuresPage = () => {
-  const { data, error } = disclosuresApi.useGetDisclosuresQuery({});
+  const filtersRef = useRef<TDisclosureFiltesHandlers | null>(null);
 
-  const { items } = data ?? { items: [] };
+  const [queryData, setQueryData] = useState<TGetDisclosuresDto>({
+    pageSize: 4,
+    pageNumber: 0,
+  });
+  console.log(queryData);
 
-  const navigate = useNavigate();
+  const { items, error } = useDisclosuresLoader(queryData);
+
   return (
     <Stack gap={2}>
-      <DisclosureFilters />
+      <Card>
+        <Stack gap={2}>
+          <DisclosureFilters ref={filtersRef} />
+          <Button
+            onClick={() =>
+              setQueryData((prev) => ({
+                ...prev,
+                ...filtersRef.current!.getValues(),
+              }))
+            }
+          >
+            {STRINGS.search}
+          </Button>
+        </Stack>
+      </Card>
       <Grid container spacing={2}>
         {items.map((d) => (
           <Grid size={DEFAULT_GRID_SIZES} key={d.id}>
-            <DisclosureCard
-              disclosure={d}
-              onEnterClick={() => navigate(`/disclosures/${d.id}`)}
-            />
+            <DisclosureCard disclosure={d} />
           </Grid>
         ))}
         {JSON.stringify(error)}

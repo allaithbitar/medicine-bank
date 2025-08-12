@@ -6,13 +6,13 @@ import type { TPriorityDegree } from "../types/priority-degree.types";
 import prioriryDegreesApi from "../api/priority-degrees.api";
 import { Box, Stack } from "@mui/material";
 
-type TPriorityDegreesAutocompleteProps = Partial<
-  ComponentProps<typeof FormAutocompleteInput<TPriorityDegree, false>>
+type TPriorityDegreesAutocompleteProps<T extends boolean> = Partial<
+  ComponentProps<typeof FormAutocompleteInput<TPriorityDegree, T>>
 >;
 
-const PriorityDegreesAutocomplete = ({
+function PriorityDegreesAutocomplete<T extends boolean>({
   ...props
-}: TPriorityDegreesAutocompleteProps) => {
+}: TPriorityDegreesAutocompleteProps<T>) {
   const {
     data = [],
     isFetching,
@@ -44,6 +44,6 @@ const PriorityDegreesAutocomplete = ({
       {...props}
     />
   );
-};
+}
 
 export default PriorityDegreesAutocomplete;

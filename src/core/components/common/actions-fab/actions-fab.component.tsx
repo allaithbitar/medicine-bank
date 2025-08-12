@@ -28,6 +28,7 @@ const ActionsFab = ({ icon, actions }: TProps) => {
               open: true,
               title: a.label,
             },
+            staticTooltipLabel: { sx: { textWrap: "nowrap" } },
           }}
         />
       ))}

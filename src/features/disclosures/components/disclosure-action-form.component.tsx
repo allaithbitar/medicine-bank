@@ -92,7 +92,7 @@ const DisclosureActionForm = ({
               name: disclosureData.employee.name,
             } as TEmployee)
           : null,
-        priorityDegree: disclosureData.prioriy,
+        priorityDegree: disclosureData.priority,
         status: {
           id: disclosureData.status,
           label: STRINGS[disclosureData.status],

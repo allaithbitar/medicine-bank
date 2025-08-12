@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import disclosuresApi from "../api/disclosures.api";
 import type { TDisclosureVisit } from "../types/disclosure.types";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
@@ -6,9 +6,10 @@ import { deepPurple } from "@mui/material/colors";
 import STRINGS from "@/core/constants/strings.constant";
 import { formatDateTime } from "@/core/helpers/helpers";
 import DetailItem from "@/core/components/common/detail-item/detail-item.component";
-import { Comment, EventAvailable, History } from "@mui/icons-material";
+import { Comment, Edit, EventAvailable, History } from "@mui/icons-material";
 import Nodata from "@/core/components/common/no-data/no-data.component";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import { Link } from "react-router-dom";
 
 const VisitCard = ({ visit }: { visit: TDisclosureVisit }) => {
   return (
@@ -41,7 +42,14 @@ const VisitCard = ({ visit }: { visit: TDisclosureVisit }) => {
           />
         </Stack>
       }
-      footerContent={null}
+      footerContent={
+        <Link
+          style={{ alignSelf: "end" }}
+          to={`/disclosures/${visit.disclosureId}/visit/action?visitId=${visit.id}`}
+        >
+          <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
+        </Link>
+      }
     />
   );
 };

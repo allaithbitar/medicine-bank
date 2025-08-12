@@ -1,3 +1,4 @@
+import type { TSharedFormComponentProps } from "@/core/types/input.type";
 import {
   Checkbox,
   FormControl,
@@ -5,7 +6,6 @@ import {
   FormHelperText,
 } from "@mui/material";
 import type { ComponentProps } from "react";
-import type { TSharedFormComponentProps } from "../../types";
 
 type Props = Omit<ComponentProps<typeof Checkbox>, "value" | "onChange"> &
   TSharedFormComponentProps<boolean>;
@@ -14,10 +14,11 @@ const FormCheckbxInput = ({
   helperText,
   value,
   onChange,
+  disabled,
   ...props
 }: Props) => {
   return (
-    <FormControl>
+    <FormControl disabled={disabled}>
       <FormControlLabel
         sx={{ width: "100%" }}
         control={
