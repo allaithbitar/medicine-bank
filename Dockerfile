@@ -15,8 +15,10 @@ RUN bun run build
 
 FROM nginx:stable-alpine
 
+ARG UI_PORT
+
 # Set environment variables
-ENV APP_PORT 5001
+ENV UI_PORT=$UI_PORT
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -24,7 +26,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=base /app/dist /usr/share/nginx/html
 
 # Expose the application port
-EXPOSE ${APP_PORT}
+EXPOSE ${UI_PORT}
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
