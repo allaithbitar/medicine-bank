@@ -3,7 +3,7 @@ import { DEFAULT_GRID_SIZES } from "@/core/constants/properties.constant";
 import STRINGS from "@/core/constants/strings.constant";
 import disclosuresApi from "@/features/disclosures/api/disclosures.api";
 import DisclosureCard from "@/features/disclosures/components/disclosure-card.component";
-import { Grid, Stack } from "@mui/material";
+import { Grid } from "@mui/material";
 
 const BeneficiaryDisclosures = ({
   beneficiaryId,
