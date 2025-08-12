@@ -17,8 +17,16 @@ FROM nginx:stable-alpine
 
 ARG UI_PORT
 
+ARG API_HOST
+
+ARG API_PORT
+
 # Set environment variables
 ENV UI_PORT=$UI_PORT
+
+ENV VITE_API_HOST=${API_HOST}
+
+ENV VITE_API_PORT=${API_PORT}
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
