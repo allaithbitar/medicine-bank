@@ -77,7 +77,7 @@ export type TAddDisclosureDto = {
   priortyId: string;
 };
 
-export type TUpdateDisclosureDto = TAddDisclosureRatingDto & { id: string };
+export type TUpdateDisclosureDto = TAddDisclosureDto & { id: string };
 
 export type TDisclosureRating = {
   id: string;

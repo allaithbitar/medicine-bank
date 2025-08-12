@@ -5,12 +5,12 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
+import RequiredLabel from "./required-label.component";
 import type {
   TListItem,
   TSharedFormComponentProps,
   TSharedFormComponentValidation,
-} from "../../types";
-import RequiredLabel from "../shared/required-label.component";
+} from "@/core/types/input.type";
 
 type Props = TSharedFormComponentProps<TListItem> &
   TSharedFormComponentValidation & {
@@ -28,13 +28,13 @@ const FormRadioGroupInput = ({
   return (
     <FormControl fullWidth>
       <RequiredLabel required={required}>{label}</RequiredLabel>
-      <RadioGroup value={value?.value}>
+      <RadioGroup value={value?.id}>
         {options?.map((o) => (
           <FormControlLabel
             onClick={() => onChange?.(o)}
-            value={o.value}
+            value={o.id}
             control={<Radio />}
-            label={o.label}
+            label={o.id}
           />
         ))}
       </RadioGroup>

@@ -129,7 +129,7 @@ const EmployeesList = () => {
           </Grid>
         ))}
       </Grid>
-      {employees.length === 0 && <Nodata icon={<UserIcon />} />}
+      {employees.length === 0 && <Nodata icon={UserIcon} />}
     </>
   );
 };

@@ -19,7 +19,7 @@ import {
   updateEmployeeAccountSchema,
 } from "../schemas/employee-form-schema";
 import { useLocation, useNavigate } from "react-router-dom";
-import WorkAreaAutoComplete from "@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component";
+// import WorkAreaAutoComplete from "@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component";
 import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar.component";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 import {
@@ -164,7 +164,7 @@ const EmployeeAccountForm = () => {
                     </MenuItem>
                   ))}
                 </TextField>
-                <WorkAreaAutoComplete
+                {/* <WorkAreaAutoComplete
                   autoCompleteProps={{
                     fullWidth: true,
                   }}
@@ -174,7 +174,7 @@ const EmployeeAccountForm = () => {
                   }}
                   textFieldError={!!getErrorForField("workArea")}
                   helperText={getErrorForField("workArea")}
-                />
+                /> */}
                 <TextField
                   fullWidth
                   label="Password"

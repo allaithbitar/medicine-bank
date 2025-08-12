@@ -127,7 +127,7 @@ export type TPropertyConditionAction = {
   type: "property";
   config: {
     propertyKey: "label" | "description" | "required" | "hidden" | "disabled";
-    propertyValue: string | TListItem<string, boolean>;
+    propertyValue: string | TListItem;
     propertyType: "text-field" | "text-area" | "checkbox";
   };
 };
@@ -135,7 +135,7 @@ export type TPropertyConditionAction = {
 export type TValueConditionAction = {
   type: "value";
   config: {
-    newValue: string | number | TListItem<string, string | boolean>;
+    newValue: string | number | TListItem;
   };
 };
 

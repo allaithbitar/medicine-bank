@@ -95,6 +95,7 @@ const DisclosureRatingActionForm = ({ ref, disclosureRatingData }: TProps) => {
           />
         ) : (
           <RatingsAutocomplete
+            multiple={false}
             required
             value={formState.rating}
             onChange={(rating) => setValue({ rating })}
