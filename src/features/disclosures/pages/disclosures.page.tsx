@@ -11,6 +11,7 @@ import { useDisclosuresLoader } from "../hooks/disclosures-loader.hook";
 import { useRef, useState } from "react";
 import type { TGetDisclosuresDto } from "../types/disclosure.types";
 import STRINGS from "@/core/constants/strings.constant";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 const DisclosuresPage = () => {
   const filtersRef = useRef<TDisclosureFiltesHandlers | null>(null);
@@ -21,7 +22,7 @@ const DisclosuresPage = () => {
   });
   console.log(queryData);
 
-  const { items, error } = useDisclosuresLoader(queryData);
+  const { items, error, isLoading } = useDisclosuresLoader(queryData);
 
   return (
     <Stack gap={2}>
@@ -51,6 +52,7 @@ const DisclosuresPage = () => {
       <Link to="action">
         <ActionFab icon={<Add />} color="primary" />
       </Link>
+      {isLoading && <LoadingOverlay />}
     </Stack>
   );
 };

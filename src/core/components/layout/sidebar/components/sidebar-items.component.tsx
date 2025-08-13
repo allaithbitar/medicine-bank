@@ -41,7 +41,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
     },
     {
       label: STRINGS.employees,
-      href: "/employee-management",
+      href: "/employees",
       icon: <BadgeIcon />,
       permissions: [],
     },

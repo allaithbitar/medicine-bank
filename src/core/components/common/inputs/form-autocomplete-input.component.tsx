@@ -42,7 +42,14 @@ function FormAutocompleteInput<T extends TListItem, V extends boolean = false>({
   ...props
 }: Props<T, V>) {
   return (
-    <FormControl fullWidth error={!!errorText} disabled={disabled}>
+    <FormControl
+      fullWidth
+      error={!!errorText}
+      disabled={disabled}
+      sx={{
+        opacity: disabled ? 0.7 : 1,
+      }}
+    >
       <RequiredLabel required={required}>{label}</RequiredLabel>
       <Autocomplete
         disabled={disabled}

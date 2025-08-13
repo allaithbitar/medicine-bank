@@ -8,7 +8,10 @@ const RequiredLabel = ({
   required?: boolean;
 }>) => {
   return (
-    <Typography color="textSecondary" sx={{ mb: 0.8 }}>
+    <Typography
+      // color="textSecondary"
+      sx={{ mb: 0.8 }}
+    >
       {children}
       {required && (
         <Typography component="span" color="error">

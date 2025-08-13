@@ -3,6 +3,7 @@ import offlineApi from "../api/offline.api";
 import { useState } from "react";
 import disclosuresLocalDb from "@/libs/signaldb/disclosures.db";
 import disclosuresToRatingsLocalDb from "@/libs/signaldb/disclosures-to-ratings.db";
+import beneficiariesLocalDb from "@/libs/signaldb/beneficiaries.db";
 
 const SyncPage = () => {
   const [syncLocalData] = offlineApi.useLazySyncQuery();
@@ -16,6 +17,9 @@ const SyncPage = () => {
 
     disclosuresToRatingsLocalDb.removeMany({});
     disclosuresToRatingsLocalDb.insertMany(data.disclosuresRatings);
+
+    beneficiariesLocalDb.removeMany({});
+    beneficiariesLocalDb.insertMany(data.beneficiaries);
 
     console.log({ data });
     // await localDb.beneficiaries.bulkPut(data.beneficiaries);

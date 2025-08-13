@@ -1,7 +1,5 @@
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
-import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import STRINGS from "@/core/constants/strings.constant";
-import { Button, Stack } from "@mui/material";
+import { Card } from "@mui/material";
 
 import { useRef } from "react";
 import {
@@ -9,15 +7,23 @@ import {
   notifySuccess,
 } from "@/core/components/common/toast/toast";
 import { getErrorMessage } from "@/core/helpers/helpers";
-import type { TEmployeeFormHandlers } from "./employee-action-form.component";
-import EmployeeActionForm from "./employee-action-form.component";
 import employeesApi from "../api/employees.api";
 import type { TAddEmployeeDto } from "../types/employee.types";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import type { TEmployeeFormHandlers } from "../components/employee-action-form.component";
+import EmployeeActionForm from "../components/employee-action-form.component";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { Save } from "@mui/icons-material";
 
-const EmployeeActionModal = ({ employeeData }: { employeeData?: any }) => {
-  const { closeModal } = useModal();
-
+const EmployeeActionPage = () => {
   const ref = useRef<TEmployeeFormHandlers | null>(null);
+
+  const [searchParams] = useSearchParams();
+
+  const navigate = useNavigate();
+
+  const employeeId = searchParams.get("employeeId");
 
   const [addEmployee, { isLoading: isAdding }] =
     employeesApi.useAddEmployeeMutation();
@@ -25,11 +31,14 @@ const EmployeeActionModal = ({ employeeData }: { employeeData?: any }) => {
   const [updateEmployee, { isLoading: isUpdating }] =
     employeesApi.useUpdateEmployeeMutation();
 
-  //
-  // const [updateBeneficiary, { isLoading: isUpdating }] =
-  //   beneficiaryApi.useUpdateBeneficiaryMutation();
+  const { data: employeeData, isFetching: isGetting } =
+    employeesApi.useGetEmployeeQuery(
+      { id: employeeId! },
+      { skip: !employeeId },
+    );
 
-  const isLoading = isAdding || isUpdating;
+  const isLoading = isAdding || isUpdating || isGetting;
+  console.log({ employeeData });
 
   const handleSave = async () => {
     const { isValid, result } = await ref.current!.handleSubmit();
@@ -45,23 +54,25 @@ const EmployeeActionModal = ({ employeeData }: { employeeData?: any }) => {
         role: result.role!.id,
       };
 
-      if (!employeeData) {
+      if (!employeeId) {
         const { error } = await addEmployee(addDto);
 
         if (error) {
           notifyError(getErrorMessage(error));
         } else {
           notifySuccess(STRINGS.added_successfully);
+          navigate(-1);
         }
       } else {
         const { error } = await updateEmployee({
           ...addDto,
-          id: employeeData.id,
+          id: employeeId,
         });
         if (error) {
           notifyError(getErrorMessage(error));
         } else {
           notifySuccess(STRINGS.edited_successfully);
+          navigate(-1);
         }
       }
     } catch (error: any) {
@@ -70,29 +81,17 @@ const EmployeeActionModal = ({ employeeData }: { employeeData?: any }) => {
   };
 
   return (
-    <ModalWrapper
-      isLoading={isLoading}
-      actionButtons={
-        <Stack gap={1} sx={{ width: "100%" }}>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            // onClick={handleSubmit}
-            // disabled={isLoading}
-            sx={{ flexGrow: 1 }}
-          >
-            {employeeData ? STRINGS.save : STRINGS.add}
-          </Button>
-
-          <Button variant="outlined" onClick={() => closeModal()} color="error">
-            {STRINGS.cancel}
-          </Button>
-        </Stack>
-      }
-    >
+    <Card>
       <EmployeeActionForm ref={ref} employeeData={employeeData} />
-    </ModalWrapper>
+      <ActionFab
+        icon={<Save />}
+        color="success"
+        onClick={handleSave}
+        disabled={isLoading}
+      />
+      {isLoading && <LoadingOverlay />}
+    </Card>
   );
 };
 
-export default EmployeeActionModal;
+export default EmployeeActionPage;

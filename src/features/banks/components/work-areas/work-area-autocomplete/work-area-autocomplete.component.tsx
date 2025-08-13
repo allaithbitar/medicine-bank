@@ -5,22 +5,22 @@ import workAreasApi from "@/features/banks/api/work-areas/work-areas.api";
 import type { TArea } from "@/features/banks/types/work-areas.types";
 import STRINGS from "@/core/constants/strings.constant";
 
-type TAreasAutocompleteProps = Partial<
-  ComponentProps<typeof FormAutocompleteInput<TArea, false>>
+type TAreasAutocompleteProps<T extends boolean> = Partial<
+  ComponentProps<typeof FormAutocompleteInput<TArea, T>>
 > & {
   cityId?: string;
 };
 
-const AreasAutocomplete = ({ cityId, ...props }: TAreasAutocompleteProps) => {
+function AreasAutocomplete<T extends boolean>({
+  cityId,
+  ...props
+}: TAreasAutocompleteProps<T>) {
   const {
     data: { items: areas = [] } = { items: [] },
     isFetching,
     isLoading,
     error,
-  } = workAreasApi.useGetWorkAreasQuery(
-    { cityId: cityId as any },
-    { skip: !cityId },
-  );
+  } = workAreasApi.useGetWorkAreasQuery({ cityId: cityId });
 
   return (
     <FormAutocompleteInput
@@ -30,10 +30,9 @@ const AreasAutocomplete = ({ cityId, ...props }: TAreasAutocompleteProps) => {
       isOptionEqualToValue={(option, val) => option.id === val.id}
       options={areas}
       errorText={error ? getErrorMessage(error) : props.errorText || ""}
-      disabled={props.disabled || !cityId}
       {...props}
     />
   );
-};
+}
 
 export default AreasAutocomplete;

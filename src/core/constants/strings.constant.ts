@@ -11,9 +11,9 @@ const STRINGS = {
   logout: "تسجيل الخروج",
   disclosures: "الكشوفات",
   priority: "الأولية",
-  created_at: "تاريخ الإنشاء",
+  created_at: "تاريخ الإضافة",
   disclosure_created_at: "تاريخ إضافة الكشف",
-  disclosure_scout: "الكشاف",
+  disclosure_scout: "الكشّاف",
   updated_at: "تاريخ اخر تعديل",
   patient_address: "العنوان التفصيلي",
   status: "الحالة",
@@ -52,8 +52,8 @@ const STRINGS = {
   beneficiary_doesnt_have_any_disclosure: "لايملك هذا المستفيد اي كشف",
   manager: "إداري",
   supervisor: "مشرف",
-  scout: "كشاف",
-  the_scout: "الكشاف",
+  scout: "كشّاف",
+  the_scout: "الكشّاف",
   role: "المنصب",
   none: "لا يوجد",
   priority_degree: "درجة الأهمية",
@@ -69,6 +69,7 @@ const STRINGS = {
   from_date: "من تاريخ",
   to_date: "الى تاريخ",
   search: "بحث",
+  undelivered: "غير مسلّمة",
 };
 
 export default STRINGS;

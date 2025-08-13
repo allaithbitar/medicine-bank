@@ -67,6 +67,7 @@ export type TGetDisclosuresDto = Partial<
     priorityIds?: string[];
     createdAtStart?: string;
     createdAtEnd?: string;
+    undelivered?: boolean;
   }
 >;
 
@@ -74,7 +75,7 @@ export type TAddDisclosureDto = {
   status?: TDisclosureStatus;
   employeeId?: string | null;
   patientId: string;
-  priortyId: string;
+  priorityId: string;
 };
 
 export type TUpdateDisclosureDto = TAddDisclosureDto & { id: string };

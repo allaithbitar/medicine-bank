@@ -6,7 +6,13 @@ import { deepPurple } from "@mui/material/colors";
 import STRINGS from "@/core/constants/strings.constant";
 import { formatDateTime } from "@/core/helpers/helpers";
 import DetailItem from "@/core/components/common/detail-item/detail-item.component";
-import { Comment, Edit, EventAvailable, History } from "@mui/icons-material";
+import {
+  Comment,
+  Edit,
+  EventAvailable,
+  HelpOutlined,
+  History,
+} from "@mui/icons-material";
 import Nodata from "@/core/components/common/no-data/no-data.component";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 import { Link } from "react-router-dom";
@@ -20,6 +26,13 @@ const VisitCard = ({ visit }: { visit: TDisclosureVisit }) => {
       headerBackground={`linear-gradient(to right, ${deepPurple[800]}, ${deepPurple[500]})`}
       bodyContent={
         <Stack gap={2}>
+          {visit.result !== "completed" && (
+            <DetailItem
+              icon={<HelpOutlined />}
+              label={STRINGS.visit_reason}
+              value={visit.reason ?? ""}
+            />
+          )}
           <DetailItem
             icon={<EventAvailable />}
             label={STRINGS.created_at}

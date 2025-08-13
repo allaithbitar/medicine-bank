@@ -72,7 +72,7 @@ const BeneficiaryPage = () => {
           />
 
           <Link
-            to={`/beneficiaries/${beneficiary.id}/action`}
+            to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}
             style={{ marginInlineStart: "auto" }}
           >
             <Button startIcon={<Edit />}>{STRINGS.edit}</Button>

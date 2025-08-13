@@ -16,6 +16,7 @@ import type { TRating } from "@/features/ratings/types/rating.types";
 import RatingsAutocomplete from "@/features/ratings/components/ratings-autocomplete.component";
 import type { TBenefieciary } from "@/features/beneficiaries/types/beneficiary.types";
 import BeneficiariesAutocomplete from "@/features/beneficiaries/components/beneficiaries-autocomplete.component";
+import FormCheckbxInput from "@/core/components/common/inputs/form-checkbox-input.component";
 
 export type TDisclosureFiltesHandlers = {
   getValues: () => Omit<TGetDisclosuresDto, "pageSize" | "pageNumber">;
@@ -33,6 +34,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
       priorityDegrees: TPriorityDegree[];
       ratings: TRating[];
       beneficiary: TBenefieciary | null;
+      undelivered: boolean;
     } & Pick<TGetDisclosuresDto, "createdAtStart" | "createdAtEnd">
   >({
     status: [],
@@ -42,6 +44,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
     priorityDegrees: [],
     ratings: [],
     beneficiary: null,
+    undelivered: false,
   });
 
   const handleSubmit = useCallback(() => {
@@ -62,6 +65,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
     if (filters.createdAtEnd) {
       result.createdAtEnd = filters.createdAtEnd;
     }
+    result.undelivered = filters.undelivered;
 
     return result;
   }, [filters]);
@@ -91,8 +95,16 @@ const DisclosureFilters = ({ ref }: TProps) => {
           setFilters((prev) => ({ ...prev, beneficiary }))
         }
       />
+      <FormCheckbxInput
+        label={STRINGS.undelivered}
+        value={filters.undelivered}
+        onChange={(undelivered) =>
+          setFilters((prev) => ({ ...prev, undelivered }))
+        }
+      />
 
       <EmployeesAutocomplete
+        disabled={filters.undelivered}
         roles={["scout"]}
         label={STRINGS.the_scout}
         multiple
@@ -114,7 +126,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
       />
 
       <FieldSet label={STRINGS.created_at}>
-        <Stack direction="row" alignItems="center" gap={1}>
+        <Stack gap={1}>
           <FormDateInput
             label={STRINGS.from_date}
             value={filters.createdAtStart}

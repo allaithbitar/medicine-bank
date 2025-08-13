@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
 import {
@@ -13,20 +13,16 @@ import STRINGS from "@/core/constants/strings.constant";
 import { blue } from "@mui/material/colors";
 import type { TEmployee } from "../types/employee.types";
 import CardAvatar from "@/core/components/common/reusable-card/card-avatar.component";
+import { Link } from "react-router-dom";
 
 const EmployeeCard = ({
   employee,
-  onEditClick,
+  // onEditClick,
 }: {
   employee: TEmployee;
-  onEditClick?: (id: string) => void;
+  // onEditClick?: (id: string) => void;
 }) => {
-  const headerContent = (
-    <CardAvatar
-      name={employee.name}
-      actions={[{ icon: <Edit />, onClick: () => onEditClick?.(employee.id) }]}
-    />
-  );
+  const headerContent = <CardAvatar name={employee.name} />;
 
   const bodyContent = (
     <Stack gap={2}>
@@ -59,19 +55,14 @@ const EmployeeCard = ({
     </Stack>
   );
 
-  const footerContent = null;
-  //   (
-  //   <Chip
-  //     variant="filled"
-  //     label={employee.about}
-  //     sx={{
-  //       background: `${disclosure.prioriy.color}`,
-  //       color: (theme) => theme.palette.info.contrastText,
-  //       zIndex: 1,
-  //       ml: "auto",
-  //     }}
-  //   />
-  // );
+  const footerContent = (
+    <Link
+      to={`/employees/action?employeeId=${employee.id}`}
+      style={{ marginInlineStart: "auto" }}
+    >
+      <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
+    </Link>
+  );
 
   return (
     <ReusableCardComponent

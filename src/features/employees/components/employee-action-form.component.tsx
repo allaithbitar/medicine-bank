@@ -164,6 +164,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         errorText={formErrors.city?.[0].message}
       />
       <AreasAutocomplete
+        multiple={false}
         cityId={formState.city?.id}
         value={formState.area}
         onChange={(v) => setValue({ area: v })}

@@ -27,6 +27,14 @@ export const employeesApi = rootApi.injectEndpoints({
         res.data,
     }),
 
+    getEmployee: builder.query<TEmployee, { id: string }>({
+      query: ({ id }) => ({
+        url: `employees/${id}`,
+      }),
+      providesTags: ["Employees"],
+      transformResponse: (res: ApiResponse<TEmployee>) => res.data,
+    }),
+
     addEmployee: builder.mutation<void, TAddEmployeeDto>({
       query: (data) => ({
         url: "employees",

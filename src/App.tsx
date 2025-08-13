@@ -26,6 +26,7 @@ import DisclosureRatingActionPage from "./features/disclosures/pages/disclosure-
 import RatingsPage from "./features/ratings/pages/ratings.page";
 import DisclosureVisitActionPage from "./features/disclosures/pages/disclosure-visit-action.page";
 import SyncPage from "./features/offline/pages/sync.page";
+import EmployeeActionPage from "./features/employees/pages/employee-action.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -37,7 +38,9 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index path="/" element={<Box>home</Box>} />
 
-            <Route path="/employee-management" element={<EmployeesPage />} />
+            <Route path="/employees" element={<EmployeesPage />} />
+
+            <Route path="/employees/action" element={<EmployeeActionPage />} />
 
             <Route
               path="/employee-management/manage/:type"
@@ -71,7 +74,7 @@ function App() {
             <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
 
             <Route
-              path="/beneficiaries/:id/action"
+              path="/beneficiaries/action"
               element={<BeneficiaryActionPage />}
             />
 

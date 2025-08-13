@@ -50,6 +50,9 @@ export const useDisclosuresLoader = (dto: TGetDisclosuresDto = {}) => {
       ...(disclosureIds.length && {
         id: { $in: disclosureIds },
       }),
+      ...(dto.undelivered && {
+        employeeId: { $eq: null },
+      }),
     };
     const totalCount = disclosuresLocalDb
       .find(filters, {
@@ -66,54 +69,6 @@ export const useDisclosuresLoader = (dto: TGetDisclosuresDto = {}) => {
 
     return { items, totalCount };
   }, [dto]);
-
-  // const localResult = useLiveQuery(async () => {
-  //   let query = localDb.disclosures;
-  //
-  //   if (dto.pageSize) {
-  //     query = query.limit(dto.pageSize);
-  //   }
-  //
-  //   if (dto.pageNumber) {
-  //     query = query.offset(dto.pageNumber);
-  //   }
-  //
-  //   query = query.filter((d) => {
-  //     const conditions = [];
-  //     console.log(d);
-  //
-  //     if (dto.priorityIds?.length) {
-  //     }
-  //
-  //     if (dto.employeeIds?.length && d.employeeId) {
-  //       conditions.push(dto.employeeIds.includes(d.employeeId));
-  //     }
-  //
-  //     if (dto.status?.length) {
-  //       conditions.push(dto.status.includes(d.status));
-  //     }
-  //
-  //     if (dto.patientId) {
-  //       conditions.push(dto.patientId.includes(d.patientId));
-  //     }
-  //
-  //     return conditions.every(Boolean);
-  //   });
-  //
-  //   // if (dto.employeeIds) {
-  //   //   query = query.where("employeeId").anyOf(dto.employeeIds)
-  //   // }
-  //
-  //   // if (dto.status) {
-  //   //   query = query.where("status").anyOf(dto.status);
-  //   // }
-  //
-  //   // if (dto.patientId) {
-  //   //   query = query.and.where("patientId").anyOf(dto.patientId);
-  //   // }
-  //
-  //   return { items: await query.toArray(), totalCount: await query.count() };
-  // }, [dto]);
 
   return {
     items: (isOffline ? localResult?.items : data?.items) ?? [],

@@ -22,16 +22,18 @@ const BeneficiaryDisclosures = ({
   const isEmpty = !isLoading && !isFetching && disclosures.length === 0;
 
   return (
-    <Grid container spacing={2}>
-      {disclosures.map((d) => (
-        <Grid size={DEFAULT_GRID_SIZES} key={d.id}>
-          <DisclosureCard disclosure={d} />
-        </Grid>
-      ))}
+    <>
+      <Grid container spacing={2}>
+        {disclosures.map((d) => (
+          <Grid size={DEFAULT_GRID_SIZES} key={d.id}>
+            <DisclosureCard disclosure={d} />
+          </Grid>
+        ))}
+      </Grid>
       {isEmpty && (
         <Nodata title={STRINGS.beneficiary_doesnt_have_any_disclosure} />
       )}
-    </Grid>
+    </>
   );
 };
 

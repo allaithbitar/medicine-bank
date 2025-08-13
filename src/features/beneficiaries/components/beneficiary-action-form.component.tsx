@@ -189,6 +189,7 @@ function BeneficiaryActionForm({
         errorText={formErrors.city?.[0].message ?? ""}
       />
       <AreasAutocomplete
+        multiple={false}
         required
         cityId={formState.city?.id}
         label={STRINGS.area}

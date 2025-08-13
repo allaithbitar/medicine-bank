@@ -128,6 +128,7 @@ const DisclosureActionForm = ({
         />
       )}
       <EmployeesAutocomplete
+        roles={["scout"]}
         label={STRINGS.disclosure_scout}
         multiple={false}
         value={formState.employee}

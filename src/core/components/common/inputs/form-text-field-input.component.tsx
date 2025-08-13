@@ -18,7 +18,7 @@ const FormTextFieldInput = ({
 }: Props) => {
   return (
     <FormControl fullWidth disabled={disabled} error={!!errorText}>
-      <RequiredLabel required={required}>{label ?? "Text Field"}</RequiredLabel>
+      {label && <RequiredLabel required={required}>{label}</RequiredLabel>}
       <OutlinedInput
         disabled={disabled}
         notched={false}

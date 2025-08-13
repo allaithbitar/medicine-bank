@@ -31,7 +31,7 @@ function Nodata({
       >
         {title}
       </Typography>
-      <Typography variant="subtitle2" color="text.secondary">
+      <Typography variant="subtitle2" color="textSecondary">
         {subTitle}
       </Typography>
     </Stack>

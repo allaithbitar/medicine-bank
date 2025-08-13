@@ -12,11 +12,13 @@ import type { TBenefificaryFormHandlers } from "../components/beneficiary-action
 import BeneficiaryActionForm from "../components/beneficiary-action-form.component";
 import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
 import { Save } from "@mui/icons-material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 const BeneficiaryActionPage = () => {
-  const { id: beneficiaryId } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const beneficiaryId = searchParams.get("beneficiaryId");
 
   const ref = useRef<TBenefificaryFormHandlers | null>(null);
 
@@ -31,7 +33,7 @@ const BeneficiaryActionPage = () => {
   const { data: beneficiaryData, isLoading: isGetting } =
     beneficiaryApi.useGetBeneficiaryQuery(
       { id: beneficiaryId ?? "" },
-      { skip: !beneficiaryId || beneficiaryId === "new" },
+      { skip: !beneficiaryId },
     );
 
   const isLoading = isAdding || isUpdating || isGetting;

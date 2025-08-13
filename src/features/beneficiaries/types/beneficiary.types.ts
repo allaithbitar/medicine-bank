@@ -9,11 +9,11 @@ export type TAddBeneficiaryDto = {
 
 export type TUpdateBeneficiaryDto = TAddBeneficiaryDto & { id: string };
 
-export type TSearchBeneficiariesDto = {
+export type TGetBeneficiariesDto = {
   query?: string | undefined;
   pageSize?: number | undefined;
   pageNumber?: number | undefined;
-  areaId?: string | null | undefined;
+  areaIds?: string[];
 };
 
 type TArea = {
@@ -22,11 +22,11 @@ type TArea = {
   cityId: string;
 };
 
-export interface TBeneficiaryPhone {
+export type TBeneficiaryPhone = {
   id: string;
   patientId: string;
   phone: string;
-}
+};
 
 export type TBeneficiaryArea =
   | {

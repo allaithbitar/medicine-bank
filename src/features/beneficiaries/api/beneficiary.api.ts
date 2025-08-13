@@ -2,7 +2,7 @@ import { rootApi } from "@/core/api/root.api";
 import type {
   TAddBeneficiaryDto,
   TBenefieciary,
-  TSearchBeneficiariesDto,
+  TGetBeneficiariesDto,
   TUpdateBeneficiaryDto,
 } from "../types/beneficiary.types";
 import type {
@@ -34,7 +34,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
 
     getBeneficiaries: builder.query<
       TPaginatedResponse<TBenefieciary>,
-      TSearchBeneficiariesDto
+      TGetBeneficiariesDto
     >({
       query: (data) => ({
         url: "patients/search",

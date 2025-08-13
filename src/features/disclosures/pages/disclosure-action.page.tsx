@@ -48,7 +48,7 @@ const DisclosureActionPage = () => {
         status: result.status?.id,
         employeeId: result.employee?.id ?? null,
         patientId: beneficiaryId ?? result.beneficiary!.id,
-        priortyId: result.priorityDegree!.id,
+        priorityId: result.priorityDegree!.id,
       };
 
       if (!disclosureId) {

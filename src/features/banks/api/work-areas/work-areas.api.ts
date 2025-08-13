@@ -15,7 +15,7 @@ export const workAreasApi = rootApi.injectEndpoints({
     getWorkAreas: builder.query<
       TPaginatedResponse<TArea>,
       {
-        cityId: string;
+        cityId?: string;
         name?: string | null;
         pageNumber?: number;
         pageSize?: number;
