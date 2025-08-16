@@ -1,4 +1,5 @@
 // src/theme/index.ts (or wherever you define your MUI theme)
+import { grey } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
 const baseTheme = createTheme();
@@ -7,12 +8,14 @@ const theme = createTheme({
   direction: "rtl",
   spacing: 8,
   shape: {
-    borderRadius: 8,
+    borderRadius: 12,
   },
 
   shadows: baseTheme.shadows,
   transitions: baseTheme.transitions,
-  typography: {},
+  typography: {
+    fontFamily: "alexandria",
+  },
 
   components: {
     MuiGrid: {
@@ -20,16 +23,22 @@ const theme = createTheme({
         component: "div",
       },
     },
-    MuiPaper: {
-      styleOverrides: {
-        root: {},
-      },
-    },
     MuiButton: {
       defaultProps: {
         disableElevation: true,
         variant: "contained",
         size: "large",
+      },
+    },
+    MuiCard: {
+      defaultProps: {
+        elevation: 0,
+        sx: { p: 2 },
+      },
+      styleOverrides: {
+        root: {
+          border: `solid 1px ${grey[300]}`,
+        },
       },
     },
   },

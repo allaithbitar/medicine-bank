@@ -1,5 +1,5 @@
 import type { Theme } from "@emotion/react";
-import { Box, CircularProgress, type SxProps } from "@mui/material";
+import { Backdrop, CircularProgress, type SxProps } from "@mui/material";
 
 const LoadingOverlay = ({
   sx,
@@ -8,14 +8,16 @@ const LoadingOverlay = ({
   sx?: SxProps<Theme>;
   spinnerSize?: number;
 }) => (
-  <Box
+  <Backdrop
+    open
     sx={{
       position: "absolute",
       top: 0,
       left: 0,
       width: "100%",
       height: "100%",
-      background: "rgba(255,255,255,0.8)",
+      background: "rgba(255,255,255,0.3)",
+      backdropFilter: "blur(2px)",
       display: "grid",
       placeItems: "center",
       zIndex: 999,
@@ -23,7 +25,7 @@ const LoadingOverlay = ({
     }}
   >
     <CircularProgress {...(spinnerSize ? { size: spinnerSize } : {})} />
-  </Box>
+  </Backdrop>
 );
 
 export default LoadingOverlay;

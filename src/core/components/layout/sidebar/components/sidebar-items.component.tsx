@@ -4,10 +4,14 @@ import HomeIcon from "@mui/icons-material/Home";
 import SideBarListItem from "./sidebar-list-item.component";
 import BadgeIcon from "@mui/icons-material/Badge";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import FeaturedPlayListIcon from "@mui/icons-material/FeaturedPlayList";
 import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
 import SidebarExpandableItem from "./sidebar-expandable-list-item.component";
-import { Business as BuildingOfficeIcon } from "@mui/icons-material";
+import {
+  Business as BuildingOfficeIcon,
+  Sync,
+  ThumbsUpDown,
+} from "@mui/icons-material";
+import STRINGS from "@/core/constants/strings.constant";
 
 type BaseItem = {
   label: string;
@@ -36,35 +40,46 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       permissions: [],
     },
     {
-      label: "EmployeeManagement",
-      href: "/employee-management",
+      label: STRINGS.employees,
+      href: "/employees",
       icon: <BadgeIcon />,
       permissions: [],
     },
     {
-      label: "BeneficiaryManagement",
-      href: "/beneficiary-management",
+      label: STRINGS.beneficiaries,
+      href: "/beneficiaries",
       icon: <SupervisedUserCircleIcon />,
       permissions: [],
     },
     {
-      label: "banks",
-      icon: <FeaturedPlayListIcon />,
+      label: STRINGS.disclosures,
+      href: "/disclosures",
+      icon: <SupervisedUserCircleIcon />,
       permissions: [],
-      childrens: [
-        {
-          label: "Cities",
-          href: "/cities-management",
-          icon: <BuildingOfficeIcon />,
-          permissions: [],
-        },
-        {
-          label: "Area",
-          href: "/work-area-management",
-          icon: <EditLocationAltIcon />,
-          permissions: [],
-        },
-      ],
+    },
+    {
+      label: STRINGS.cities,
+      href: "/cities-management",
+      icon: <BuildingOfficeIcon />,
+      permissions: [],
+    },
+    {
+      label: STRINGS.areas,
+      href: "/work-area-management",
+      icon: <EditLocationAltIcon />,
+      permissions: [],
+    },
+    {
+      label: STRINGS.ratings,
+      href: "/ratings",
+      icon: <ThumbsUpDown />,
+      permissions: [],
+    },
+    {
+      label: STRINGS.sync,
+      href: "/sync",
+      icon: <Sync />,
+      permissions: [],
     },
   ];
   return (
@@ -91,7 +106,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
               level={1}
               href={i.href}
             />
-          )
+          ),
         )}
     </List>
   );

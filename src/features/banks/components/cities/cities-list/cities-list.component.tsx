@@ -43,7 +43,7 @@ function CitiesList({ onEdit, cities, isLoadingCities }: ICitiesList) {
       </Grid>
       {cities.length === 0 && !isLoadingCities && (
         <Nodata
-          icon={<BuildingOfficeIcon />}
+          icon={BuildingOfficeIcon}
           title="No Cities found"
           subTitle="Add some Cities to see them."
         />

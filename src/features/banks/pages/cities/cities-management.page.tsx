@@ -16,7 +16,7 @@ const CitiesPage = () => {
   const {
     data: { items: cities = [] } = { items: [] },
     isLoading: isLoadingCities,
-  } = citiesApi.useGetCitiesQuery({ name: query });
+  } = citiesApi.useGetCitiesQuery({});
 
   const handleOpenCityModal = (oldCity?: TCity) => {
     openModal({

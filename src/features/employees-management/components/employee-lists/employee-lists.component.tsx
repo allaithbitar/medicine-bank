@@ -7,6 +7,7 @@ import EmployeeCardComponent from "../employee-card/employee-card.component";
 import Nodata from "@/core/components/common/no-data/no-data.component";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import { useNavigate } from "react-router-dom";
+import { DEFAULT_GRID_SIZES } from "@/core/constants/properties.constant";
 
 const employees: (TEmployeeAccount & { id: string })[] = [
   {
@@ -116,7 +117,7 @@ const EmployeesList = () => {
     <>
       <Grid container gap={2} justifyContent="center">
         {employees.map((employee) => (
-          <Grid key={employee.id}>
+          <Grid size={DEFAULT_GRID_SIZES} key={employee.id}>
             <EmployeeCardComponent
               employee={employee}
               isVisible={visiblePasswords.has(employee.id)}
@@ -128,7 +129,7 @@ const EmployeesList = () => {
           </Grid>
         ))}
       </Grid>
-      {employees.length === 0 && <Nodata icon={<UserIcon />} />}
+      {employees.length === 0 && <Nodata icon={UserIcon} />}
     </>
   );
 };

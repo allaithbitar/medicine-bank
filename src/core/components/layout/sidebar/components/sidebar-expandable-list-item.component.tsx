@@ -45,7 +45,7 @@ const SidebarExpandableItem = ({
     >
       <ListItemButton
         sx={{
-          borderRadius: 2,
+          borderRadius: 1,
           mb: 0.5,
           alignItems: "flex-start",
           py: level > 1 ? 1 : 1.25,

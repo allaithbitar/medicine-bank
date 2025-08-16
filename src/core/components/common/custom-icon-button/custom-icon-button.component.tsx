@@ -6,14 +6,13 @@ const CustomIconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     const theme = useTheme();
 
     const defaultBgColor = "rgba(255,255,255,0.2)";
-    const defaultIconColor = theme.palette.primary.dark;
+    const defaultIconColor = theme.palette.primary.contrastText;
 
     return (
       <IconButton
         ref={ref}
         sx={{
           background: defaultBgColor,
-          p: 1,
           color: defaultIconColor,
           borderRadius: theme.shape.borderRadius,
           ...sx,
@@ -23,7 +22,7 @@ const CustomIconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         {children}
       </IconButton>
     );
-  }
+  },
 );
 
 CustomIconButton.displayName = "CustomIconButton";

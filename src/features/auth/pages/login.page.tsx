@@ -7,14 +7,14 @@ import authApi from "../api/auth.api";
 import useUser from "@/core/hooks/user-user.hook";
 import { getErrorMessage } from "@/core/helpers/helpers";
 import { notifyError } from "@/core/components/common/toast/toast";
-import { useDispatch } from "react-redux";
 import { authActions } from "@/core/slices/auth/auth.slice";
 import STRINGS from "@/core/constants/strings.constant";
+import { useAppDispatch } from "@/core/store/root.store.types";
 
 const LoginPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { token, id } = useUser();
   const [credentials, setCredentials] = useState({
     password: "",
@@ -36,6 +36,8 @@ const LoginPage = () => {
     event.preventDefault();
     const { data, error } = await loginAsync(credentials);
     if (error) {
+      console.log(error);
+
       return notifyError(getErrorMessage(error));
     }
     dispatch(authActions.setUser(data));

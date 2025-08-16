@@ -41,7 +41,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
 
   const contextValue = useMemo(
     () => ({ openModal, closeModal }),
-    [closeModal, openModal]
+    [closeModal, openModal],
   );
 
   return (

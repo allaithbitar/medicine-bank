@@ -1,23 +1,7 @@
-import { Box, Button, Card, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import HealingIcon from "@mui/icons-material/Healing";
 import { Link, useRouteError } from "react-router-dom";
-
-const CONTAINER = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: 1,
-  textAlign: "center",
-  padding: 10,
-  height: "65vh",
-  my: "auto",
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%,-50%)",
-};
+import STRINGS from "@/core/constants/strings.constant";
 
 const FallbackUI = ({
   errorMessage,
@@ -30,11 +14,27 @@ const FallbackUI = ({
 }) => {
   const error = useRouteError() as string;
   return (
-    <Card sx={CONTAINER}>
+    <Stack
+      sx={{
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 1,
+      }}
+    >
       <HealingIcon sx={{ fontSize: 100 }} />
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          textAlign: "center",
+        }}
+      >
         <Box>
-          <Typography variant="body2">Something went wrong</Typography>
+          <Typography variant="body2">
+            {STRINGS.something_went_wrong}
+          </Typography>
           <Typography variant="caption"> {errorMessage || error}</Typography>
         </Box>
       </Box>
@@ -53,7 +53,7 @@ const FallbackUI = ({
           {buttonText || "Reload The App"}
         </Button>
       )}
-    </Card>
+    </Stack>
   );
 };
 

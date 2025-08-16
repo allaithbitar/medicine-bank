@@ -35,3 +35,15 @@ export const getErrorMessage = (
   }
   return "something_went_wrong";
 };
+
+export const formatDateTime = (date: string | Date) =>
+  Intl.DateTimeFormat("ar-SY", {
+    timeStyle: "short",
+    dateStyle: "long",
+  }).format(typeof date === "string" ? new Date(date) : date);
+
+export function isNullOrUndefined<T>(
+  obj: T | undefined | null,
+): obj is null | undefined {
+  return obj === null || typeof obj === "undefined";
+}

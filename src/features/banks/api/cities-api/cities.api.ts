@@ -12,10 +12,7 @@ import type {
 
 export const citiesApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCities: builder.query<
-      TPaginatedResponse<TCity>,
-      { name: string | null }
-    >({
+    getCities: builder.query<TPaginatedResponse<TCity>, { name?: string }>({
       query: (params) => ({
         url: "/cities",
         method: "GET",

@@ -1,39 +1,40 @@
-import { cloneElement, type ReactElement } from "react";
-import { Box, Typography } from "@mui/material";
+import { type ComponentProps } from "react";
+import { Stack, Typography } from "@mui/material";
+import STRINGS from "@/core/constants/strings.constant";
+import { Info } from "@mui/icons-material";
 
 function Nodata({
-  icon,
-  title = "No Data Found !",
-  subTitle = "Add some employees to see them displayed here.",
+  title = STRINGS.no_data_found,
+  subTitle,
+  icon: Icon = Info,
+  iconSx,
 }: {
-  icon: ReactElement<{ sx?: object }>;
+  icon?: typeof Info;
   title?: string;
   subTitle?: string;
+  iconSx?: ComponentProps<typeof Info>["sx"];
 }) {
-  const iconWithStyle = cloneElement(icon, {
-    sx: {
-      fontSize: 60,
-      color: "text.disabled",
-      mb: 2,
-      ...(icon.props.sx || {}),
-    },
-  });
-
   return (
-    <Box sx={{ textAlign: "center", py: 8 }}>
-      {iconWithStyle}
+    <Stack sx={{ alignItems: "center", my: 6 }}>
+      <Icon
+        sx={{
+          fontSize: 60,
+          color: "text.disabled",
+          ...iconSx,
+        }}
+      />
       <Typography
-        variant="h6"
+        variant="subtitle1"
         color="text.primary"
         fontWeight="medium"
         gutterBottom
       >
         {title}
       </Typography>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="subtitle2" color="textSecondary">
         {subTitle}
       </Typography>
-    </Box>
+    </Stack>
   );
 }
 
