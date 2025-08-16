@@ -1,6 +1,7 @@
 import type { SerializedError } from "@reduxjs/toolkit";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import type { ApiErrorResponse } from "../types/common.types";
+import STRINGS from "../constants/strings.constant";
 
 export const isFetchBaseQueryError = (obj: any): obj is FetchBaseQueryError => {
   return !!obj["status"];
@@ -17,7 +18,8 @@ export const getErrorMessage = (
     | Error
     | ApiErrorResponse
     | string
-    | object,
+    | object
+    | unknown
 ) => {
   if (typeof error === "string") {
     return error;
@@ -33,7 +35,7 @@ export const getErrorMessage = (
   if (isApiError(error)) {
     return error.errorMessage.ar;
   }
-  return "something_went_wrong";
+  return STRINGS.something_went_wrong;
 };
 
 export const formatDateTime = (date: string | Date) =>
@@ -43,7 +45,7 @@ export const formatDateTime = (date: string | Date) =>
   }).format(typeof date === "string" ? new Date(date) : date);
 
 export function isNullOrUndefined<T>(
-  obj: T | undefined | null,
+  obj: T | undefined | null
 ): obj is null | undefined {
   return obj === null || typeof obj === "undefined";
 }

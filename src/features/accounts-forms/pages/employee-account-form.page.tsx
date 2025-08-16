@@ -26,6 +26,7 @@ import {
   notifyError,
   notifySuccess,
 } from "@/core/components/common/toast/toast";
+import { getErrorMessage } from "@/core/helpers/helpers";
 
 const initialEmployeeAccountData: TEmployeeAccount = {
   name: "",
@@ -40,7 +41,7 @@ const EmployeeAccountForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [employeeData, setEmployeeData] = useReducerState<TEmployeeAccount>(
-    initialEmployeeAccountData,
+    initialEmployeeAccountData
   );
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
@@ -61,11 +62,11 @@ const EmployeeAccountForm = () => {
 
   const handleEmployeeChange = (
     field: keyof TEmployeeAccount,
-    value: string | IOptions | null,
+    value: string | IOptions | null
   ) => {
     setEmployeeData({ [field]: value });
     setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== field),
+      prevErrors.filter((error) => error.path[0] !== field)
     );
   };
 
@@ -99,8 +100,9 @@ const EmployeeAccountForm = () => {
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
+        notifyError();
       } else {
-        notifyError(err);
+        notifyError(getErrorMessage(err));
       }
     }
   };

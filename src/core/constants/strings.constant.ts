@@ -41,6 +41,7 @@ const STRINGS = {
   visits: "الزيارات",
   added_successfully: "تمت الإضافة بنجاح",
   edited_successfully: "تم التعديل بنجاح",
+  action_success: "تمة العملية بنجاح",
   something_went_wrong: "حصل خطأ ما",
   beneficiaries: "المتسفيدين",
   beneficiary: "المستفيد",
