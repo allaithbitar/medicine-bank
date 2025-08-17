@@ -11,10 +11,9 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "100vw",
-  height: "100dvh",
+  width: "95vw",
+  height: "95dvh",
   border: "none",
-  borderRadius: 0,
 };
 const ModalWrapper = ({
   children,

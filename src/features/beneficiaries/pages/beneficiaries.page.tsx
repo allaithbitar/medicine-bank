@@ -3,30 +3,28 @@ import BeneficiaryCard from "../components/beneficiary-card.component";
 import { Add } from "@mui/icons-material";
 import STRINGS from "@/core/constants/strings.constant";
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
-import { Button, Card, Grid, Stack } from "@mui/material";
-import { DEFAULT_GRID_SIZES } from "@/core/constants/properties.constant";
+import { Stack } from "@mui/material";
+import { DEFAULT_PAGE_NUMBER } from "@/core/constants/properties.constant";
 import { useBeneficiariesLoader } from "../hooks/use-beneficiaries-loader.hook";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { TGetBeneficiariesDto } from "../types/beneficiary.types";
-import BeneficiariesFilters, {
-  type TBeneficiariesFiltersHandlers,
-} from "../components/beneficiaries-filters.component";
 import PageLoading from "@/core/components/common/page-loading/page-loading.component";
+import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
 
 const BeneficiariesPage = () => {
-  const [queryData, setQueryData] = useState<TGetBeneficiariesDto>({
-    pageSize: 4,
-    pageNumber: 0,
+  const [queryData] = useState<TGetBeneficiariesDto>({
+    pageSize: 1000,
+    pageNumber: DEFAULT_PAGE_NUMBER,
   });
   const { items, isLoading } = useBeneficiariesLoader(queryData);
 
-  const filtersRef = useRef<TBeneficiariesFiltersHandlers | null>(null);
+  // const filtersRef = useRef<TBeneficiariesFiltersHandlers | null>(null);
 
   const navigate = useNavigate();
 
   return (
-    <Stack gap={2}>
-      <Card>
+    <Stack gap={2} sx={{ height: "100%" }}>
+      {/*  <Card>
         <Stack gap={2}>
           <BeneficiariesFilters ref={filtersRef} />
           <Button
@@ -41,27 +39,33 @@ const BeneficiariesPage = () => {
           </Button>
         </Stack>
       </Card>
-      <Grid container spacing={2}>
-        {items.map((b) => (
-          <Grid size={DEFAULT_GRID_SIZES} key={b.id}>
+  */}{" "}
+      <VirtualizedList
+        items={items}
+        containerStyle={{ flex: 1 }}
+        virtualizationOptions={{
+          count: items.length,
+        }}
+      >
+        {({ item: b }) => {
+          return (
             <BeneficiaryCard
               beneficiary={b}
               key={b.id}
               onEnterClick={navigate}
             />
-          </Grid>
-        ))}
-
-        <ActionsFab
-          actions={[
-            {
-              icon: <Add />,
-              label: STRINGS.add_beneficiary,
-              onClick: () => navigate("/beneficiaries/action"),
-            },
-          ]}
-        />
-      </Grid>
+          );
+        }}
+      </VirtualizedList>
+      <ActionsFab
+        actions={[
+          {
+            icon: <Add />,
+            label: STRINGS.add_beneficiary,
+            onClick: () => navigate("/beneficiaries/action"),
+          },
+        ]}
+      />
       {isLoading && <PageLoading />}
     </Stack>
   );

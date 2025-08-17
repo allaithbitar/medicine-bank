@@ -1,5 +1,4 @@
 import { Button, Stack, Typography } from "@mui/material";
-import disclosuresApi from "../api/disclosures.api";
 import type { TDisclosureVisit } from "../types/disclosure.types";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
 import { deepPurple } from "@mui/material/colors";
@@ -16,6 +15,8 @@ import {
 import Nodata from "@/core/components/common/no-data/no-data.component";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 import { Link } from "react-router-dom";
+import { useVisitsLoader } from "../hooks/visits-loader.hook";
+import { DEFAULT_PAGE_SIZE } from "@/core/constants/properties.constant";
 
 const VisitCard = ({ visit }: { visit: TDisclosureVisit }) => {
   return (
@@ -68,18 +69,17 @@ const VisitCard = ({ visit }: { visit: TDisclosureVisit }) => {
 };
 
 const DisclosureVisists = ({ disclosureId }: { disclosureId?: string }) => {
-  const { data: { items: ratings } = { items: [] }, isFetching } =
-    disclosuresApi.useGetDisclosureVisitsQuery(
-      { disclosureId: disclosureId! },
-      { skip: !disclosureId },
-    );
+  const { items, isFetching } = useVisitsLoader({
+    disclosureId: disclosureId!,
+    pageSize: DEFAULT_PAGE_SIZE,
+  });
 
   return (
     <Stack gap={2}>
-      {ratings.map((v) => (
+      {items.map((v) => (
         <VisitCard key={v.id} visit={v} />
       ))}
-      {!isFetching && !ratings.length && <Nodata />}
+      {!isFetching && !items.length && <Nodata />}
       {isFetching && <LoadingOverlay />}
     </Stack>
   );

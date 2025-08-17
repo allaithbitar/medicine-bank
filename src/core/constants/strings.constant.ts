@@ -35,13 +35,14 @@ const STRINGS = {
   rating: "التقييم",
   add_rating: "إضافة تقييم",
   add_visit: "إضافة زيارة",
+  add_disclosure: "إضافة كشف",
+  filter: "فلترة",
   is_custom_rating: "تقييم مخصص ؟",
   the_custom_rating: "التقيم المخصص",
   custom_rating: "تقيم مخصص",
   visits: "الزيارات",
   added_successfully: "تمت الإضافة بنجاح",
   edited_successfully: "تم التعديل بنجاح",
-  action_success: "تمة العملية بنجاح",
   something_went_wrong: "حصل خطأ ما",
   beneficiaries: "المتسفيدين",
   beneficiary: "المستفيد",
@@ -71,6 +72,9 @@ const STRINGS = {
   to_date: "الى تاريخ",
   search: "بحث",
   undelivered: "غير مسلّمة",
+  local_not_found_error: "لم يتم العثور على بيانات لعرضها",
+  created_by: "تمّت الإضافة من قبل",
+  updated_by: "تمّ التعديل من قبل",
 };
 
 export default STRINGS;

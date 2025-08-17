@@ -20,15 +20,23 @@ import type {
 
 export const disclosuresApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getDisclosures: builder.query<
+    getDisclosures: builder.infiniteQuery<
       TPaginatedResponse<TDisclosure>,
-      TGetDisclosuresDto
+      TGetDisclosuresDto,
+      number
     >({
-      query: (payload) => ({
+      query: ({ queryArg, pageParam }) => ({
         url: "disclosures/search",
         method: "POST",
-        body: payload,
+        body: { ...queryArg, pageNumber: pageParam },
       }),
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize
+            ? undefined
+            : lastPage.pageNumber + 1,
+      },
       transformResponse: (res: ApiResponse<TPaginatedResponse<TDisclosure>>) =>
         res.data,
       providesTags: ["Disclosures"],
@@ -109,20 +117,28 @@ export const disclosuresApi = rootApi.injectEndpoints({
       ],
     }),
 
-    getDisclosureVisits: builder.query<
+    getDisclosureVisits: builder.infiniteQuery<
       TPaginatedResponse<TDisclosureVisit>,
-      TGetDisclosureVisitsDto
+      TGetDisclosureVisitsDto,
+      number
     >({
-      query: (payload) => ({
+      query: ({ pageParam, queryArg }) => ({
         url: "disclosures/visits",
-        params: payload,
+        params: { ...queryArg, pageNumber: pageParam },
       }),
-      providesTags: (_, __, args) => [
-        { id: args.disclosureId, type: "Disclosure_Visits" },
-      ],
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.totalCount === 0
+            ? undefined
+            : lastPage.pageNumber,
+      },
       transformResponse: (
         res: ApiResponse<TPaginatedResponse<TDisclosureVisit>>,
       ) => res.data,
+      providesTags: (_, __, args) => [
+        { id: args.disclosureId, type: "Disclosure_Visits" },
+      ],
     }),
     getDisclosureVisit: builder.query<TDisclosureVisit, { id: string }>({
       query: ({ id }) => ({

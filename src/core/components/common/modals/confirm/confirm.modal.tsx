@@ -17,7 +17,6 @@ import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import { useModal } from "../../modal/modal-provider.component";
 import { notifyError } from "../../toast/toast";
-import { getErrorMessage } from "@/core/helpers/helpers";
 
 type TSeverity = "info" | "warning" | "error" | "success";
 
@@ -67,7 +66,7 @@ const ConfirmModal = ({
       closeModal();
     } catch (error) {
       console.log("🚀 ~ handleConfirm ~ error:", error);
-      notifyError(getErrorMessage(error));
+      notifyError("error");
     } finally {
       setIsLoading(false);
     }
@@ -83,10 +82,10 @@ const ConfirmModal = ({
     severity === "error"
       ? "error.main"
       : severity === "warning"
-      ? "warning.main"
-      : severity === "success"
-      ? "success.main"
-      : "info.main";
+        ? "warning.main"
+        : severity === "success"
+          ? "success.main"
+          : "info.main";
 
   const isConfirmDisabled = isLoading;
 

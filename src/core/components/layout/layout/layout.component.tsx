@@ -10,7 +10,14 @@ import { Stack } from "@mui/material";
 const Layout = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   return (
-    <Stack sx={{ display: "flex", height: "100dvh", width: "100vw" }}>
+    <Stack
+      sx={{
+        display: "flex",
+        height: "100dvh",
+        maxWidth: "clamp(500px, 100%, 768px)",
+        marginInline: "auto",
+      }}
+    >
       <Navbar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
       <Sidebar openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
       <Box

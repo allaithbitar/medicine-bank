@@ -34,7 +34,7 @@ const EmployeeActionPage = () => {
   const { data: employeeData, isFetching: isGetting } =
     employeesApi.useGetEmployeeQuery(
       { id: employeeId! },
-      { skip: !employeeId }
+      { skip: !employeeId },
     );
 
   const isLoading = isAdding || isUpdating || isGetting;

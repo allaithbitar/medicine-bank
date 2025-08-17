@@ -46,7 +46,7 @@ const DisclosureActionPage = () => {
     try {
       const addDto: TAddDisclosureDto = {
         status: result.status?.id,
-        employeeId: result.employee?.id ?? null,
+        scoutId: result.employee?.id ?? null,
         patientId: beneficiaryId ?? result.beneficiary!.id,
         priorityId: result.priorityDegree!.id,
       };

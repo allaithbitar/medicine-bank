@@ -3,17 +3,25 @@ import {
   type VirtualizerOptions,
 } from "@tanstack/react-virtual";
 import { useRef, type HtmlHTMLAttributes, type ReactNode } from "react";
+import IntersectionTrigger from "../intersection-trigger/intersection-trigger.component";
+import { CircularProgress, Stack } from "@mui/material";
 
 function VirtualizedList<T>({
   containerStyle,
   children,
   virtualizationOptions,
   items,
+  onEndReach,
+  isLoading,
+  disabledLastItemIntersectionObserver,
 }: {
   containerStyle?: HtmlHTMLAttributes<HTMLDivElement>["style"];
   virtualizationOptions: Partial<VirtualizerOptions<Element, Element>>;
   children: (props: { index: number; item: T; size: number }) => ReactNode;
   items: T[];
+  onEndReach?: () => void;
+  isLoading?: boolean;
+  disabledLastItemIntersectionObserver?: boolean;
 }) {
   const parentRef = useRef(null);
 
@@ -22,6 +30,9 @@ function VirtualizedList<T>({
     count: items.length,
     estimateSize: () => 100,
     getScrollElement: () => parentRef.current,
+    measureElement: (element) => {
+      return element.firstElementChild?.getBoundingClientRect().height;
+    },
     ...(virtualizationOptions as any),
   });
 
@@ -49,6 +60,8 @@ function VirtualizedList<T>({
             return (
               <div
                 key={key}
+                ref={rowVirtualizer.measureElement}
+                data-index={index}
                 style={{
                   position: "absolute",
                   top: 0,
@@ -63,6 +76,14 @@ function VirtualizedList<T>({
             );
           })}
       </div>
+      {!isLoading && !disabledLastItemIntersectionObserver && items.length && (
+        <IntersectionTrigger onIntersect={onEndReach} />
+      )}
+      {isLoading && (
+        <Stack alignItems="center" my={4}>
+          <CircularProgress size={100} />
+        </Stack>
+      )}
     </div>
   );
 }

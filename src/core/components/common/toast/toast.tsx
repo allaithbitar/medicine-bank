@@ -1,6 +1,5 @@
 import hotToast, { type ToastOptions } from "react-hot-toast";
 import CustomToast from "./custom-toast.component.tsx";
-import STRINGS from "@/core/constants/strings.constant.ts";
 
 type CustomToastOptions = ToastOptions;
 
@@ -60,18 +59,18 @@ const defaultDefaultOptions: ToastOptions = {
  */
 export const notifySuccess = (
   message?: string,
-  options?: CustomToastOptions
+  options?: CustomToastOptions,
 ) => {
   const mergedOptions = { ...defaultSuccessOptions, ...options };
   return hotToast.custom(
     (t) => (
       <CustomToast
         t={t}
-        message={message || STRINGS.action_success}
+        message={message || "Action Done Successfully"}
         type="success"
       />
     ),
-    mergedOptions
+    mergedOptions,
   );
 };
 
@@ -82,19 +81,13 @@ export const notifySuccess = (
  * @returns The ID of the displayed toast.
  */
 export const notifyError = (
-  message?: string,
-  options?: CustomToastOptions
+  message: string,
+  options?: CustomToastOptions,
 ): string => {
   const mergedOptions = { ...defaultErrorOptions, ...options };
   return hotToast.custom(
-    (t) => (
-      <CustomToast
-        t={t}
-        message={message || STRINGS.something_went_wrong}
-        type="error"
-      />
-    ),
-    mergedOptions
+    (t) => <CustomToast t={t} message={message} type="error" />,
+    mergedOptions,
   );
 };
 
@@ -106,12 +99,12 @@ export const notifyError = (
  */
 export const notifyInfo = (
   message: string,
-  options?: CustomToastOptions
+  options?: CustomToastOptions,
 ): string => {
   const mergedOptions = { ...defaultInfoOptions, ...options };
   return hotToast.custom(
     (t) => <CustomToast t={t} message={message} type="info" />,
-    mergedOptions
+    mergedOptions,
   );
 };
 
@@ -123,12 +116,12 @@ export const notifyInfo = (
  */
 export const notifyLoading = (
   message: string,
-  options?: CustomToastOptions
+  options?: CustomToastOptions,
 ): string => {
   const mergedOptions = { ...defaultLoadingOptions, ...options };
   return hotToast.custom(
     (t) => <CustomToast t={t} message={message} type="loading" />,
-    mergedOptions
+    mergedOptions,
   );
 };
 
@@ -140,12 +133,12 @@ export const notifyLoading = (
  */
 export const notifyDefault = (
   message: string,
-  options?: CustomToastOptions
+  options?: CustomToastOptions,
 ): string => {
   const mergedOptions = { ...defaultDefaultOptions, ...options };
   return hotToast.custom(
     (t) => <CustomToast t={t} message={message} type="default" />,
-    mergedOptions
+    mergedOptions,
   );
 };
 

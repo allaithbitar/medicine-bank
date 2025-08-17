@@ -7,14 +7,13 @@ import { useModal } from "@/core/components/common/modal/modal-provider.componen
 import type { TCity } from "@/features/banks/types/city.types";
 import citiesApi from "@/features/banks/api/cities-api/cities.api";
 import { notifyError, notifySuccess } from "../../toast/toast";
-import { getErrorMessage } from "@/core/helpers/helpers";
 
 const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
   const { closeModal } = useModal();
   const [updateCity, { isLoading: isUpdatingCity }] =
     citiesApi.useUpdateCityMutation({});
   const [addCity, { isLoading: isAddingCity }] = citiesApi.useAddCityMutation(
-    {}
+    {},
   );
 
   const [cityName, setCityName] = useState<string>("");
@@ -23,7 +22,7 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
   const handleCityNameChange = (value: string) => {
     setCityName(value);
     setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== "name")
+      prevErrors.filter((error) => error.path[0] !== "name"),
     );
   };
 
@@ -45,9 +44,8 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
-        notifyError();
       } else {
-        notifyError(getErrorMessage(err));
+        notifyError(err);
       }
     }
   };

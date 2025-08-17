@@ -10,11 +10,13 @@ import { MODAL_NAMES, type TOpenModalPayload } from "./modal-types";
 import ConfirmModal from "../modals/confirm/confirm.modal";
 import CityFormModal from "@/core/components/common/modals/manage-city/manage-city.modal";
 import WorkAreaFormModal from "../modals/manage-areas/manage-areas.modal";
+import DisclosureFiltersModal from "@/features/disclosures/components/disclosure-filters.modal";
 
 const MODALS = {
   [MODAL_NAMES.CONFIRM_MODAL]: ConfirmModal,
   [MODAL_NAMES.CITY_FORM_MODAL]: CityFormModal,
   [MODAL_NAMES.WORK_AREA_FORM_MODAL]: WorkAreaFormModal,
+  [MODAL_NAMES.DISCLOSURE_FILTERS_MODAL]: DisclosureFiltersModal,
 } as const;
 
 const ModalContext = createContext<{

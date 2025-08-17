@@ -13,8 +13,6 @@ import {
   UpdateWorkAreaSchema,
   WorkAreaSchema,
 } from "@/features/banks/schemas/work-area.schema";
-import STRINGS from "@/core/constants/strings.constant";
-import { getErrorMessage } from "@/core/helpers/helpers";
 
 interface IWorkAreaFormModalProps {
   oldWorkArea?: TArea;
@@ -34,7 +32,7 @@ const WorkAreaFormModal = ({
 
   const [workAreaName, setWorkAreaName] = useState<string>("");
   const [selectedCityId, setSelectedCityId] = useState<string>(
-    defaultSelectedCity || ""
+    defaultSelectedCity || "",
   );
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
@@ -48,7 +46,7 @@ const WorkAreaFormModal = ({
   const handleWorkAreaNameChange = (value: string) => {
     setWorkAreaName(value);
     setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== "name")
+      prevErrors.filter((error) => error.path[0] !== "name"),
     );
   };
 
@@ -81,15 +79,17 @@ const WorkAreaFormModal = ({
         await addWorkArea(validatedPayload).unwrap();
       }
       notifySuccess(
-        oldWorkArea ? STRINGS.edited_successfully : STRINGS.added_successfully
+        oldWorkArea
+          ? "Work Area updated successfully!"
+          : "Work Area added successfully!",
       );
       closeModal();
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
-        notifyError();
+        notifyError("Please correct the form errors.");
       } else {
-        notifyError(getErrorMessage(err));
+        notifyError(err.data?.message || err.error || "Something went wrong.");
         console.error("error:", err);
       }
     }

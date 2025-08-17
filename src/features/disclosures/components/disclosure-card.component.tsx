@@ -30,7 +30,7 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         icon={<Person />}
         label={STRINGS.disclosure_scout}
         iconColorPreset="green"
-        value={disclosure.employee?.name ?? STRINGS.none}
+        value={disclosure.scout?.name ?? STRINGS.none}
       />
 
       <DetailItemComponent
