@@ -13,6 +13,7 @@ import {
   UpdateWorkAreaSchema,
   WorkAreaSchema,
 } from "@/features/banks/schemas/work-area.schema";
+import STRINGS from "@/core/constants/strings.constant";
 
 interface IWorkAreaFormModalProps {
   oldWorkArea?: TArea;
@@ -79,18 +80,15 @@ const WorkAreaFormModal = ({
         await addWorkArea(validatedPayload).unwrap();
       }
       notifySuccess(
-        oldWorkArea
-          ? "Work Area updated successfully!"
-          : "Work Area added successfully!"
+        oldWorkArea ? STRINGS.edited_successfully : STRINGS.added_successfully
       );
       closeModal();
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
-        notifyError("Please correct the form errors.");
+        notifyError();
       } else {
         notifyError(err);
-        console.error("error:", err);
       }
     }
   };

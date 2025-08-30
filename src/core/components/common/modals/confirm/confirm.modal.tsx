@@ -65,7 +65,6 @@ const ConfirmModal = ({
       await Promise.resolve(onConfirm());
       closeModal();
     } catch (error) {
-      console.log("🚀 ~ handleConfirm ~ error:", error);
       notifyError(error);
     } finally {
       setIsLoading(false);

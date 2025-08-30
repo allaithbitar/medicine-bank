@@ -26,7 +26,7 @@ export const useCityName = (cityId: string) => {
 
   useEffect(() => {
     if (isError) {
-      notifyError("Failed to load city data.");
+      notifyError();
     }
   }, [isError, error]);
 
