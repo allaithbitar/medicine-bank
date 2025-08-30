@@ -7,7 +7,6 @@ import {
   notifyError,
   notifySuccess,
 } from "@/core/components/common/toast/toast";
-import { getErrorMessage } from "@/core/helpers/helpers";
 import type { TBenefificaryFormHandlers } from "../components/beneficiary-action-form.component";
 import BeneficiaryActionForm from "../components/beneficiary-action-form.component";
 import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
@@ -33,7 +32,7 @@ const BeneficiaryActionPage = () => {
   const { data: beneficiaryData, isLoading: isGetting } =
     beneficiaryApi.useGetBeneficiaryQuery(
       { id: beneficiaryId ?? "" },
-      { skip: !beneficiaryId },
+      { skip: !beneficiaryId }
     );
 
   const isLoading = isAdding || isUpdating || isGetting;
@@ -57,7 +56,7 @@ const BeneficiaryActionPage = () => {
         const { error } = await addBeneficiary(addDto);
 
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           navigate(-1);
           notifySuccess(STRINGS.added_successfully);
@@ -69,14 +68,14 @@ const BeneficiaryActionPage = () => {
         });
 
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           navigate(-1);
           notifySuccess(STRINGS.edited_successfully);
         }
       }
     } catch (error: any) {
-      notifyError(getErrorMessage(error));
+      notifyError(error);
     }
   };
 

@@ -5,7 +5,6 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useLocation, useNavigate } from "react-router-dom";
 import authApi from "../api/auth.api";
 import useUser from "@/core/hooks/user-user.hook";
-import { getErrorMessage } from "@/core/helpers/helpers";
 import { notifyError } from "@/core/components/common/toast/toast";
 import { authActions } from "@/core/slices/auth/auth.slice";
 import STRINGS from "@/core/constants/strings.constant";
@@ -38,7 +37,7 @@ const LoginPage = () => {
     if (error) {
       console.log(error);
 
-      return notifyError(getErrorMessage(error));
+      return notifyError(error);
     }
     dispatch(authActions.setUser(data));
   };

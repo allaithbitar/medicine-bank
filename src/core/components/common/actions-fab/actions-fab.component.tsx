@@ -1,4 +1,4 @@
-import { Add, More } from "@mui/icons-material";
+import { Add, MoreHoriz } from "@mui/icons-material";
 import { SpeedDial, SpeedDialAction } from "@mui/material";
 import type { ReactNode } from "react";
 
@@ -16,7 +16,7 @@ const ActionsFab = ({ icon, actions }: TProps) => {
     <SpeedDial
       ariaLabel=""
       sx={{ position: "fixed", right: 10, bottom: 10 }}
-      icon={icon || <More />}
+      icon={icon || <MoreHoriz />}
     >
       {actions.map((a) => (
         <SpeedDialAction

@@ -7,7 +7,7 @@ import { useModal } from "@/core/components/common/modal/modal-provider.componen
 import type { TCity } from "@/features/banks/types/city.types";
 import citiesApi from "@/features/banks/api/cities-api/cities.api";
 import { notifyError, notifySuccess } from "../../toast/toast";
-import { getErrorMessage } from "@/core/helpers/helpers";
+import STRINGS from "@/core/constants/strings.constant";
 
 const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
   const { closeModal } = useModal();
@@ -45,9 +45,8 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
-        notifyError();
       } else {
-        notifyError(getErrorMessage(err));
+        notifyError(err);
       }
     }
   };
@@ -62,7 +61,7 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
   return (
     <ModalWrapper
       isLoading={isUpdatingCity || isAddingCity}
-      title={oldCity ? "Edit City" : "Add City"}
+      title={oldCity ? STRINGS.edit_city : STRINGS.add_city}
       actionButtons={
         <Stack flexDirection="row" gap={1}>
           <Button
@@ -78,14 +77,14 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
             onClick={handleSubmit}
             sx={{ width: { xs: "100%", sm: "auto" } }}
           >
-            {oldCity ? "Edit" : "Add"}
+            {oldCity ? STRINGS.edit : STRINGS.add}
           </Button>
         </Stack>
       }
     >
       <TextField
         fullWidth
-        label="City Name"
+        label={STRINGS.city_name}
         value={cityName}
         onChange={(e) => handleCityNameChange(e.target.value)}
         error={!!getErrorForField("name")}

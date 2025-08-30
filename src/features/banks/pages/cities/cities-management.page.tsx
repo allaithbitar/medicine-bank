@@ -9,6 +9,7 @@ import type { TCity } from "../../types/city.types";
 import citiesApi from "../../api/cities-api/cities.api";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar.component";
+import STRINGS from "@/core/constants/strings.constant";
 
 const CitiesPage = () => {
   const { openModal } = useModal();
@@ -35,13 +36,13 @@ const CitiesPage = () => {
     <Stack gap={2}>
       {isLoadingCities && <LoadingOverlay />}
       <CustomAppBar
-        title="Manage Cities"
-        subtitle="Add and Manage all Cities"
+        title={STRINGS.city_management}
+        subtitle={STRINGS.add_and_manage_cities}
         children={
           <SearchFilter
             initialQuery={query}
             onSearch={handleSearch}
-            placeholder="Search Work Areas..."
+            placeholder={STRINGS.search_city}
           />
         }
       />

@@ -25,13 +25,13 @@ function Nodata({
       />
       <Typography
         variant="subtitle1"
-        color="text.primary"
+        color="text.disabled"
         fontWeight="medium"
         gutterBottom
       >
         {title}
       </Typography>
-      <Typography variant="subtitle2" color="textSecondary">
+      <Typography variant="subtitle2" color="text.disabled">
         {subTitle}
       </Typography>
     </Stack>

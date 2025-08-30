@@ -31,3 +31,9 @@ export type TPaginationDto = {
   pageSize?: number;
   pageNumber?: number;
 };
+
+export type TActioner = { id: string; name: string };
+
+export type TCreatedBy = { createdBy: TActioner | null };
+
+export type TUpdatedBy = { updatedBy: TActioner | null };

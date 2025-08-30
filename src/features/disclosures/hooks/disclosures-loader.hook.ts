@@ -1,81 +1,46 @@
-import disclosuresToRatingsLocalDb from "@/libs/signaldb/disclosures-to-ratings.db";
+import useIsOffline from "@/core/hooks/use-is-offline.hook";
 import disclosuresApi from "../api/disclosures.api";
-import type { TGetDisclosuresDto } from "../types/disclosure.types";
-import useReactivity from "@/core/hooks/use-reactivity.hook";
-import disclosuresLocalDb from "@/libs/signaldb/disclosures.db";
-// import { localDb } from "@/libs/dexie";
+import { type TGetDisclosuresDto } from "../types/disclosure.types";
+
+import { useLocalDisclosuresLoader } from "./local-disclosures-loader.hook";
 
 export const useDisclosuresLoader = (dto: TGetDisclosuresDto = {}) => {
-  const isOffline = true;
+  const isOffline = useIsOffline();
+
+  const { data: onlineData, ...onlineQueryResult } =
+    disclosuresApi.useGetDisclosuresInfiniteQuery(dto, {
+      skip: isOffline,
+    });
 
   const {
-    data,
-    error,
-    isFetching: isLoading,
-  } = disclosuresApi.useGetDisclosuresQuery(dto, {
-    skip: isOffline,
-  });
-
-  const localResult = useReactivity(() => {
-    let disclosureIds: string[] = [];
-    if (dto.ratingIds) {
-      disclosureIds = disclosuresToRatingsLocalDb
-        .find({ ratingId: { $in: dto.ratingIds } })
-        .fetch()
-        .map((disclosureRating) => disclosureRating.disclosureId);
-    }
-
-    const filters = {
-      ...(dto.status?.length && {
-        status: { $in: dto.status },
-      }),
-      ...(dto.priorityIds?.length && {
-        priorityId: { $in: dto.priorityIds },
-      }),
-      ...(dto.employeeIds?.length && {
-        employeeId: { $in: dto.priorityIds },
-      }),
-      ...(dto.patientId && {
-        patientId: { $eq: dto.patientId },
-      }),
-      ...(dto.patientId && {
-        patientId: { $eq: dto.patientId },
-      }),
-      ...(dto.createdAtStart && {
-        createdAt: { $gte: dto.createdAtStart },
-      }),
-      ...(dto.createdAtEnd && {
-        createdAt: { $lte: dto.createdAtEnd },
-      }),
-      ...(disclosureIds.length && {
-        id: { $in: disclosureIds },
-      }),
-      ...(dto.undelivered && {
-        employeeId: { $eq: null },
-      }),
-    };
-    const totalCount = disclosuresLocalDb
-      .find(filters, {
-        limit: dto.pageSize,
-        skip: dto.pageSize,
-      })
-      .count();
-    const items = disclosuresLocalDb
-      .find(filters, {
-        limit: dto.pageSize,
-        skip: dto.pageNumber! * dto.pageSize!,
-      })
-      .fetch();
-
-    return { items, totalCount };
-  }, [dto]);
+    items: offlineData,
+    totalCount,
+    ...offlineQueryResult
+  } = useLocalDisclosuresLoader(dto);
+  console.log({ offlineData, onlineData });
 
   return {
-    items: (isOffline ? localResult?.items : data?.items) ?? [],
-    pageSize: dto.pageSize,
-    pageNumber: dto.pageNumber,
-    totalCount: (isOffline ? localResult?.totalCount : data?.totalCount) ?? 0,
-    isLoading,
-    error,
+    items: isOffline
+      ? offlineData
+      : (onlineData?.pages.map((p) => p.items).flat() ?? []),
+    totalCount: isOffline ? totalCount : (onlineData?.pages[0].totalCount ?? 0),
+    hasNextPage: isOffline
+      ? offlineQueryResult.hasNextPage
+      : onlineQueryResult.hasNextPage,
+    fetchNextPage: isOffline
+      ? offlineQueryResult.fetchNextPage
+      : onlineQueryResult.fetchNextPage,
+    isFetchingNextPage: isOffline
+      ? offlineQueryResult.isFetchingNextPage
+      : onlineQueryResult.isFetchingNextPage,
+    isFetching: isOffline
+      ? offlineQueryResult.isFetching
+      : onlineQueryResult.isFetching,
+
+    isLoading: isOffline
+      ? offlineQueryResult.isLoading
+      : onlineQueryResult.isLoading,
+
+    error: isOffline ? offlineQueryResult.error : onlineQueryResult.error,
   };
 };

@@ -1,6 +1,7 @@
 import hotToast, { type ToastOptions } from "react-hot-toast";
 import CustomToast from "./custom-toast.component.tsx";
 import STRINGS from "@/core/constants/strings.constant.ts";
+import { getErrorMessage } from "@/core/helpers/helpers.ts";
 
 type CustomToastOptions = ToastOptions;
 
@@ -67,7 +68,7 @@ export const notifySuccess = (
     (t) => (
       <CustomToast
         t={t}
-        message={message || STRINGS.action_success}
+        message={message || "Action Done Successfully"}
         type="success"
       />
     ),
@@ -77,12 +78,12 @@ export const notifySuccess = (
 
 /**
  * Displays an error toast notification.
- * @param message The message to display.
+ * @param error The error to display.
  * @param options Optional: Additional react-hot-toast options to merge.
  * @returns The ID of the displayed toast.
  */
 export const notifyError = (
-  message?: string,
+  error?: unknown,
   options?: CustomToastOptions
 ): string => {
   const mergedOptions = { ...defaultErrorOptions, ...options };
@@ -90,7 +91,7 @@ export const notifyError = (
     (t) => (
       <CustomToast
         t={t}
-        message={message || STRINGS.something_went_wrong}
+        message={getErrorMessage(error || STRINGS.something_went_wrong)}
         type="error"
       />
     ),

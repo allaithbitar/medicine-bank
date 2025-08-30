@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
-
+// import basicSsl from "@vitejs/plugin-basic-ssl";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -39,9 +39,23 @@ export default defineConfig({
       },
     }),
     tsconfigPaths(),
+    {
+      name: "configure-response-headers",
+      configureServer: (server) => {
+        server.middlewares.use((_req, res, next) => {
+          res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+          res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+          next();
+        });
+      },
+    },
+    // basicSsl(),
   ],
   server: {
     port: 5001,
     watch: { usePolling: true },
+  },
+  optimizeDeps: {
+    exclude: ["sqlocal"],
   },
 });

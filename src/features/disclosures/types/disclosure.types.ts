@@ -1,4 +1,9 @@
-import type { TPaginationDto } from "@/core/types/common.types";
+import type {
+  TActioner,
+  TCreatedBy,
+  TPaginationDto,
+  TUpdatedBy,
+} from "@/core/types/common.types";
 import type { TBenefieciary } from "@/features/beneficiaries/types/beneficiary.types";
 import type { TPriorityDegree } from "@/features/priority-degres/types/priority-degree.types";
 import type { TRating } from "@/features/ratings/types/rating.types";
@@ -19,30 +24,14 @@ export type TDisclosureStatus = keyof typeof DisclosureStatus;
 
 export type TDisclosureVisitResult = keyof typeof DisclosureVisitResult;
 
-export type TDisclosureEmployee =
+export type TDisclosureScout =
   | {
-      employeeId: string;
-      employee: {
-        id: string;
-        name: string;
-      };
+      scoutId: string;
+      scout: TActioner;
     }
   | {
-      employeeId: null;
-      employee: null;
-    };
-
-export type TDisclosureArea =
-  | {
-      areaId: string;
-      area: {
-        id: string;
-        name: string;
-      };
-    }
-  | {
-      areaId: null;
-      area: null;
+      scoutId: null;
+      scout: null;
     };
 
 export type TDisclosure = {
@@ -50,19 +39,19 @@ export type TDisclosure = {
   status: TDisclosureStatus;
   priorityId: string;
   patientId: string;
-  employeeId: string | null;
   createdAt: string;
   updatedAt: string | null;
   patient: TBenefieciary;
   priority: TPriorityDegree;
-} & TDisclosureEmployee &
-  TDisclosureArea;
+} & TDisclosureScout &
+  TCreatedBy &
+  TUpdatedBy;
 
 export type TGetDisclosuresDto = Partial<
   TPaginationDto & {
     patientId?: string;
     status?: TDisclosureStatus[];
-    employeeIds?: string[];
+    scoutIds?: string[];
     ratingIds?: string[];
     priorityIds?: string[];
     createdAtStart?: string;
@@ -73,7 +62,7 @@ export type TGetDisclosuresDto = Partial<
 
 export type TAddDisclosureDto = {
   status?: TDisclosureStatus;
-  employeeId?: string | null;
+  scoutId?: string | null;
   patientId: string;
   priorityId: string;
 };

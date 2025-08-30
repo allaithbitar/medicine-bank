@@ -4,7 +4,6 @@ import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
 import { Save } from "@mui/icons-material";
 import type { TAddDisclosureVisitDto } from "../types/disclosure.types";
 import disclosuresApi from "../api/disclosures.api";
-import { getErrorMessage } from "@/core/helpers/helpers";
 import {
   notifyError,
   notifySuccess,
@@ -28,7 +27,7 @@ const DisclosureVisitActionPage = () => {
   const { data: disclosureVisitData, isFetching: isGetting } =
     disclosuresApi.useGetDisclosureVisitQuery(
       { id: visitId! },
-      { skip: !visitId },
+      { skip: !visitId }
     );
 
   const [addDisclosureVisit, { isLoading: isAdding }] =
@@ -53,7 +52,7 @@ const DisclosureVisitActionPage = () => {
         const { error } = await addDisclosureVisit(addDto);
 
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           navigate(-1);
           notifySuccess(STRINGS.added_successfully);
@@ -64,14 +63,14 @@ const DisclosureVisitActionPage = () => {
           id: visitId!,
         });
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           navigate(-1);
           notifySuccess(STRINGS.edited_successfully);
         }
       }
     } catch (error: any) {
-      notifyError(getErrorMessage(error));
+      notifyError(error);
     }
   };
 

@@ -1,4 +1,5 @@
 import { Stack } from "@mui/material";
+
 import { useCallback, useImperativeHandle, useState, type Ref } from "react";
 import type {
   TDisclosureStatus,
@@ -30,7 +31,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
   const [filters, setFilters] = useState<
     {
       status: { id: TDisclosureStatus; label: string }[];
-      employees: TEmployee[];
+      scouts: TEmployee[];
       priorityDegrees: TPriorityDegree[];
       ratings: TRating[];
       beneficiary: TBenefieciary | null;
@@ -40,7 +41,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
     status: [],
     createdAtStart: "",
     createdAtEnd: "",
-    employees: [],
+    scouts: [],
     priorityDegrees: [],
     ratings: [],
     beneficiary: null,
@@ -49,7 +50,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
 
   const handleSubmit = useCallback(() => {
     const result: Omit<TGetDisclosuresDto, "pageSize" | "pageNumber"> = {
-      employeeIds: filters.employees.map((e) => e.id),
+      scoutIds: filters.scouts.map((e) => e.id),
       priorityIds: filters.priorityDegrees.map((pd) => pd.id),
       ratingIds: filters.ratings.map((r) => r.id),
       status: filters.status.map((s) => s.id),
@@ -108,8 +109,10 @@ const DisclosureFilters = ({ ref }: TProps) => {
         roles={["scout"]}
         label={STRINGS.the_scout}
         multiple
-        value={filters.employees}
-        onChange={(employees) => setFilters((prev) => ({ ...prev, employees }))}
+        value={filters.scouts}
+        onChange={(employees) =>
+          setFilters((prev) => ({ ...prev, scouts: employees }))
+        }
       />
 
       <PriorityDegreesAutocomplete

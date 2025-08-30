@@ -2,9 +2,10 @@ import useReactivity from "@/core/hooks/use-reactivity.hook";
 import type { TGetBeneficiariesDto } from "../types/beneficiary.types";
 import beneficiaryApi from "../api/beneficiary.api";
 import beneficiariesLocalDb from "@/libs/signaldb/beneficiaries.db";
+import useIsOffline from "@/core/hooks/use-is-offline.hook";
 
 export const useBeneficiariesLoader = (dto: TGetBeneficiariesDto = {}) => {
-  const isOffline = true;
+  const isOffline = useIsOffline();
 
   const {
     data,

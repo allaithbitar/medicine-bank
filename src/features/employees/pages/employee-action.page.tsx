@@ -6,7 +6,6 @@ import {
   notifyError,
   notifySuccess,
 } from "@/core/components/common/toast/toast";
-import { getErrorMessage } from "@/core/helpers/helpers";
 import employeesApi from "../api/employees.api";
 import type { TAddEmployeeDto } from "../types/employee.types";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -34,7 +33,7 @@ const EmployeeActionPage = () => {
   const { data: employeeData, isFetching: isGetting } =
     employeesApi.useGetEmployeeQuery(
       { id: employeeId! },
-      { skip: !employeeId }
+      { skip: !employeeId },
     );
 
   const isLoading = isAdding || isUpdating || isGetting;
@@ -58,7 +57,7 @@ const EmployeeActionPage = () => {
         const { error } = await addEmployee(addDto);
 
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           notifySuccess(STRINGS.added_successfully);
           navigate(-1);
@@ -69,14 +68,14 @@ const EmployeeActionPage = () => {
           id: employeeId,
         });
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           notifySuccess(STRINGS.edited_successfully);
           navigate(-1);
         }
       }
     } catch (error: any) {
-      notifyError(getErrorMessage(error));
+      notifyError(error);
     }
   };
 

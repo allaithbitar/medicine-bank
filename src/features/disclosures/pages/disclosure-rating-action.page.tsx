@@ -7,7 +7,6 @@ import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
 import { Save } from "@mui/icons-material";
 import type { TAddDisclosureRatingDto } from "../types/disclosure.types";
 import disclosuresApi from "../api/disclosures.api";
-import { getErrorMessage } from "@/core/helpers/helpers";
 import {
   notifyError,
   notifySuccess,
@@ -29,7 +28,7 @@ const DisclosureRatingActionPage = () => {
   const { data: disclosureRatingData, isFetching: isGetting } =
     disclosuresApi.useGetDisclosureRatingQuery(
       { id: ratingId! },
-      { skip: !ratingId },
+      { skip: !ratingId }
     );
 
   console.log({ disclosureRatingData });
@@ -57,7 +56,7 @@ const DisclosureRatingActionPage = () => {
         const { error } = await addDisclosureRating(addDto);
 
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           navigate(-1);
           notifySuccess(STRINGS.added_successfully);
@@ -68,14 +67,14 @@ const DisclosureRatingActionPage = () => {
           id: ratingId!,
         });
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           navigate(-1);
           notifySuccess(STRINGS.edited_successfully);
         }
       }
     } catch (error: any) {
-      notifyError(getErrorMessage(error));
+      notifyError(error);
     }
   };
 

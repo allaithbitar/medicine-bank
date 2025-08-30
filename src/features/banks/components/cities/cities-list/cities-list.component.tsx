@@ -5,6 +5,7 @@ import { Business as BuildingOfficeIcon } from "@mui/icons-material";
 import { useCallback } from "react";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TCity } from "@/features/banks/types/city.types";
+import STRINGS from "@/core/constants/strings.constant";
 
 interface ICitiesList {
   onEdit: (city: TCity) => void;
@@ -32,7 +33,7 @@ function CitiesList({ onEdit, cities, isLoadingCities }: ICitiesList) {
     <>
       <Grid container gap={2} justifyContent="center">
         {cities.map((city) => (
-          <Grid key={city.name}>
+          <Grid width="100%" key={city.name}>
             <CityCard
               city={city}
               onEdit={() => onEdit(city)}
@@ -44,8 +45,8 @@ function CitiesList({ onEdit, cities, isLoadingCities }: ICitiesList) {
       {cities.length === 0 && !isLoadingCities && (
         <Nodata
           icon={BuildingOfficeIcon}
-          title="No Cities found"
-          subTitle="Add some Cities to see them."
+          title={STRINGS.no_cities_found}
+          subTitle={STRINGS.add_to_see}
         />
       )}
     </>

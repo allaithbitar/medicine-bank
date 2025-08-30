@@ -4,7 +4,6 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import disclosuresApi from "../api/disclosures.api";
 import { Button, Card, Stack, Tab, Tabs } from "@mui/material";
 import STRINGS from "@/core/constants/strings.constant";
 import DetailItem from "@/core/components/common/detail-item/detail-item.component";
@@ -16,12 +15,15 @@ import {
   EventAvailable,
   History,
   InfoOutline,
+  Person,
 } from "@mui/icons-material";
 import { formatDateTime } from "@/core/helpers/helpers";
 import PageLoading from "@/core/components/common/page-loading/page-loading.component";
 import DisclosureRatings from "../components/disclosure-ratings.component";
 import DisclosureVisists from "../components/disclosure-visits.component";
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
+import { useDisclosureLoader } from "../hooks/disclosure-loader.hook";
+import ErrorCard from "@/core/components/common/error-card/error-card.component";
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -31,10 +33,16 @@ const DisclosurePage = () => {
   const navigate = useNavigate();
 
   const { disclosureId } = useParams();
-  const { data: disclosure, isLoading } = disclosuresApi.useGetDisclosureQuery(
-    { id: disclosureId! },
-    { skip: !disclosureId },
-  );
+
+  const {
+    data: disclosure,
+    isLoading,
+    error,
+  } = useDisclosureLoader({ id: disclosureId });
+
+  if (error) {
+    return <ErrorCard error={error} />;
+  }
 
   if (isLoading || !disclosure) return <PageLoading />;
 
@@ -60,7 +68,7 @@ const DisclosurePage = () => {
             icon={<DirectionsWalk />}
             label={STRINGS.disclosure_scout}
             // iconColorPreset="green"
-            value={disclosure.employee?.name ?? STRINGS.none}
+            value={disclosure.scout?.name ?? STRINGS.none}
           />
 
           <DetailItem

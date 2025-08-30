@@ -45,7 +45,7 @@ const CustomToast = ({ t, message, type }: ICustomToastProps) => {
       break;
     case "default":
     default:
-      iconComponent = null;
+      iconComponent = null; //  <NotificationsIcon sx={{ color: 'grey.700' }} />
       snackbarBgColor = "#f5f5f5";
       textColor = "#212121";
       break;
@@ -78,24 +78,14 @@ const CustomToast = ({ t, message, type }: ICustomToastProps) => {
           color: textColor,
         }}
         message={
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-              minWidth: 300,
-            }}
-          >
-            <Stack flexDirection="row" gap={1} alignItems="center">
-              {iconComponent}
-              <Typography variant="body2" sx={{ color: textColor }}>
-                {message}
-              </Typography>
-            </Stack>
-            {action}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {iconComponent}
+            <Typography variant="body2" sx={{ color: textColor }}>
+              {message}
+            </Typography>
           </Box>
         }
+        action={action}
       />
     </Stack>
   );

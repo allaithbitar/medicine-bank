@@ -4,8 +4,8 @@ import ReusableCardComponent from "@/core/components/common/reusable-card/reusab
 import { Business as BuildingOfficeIcon } from "@mui/icons-material";
 import CustomIconButton from "@/core/components/common/custom-icon-button/custom-icon-button.component";
 import { DeleteOutline as DeleteOutlineIcon } from "@mui/icons-material";
-import theme from "@/core/theme/index.theme";
 import type { TCity } from "@/features/banks/types/city.types";
+import { indigo, lightBlue } from "@mui/material/colors";
 
 interface ICityCardProps {
   city: TCity;
@@ -54,13 +54,13 @@ const CityCard = ({ city, onEdit, onDelete }: ICityCardProps) => {
         sx={{ color: "white", flexShrink: 0, ml: 2 }}
       >
         <Tooltip title="Delete Employee" arrow>
-          <CustomIconButton onClick={onDelete} size="small">
-            <DeleteOutlineIcon sx={{ color: "white", fontSize: 20 }} />
+          <CustomIconButton disabled onClick={onDelete} size="small">
+            <DeleteOutlineIcon sx={{ color: "white" }} />
           </CustomIconButton>
         </Tooltip>
         <Tooltip title="Edit Employee" arrow>
           <CustomIconButton onClick={onEdit} size="small">
-            <EditIcon sx={{ color: "white", fontSize: 20 }} />
+            <EditIcon sx={{ color: "white" }} />
           </CustomIconButton>
         </Tooltip>
       </Stack>
@@ -72,7 +72,7 @@ const CityCard = ({ city, onEdit, onDelete }: ICityCardProps) => {
       headerContent={headerContent}
       bodyContent={null}
       footerContent={null}
-      headerBackground={`linear-gradient(to right, ${theme.palette.grey[400]}, ${theme.palette.grey[500]})`}
+      headerBackground={`linear-gradient(to right, ${lightBlue[300]}, ${indigo[300]})`}
     />
   );
 };

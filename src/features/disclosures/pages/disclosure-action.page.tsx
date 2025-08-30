@@ -11,7 +11,6 @@ import {
   notifyError,
   notifySuccess,
 } from "@/core/components/common/toast/toast";
-import { getErrorMessage } from "@/core/helpers/helpers";
 import STRINGS from "@/core/constants/strings.constant";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
@@ -28,7 +27,7 @@ const DisclosureActionPage = () => {
   const { data: disclosureData, isFetching: isGetting } =
     disclosuresApi.useGetDisclosureQuery(
       { id: disclosureId! },
-      { skip: !disclosureId },
+      { skip: !disclosureId }
     );
 
   const [addDisclosure, { isLoading: isAdding }] =
@@ -46,7 +45,7 @@ const DisclosureActionPage = () => {
     try {
       const addDto: TAddDisclosureDto = {
         status: result.status?.id,
-        employeeId: result.employee?.id ?? null,
+        scoutId: result.employee?.id ?? null,
         patientId: beneficiaryId ?? result.beneficiary!.id,
         priorityId: result.priorityDegree!.id,
       };
@@ -55,7 +54,7 @@ const DisclosureActionPage = () => {
         const { error } = await addDisclosure(addDto);
 
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           navigate(-1);
           notifySuccess(STRINGS.added_successfully);
@@ -66,14 +65,14 @@ const DisclosureActionPage = () => {
           id: disclosureId,
         });
         if (error) {
-          notifyError(getErrorMessage(error));
+          notifyError(error);
         } else {
           navigate(-1);
           notifySuccess(STRINGS.edited_successfully);
         }
       }
     } catch (error: any) {
-      notifyError(getErrorMessage(error));
+      notifyError(error);
     }
   };
   const isLoading = isAdding || isUpdating || isGetting;

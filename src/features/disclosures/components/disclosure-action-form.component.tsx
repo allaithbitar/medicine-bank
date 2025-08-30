@@ -1,4 +1,5 @@
 import useForm, { type TFormSubmitResult } from "@/core/hooks/use-form.hook";
+
 import { Stack } from "@mui/material";
 import z from "zod";
 import DisclosureStatusAutocomplete from "./disclosure-status-autocomplete";
@@ -86,10 +87,10 @@ const DisclosureActionForm = ({
     if (disclosureData) {
       setFormState({
         beneficiary: disclosureData.patient,
-        employee: disclosureData.employee
+        employee: disclosureData.scout
           ? ({
-              id: disclosureData.employee?.id,
-              name: disclosureData.employee.name,
+              id: disclosureData.scout?.id,
+              name: disclosureData.scout.name,
             } as TEmployee)
           : null,
         priorityDegree: disclosureData.priority,
