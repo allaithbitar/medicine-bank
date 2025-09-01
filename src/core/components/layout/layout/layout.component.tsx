@@ -28,6 +28,7 @@ const Layout = () => {
           overflow: "auto",
           bgcolor: (theme) => theme.palette.grey[100],
           p: 1,
+          position: "relative",
         }}
       >
         <ErrorBoundary>

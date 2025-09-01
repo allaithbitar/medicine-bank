@@ -15,7 +15,12 @@ const ActionsFab = ({ icon, actions }: TProps) => {
   return (
     <SpeedDial
       ariaLabel=""
-      sx={{ position: "fixed", right: 10, bottom: 10 }}
+      sx={{
+        position: "absolute",
+        right: 10,
+        bottom: 10,
+        zIndex: 998,
+      }}
       icon={icon || <MoreHoriz />}
     >
       {actions.map((a) => (

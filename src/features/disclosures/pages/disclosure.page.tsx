@@ -15,7 +15,7 @@ import {
   EventAvailable,
   History,
   InfoOutline,
-  Person,
+  Comment,
 } from "@mui/icons-material";
 import { formatDateTime } from "@/core/helpers/helpers";
 import PageLoading from "@/core/components/common/page-loading/page-loading.component";
@@ -74,19 +74,25 @@ const DisclosurePage = () => {
           <DetailItem
             icon={<EventAvailable />}
             label={STRINGS.created_at}
-            value={formatDateTime(disclosure.createdAt)}
+            value={`${formatDateTime(disclosure.createdAt)} ${STRINGS.by} ${disclosure.createdBy?.name}`}
           />
 
           <DetailItem
             icon={<History />}
             label={STRINGS.updated_at}
             value={
-              disclosure.updatedAt
-                ? formatDateTime(disclosure.updatedAt)
-                : STRINGS.none
+              !disclosure.updatedAt ||
+              disclosure.createdAt === disclosure.updatedAt
+                ? STRINGS.none
+                : `${formatDateTime(disclosure.updatedAt)} ${STRINGS.by} ${disclosure.updatedBy?.name}`
             }
           />
 
+          <DetailItem
+            icon={<Comment />}
+            label={STRINGS.note}
+            value={disclosure.note || STRINGS.none}
+          />
           <Link
             to={`/disclosures/action?disclosureId=${disclosure.id}`}
             style={{ alignSelf: "end" }}

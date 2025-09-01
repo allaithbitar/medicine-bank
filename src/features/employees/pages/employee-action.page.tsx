@@ -48,7 +48,7 @@ const EmployeeActionPage = () => {
       const addDto: TAddEmployeeDto = {
         name: result.name,
         phone: result.phone,
-        areaId: result.area?.id,
+        areaIds: result.areas.map((a) => a.id),
         password: result.password,
         role: result.role!.id,
       };

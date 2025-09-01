@@ -121,6 +121,7 @@ const DisclosureActionForm = ({
 
       {!beneficiaryAlreadyDefined && (
         <BeneficiariesAutocomplete
+          disabled={!!disclosureData}
           required
           multiple={false}
           value={formState.beneficiary}

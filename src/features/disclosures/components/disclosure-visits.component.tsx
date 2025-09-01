@@ -37,7 +37,7 @@ const VisitCard = ({ visit }: { visit: TDisclosureVisit }) => {
           <DetailItem
             icon={<EventAvailable />}
             label={STRINGS.created_at}
-            value={formatDateTime(visit.createdAt)}
+            value={`${formatDateTime(visit.createdAt)} ${STRINGS.by} ${visit.createdBy?.name}`}
           />
 
           <DetailItem
@@ -46,7 +46,7 @@ const VisitCard = ({ visit }: { visit: TDisclosureVisit }) => {
             value={
               !visit.updatedAt || visit.updatedAt === visit.createdAt
                 ? STRINGS.none
-                : formatDateTime(visit.updatedAt)
+                : `${formatDateTime(visit.updatedAt)} ${STRINGS.by} ${visit.updatedBy?.name}`
             }
           />
           <DetailItem

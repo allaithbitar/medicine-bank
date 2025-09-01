@@ -30,6 +30,13 @@ const schema = z
           path: ["customRating"],
           message: "too_short",
         });
+    } else {
+      if (!state.rating)
+        return ctx.addIssue({
+          code: "custom",
+          path: ["rating"],
+          message: "required",
+        });
     }
   });
 
@@ -99,6 +106,7 @@ const DisclosureRatingActionForm = ({ ref, disclosureRatingData }: TProps) => {
             required
             value={formState.rating}
             onChange={(rating) => setValue({ rating })}
+            errorText={formErrors.rating?.[0].message}
           />
         )}
 

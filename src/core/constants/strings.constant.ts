@@ -81,8 +81,9 @@ const STRINGS = {
   edit_city: "تعديل مدينة",
   city_name: "اسم المدينة",
   local_not_found_error: "لم يتم العثور على بيانات لعرضها",
-  created_by: "تمّت الإضافة من قبل",
-  updated_by: "تمّ التعديل من قبل",
+  // created_by: "تمّت الإضافة من قبل",
+  // updated_by: "تمّ التعديل من قبل",
+  by: "من قِبل",
 };
 
 export default STRINGS;

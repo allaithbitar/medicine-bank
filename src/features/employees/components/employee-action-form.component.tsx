@@ -12,8 +12,8 @@ import AreasAutocomplete from "@/features/banks/components/work-areas/work-area-
 import { useEffect, useImperativeHandle, useState, type Ref } from "react";
 import citiesApi from "@/features/banks/api/cities-api/cities.api";
 import { useAppDispatch } from "@/core/store/root.store.types";
-import workAreasApi from "@/features/banks/api/work-areas/work-areas.api";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import type { TEmployee } from "../types/employee.types";
 
 const createEmployeeFormSchema = (optionalPassword = false) => {
   return z
@@ -28,7 +28,7 @@ const createEmployeeFormSchema = (optionalPassword = false) => {
       password: z.string(),
       phone: z.string().min(10, { message: "invalid" }),
       city: z.custom<TCity | null>(),
-      area: z.custom<TArea | null>(),
+      areas: z.custom<TArea[]>(),
     })
     .superRefine((state, ctx) => {
       if (
@@ -52,7 +52,7 @@ export type TEmployeeFormHandlers = {
 
 type TProps = {
   ref: Ref<TEmployeeFormHandlers>;
-  employeeData?: any;
+  employeeData?: TEmployee;
 };
 
 const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
@@ -66,7 +66,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         password: "",
         phone: "",
         city: null,
-        area: null,
+        areas: [],
       },
     });
 
@@ -87,30 +87,21 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
       setIsLoading(true);
       (async () => {
         let _city: TCity | null = null;
-        let _area: TArea | null = null;
+        let _areas: TArea[] = [];
 
         const cities = await dispatch(
           citiesApi.endpoints.getCities.initiate({}),
         ).unwrap();
 
-        if (employeeData.area) {
-          const areas = await dispatch(
-            workAreasApi.endpoints.getWorkAreas.initiate({
-              cityId: employeeData.area?.cityId,
-              name: employeeData.area.name,
-            }),
-          ).unwrap();
-          _area =
-            areas.items.find((a) => a.id === employeeData.area.id) ?? null;
-          console.log({ _area, areas });
+        if (employeeData.areas) {
+          _areas = employeeData.areas.map((a) => a.area);
 
-          _city =
-            cities.items.find((c) => c.id === employeeData.area.cityId) ?? null;
+          _city = cities.items.find((c) => c.id === _areas[0]?.cityId) ?? null;
         }
 
         setFormState({
           name: employeeData.name,
-          area: _area,
+          areas: _areas,
           city: _city,
           phone: employeeData.phone,
           role: {
@@ -164,11 +155,10 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         errorText={formErrors.city?.[0].message}
       />
       <AreasAutocomplete
-        multiple={false}
+        multiple={true}
         cityId={formState.city?.id}
-        value={formState.area}
-        onChange={(v) => setValue({ area: v })}
-        errorText={formErrors.area?.[0].message}
+        value={formState.areas}
+        onChange={(v) => setValue({ areas: v })}
       />
       {isLoading && <LoadingOverlay />}
     </Stack>

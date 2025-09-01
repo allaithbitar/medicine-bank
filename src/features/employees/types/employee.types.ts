@@ -11,7 +11,7 @@ export type TEmployeeRole = keyof typeof EmployeeRole;
 export type TAddEmployeeDto = {
   name: string;
   password: string;
-  areaId?: string;
+  areaIds?: string[];
   phone: string;
   role: TEmployeeRole;
 };
@@ -26,15 +26,15 @@ export type TSearchEmployeesDto = {
   role?: TEmployeeRole[];
 };
 
-export type TEmployeeArea =
-  | { areaId: null; area: null }
-  | { areaId: string; area: TArea };
+export type TEmployeeAreas = {
+  areas: { area: TArea }[];
+};
 
 export type TEmployee = {
   id: string;
   name: string;
   phone: string;
-  role: string;
+  role: TEmployeeRole;
   createdAt: string;
   updatedAt: string;
-} & TEmployeeArea;
+} & TEmployeeAreas;

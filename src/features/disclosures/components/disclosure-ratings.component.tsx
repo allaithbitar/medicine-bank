@@ -42,7 +42,7 @@ const RatingCard = ({ rating }: { rating: TDisclosureRating }) => {
           <DetailItem
             icon={<EventAvailable />}
             label={STRINGS.created_at}
-            value={formatDateTime(rating.createdAt)}
+            value={`${formatDateTime(rating.createdAt)} ${STRINGS.by} ${rating.createdBy?.name}`}
           />
 
           <DetailItem
@@ -51,7 +51,7 @@ const RatingCard = ({ rating }: { rating: TDisclosureRating }) => {
             value={
               rating.updatedAt === rating.createdAt
                 ? STRINGS.none
-                : formatDateTime(rating.updatedAt)
+                : `${formatDateTime(rating.updatedAt)} ${STRINGS.by} ${rating.updatedBy?.name}`
             }
           />
           <DetailItem

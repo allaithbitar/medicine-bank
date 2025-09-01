@@ -75,22 +75,22 @@ export type TDisclosureRating = {
   note: string | null;
   createdAt: string;
   updatedAt: string;
-  createdBy: string | null;
-  updatedBy: string | null;
-} & (
-  | {
-      ratingId: string;
-      rating: TRating;
-      isCustom: false;
-      customRating: null;
-    }
-  | {
-      ratingId: null;
-      rating: null;
-      isCustom: true;
-      customRating: string;
-    }
-);
+} & TCreatedBy &
+  TUpdatedBy &
+  (
+    | {
+        ratingId: string;
+        rating: TRating;
+        isCustom: false;
+        customRating: null;
+      }
+    | {
+        ratingId: null;
+        rating: null;
+        isCustom: true;
+        customRating: string;
+      }
+  );
 
 export type TAddDisclosureRatingDto = Pick<
   TDisclosureRating,
@@ -113,9 +113,8 @@ export type TDisclosureVisit = {
   note: string | null;
   createdAt: string;
   updatedAt: string | null;
-  createdBy: string | null;
-  updatedBy: string | null;
-};
+} & TCreatedBy &
+  TUpdatedBy;
 
 export type TGetDisclosureRatingsDto = TPaginationDto & {
   isCustom?: boolean;

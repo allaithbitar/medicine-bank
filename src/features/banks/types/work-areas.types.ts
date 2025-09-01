@@ -5,8 +5,6 @@ export interface TArea {
   id: string;
   name: string;
   cityId: string;
-  employeeCount: number;
-  createdDate: string;
 }
 
 export type TAddWorkAreaPayload = {
