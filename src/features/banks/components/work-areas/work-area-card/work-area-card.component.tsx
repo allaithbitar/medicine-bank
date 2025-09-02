@@ -2,7 +2,6 @@ import { memo } from "react";
 import { Avatar, Box, Typography, Tooltip, Stack } from "@mui/material";
 import {
   Business as BuildingOfficeIcon,
-  Group as UsersIcon,
   Edit as PencilIcon,
   Delete as TrashIcon,
 } from "@mui/icons-material";
@@ -69,22 +68,22 @@ const WorkAreaCard = ({ workArea, onEdit, onDelete }: IWorkAreaCardProps) => {
             <PencilIcon sx={{ fontSize: 20, color: "white" }} />
           </CustomIconButton>
         </Tooltip>
-        <Tooltip
+        {/* <Tooltip
           title={
             workArea.employeeCount > 0
               ? "Cannot delete: employees assigned"
               : "Delete work area"
           }
-        >
-          <CustomIconButton onClick={onDelete} size="small">
-            <TrashIcon
-              sx={{
-                fontSize: 20,
-                color: "white",
-              }}
-            />
-          </CustomIconButton>
-        </Tooltip>
+        > */}
+        <CustomIconButton onClick={onDelete} size="small">
+          <TrashIcon
+            sx={{
+              fontSize: 20,
+              color: "white",
+            }}
+          />
+        </CustomIconButton>
+        {/* </Tooltip> */}
       </Stack>
     </Box>
   );
@@ -96,16 +95,16 @@ const WorkAreaCard = ({ workArea, onEdit, onDelete }: IWorkAreaCardProps) => {
         label="city"
         value={cityName}
       />
-      <DetailItemComponent
+      {/*    <DetailItemComponent
         icon={<UsersIcon fontSize="small" />}
         label="Employees"
         value={`${workArea.employeeCount} assigned`}
-      />
-      <DetailItemComponent
+      /> */}
+      {/* <DetailItemComponent
         icon={<BuildingOfficeIcon fontSize="small" />}
         label="Created"
         value={new Date(workArea.createdDate).toLocaleDateString()}
-      />
+      /> */}
     </Box>
   );
 

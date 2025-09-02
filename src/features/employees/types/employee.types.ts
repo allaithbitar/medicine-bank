@@ -1,4 +1,4 @@
-import type { TArea } from "@/features/banks/types/work-areas.types";
+import type { TArea } from "../../banks/types/work-areas.types";
 
 export const EmployeeRole = {
   manager: "manager",

@@ -43,6 +43,7 @@ export type TDisclosure = {
   updatedAt: string | null;
   patient: TBenefieciary;
   priority: TPriorityDegree;
+  note: string | null;
 } & TDisclosureScout &
   TCreatedBy &
   TUpdatedBy;

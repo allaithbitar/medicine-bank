@@ -1,11 +1,11 @@
 import type { IOptions } from "@/core/types/common.types";
 import type { AutocompleteProps } from "@mui/material";
 
-export interface TArea {
+export type TArea = {
   id: string;
   name: string;
   cityId: string;
-}
+};
 
 export type TAddWorkAreaPayload = {
   name: string;

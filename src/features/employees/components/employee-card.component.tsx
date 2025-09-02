@@ -43,7 +43,9 @@ const EmployeeCard = ({
         icon={<LocationPin />}
         label={STRINGS.area}
         iconColorPreset="deepPurple"
-        value={employee.area?.name ?? STRINGS.none}
+        value={
+          employee.areas.map((a) => a.area.name).join(", ") || STRINGS.none
+        }
       />
 
       <DetailItemComponent
