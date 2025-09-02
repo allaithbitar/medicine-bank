@@ -3,7 +3,7 @@ import type { RootStoreState } from "../store/root.store.types";
 
 // const baseUrl = "http://localhost:5000";
 
-const baseUrl = `${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`;
+const baseUrl = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`;
 
 export const rootApi = createApi({
   reducerPath: "api",
