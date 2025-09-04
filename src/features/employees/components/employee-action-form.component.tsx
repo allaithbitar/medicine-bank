@@ -7,7 +7,7 @@ import FormTextFieldInput from "@/core/components/common/inputs/form-text-field-
 import STRINGS from "@/core/constants/strings.constant";
 import type { TArea } from "@/features/banks/types/work-areas.types";
 import type { TCity } from "@/features/banks/types/city.types";
-import CitiesAutocomplete from "@/features/banks/components/work-areas/cities-autocomplete/cities-autocomplete.component";
+import CitiesAutocomplete from "@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component";
 import AreasAutocomplete from "@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component";
 import { useEffect, useImperativeHandle, useState, type Ref } from "react";
 import citiesApi from "@/features/banks/api/cities-api/cities.api";
@@ -22,7 +22,7 @@ const createEmployeeFormSchema = (optionalPassword = false) => {
         (data) => !!data,
         {
           message: "Role is required",
-        },
+        }
       ),
       name: z.string().min(5, { message: "too short" }),
       password: z.string(),
@@ -77,7 +77,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         return handleSubmit();
       },
     }),
-    [handleSubmit],
+    [handleSubmit]
   );
 
   const dispatch = useAppDispatch();
@@ -90,7 +90,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         let _areas: TArea[] = [];
 
         const cities = await dispatch(
-          citiesApi.endpoints.getCities.initiate({}),
+          citiesApi.endpoints.getCities.initiate({})
         ).unwrap();
 
         if (employeeData.areas) {

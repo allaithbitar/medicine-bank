@@ -6,6 +6,7 @@ import employeesApi from "../api/employees.api";
 import { Stack } from "@mui/material";
 import EmployeeCard from "../components/employee-card.component";
 import { useNavigate } from "react-router-dom";
+import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
 
 const EmployeesPage = () => {
   const navigate = useNavigate();
@@ -14,10 +15,18 @@ const EmployeesPage = () => {
     employeesApi.useGetEmployeesQuery({});
 
   return (
-    <Stack gap={2}>
-      {employees.map((e) => (
-        <EmployeeCard employee={e} key={e.id} />
-      ))}
+    <Stack gap={2} sx={{ height: "100%" }}>
+      <VirtualizedList
+        items={employees}
+        containerStyle={{ flex: 1 }}
+        virtualizationOptions={{
+          count: employees.length,
+        }}
+      >
+        {({ item: e }) => {
+          return <EmployeeCard employee={e} key={e.id} />;
+        }}
+      </VirtualizedList>
       <ActionsFab
         actions={[
           {

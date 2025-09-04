@@ -17,7 +17,7 @@ const ActionsFab = ({ icon, actions }: TProps) => {
       ariaLabel=""
       sx={{
         position: "absolute",
-        right: 10,
+        right: 25,
         bottom: 10,
         zIndex: 998,
       }}

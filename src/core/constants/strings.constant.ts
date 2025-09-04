@@ -78,12 +78,16 @@ const STRINGS = {
   no_cities_found: "لاتوجد اي مدينة",
   add_to_see: "اضف بيانات لتظهر هنا",
   add_city: "اضف مدينة",
+  no_work_areas_found: "لاتوجد اي منطقة",
   edit_city: "تعديل مدينة",
   city_name: "اسم المدينة",
   local_not_found_error: "لم يتم العثور على بيانات لعرضها",
   // created_by: "تمّت الإضافة من قبل",
   // updated_by: "تمّ التعديل من قبل",
   by: "من قِبل",
+  work_areas: "ادارة المناطق",
+  work_areas_subtitle: "ادارة وتنظيم المناطق",
+  search_work_area: "ابحث عن منطقة ...",
 };
 
 export default STRINGS;

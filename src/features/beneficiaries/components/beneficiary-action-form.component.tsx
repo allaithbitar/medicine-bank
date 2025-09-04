@@ -3,7 +3,7 @@ import FormTextAreaInput from "@/core/components/common/inputs/form-text-area-in
 import FormTextFieldInput from "@/core/components/common/inputs/form-text-field-input.component";
 import STRINGS from "@/core/constants/strings.constant";
 import useForm, { type TFormSubmitResult } from "@/core/hooks/use-form.hook";
-import CitiesAutocomplete from "@/features/banks/components/work-areas/cities-autocomplete/cities-autocomplete.component";
+import CitiesAutocomplete from "@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component";
 import AreasAutocomplete from "@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component";
 import type { TCity } from "@/features/banks/types/city.types";
 import type { TArea } from "@/features/banks/types/work-areas.types";
@@ -121,7 +121,7 @@ function BeneficiaryActionForm({
         let _area: TArea | null = null;
 
         const cities = await dispatch(
-          citiesApi.endpoints.getCities.initiate({}),
+          citiesApi.endpoints.getCities.initiate({})
         ).unwrap();
 
         if (beneficiaryData.area) {
@@ -129,7 +129,7 @@ function BeneficiaryActionForm({
             workAreasApi.endpoints.getWorkAreas.initiate({
               cityId: beneficiaryData.area?.cityId,
               name: beneficiaryData.area.name,
-            }),
+            })
           ).unwrap();
           _area =
             areas.items.find((a) => a.id === beneficiaryData.area.id) ?? null;
@@ -160,7 +160,7 @@ function BeneficiaryActionForm({
         return handleSubmit();
       },
     }),
-    [handleSubmit],
+    [handleSubmit]
   );
 
   return (

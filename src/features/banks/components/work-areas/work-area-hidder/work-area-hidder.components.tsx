@@ -4,17 +4,20 @@ import { useState, type Dispatch, type SetStateAction } from "react";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CustomIconButton from "@/core/components/common/custom-icon-button/custom-icon-button.component";
 import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar.component";
+import STRINGS from "@/core/constants/strings.constant";
+import CitiesAutocomplete from "../../cities/cities-autocomplete/cities-autocomplete.component";
+import type { TCity } from "@/features/banks/types/city.types";
 
 interface IWorkAreasAppBar {
   handleSearch: (query: string | null) => void;
-  setSelectedCityId: Dispatch<SetStateAction<string>>;
-  selectedCityId: string;
+  setSelectedCity: Dispatch<SetStateAction<TCity | null>>;
+  selectedCity: TCity | null;
 }
 
 function WorkAreasAppBar({
   handleSearch,
-  // setSelectedCityId,
-  // selectedCityId,
+  setSelectedCity,
+  selectedCity,
 }: IWorkAreasAppBar) {
   const [showFilters, setShowFilters] = useState(true);
 
@@ -24,8 +27,8 @@ function WorkAreasAppBar({
 
   return (
     <CustomAppBar
-      title="Work Areas Management"
-      subtitle="Manage and organize all work departments"
+      title={STRINGS.work_areas}
+      subtitle={STRINGS.work_areas_subtitle}
       actions={
         <CustomIconButton onClick={toggleFilters}>
           <FilterListIcon />
@@ -38,10 +41,14 @@ function WorkAreasAppBar({
           gap={1}
           sx={{ mt: 2, justifyContent: "flex-end", flexWrap: "wrap" }}
         >
+          <CitiesAutocomplete
+            value={selectedCity}
+            onChange={(v) => setSelectedCity(v)}
+          />
           <SearchFilter
             initialQuery={""}
             onSearch={handleSearch}
-            placeholder="Search Work Areas..."
+            placeholder={STRINGS.search_work_area}
           />
         </Stack>
       </Collapse>

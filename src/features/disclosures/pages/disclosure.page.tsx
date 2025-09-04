@@ -74,7 +74,9 @@ const DisclosurePage = () => {
           <DetailItem
             icon={<EventAvailable />}
             label={STRINGS.created_at}
-            value={`${formatDateTime(disclosure.createdAt)} ${STRINGS.by} ${disclosure.createdBy?.name}`}
+            value={`${formatDateTime(disclosure.createdAt)} ${STRINGS.by} ${
+              disclosure.createdBy?.name
+            }`}
           />
 
           <DetailItem
@@ -84,7 +86,9 @@ const DisclosurePage = () => {
               !disclosure.updatedAt ||
               disclosure.createdAt === disclosure.updatedAt
                 ? STRINGS.none
-                : `${formatDateTime(disclosure.updatedAt)} ${STRINGS.by} ${disclosure.updatedBy?.name}`
+                : `${formatDateTime(disclosure.updatedAt)} ${STRINGS.by} ${
+                    disclosure.updatedBy?.name
+                  }`
             }
           />
 

@@ -1,16 +1,18 @@
 import { useCallback, useState } from "react";
-import { Stack, Fab } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { Stack } from "@mui/material";
 import WorkAreasLists from "../../components/work-areas/work-area-lists/work-area-lists.component";
 import WorkAreasAppBar from "../../components/work-areas/work-area-hidder/work-area-hidder.components";
 import workAreasApi from "../../api/work-areas/work-areas.api";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TArea } from "../../types/work-areas.types";
+import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
+import { Add } from "@mui/icons-material";
+import STRINGS from "@/core/constants/strings.constant";
+import type { TCity } from "../../types/city.types";
 
-const WorkAreaManagement = () => {
+const WorkAreas = () => {
   const { openModal } = useModal();
-  const [selectedCityId, setSelectedCityId] = useState<string>("");
+  const [selectedCity, setSelectedCity] = useState<TCity | null>(null);
   const [query, setQuery] = useState<string | null>("");
 
   const {
@@ -19,9 +21,9 @@ const WorkAreaManagement = () => {
   } = workAreasApi.useGetWorkAreasQuery(
     {
       name: query,
-      cityId: selectedCityId,
+      cityId: selectedCity?.id,
     },
-    { skip: !selectedCityId },
+    { skip: !selectedCity?.id }
   );
 
   const handleSearch = useCallback((query: string | null) => {
@@ -32,39 +34,34 @@ const WorkAreaManagement = () => {
     openModal({
       name: "WORK_AREA_FORM_MODAL",
       props: {
-        oldWorkArea,
-        defaultSelectedCity: selectedCityId,
+        oldWorkAreaData: oldWorkArea,
       },
     });
   };
 
   return (
-    <Stack gap={2}>
-      {isLoadingWorkAreas && <LoadingOverlay />}
+    <Stack gap={2} sx={{ height: "100%" }}>
       <WorkAreasAppBar
         handleSearch={handleSearch}
-        selectedCityId={selectedCityId}
-        setSelectedCityId={setSelectedCityId}
+        selectedCity={selectedCity}
+        setSelectedCity={setSelectedCity}
       />
       <WorkAreasLists
         handleEditWorkArea={(wa) => handleWorkAreaAction(wa)}
         workAreas={workAreas}
         isLoadingWorkAreas={isLoadingWorkAreas}
       />
-      <Fab
-        color="primary"
-        aria-label="add"
-        sx={{
-          position: "fixed",
-          bottom: 16,
-          right: 16,
-        }}
-        onClick={() => handleWorkAreaAction()}
-      >
-        <AddIcon />
-      </Fab>
+      <ActionsFab
+        actions={[
+          {
+            label: STRINGS.add,
+            icon: <Add />,
+            onClick: () => handleWorkAreaAction(),
+          },
+        ]}
+      />
     </Stack>
   );
 };
 
-export default WorkAreaManagement;
+export default WorkAreas;

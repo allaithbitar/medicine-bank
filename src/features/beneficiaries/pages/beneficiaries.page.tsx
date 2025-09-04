@@ -16,7 +16,7 @@ const BeneficiariesPage = () => {
     pageSize: 1000,
     pageNumber: DEFAULT_PAGE_NUMBER,
   });
-  const { items, isLoading } = useBeneficiariesLoader(queryData);
+  const { items = [], isLoading } = useBeneficiariesLoader(queryData);
 
   // const filtersRef = useRef<TBeneficiariesFiltersHandlers | null>(null);
 
@@ -39,7 +39,7 @@ const BeneficiariesPage = () => {
           </Button>
         </Stack>
       </Card>
-  */}{" "}
+  */}
       <VirtualizedList
         items={items}
         containerStyle={{ flex: 1 }}

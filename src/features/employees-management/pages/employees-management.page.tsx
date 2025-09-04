@@ -10,7 +10,7 @@ const EmployeeManagement = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState<string | null>("");
   const handleAddEmployee = useCallback(() => {
-    navigate(`/employee-management/manage/add`);
+    navigate(`/employee/manage/add`);
   }, [navigate]);
 
   const handleSearch = useCallback((query: string | null) => {

@@ -59,13 +59,13 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
     },
     {
       label: STRINGS.cities,
-      href: "/cities-management",
+      href: "/cities",
       icon: <BuildingOfficeIcon />,
       permissions: [],
     },
     {
       label: STRINGS.areas,
-      href: "/work-area-management",
+      href: "/work-areas",
       icon: <EditLocationAltIcon />,
       permissions: [],
     },
@@ -106,7 +106,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
               level={1}
               href={i.href}
             />
-          ),
+          )
         )}
     </List>
   );

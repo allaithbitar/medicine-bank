@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TextField, Stack, Button } from "@mui/material";
 import {
   notifyError,
@@ -7,58 +7,48 @@ import {
 import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import { z } from "zod";
-import type { TArea } from "@/features/banks/types/work-areas.types";
 import workAreasApi from "@/features/banks/api/work-areas/work-areas.api";
 import {
   UpdateWorkAreaSchema,
   WorkAreaSchema,
 } from "@/features/banks/schemas/work-area.schema";
 import STRINGS from "@/core/constants/strings.constant";
+import CitiesAutocomplete from "@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component";
+import useReducerState from "@/core/hooks/use-reducer.hook";
+import type { IOptions } from "@/core/types/common.types";
+import type { TArea } from "@/features/banks/types/work-areas.types";
 
 interface IWorkAreaFormModalProps {
-  oldWorkArea?: TArea;
-  defaultSelectedCity?: string;
+  oldWorkAreaData?: TArea;
 }
 
-const WorkAreaFormModal = ({
-  oldWorkArea,
-  defaultSelectedCity,
-}: IWorkAreaFormModalProps) => {
+interface IAreaData {
+  selectedCity: IOptions | null;
+  workAreaName: string;
+}
+
+const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
+  const initialAreaData: IAreaData = {
+    selectedCity: null,
+    workAreaName: oldWorkAreaData?.name || "",
+  };
   const { closeModal } = useModal();
+  const [state, setState] = useReducerState<IAreaData>(initialAreaData);
+  const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
   const [updateWorkArea, { isLoading: isUpdatingWorkArea }] =
     workAreasApi.useUpdateWorkAreaMutation();
   const [addWorkArea, { isLoading: isAddingWorkArea }] =
     workAreasApi.useAddWorkAreaMutation();
 
-  const [workAreaName, setWorkAreaName] = useState<string>("");
-  const [selectedCityId, setSelectedCityId] = useState<string>(
-    defaultSelectedCity || ""
-  );
-  const [errors, setErrors] = useState<z.ZodIssue[]>([]);
-
-  useEffect(() => {
-    if (oldWorkArea) {
-      setWorkAreaName(oldWorkArea.name);
-      setSelectedCityId(oldWorkArea.cityId);
-    }
-  }, [oldWorkArea]);
-
   const handleWorkAreaNameChange = (value: string) => {
-    setWorkAreaName(value);
+    setState({ workAreaName: value });
     setErrors((prevErrors) =>
       prevErrors.filter((error) => error.path[0] !== "name")
     );
   };
 
-  // const handleCitySelectChange = (cityId: string) => {
-  //   setSelectedCityId(cityId);
-  //   setErrors((prevErrors) =>
-  //     prevErrors.filter((error) => error.path[0] !== "cityId"),
-  //   );
-  // };
-
-  const getErrorForField = (fieldName: string) => {
+  const getErrorForField = (fieldName: keyof IAreaData) => {
     const error = errors.find((err) => err.path[0] === fieldName);
     return error ? error.message : "";
   };
@@ -66,13 +56,13 @@ const WorkAreaFormModal = ({
   const handleSubmit = async () => {
     try {
       const payload = {
-        name: workAreaName,
-        cityId: selectedCityId,
+        name: state.workAreaName,
+        cityId: state.selectedCity?.id,
       };
-      if (oldWorkArea) {
+      if (oldWorkAreaData) {
         const validatedPayload = UpdateWorkAreaSchema.parse({
           ...payload,
-          id: oldWorkArea.id,
+          id: oldWorkAreaData.id,
         });
         await updateWorkArea(validatedPayload).unwrap();
       } else {
@@ -80,7 +70,9 @@ const WorkAreaFormModal = ({
         await addWorkArea(validatedPayload).unwrap();
       }
       notifySuccess(
-        oldWorkArea ? STRINGS.edited_successfully : STRINGS.added_successfully
+        oldWorkAreaData
+          ? STRINGS.edited_successfully
+          : STRINGS.added_successfully
       );
       closeModal();
     } catch (err: any) {
@@ -98,7 +90,7 @@ const WorkAreaFormModal = ({
   return (
     <ModalWrapper
       isLoading={isLoading}
-      title={oldWorkArea ? "Edit Work Area" : "Add Work Area"}
+      title={oldWorkAreaData ? "Edit Work Area" : "Add Work Area"}
       actionButtons={
         <Stack direction="row" gap={1}>
           <Button
@@ -114,27 +106,26 @@ const WorkAreaFormModal = ({
             disabled={isLoading}
             sx={{ flexGrow: 1 }}
           >
-            {oldWorkArea ? "Save Changes" : "Add Work Area"}
+            {oldWorkAreaData ? "Save Changes" : "Add Work Area"}
           </Button>
         </Stack>
       }
     >
       <Stack gap={3}>
-        {/*  <CitiesAutocomplete
-          value={selectedCityId}
-          onChange={handleCitySelectChange}
-          label="Select Parent City"
-          error={!!getErrorForField("cityId")}
-          helperText={getErrorForField("cityId")}
-          disabled={isLoading}
-        /> */}
+        <CitiesAutocomplete
+          defaultValueId={oldWorkAreaData?.cityId}
+          value={state.selectedCity}
+          onChange={(v) => setState({ selectedCity: v })}
+          errorText={getErrorForField("selectedCity")}
+          helperText={getErrorForField("selectedCity")}
+        />
         <TextField
           fullWidth
           label="Work Area Name"
-          value={workAreaName}
+          value={state.workAreaName}
           onChange={(e) => handleWorkAreaNameChange(e.target.value)}
-          error={!!getErrorForField("name")}
-          helperText={getErrorForField("name")}
+          error={!!getErrorForField("workAreaName")}
+          helperText={getErrorForField("workAreaName")}
           disabled={isLoading}
         />
       </Stack>

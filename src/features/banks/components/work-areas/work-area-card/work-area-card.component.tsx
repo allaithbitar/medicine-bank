@@ -75,7 +75,7 @@ const WorkAreaCard = ({ workArea, onEdit, onDelete }: IWorkAreaCardProps) => {
               : "Delete work area"
           }
         > */}
-        <CustomIconButton onClick={onDelete} size="small">
+        <CustomIconButton disabled onClick={onDelete} size="small">
           <TrashIcon
             sx={{
               fontSize: 20,
@@ -109,11 +109,13 @@ const WorkAreaCard = ({ workArea, onEdit, onDelete }: IWorkAreaCardProps) => {
   );
 
   return (
-    <ReusableCardComponent
-      headerContent={headerContent}
-      bodyContent={bodyContent}
-      footerContent={null}
-    />
+    <Box sx={{ py: 1 }}>
+      <ReusableCardComponent
+        headerContent={headerContent}
+        bodyContent={bodyContent}
+        footerContent={null}
+      />
+    </Box>
   );
 };
 

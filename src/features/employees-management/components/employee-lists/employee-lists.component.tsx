@@ -70,7 +70,7 @@ const EmployeesList = () => {
   const { openModal } = useModal();
   const navigate = useNavigate();
   const [visiblePasswords, setVisiblePasswords] = useState<Set<string>>(
-    new Set(),
+    new Set()
   );
   const togglePasswordVisibility = useCallback((employeeId: string) => {
     setVisiblePasswords((prev) => {
@@ -90,11 +90,11 @@ const EmployeesList = () => {
 
   const handleEditEmployee = useCallback(
     (employeeData: TEmployeeAccount) => {
-      navigate(`/employee-management/manage/edit`, {
+      navigate(`/employee/manage/edit`, {
         state: { employee: employeeData },
       });
     },
-    [navigate],
+    [navigate]
   );
 
   const handleDeleteEmployeeClick = useCallback(
@@ -110,7 +110,7 @@ const EmployeesList = () => {
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    []
   );
 
   return (

@@ -10,8 +10,8 @@ import AppUiWrapper from "./core/components/layout/app-ui-wrapper/app-ui-wrapper
 import Layout from "./core/components/layout/layout/layout.component";
 import EmployeeAccountForm from "./features/accounts-forms/pages/employee-account-form.page";
 import RequireAuth from "./features/auth/components/require-auth/require-auth.component";
-import CitiesManagement from "./features/banks/pages/cities/cities-management.page";
-import WorkAreaManagement from "./features/banks/pages/work-areas/work-areas-management.page";
+import Cities from "./features/banks/pages/cities/cities.page";
+import WorkAreas from "./features/banks/pages/work-areas/work-areas.page";
 import Unauthorized from "./pages/unauthorized.page";
 import LoginPage from "./features/auth/pages/login.page";
 import NotFoundPage from "./core/pages/not-found.page";
@@ -43,7 +43,7 @@ function App() {
             <Route path="/employees/action" element={<EmployeeActionPage />} />
 
             <Route
-              path="/employee-management/manage/:type"
+              path="/employee/manage/:type"
               element={<EmployeeAccountForm />}
             />
 
@@ -78,11 +78,8 @@ function App() {
               element={<BeneficiaryActionPage />}
             />
 
-            <Route
-              path="/work-area-management"
-              element={<WorkAreaManagement />}
-            />
-            <Route path="/cities-management" element={<CitiesManagement />} />
+            <Route path="/work-areas" element={<WorkAreas />} />
+            <Route path="/cities" element={<Cities />} />
 
             <Route path="/ratings" element={<RatingsPage />} />
 
@@ -91,8 +88,8 @@ function App() {
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
-      </Route>,
-    ),
+      </Route>
+    )
   );
 
   return <RouterProvider router={router} />;

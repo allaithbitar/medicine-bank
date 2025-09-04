@@ -1,11 +1,11 @@
 import Nodata from "@/core/components/common/no-data/no-data.component";
-import { Grid } from "@mui/material";
 import CityCard from "../city-card/city-card.component";
 import { Business as BuildingOfficeIcon } from "@mui/icons-material";
 import { useCallback } from "react";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TCity } from "@/features/banks/types/city.types";
 import STRINGS from "@/core/constants/strings.constant";
+import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
 
 interface ICitiesList {
   onEdit: (city: TCity) => void;
@@ -31,17 +31,6 @@ function CitiesList({ onEdit, cities, isLoadingCities }: ICitiesList) {
 
   return (
     <>
-      <Grid container gap={2} justifyContent="center">
-        {cities.map((city) => (
-          <Grid width="100%" key={city.name}>
-            <CityCard
-              city={city}
-              onEdit={() => onEdit(city)}
-              onDelete={() => handleDeleteCity(city.name)}
-            />
-          </Grid>
-        ))}
-      </Grid>
       {cities.length === 0 && !isLoadingCities && (
         <Nodata
           icon={BuildingOfficeIcon}
@@ -49,6 +38,24 @@ function CitiesList({ onEdit, cities, isLoadingCities }: ICitiesList) {
           subTitle={STRINGS.add_to_see}
         />
       )}
+      <VirtualizedList
+        isLoading={isLoadingCities}
+        items={cities}
+        containerStyle={{ flex: 1 }}
+        virtualizationOptions={{
+          count: cities.length,
+        }}
+      >
+        {({ item: city }) => {
+          return (
+            <CityCard
+              city={city}
+              onEdit={() => onEdit(city)}
+              onDelete={() => handleDeleteCity(city.name)}
+            />
+          );
+        }}
+      </VirtualizedList>
     </>
   );
 }

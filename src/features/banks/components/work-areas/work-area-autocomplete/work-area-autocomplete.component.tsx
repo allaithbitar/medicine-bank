@@ -27,6 +27,7 @@ function AreasAutocomplete<T extends boolean>({
       label={STRINGS.area}
       loading={isFetching || isLoading}
       getOptionLabel={(option) => option.name}
+      getOptionKey={(option) => option.id}
       isOptionEqualToValue={(option, val) => option.id === val.id}
       options={areas}
       errorText={error ? getErrorMessage(error) : props.errorText || ""}

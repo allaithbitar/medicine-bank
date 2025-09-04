@@ -76,9 +76,9 @@ function VirtualizedList<T>({
             );
           })}
       </div>
-      {!isLoading && !disabledLastItemIntersectionObserver && items.length && (
-        <IntersectionTrigger onIntersect={onEndReach} />
-      )}
+      {!isLoading &&
+        !disabledLastItemIntersectionObserver &&
+        !!items.length && <IntersectionTrigger onIntersect={onEndReach} />}
       {isLoading && (
         <Stack alignItems="center" my={4}>
           <CircularProgress size={100} />

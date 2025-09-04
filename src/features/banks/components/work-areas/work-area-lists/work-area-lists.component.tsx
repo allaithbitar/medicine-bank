@@ -1,10 +1,11 @@
 import { useCallback } from "react";
-import { Grid } from "@mui/material";
 import { Business as BuildingOfficeIcon } from "@mui/icons-material";
 import WorkAreaCardComponent from "../work-area-card/work-area-card.component";
 import Nodata from "@/core/components/common/no-data/no-data.component";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TArea } from "@/features/banks/types/work-areas.types";
+import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
+import STRINGS from "@/core/constants/strings.constant";
 
 interface IWorkAreasLists {
   workAreas: TArea[];
@@ -34,24 +35,31 @@ const WorkAreasLists = ({
 
   return (
     <>
-      <Grid container gap={2} justifyContent="center">
-        {workAreas.map((wa) => (
-          <Grid key={wa.id}>
+      {!isLoadingWorkAreas && workAreas.length === 0 && (
+        <Nodata
+          icon={BuildingOfficeIcon}
+          title={STRINGS.no_work_areas_found}
+          subTitle={STRINGS.add_to_see}
+        />
+      )}
+      <VirtualizedList
+        isLoading={isLoadingWorkAreas}
+        items={workAreas}
+        containerStyle={{ flex: 1 }}
+        virtualizationOptions={{
+          count: workAreas.length,
+        }}
+      >
+        {({ item: wa }) => {
+          return (
             <WorkAreaCardComponent
               workArea={wa}
               onEdit={() => handleEditWorkArea(wa)}
               onDelete={() => handleDeleteWorkAreaClick(wa.id)}
             />
-          </Grid>
-        ))}
-      </Grid>
-      {!isLoadingWorkAreas && workAreas.length === 0 && (
-        <Nodata
-          icon={BuildingOfficeIcon}
-          title="No work areas found"
-          subTitle="Add some work areas to see them."
-        />
-      )}
+          );
+        }}
+      </VirtualizedList>
     </>
   );
 };
