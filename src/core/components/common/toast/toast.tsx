@@ -68,7 +68,7 @@ export const notifySuccess = (
     (t) => (
       <CustomToast
         t={t}
-        message={message || "Action Done Successfully"}
+        message={message || STRINGS.action_done_successfully}
         type="success"
       />
     ),

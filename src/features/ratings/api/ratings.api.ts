@@ -21,7 +21,7 @@ export const ratingsApi = rootApi.injectEndpoints({
 
     addRating: builder.mutation<void, TAddRatingDto>({
       query: (data) => ({
-        url: "rating",
+        url: "ratings",
         method: "POST",
         body: data,
       }),

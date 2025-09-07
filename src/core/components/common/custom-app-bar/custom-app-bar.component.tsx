@@ -7,7 +7,7 @@ import {
   type AppBarProps,
   type ToolbarProps,
 } from "@mui/material";
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 
 interface ICustomAppBarProps extends AppBarProps {
   title: string;
@@ -40,12 +40,14 @@ const CustomAppBar = ({
           justifyContent: "space-between",
           alignItems: "center",
           flexWrap: "wrap",
+          px: "16px !important",
           ...toolbarSx,
         }}
       >
         <Stack
           sx={{
             flexGrow: 1,
+
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
@@ -75,4 +77,4 @@ const CustomAppBar = ({
   );
 };
 
-export default CustomAppBar;
+export default memo(CustomAppBar);

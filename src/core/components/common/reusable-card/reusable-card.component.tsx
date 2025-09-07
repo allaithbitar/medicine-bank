@@ -1,5 +1,6 @@
 import { memo, type ReactNode } from "react";
 import { Card, Stack, Divider } from "@mui/material";
+import theme from "@/core/theme/index.theme";
 
 interface IReusableCardProps {
   headerBackground?: string;
@@ -31,7 +32,7 @@ const ReusableCard = ({
           width: "100%",
           justifyContent: "center",
           px: 2,
-          background: (theme) =>
+          background:
             headerBackground ||
             `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
         }}

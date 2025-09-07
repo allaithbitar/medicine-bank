@@ -70,7 +70,7 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
             color="error"
             sx={{ width: { xs: "100%", sm: "auto" } }}
           >
-            Cancel
+            {STRINGS.cancel}
           </Button>
           <Button
             variant="contained"

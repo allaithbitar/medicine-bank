@@ -1,48 +1,49 @@
-import { Grid, Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import ratingsApi from "../api/ratings.api";
-import { DEFAULT_GRID_SIZES } from "@/core/constants/properties.constant";
-import ReusableCard from "@/core/components/common/reusable-card/reusable-card.component";
 import type { TRating } from "../types/rating.types";
-import DetailItem from "@/core/components/common/detail-item/detail-item.component";
 import STRINGS from "@/core/constants/strings.constant";
-import { Person } from "@mui/icons-material";
-import { indigo } from "@mui/material/colors";
-
-const RatingCard = ({ rating }: { rating: TRating }) => {
-  return (
-    <ReusableCard
-      headerContent={<Typography color="white">{rating.name}</Typography>}
-      headerBackground={`linear-gradient(to right, ${indigo[800]}, ${indigo[500]})`}
-      bodyContent={
-        <Stack gap={2}>
-          <DetailItem
-            label={STRINGS.code}
-            icon={<Person />}
-            value={rating.code}
-          />
-
-          <DetailItem
-            label={STRINGS.description}
-            icon={<Person />}
-            value={rating.description}
-          />
-        </Stack>
-      }
-      footerContent={null}
-    />
-  );
-};
+import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar.component";
+import RatingsList from "../components/ratings-list.component";
+import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
+import { Add } from "@mui/icons-material";
+import { useModal } from "@/core/components/common/modal/modal-provider.component";
 
 const RatingsPage = () => {
-  const { data: ratings = [] } = ratingsApi.useGetRatingsQuery({});
+  const { openModal } = useModal();
+
+  const { data: ratings = [], isLoading: isLoadingRatings } =
+    ratingsApi.useGetRatingsQuery({});
+
+  const handleOpenRatingModal = (oldRating?: TRating) => {
+    openModal({
+      name: "RATING_FORM_MODAL",
+      props: {
+        oldRating,
+      },
+    });
+  };
+
   return (
-    <Grid container spacing={2}>
-      {ratings.map((r) => (
-        <Grid size={DEFAULT_GRID_SIZES} key={r.id}>
-          <RatingCard key={r.id} rating={r} />
-        </Grid>
-      ))}
-    </Grid>
+    <Stack gap={2} sx={{ height: "100%" }}>
+      <CustomAppBar
+        title={STRINGS.ratings_management}
+        subtitle={STRINGS.add_manage_ratings}
+      />
+      <RatingsList
+        onEditRating={handleOpenRatingModal}
+        isLoadingRatings={isLoadingRatings}
+        ratings={ratings}
+      />
+      <ActionsFab
+        actions={[
+          {
+            label: STRINGS.add,
+            icon: <Add />,
+            onClick: () => handleOpenRatingModal(),
+          },
+        ]}
+      />
+    </Stack>
   );
 };
 

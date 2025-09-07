@@ -11,6 +11,7 @@ import DetailItemComponent from "@/core/components/common/detail-item/detail-ite
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
 import type { TArea } from "@/features/banks/types/work-areas.types";
 import { useCityName } from "@/features/banks/hooks/work-areas/use-city-name-from-id.hook";
+import STRINGS from "@/core/constants/strings.constant";
 
 interface IWorkAreaCardProps {
   workArea: TArea;
@@ -63,7 +64,7 @@ const WorkAreaCard = ({ workArea, onEdit, onDelete }: IWorkAreaCardProps) => {
         gap={1}
         sx={{ color: "white", flexShrink: 0, ml: 2 }}
       >
-        <Tooltip title="Edit work area">
+        <Tooltip title={STRINGS.edit_work_area}>
           <CustomIconButton onClick={onEdit} size="small">
             <PencilIcon sx={{ fontSize: 20, color: "white" }} />
           </CustomIconButton>

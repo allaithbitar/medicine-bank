@@ -90,7 +90,7 @@ const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
   return (
     <ModalWrapper
       isLoading={isLoading}
-      title={oldWorkAreaData ? "Edit Work Area" : "Add Work Area"}
+      title={oldWorkAreaData ? STRINGS.edit_work_area : STRINGS.add_work_area}
       actionButtons={
         <Stack direction="row" gap={1}>
           <Button
@@ -98,7 +98,7 @@ const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
             color="error"
             sx={{ flexGrow: 1 }}
           >
-            Cancel
+            {STRINGS.cancel}
           </Button>
           <Button
             variant="contained"
@@ -106,13 +106,14 @@ const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
             disabled={isLoading}
             sx={{ flexGrow: 1 }}
           >
-            {oldWorkAreaData ? "Save Changes" : "Add Work Area"}
+            {oldWorkAreaData ? STRINGS.edit : STRINGS.add}
           </Button>
         </Stack>
       }
     >
       <Stack gap={3}>
         <CitiesAutocomplete
+          disabled
           defaultValueId={oldWorkAreaData?.cityId}
           value={state.selectedCity}
           onChange={(v) => setState({ selectedCity: v })}
@@ -121,7 +122,7 @@ const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
         />
         <TextField
           fullWidth
-          label="Work Area Name"
+          label={STRINGS.work_area_name}
           value={state.workAreaName}
           onChange={(e) => handleWorkAreaNameChange(e.target.value)}
           error={!!getErrorForField("workAreaName")}

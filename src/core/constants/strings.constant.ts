@@ -18,6 +18,7 @@ const STRINGS = {
   patient_address: "العنوان التفصيلي",
   status: "الحالة",
   active: "نشط",
+  delete: "حذف",
   app_data: "البيانات",
   canceled: "ملغى",
   cancel: "إلغاء",
@@ -43,6 +44,7 @@ const STRINGS = {
   visits: "الزيارات",
   added_successfully: "تمت الإضافة بنجاح",
   edited_successfully: "تم التعديل بنجاح",
+  action_done_successfully: "تمة العملية بنجاح",
   something_went_wrong: "حصل خطأ ما",
   beneficiaries: "المتسفيدين",
   beneficiary: "المستفيد",
@@ -88,6 +90,13 @@ const STRINGS = {
   work_areas: "ادارة المناطق",
   work_areas_subtitle: "ادارة وتنظيم المناطق",
   search_work_area: "ابحث عن منطقة ...",
+  work_area_name: "اسم المنطقة",
+  edit_work_area: "تعديل المنطقة",
+  add_work_area: "اضافة منطقة",
+  ratings_management: "ادارة التقيمات",
+  add_manage_ratings: "اضافة وادرة التقيمات",
+  no_ratings_found: "لا اتوجد اي تقيمات",
+  edit_rating: "تعديل التقيم",
 };
 
 export default STRINGS;
