@@ -97,6 +97,13 @@ const STRINGS = {
   add_manage_ratings: "اضافة وادرة التقيمات",
   no_ratings_found: "لا اتوجد اي تقيمات",
   edit_rating: "تعديل التقيم",
+  priority_degrees: "درجة الاهمية",
+  add_manage_priority_degrees: "اضافة وادراة درجة الاهمية",
+  search_priority_degree: "ابحث عن درجة اهمية....",
+  edit_priority_degree: "تعديل درجة الاهمية",
+  add_priority_degree: "اضافة درجة الاهمية",
+  select_color_optional: "اختر لون",
+  quick_access: "اختبار سريع",
 };
 
 export default STRINGS;

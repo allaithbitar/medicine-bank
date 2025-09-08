@@ -12,6 +12,7 @@ import {
   ThumbsUpDown,
 } from "@mui/icons-material";
 import STRINGS from "@/core/constants/strings.constant";
+import CrisisAlertIcon from "@mui/icons-material/CrisisAlert";
 
 type BaseItem = {
   label: string;
@@ -73,6 +74,12 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       label: STRINGS.ratings,
       href: "/ratings",
       icon: <ThumbsUpDown />,
+      permissions: [],
+    },
+    {
+      label: STRINGS.priority_degrees,
+      href: "/priority-degrees",
+      icon: <CrisisAlertIcon />,
       permissions: [],
     },
     {

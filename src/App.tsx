@@ -27,6 +27,7 @@ import RatingsPage from "./features/ratings/pages/ratings.page";
 import DisclosureVisitActionPage from "./features/disclosures/pages/disclosure-visit-action.page";
 import SyncPage from "./features/offline/pages/sync.page";
 import EmployeeActionPage from "./features/employees/pages/employee-action.page";
+import PriorityDegreesPage from "./features/priority-degres/pages/priority-degrees.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -82,6 +83,7 @@ function App() {
             <Route path="/cities" element={<Cities />} />
 
             <Route path="/ratings" element={<RatingsPage />} />
+            <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
 
             <Route path="/sync" element={<SyncPage />} />
           </Route>

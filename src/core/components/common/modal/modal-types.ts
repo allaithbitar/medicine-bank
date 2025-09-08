@@ -4,6 +4,7 @@ import type CityFormModal from "@/core/components/common/modals/manage-city/mana
 import type WorkAreaFormModal from "../modals/manage-areas/manage-areas.modal";
 import type DisclosureFiltersModal from "@/features/disclosures/components/disclosure-filters.modal";
 import type RatingFormModal from "@/features/ratings/components/ratimg-form.modal";
+import type PriorityDegreeFormModal from "@/features/priority-degres/components/priority-degree-form.modal";
 
 export type TModalExtraProps = {
   // it will always be sent but just to stop the ts compiler from parking
@@ -16,6 +17,7 @@ export const MODAL_NAMES = {
   WORK_AREA_FORM_MODAL: "WORK_AREA_FORM_MODAL",
   DISCLOSURE_FILTERS_MODAL: "DISCLOSURE_FILTERS_MODAL",
   RATING_FORM_MODAL: "RATING_FORM_MODAL",
+  PRIORITY_DEGREE_FORM_MODAL: "PRIORITY_DEGREE_FORM_MODAL",
 } as const;
 
 export type TOpenModalPayload =
@@ -38,4 +40,8 @@ export type TOpenModalPayload =
   | {
       name: typeof MODAL_NAMES.RATING_FORM_MODAL;
       props: ComponentProps<typeof RatingFormModal>;
+    }
+  | {
+      name: typeof MODAL_NAMES.PRIORITY_DEGREE_FORM_MODAL;
+      props: ComponentProps<typeof PriorityDegreeFormModal>;
     };
