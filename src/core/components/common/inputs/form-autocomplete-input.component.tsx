@@ -12,8 +12,12 @@ import {
 import type { ComponentProps } from "react";
 import RequiredLabel from "./required-label.component";
 
-type Props<T extends TListItem, V extends boolean = false> = Omit<
-  ComponentProps<typeof Autocomplete<T, V>>,
+type Props<
+  T extends TListItem,
+  V extends boolean = false,
+  Y extends boolean = false,
+> = Omit<
+  ComponentProps<typeof Autocomplete<T, V, Y>>,
   "renderInput" | "options" | "value" | "onChange" | "multiple"
 > &
   TSharedFormComponentValidation &
@@ -27,7 +31,11 @@ type Props<T extends TListItem, V extends boolean = false> = Omit<
     value?: V extends true ? T[] : T | null;
   };
 
-function FormAutocompleteInput<T extends TListItem, V extends boolean = false>({
+function FormAutocompleteInput<
+  T extends TListItem,
+  V extends boolean = false,
+  Y extends boolean = false,
+>({
   label,
   helperText,
   textFieldProps,
@@ -40,7 +48,7 @@ function FormAutocompleteInput<T extends TListItem, V extends boolean = false>({
   errorText,
   required,
   ...props
-}: Props<T, V>) {
+}: Props<T, V, Y>) {
   return (
     <FormControl
       fullWidth

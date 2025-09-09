@@ -35,7 +35,7 @@ export type IItem = LinkItem | ParentItem;
 function SideBarItems({ onClick }: { onClick: () => void }) {
   const items: IItem[] = [
     {
-      label: "Home",
+      label: STRINGS.home_page,
       icon: <HomeIcon />,
       href: "/",
       permissions: [],
@@ -113,7 +113,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
               level={1}
               href={i.href}
             />
-          )
+          ),
         )}
     </List>
   );

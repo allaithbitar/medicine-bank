@@ -49,7 +49,7 @@ const STRINGS = {
   beneficiaries: "المتسفيدين",
   beneficiary: "المستفيد",
   employees: "الموظفين",
-  employee: "الموظف",
+  employee: "الموظّف",
   add_beneficiary: "إضافة مستفيد",
   add_employee: "إضافة موظف",
   no_data_found: "لم يتم العثور على اي بيانات",
@@ -104,6 +104,19 @@ const STRINGS = {
   add_priority_degree: "اضافة درجة الاهمية",
   select_color_optional: "اختر لون",
   quick_access: "اختبار سريع",
+  added_disclosures: "الكشوفات المضافة",
+  completed_visits: "الزيارات المكتملة",
+  not_completed_visits: "الزيارات غير المكتملة",
+  couldnt_be_completed_visits: "الزيارات التي لم يمكن إكمالها",
+  this_week: "هذا الاسبوع",
+  this_month: "هذا الشهر",
+  this_year: "هذه السنة",
+  custom: "مخصّصّ",
+  summary: "ملخّص",
+  detailed: "مفصّل",
+  time_period: "الفترة الزمنيّة",
+  satistics_type: "نوع الإحصائية",
+  home_page: "الصفحة الرئيسيّة",
 };
 
 export default STRINGS;

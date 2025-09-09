@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -28,6 +27,7 @@ import DisclosureVisitActionPage from "./features/disclosures/pages/disclosure-v
 import SyncPage from "./features/offline/pages/sync.page";
 import EmployeeActionPage from "./features/employees/pages/employee-action.page";
 import PriorityDegreesPage from "./features/priority-degres/pages/priority-degrees.page";
+import SatisticsPage from "./features/satistics/pages/satistics.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -37,7 +37,7 @@ function App() {
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
-            <Route index path="/" element={<Box>home</Box>} />
+            <Route index path="/" element={<SatisticsPage />} />
 
             <Route path="/employees" element={<EmployeesPage />} />
 
@@ -90,8 +90,8 @@ function App() {
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    )
+      </Route>,
+    ),
   );
 
   return <RouterProvider router={router} />;

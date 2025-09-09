@@ -1,6 +1,6 @@
 import { FormControl, FormHelperText } from "@mui/material";
 import {
-  DesktopDateTimePicker,
+  MobileDateTimePicker,
   LocalizationProvider,
 } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -14,7 +14,7 @@ import type {
 import RequiredLabel from "./required-label.component";
 
 type Props = Omit<
-  ComponentProps<typeof DesktopDateTimePicker>,
+  ComponentProps<typeof MobileDateTimePicker>,
   "value" | "onChange"
 > &
   TSharedFormComponentProps<string> &
@@ -32,7 +32,7 @@ const FormDateTimeInput = ({
     <FormControl fullWidth>
       <RequiredLabel required={required}>{label ?? "Date Time"}</RequiredLabel>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DesktopDateTimePicker
+        <MobileDateTimePicker
           format={"yyyy-MM-dd hh:mm aa"}
           value={!!value && isValid(new Date(value)) ? parseISO(value) : null}
           onChange={(val) => onChange?.(val?.toISOString() ?? "")}
