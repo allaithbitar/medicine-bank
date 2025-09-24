@@ -4,9 +4,9 @@ import theme from "@/core/theme/index.theme";
 
 interface IReusableCardProps {
   headerBackground?: string;
-  headerContent: ReactNode;
-  bodyContent: ReactNode;
-  footerContent: ReactNode;
+  headerContent?: ReactNode;
+  bodyContent?: ReactNode;
+  footerContent?: ReactNode;
   cardSx?: object;
 }
 
@@ -26,30 +26,34 @@ const ReusableCard = ({
         ...cardSx,
       }}
     >
-      <Stack
-        sx={{
-          height: 70,
-          width: "100%",
-          justifyContent: "center",
-          px: 2,
-          background:
-            headerBackground ||
-            `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
-        }}
-      >
-        {headerContent}
-      </Stack>
-      {bodyContent && <Stack sx={{ p: 2 }}>{bodyContent}</Stack>}
-      <Divider />
-      {footerContent && (
+      {headerContent && (
         <Stack
           sx={{
-            p: 1.5,
-            borderColor: "grey.100",
+            height: 70,
+            width: "100%",
+            justifyContent: "center",
+            px: 2,
+            background:
+              headerBackground ||
+              `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
           }}
         >
-          {footerContent}
+          {headerContent}
         </Stack>
+      )}{" "}
+      {bodyContent && <Stack sx={{ p: 2 }}>{bodyContent}</Stack>}
+      {footerContent && (
+        <>
+          <Divider />
+          <Stack
+            sx={{
+              p: 1.5,
+              borderColor: "grey.100",
+            }}
+          >
+            {footerContent}
+          </Stack>
+        </>
       )}
     </Card>
   );

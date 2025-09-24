@@ -79,6 +79,9 @@ export const rootApi = createApi({
     "Detailed_Statistics",
     "Medicines",
     "Beneficiary_Medicines",
+    "Calendar_Appointments",
+    "Disclosure_Appointmetns",
+    "Date_Appointments",
   ],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   endpoints: (_builder) => ({}),

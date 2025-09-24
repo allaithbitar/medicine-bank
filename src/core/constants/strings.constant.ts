@@ -132,6 +132,9 @@ const STRINGS = {
   add_beneficiary_medicine: "اضافة دواء لمريض",
   edit_beneficiary_medicine: "تعديل دواء مريض",
   dose_per_intake: "معيار الجرعة",
+  appointment_not_completed: "لم تتمّ المراجعة بعد",
+  appointment_completed: "تمّت المراجعة",
+  appointment_date: "تاريخ المراجعة",
 };
 
 export default STRINGS;
