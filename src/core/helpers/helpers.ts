@@ -37,10 +37,12 @@ export const getErrorMessage = (
   return "something_went_wrong";
 };
 
-export const formatDateTime = (date: string | Date) =>
+export const formatDateTime = (date: string | Date, withTime = true) =>
   Intl.DateTimeFormat("ar-SY", {
-    timeStyle: "short",
-    dateStyle: "long",
+    dateStyle: "full",
+    ...(withTime && {
+      timeStyle: "short",
+    }),
   }).format(typeof date === "string" ? new Date(date) : date);
 
 export function isNullOrUndefined<T>(

@@ -1,3 +1,4 @@
+import useScreenSize from "@/core/hooks/use-screen-size.hook";
 import { Add, MoreHoriz } from "@mui/icons-material";
 import { SpeedDial, SpeedDialAction } from "@mui/material";
 import type { ReactNode } from "react";
@@ -12,14 +13,21 @@ type TProps = {
 };
 
 const ActionsFab = ({ icon, actions }: TProps) => {
+  const { isTablet } = useScreenSize();
   return (
     <SpeedDial
       ariaLabel=""
       sx={{
-        position: "absolute",
+        position: "fixed",
         right: 25,
         bottom: 10,
         zIndex: 998,
+        ...(isTablet
+          ? {
+              left: "50%",
+              transform: "translateX(-50%)",
+            }
+          : {}),
       }}
       icon={icon || <MoreHoriz />}
     >

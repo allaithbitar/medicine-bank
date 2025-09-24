@@ -28,6 +28,7 @@ import SyncPage from "./features/offline/pages/sync.page";
 import EmployeeActionPage from "./features/employees/pages/employee-action.page";
 import PriorityDegreesPage from "./features/priority-degres/pages/priority-degrees.page";
 import SatisticsPage from "./features/satistics/pages/satistics.page";
+import AppointmentsPage from "./features/appointments/pages/appointments.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -86,6 +87,7 @@ function App() {
             <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
 
             <Route path="/sync" element={<SyncPage />} />
+            <Route path="/calendar" element={<AppointmentsPage />} />
           </Route>
         </Route>
 

@@ -117,6 +117,9 @@ const STRINGS = {
   time_period: "الفترة الزمنيّة",
   satistics_type: "نوع الإحصائية",
   home_page: "الصفحة الرئيسيّة",
+  appointment_not_completed: "لم تتمّ المراجعة بعد",
+  appointment_completed: "تمّت المراجعة",
+  appointment_date: "تاريخ المراجعة",
 };
 
 export default STRINGS;
