@@ -28,7 +28,7 @@ export const workAreasApi = rootApi.injectEndpoints({
       }),
       transformResponse: (res: ApiResponse<TPaginatedResponse<TArea>>) =>
         res.data,
-      providesTags: [{ type: "Work-areas" }],
+      providesTags: [{ type: "Work-Areas" }],
     }),
     addWorkArea: builder.mutation<void, TAddWorkAreaPayload>({
       query: (data) => ({
@@ -37,7 +37,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         body: data,
       }),
       transformResponse: () => {},
-      invalidatesTags: [{ type: "Work-areas" }],
+      invalidatesTags: [{ type: "Work-Areas" }],
     }),
     updateWorkArea: builder.mutation<void, TUpdateWorkAreaPayload>({
       query: (data) => ({
@@ -46,7 +46,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         body: data,
       }),
       transformResponse: () => {},
-      invalidatesTags: [{ type: "Work-areas" }],
+      invalidatesTags: [{ type: "Work-Areas" }],
     }),
   }),
 });

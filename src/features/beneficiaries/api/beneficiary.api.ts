@@ -3,7 +3,11 @@ import type {
   TAddBeneficiaryDto,
   TBenefieciary,
   TGetBeneficiariesDto,
+  TBeneficiaryMedicine,
   TUpdateBeneficiaryDto,
+  TGetBeneficiaryMedicinesParams,
+  TAddBeneficiaryMedicinePayload,
+  TUpdateBeneficiaryMedicinePayload,
 } from "../types/beneficiary.types";
 import type {
   ApiResponse,
@@ -42,7 +46,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         method: "POST",
       }),
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TBenefieciary>>,
+        res: ApiResponse<TPaginatedResponse<TBenefieciary>>
       ) => res.data,
       providesTags: ["Beneficiaries"],
     }),
@@ -52,6 +56,45 @@ export const beneficiaryApi = rootApi.injectEndpoints({
       }),
       transformResponse: (res: ApiResponse<TBenefieciary>) => res.data,
       providesTags: (_, __, args) => [{ type: "Beneficiaries", id: args.id }],
+    }),
+    getBeneficiaryMedicines: builder.query<
+      TPaginatedResponse<TBeneficiaryMedicine>,
+      TGetBeneficiaryMedicinesParams
+    >({
+      query: (params) => ({
+        url: "/medicines/patient",
+        method: "GET",
+        params,
+      }),
+      transformResponse: (
+        res: ApiResponse<TPaginatedResponse<TBeneficiaryMedicine>>
+      ) => res.data,
+      providesTags: [{ type: "Beneficiary_Medicines", id: "LIST" }],
+    }),
+    addBeneficiaryMedicine: builder.mutation<
+      TBeneficiaryMedicine,
+      TAddBeneficiaryMedicinePayload
+    >({
+      query: (body) => ({
+        url: "/medicines/patient",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "Beneficiary_Medicines", id: "LIST" }],
+    }),
+    updateBeneficiaryMedicine: builder.mutation<
+      void,
+      TUpdateBeneficiaryMedicinePayload
+    >({
+      query: (body) => ({
+        url: "/medicines/patient",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_, __, arg) => [
+        { type: "Beneficiary_Medicines", id: "LIST" },
+        { type: "Beneficiary_Medicines", id: arg.id },
+      ],
     }),
   }),
 });

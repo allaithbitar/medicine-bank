@@ -15,7 +15,7 @@ export const satisticsApi = rootApi.injectEndpoints({
         body: data,
         method: "POST",
       }),
-      providesTags: ["Summary_Satistics"],
+      providesTags: ["Summary_Statistics"],
       transformResponse: (res: ApiResponse<TSummaryReportResult>) => res.data,
     }),
     getDetailedSatistics: builder.query<
@@ -27,7 +27,7 @@ export const satisticsApi = rootApi.injectEndpoints({
         body: data,
         method: "POST",
       }),
-      providesTags: ["Detailed_Satistics"],
+      providesTags: ["Detailed_Statistics"],
       transformResponse: (res: ApiResponse<TDetailedReportResult>) => res.data,
     }),
   }),

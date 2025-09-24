@@ -11,7 +11,9 @@ import { authActions } from "../slices/auth/auth.slice";
 
 // const baseUrl = "http://localhost:5000";
 
-const baseUrl = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`;
+const baseUrl = `http://${import.meta.env.VITE_API_HOST}:${
+  import.meta.env.VITE_API_PORT
+}`;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
@@ -42,7 +44,7 @@ const baseQueryWithReauth: BaseQueryFn<
         method: "POST",
       },
       api,
-      args,
+      args
     );
     if (refreshResult.error) {
       api.dispatch(authActions.logoutUser());
@@ -62,8 +64,8 @@ export const rootApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: [
     "Auth",
-    "cities",
-    "Work-areas",
+    "Cities",
+    "Work-Areas",
     "Beneficiaries",
     "Employees",
     "Priority_Degrees",
@@ -73,8 +75,10 @@ export const rootApi = createApi({
     "Disclosure_Visits",
     "Disclosure_Visit",
     "Ratings",
-    "Summary_Satistics",
-    "Detailed_Satistics",
+    "Summary_Statistics",
+    "Detailed_Statistics",
+    "Medicines",
+    "Beneficiary_Medicines",
   ],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   endpoints: (_builder) => ({}),

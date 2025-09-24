@@ -5,6 +5,7 @@ import SideBarListItem from "./sidebar-list-item.component";
 import BadgeIcon from "@mui/icons-material/Badge";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import SidebarExpandableItem from "./sidebar-expandable-list-item.component";
 import {
   Business as BuildingOfficeIcon,
@@ -77,6 +78,12 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       permissions: [],
     },
     {
+      label: STRINGS.medicines,
+      href: "/medicines",
+      icon: <MedicalServicesIcon />,
+      permissions: [],
+    },
+    {
       label: STRINGS.priority_degrees,
       href: "/priority-degrees",
       icon: <CrisisAlertIcon />,
@@ -113,7 +120,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
               level={1}
               href={i.href}
             />
-          ),
+          )
         )}
     </List>
   );

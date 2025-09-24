@@ -13,6 +13,8 @@ import WorkAreaFormModal from "../modals/manage-areas/manage-areas.modal";
 import DisclosureFiltersModal from "@/features/disclosures/components/disclosure-filters.modal";
 import RatingFormModal from "@/features/ratings/components/ratimg-form.modal";
 import PriorityDegreeFormModal from "@/features/priority-degres/components/priority-degree-form.modal";
+import MedicineFormModal from "@/features/banks/components/medicines/medicine-form-modal/medicine-form.modal";
+import BeneficiaryMedicineFormModal from "@/features/beneficiaries/components/beneficiary-medicines/beneficiary-medicine-form.modal";
 
 const MODALS = {
   [MODAL_NAMES.CONFIRM_MODAL]: ConfirmModal,
@@ -21,6 +23,8 @@ const MODALS = {
   [MODAL_NAMES.DISCLOSURE_FILTERS_MODAL]: DisclosureFiltersModal,
   [MODAL_NAMES.RATING_FORM_MODAL]: RatingFormModal,
   [MODAL_NAMES.PRIORITY_DEGREE_FORM_MODAL]: PriorityDegreeFormModal,
+  [MODAL_NAMES.MEDICINE_FORM_MODAL]: MedicineFormModal,
+  [MODAL_NAMES.BENEFICIARY_MEDICINE_FORM_MODAL]: BeneficiaryMedicineFormModal,
 } as const;
 
 const ModalContext = createContext<{

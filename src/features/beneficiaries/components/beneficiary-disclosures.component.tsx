@@ -6,7 +6,7 @@ import {
 import STRINGS from "@/core/constants/strings.constant";
 import DisclosureCard from "@/features/disclosures/components/disclosure-card.component";
 import { useDisclosuresLoader } from "@/features/disclosures/hooks/disclosures-loader.hook";
-import { Grid } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 
 const BeneficiaryDisclosures = ({
   beneficiaryId,
@@ -21,7 +21,7 @@ const BeneficiaryDisclosures = ({
   const isEmpty = !isLoading && !isFetching && items.length === 0;
 
   return (
-    <>
+    <Stack>
       <Grid container spacing={2}>
         {items.map((d) => (
           <Grid size={DEFAULT_GRID_SIZES} key={d.id}>
@@ -32,7 +32,7 @@ const BeneficiaryDisclosures = ({
       {isEmpty && (
         <Nodata title={STRINGS.beneficiary_doesnt_have_any_disclosure} />
       )}
-    </>
+    </Stack>
   );
 };
 

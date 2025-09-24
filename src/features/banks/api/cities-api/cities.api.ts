@@ -20,7 +20,7 @@ export const citiesApi = rootApi.injectEndpoints({
       }),
       transformResponse: (res: ApiResponse<TPaginatedResponse<TCity>>) =>
         res.data,
-      providesTags: [{ type: "cities", id: "LIST" }],
+      providesTags: [{ type: "Cities", id: "LIST" }],
     }),
 
     addCity: builder.mutation<TCity, TAddCityPayload>({
@@ -29,7 +29,7 @@ export const citiesApi = rootApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: [{ type: "cities", id: "LIST" }],
+      invalidatesTags: [{ type: "Cities", id: "LIST" }],
     }),
 
     updateCity: builder.mutation<void, TUpdateCityPayload>({
@@ -38,7 +38,7 @@ export const citiesApi = rootApi.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: [{ type: "cities", id: "list" }],
+      invalidatesTags: [{ type: "Cities", id: "list" }],
     }),
   }),
 });

@@ -117,6 +117,21 @@ const STRINGS = {
   time_period: "الفترة الزمنيّة",
   satistics_type: "نوع الإحصائية",
   home_page: "الصفحة الرئيسيّة",
+  medicines: "الأدوية",
+  med_form: "الاستخدام",
+  dose_variants: "الجرعات",
+  no_medicines_found: "لا يوجد ادوية",
+  medicines_management: "ادارة الادوية",
+  add_manage_medicines: "اضافة و ادارة الأدوية",
+  search_med: "ابحث عن دواء ...",
+  add_medicine: "اضافة دواء",
+  edit_medicine: "تعديل دواء",
+  select_one_or_more_doses: "اختر جرعة او اكثر",
+  intake_frequency_per_day: "عدد مرات في اليوم",
+  dose: "الجرعة",
+  add_beneficiary_medicine: "اضافة دواء لمريض",
+  edit_beneficiary_medicine: "تعديل دواء مريض",
+  dose_per_intake: "معيار الجرعة",
 };
 
 export default STRINGS;

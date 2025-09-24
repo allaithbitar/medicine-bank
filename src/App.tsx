@@ -28,6 +28,7 @@ import SyncPage from "./features/offline/pages/sync.page";
 import EmployeeActionPage from "./features/employees/pages/employee-action.page";
 import PriorityDegreesPage from "./features/priority-degres/pages/priority-degrees.page";
 import SatisticsPage from "./features/satistics/pages/satistics.page";
+import MedicinesPage from "./features/banks/pages/medicines/medicines.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -78,20 +79,18 @@ function App() {
               path="/beneficiaries/action"
               element={<BeneficiaryActionPage />}
             />
-
             <Route path="/work-areas" element={<WorkAreas />} />
             <Route path="/cities" element={<Cities />} />
-
             <Route path="/ratings" element={<RatingsPage />} />
+            <Route path="/medicines" element={<MedicinesPage />} />
             <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
-
             <Route path="/sync" element={<SyncPage />} />
           </Route>
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
-      </Route>,
-    ),
+      </Route>
+    )
   );
 
   return <RouterProvider router={router} />;
