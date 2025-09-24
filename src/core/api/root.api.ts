@@ -80,7 +80,7 @@ export const rootApi = createApi({
     "Medicines",
     "Beneficiary_Medicines",
     "Calendar_Appointments",
-    "Disclosure_Appointmetns",
+    "Disclosure_Appointments",
     "Date_Appointments",
   ],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

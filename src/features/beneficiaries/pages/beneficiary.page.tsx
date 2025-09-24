@@ -51,99 +51,95 @@ const BeneficiaryPage = () => {
   if (isLoading || !beneficiary) return <PageLoading />;
 
   return (
-    <Stack sx={{ height: "91vh", position: "relative" }}>
-      <Stack gap={2} sx={{ overflowY: "scroll" }}>
-        <Card sx={{ minHeight: "55vh", p: 2 }}>
-          <Stack gap={2}>
-            <DetailItem
-              label={STRINGS.name}
-              icon={<Person />}
-              value={beneficiary.name}
-            />
-            <DetailItem
-              label={STRINGS.national_number}
-              icon={<Pin />}
-              value={beneficiary.nationalNumber}
-            />
-            <DetailItem
-              label={STRINGS.phones}
-              icon={<Phone />}
-              value={beneficiary.phones.map((p) => p.phone).join(", ")}
-            />
-            <DetailItem
-              icon={<LocationPin />}
-              label={STRINGS.patient_address}
-              value={`${beneficiary.area?.name ?? ""}  - ${
-                beneficiary.address
-              }`}
-            />
-            <DetailItem
-              icon={<EventAvailable />}
-              label={STRINGS.created_at}
-              value={formatDateTime(beneficiary.createdAt)}
-            />
-            <DetailItem
-              icon={<History />}
-              label={STRINGS.updated_at}
-              value={formatDateTime(beneficiary.updatedAt)}
-            />
-            <DetailItem
-              icon={<Info />}
-              label={STRINGS.patient_about}
-              value={beneficiary.about}
-            />
-            <Link
-              to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}
-              style={{ marginInlineStart: "auto" }}
-            >
-              <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
-            </Link>
-          </Stack>
-        </Card>
-        <Tabs
-          variant="fullWidth"
-          value={currentTab}
-          onChange={(_, v) =>
-            setSearchParams((prev) => ({ ...prev, tab: v }), { replace: true })
-          }
-          slotProps={{
-            indicator: {
-              sx: {
-                height: "15%",
-                borderRadius: 10,
-              },
-            },
-          }}
-        >
-          <Tab label={STRINGS.disclosures} />
-          <Tab label={STRINGS.medicines} />
-        </Tabs>
-        {currentTab === 0 && (
-          <BeneficiaryDisclosures beneficiaryId={beneficiary.id} />
-        )}
-        {currentTab === 1 && (
-          <BeneficiaryMedicines
-            onEditBeneficiaryMedicine={(bm) =>
-              handleOpenBeneficiaryMedicineModal(bm)
-            }
-            beneficiaryId={beneficiary.id}
+    <Stack gap={2}>
+      <Card>
+        <Stack gap={2}>
+          <DetailItem
+            label={STRINGS.name}
+            icon={<Person />}
+            value={beneficiary.name}
           />
-        )}
-        <ActionsFab
-          actions={[
-            {
-              icon: <Add />,
-              label: STRINGS.disclosures,
-              onClick: () => handleAddBeneficiaryDisclosure(),
+          <DetailItem
+            label={STRINGS.national_number}
+            icon={<Pin />}
+            value={beneficiary.nationalNumber}
+          />
+          <DetailItem
+            label={STRINGS.phones}
+            icon={<Phone />}
+            value={beneficiary.phones.map((p) => p.phone).join(", ")}
+          />
+          <DetailItem
+            icon={<LocationPin />}
+            label={STRINGS.patient_address}
+            value={`${beneficiary.area?.name ?? ""}  - ${beneficiary.address}`}
+          />
+          <DetailItem
+            icon={<EventAvailable />}
+            label={STRINGS.created_at}
+            value={formatDateTime(beneficiary.createdAt)}
+          />
+          <DetailItem
+            icon={<History />}
+            label={STRINGS.updated_at}
+            value={formatDateTime(beneficiary.updatedAt)}
+          />
+          <DetailItem
+            icon={<Info />}
+            label={STRINGS.patient_about}
+            value={beneficiary.about}
+          />
+          <Link
+            to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}
+            style={{ marginInlineStart: "auto" }}
+          >
+            <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
+          </Link>
+        </Stack>
+      </Card>
+      <Tabs
+        variant="fullWidth"
+        value={currentTab}
+        onChange={(_, v) =>
+          setSearchParams((prev) => ({ ...prev, tab: v }), { replace: true })
+        }
+        slotProps={{
+          indicator: {
+            sx: {
+              height: "15%",
+              borderRadius: 10,
             },
-            {
-              icon: <Add />,
-              label: STRINGS.add_medicine,
-              onClick: () => handleOpenBeneficiaryMedicineModal(undefined),
-            },
-          ]}
+          },
+        }}
+      >
+        <Tab label={STRINGS.disclosures} />
+        <Tab label={STRINGS.medicines} />
+      </Tabs>
+      {currentTab === 0 && (
+        <BeneficiaryDisclosures beneficiaryId={beneficiary.id} />
+      )}
+      {currentTab === 1 && (
+        <BeneficiaryMedicines
+          onEditBeneficiaryMedicine={(bm) =>
+            handleOpenBeneficiaryMedicineModal(bm)
+          }
+          beneficiaryId={beneficiary.id}
         />
-      </Stack>
+      )}
+      <ActionsFab
+        actions={[
+          {
+            icon: <Add />,
+            label: STRINGS.disclosures,
+            onClick: () => handleAddBeneficiaryDisclosure(),
+          },
+          {
+            icon: <Add />,
+            label: STRINGS.add_medicine,
+            onClick: () => handleOpenBeneficiaryMedicineModal(undefined),
+          },
+        ]}
+      />
     </Stack>
   );
 };
