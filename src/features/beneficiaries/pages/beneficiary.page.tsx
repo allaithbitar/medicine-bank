@@ -26,6 +26,7 @@ import BeneficiaryMedicines from "../components/beneficiary-medicines.component"
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
 import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TBeneficiaryMedicine } from "../types/beneficiary.types";
+import BeneficiaryFamilyMembers from "../components/beneficiary-family-members.component";
 
 const BeneficiaryPage = () => {
   const navigate = useNavigate();
@@ -46,6 +47,13 @@ const BeneficiaryPage = () => {
 
   const handleAddBeneficiaryDisclosure = () => {
     navigate(`/disclosures/action?beneficiaryId=${beneficiary?.id}`);
+  };
+
+  const handleOpenFamilyMembersModal = (oldMember?: any) => {
+    openModal({
+      name: "BENEFICIARY_FAMILY_MEMBERS_FORM_MODAL",
+      props: { oldFamilyMember: oldMember, patientId: beneficiary?.id },
+    });
   };
 
   if (isLoading || !beneficiary) return <PageLoading />;
@@ -114,6 +122,7 @@ const BeneficiaryPage = () => {
       >
         <Tab label={STRINGS.disclosures} />
         <Tab label={STRINGS.medicines} />
+        <Tab label={STRINGS.family_members} />
       </Tabs>
       {currentTab === 0 && (
         <BeneficiaryDisclosures beneficiaryId={beneficiary.id} />
@@ -123,6 +132,12 @@ const BeneficiaryPage = () => {
           onEditBeneficiaryMedicine={(bm) =>
             handleOpenBeneficiaryMedicineModal(bm)
           }
+          beneficiaryId={beneficiary.id}
+        />
+      )}
+      {currentTab === 2 && (
+        <BeneficiaryFamilyMembers
+          onEditBeneficiaryFamilyMember={(m) => handleOpenFamilyMembersModal(m)}
           beneficiaryId={beneficiary.id}
         />
       )}
@@ -137,6 +152,11 @@ const BeneficiaryPage = () => {
             icon: <Add />,
             label: STRINGS.add_medicine,
             onClick: () => handleOpenBeneficiaryMedicineModal(undefined),
+          },
+          {
+            icon: <Add />,
+            label: STRINGS.add_family_member,
+            onClick: () => handleOpenFamilyMembersModal(undefined),
           },
         ]}
       />

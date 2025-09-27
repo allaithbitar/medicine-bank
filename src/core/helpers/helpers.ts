@@ -17,7 +17,7 @@ export const getErrorMessage = (
     | Error
     | ApiErrorResponse
     | string
-    | object,
+    | object
 ) => {
   if (!error) return "something_went_wrong";
   if (typeof error === "string") {
@@ -46,7 +46,15 @@ export const formatDateTime = (date: string | Date, withTime = true) =>
   }).format(typeof date === "string" ? new Date(date) : date);
 
 export function isNullOrUndefined<T>(
-  obj: T | undefined | null,
+  obj: T | undefined | null
 ): obj is null | undefined {
   return obj === null || typeof obj === "undefined";
 }
+
+export const formatDateToISO = (d?: Date | null) => {
+  if (!d) return "";
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};

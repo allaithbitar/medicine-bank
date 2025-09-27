@@ -78,3 +78,36 @@ export type TAddBeneficiaryMedicinePayload = {
 export type TUpdateBeneficiaryMedicinePayload = {
   id: string;
 } & TAddBeneficiaryMedicinePayload;
+
+export const ALLOWED_GENDERS = ["male", "female"] as const;
+export type TGender = (typeof ALLOWED_GENDERS)[number];
+
+export const ALLOWED_KINSHIP = [
+  "partner",
+  "child",
+  "parent",
+  "brother",
+  "grandparent",
+  "grandchild",
+] as const;
+export type TKinship = (typeof ALLOWED_KINSHIP)[number];
+
+export type TFamilyMember = {
+  id: string;
+  name: string;
+  birthDate: string;
+  gender: TGender;
+  kinshep: TKinship;
+  jobOrSchool?: string | null;
+  note?: string | null;
+  patientId: string;
+};
+
+export type TGetFamilyMembersParams = {
+  patientId?: string;
+  name?: string | null;
+};
+
+export type TAddFamilyMemberPayload = Omit<TFamilyMember, "id">;
+
+export type TUpdateFamilyMemberPayload = TFamilyMember;

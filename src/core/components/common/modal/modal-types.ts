@@ -7,6 +7,7 @@ import type RatingFormModal from "@/features/ratings/components/ratimg-form.moda
 import type PriorityDegreeFormModal from "@/features/priority-degres/components/priority-degree-form.modal";
 import type MedicineFormModal from "@/features/banks/components/medicines/medicine-form-modal/medicine-form.modal";
 import type BeneficiaryMedicineFormModal from "@/features/beneficiaries/components/beneficiary-medicines/beneficiary-medicine-form.modal";
+import type BeneficiaryFamilyMemberFormModal from "@/features/beneficiaries/components/beneficiary-family-members/beneficiary-family-member-form.modal";
 
 export type TModalExtraProps = {
   // it will always be sent but just to stop the ts compiler from parking
@@ -22,6 +23,8 @@ export const MODAL_NAMES = {
   PRIORITY_DEGREE_FORM_MODAL: "PRIORITY_DEGREE_FORM_MODAL",
   MEDICINE_FORM_MODAL: "MEDICINE_FORM_MODAL",
   BENEFICIARY_MEDICINE_FORM_MODAL: "BENEFICIARY_MEDICINE_FORM_MODAL",
+  BENEFICIARY_FAMILY_MEMBERS_FORM_MODAL:
+    "BENEFICIARY_FAMILY_MEMBERS_FORM_MODAL",
 } as const;
 
 export type TOpenModalPayload =
@@ -56,4 +59,8 @@ export type TOpenModalPayload =
   | {
       name: typeof MODAL_NAMES.BENEFICIARY_MEDICINE_FORM_MODAL;
       props: ComponentProps<typeof BeneficiaryMedicineFormModal>;
+    }
+  | {
+      name: typeof MODAL_NAMES.BENEFICIARY_FAMILY_MEMBERS_FORM_MODAL;
+      props: ComponentProps<typeof BeneficiaryFamilyMemberFormModal>;
     };

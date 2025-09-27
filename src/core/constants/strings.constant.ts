@@ -135,6 +135,21 @@ const STRINGS = {
   appointment_not_completed: "لم تتمّ المراجعة بعد",
   appointment_completed: "تمّت المراجعة",
   appointment_date: "تاريخ المراجعة",
+  family_members: "أفراد العائلة",
+  add_family_member: "اضافة فرد عائلة",
+  edit_family_member: "تعديل فرد عائلة",
+  birth_date: "تاريخ الميلاد",
+  job_or_school: "عمل | مدرسة",
+  gender: "الجنس",
+  kinship: "القرابة",
+  male: "ذكر",
+  female: "انثى",
+  kinship_partner: "شريك",
+  kinship_child: "ابن",
+  kinship_parent: "اهل",
+  kinship_brother: "اخ",
+  kinship_grandparent: "جد",
+  kinship_grandchild: "حفيد",
 };
 
 export default STRINGS;

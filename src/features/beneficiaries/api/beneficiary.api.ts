@@ -8,6 +8,10 @@ import type {
   TGetBeneficiaryMedicinesParams,
   TAddBeneficiaryMedicinePayload,
   TUpdateBeneficiaryMedicinePayload,
+  TFamilyMember,
+  TGetFamilyMembersParams,
+  TAddFamilyMemberPayload,
+  TUpdateFamilyMemberPayload,
 } from "../types/beneficiary.types";
 import type {
   ApiResponse,
@@ -94,6 +98,39 @@ export const beneficiaryApi = rootApi.injectEndpoints({
       invalidatesTags: (_, __, arg) => [
         { type: "Beneficiary_Medicines", id: "LIST" },
         { type: "Beneficiary_Medicines", id: arg.id },
+      ],
+    }),
+    getFamilyMembers: builder.query<
+      TPaginatedResponse<TFamilyMember>,
+      TGetFamilyMembersParams | undefined
+    >({
+      query: (params) => ({
+        url: "/family-members",
+        method: "GET",
+        params,
+      }),
+      transformResponse: (
+        res: ApiResponse<TPaginatedResponse<TFamilyMember>>
+      ) => res.data,
+      providesTags: [{ type: "family_Members", id: "LIST" }],
+    }),
+    addFamilyMember: builder.mutation<TFamilyMember, TAddFamilyMemberPayload>({
+      query: (data) => ({
+        url: "/family-members",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "family_Members", id: "LIST" }],
+    }),
+    updateFamilyMember: builder.mutation<void, TUpdateFamilyMemberPayload>({
+      query: (data) => ({
+        url: `/family-members`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (_, __, arg) => [
+        { type: "family_Members", id: "LIST" },
+        { type: "family_Members", id: arg.id },
       ],
     }),
   }),

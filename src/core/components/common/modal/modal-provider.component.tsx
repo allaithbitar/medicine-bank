@@ -15,6 +15,7 @@ import RatingFormModal from "@/features/ratings/components/ratimg-form.modal";
 import PriorityDegreeFormModal from "@/features/priority-degres/components/priority-degree-form.modal";
 import MedicineFormModal from "@/features/banks/components/medicines/medicine-form-modal/medicine-form.modal";
 import BeneficiaryMedicineFormModal from "@/features/beneficiaries/components/beneficiary-medicines/beneficiary-medicine-form.modal";
+import BeneficiaryFamilyMemberFormModal from "@/features/beneficiaries/components/beneficiary-family-members/beneficiary-family-member-form.modal";
 
 const MODALS = {
   [MODAL_NAMES.CONFIRM_MODAL]: ConfirmModal,
@@ -25,6 +26,8 @@ const MODALS = {
   [MODAL_NAMES.PRIORITY_DEGREE_FORM_MODAL]: PriorityDegreeFormModal,
   [MODAL_NAMES.MEDICINE_FORM_MODAL]: MedicineFormModal,
   [MODAL_NAMES.BENEFICIARY_MEDICINE_FORM_MODAL]: BeneficiaryMedicineFormModal,
+  [MODAL_NAMES.BENEFICIARY_FAMILY_MEMBERS_FORM_MODAL]:
+    BeneficiaryFamilyMemberFormModal,
 } as const;
 
 const ModalContext = createContext<{
