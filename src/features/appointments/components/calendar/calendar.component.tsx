@@ -88,7 +88,7 @@ const Calendar = ({
   onClick,
 }: {
   selectedDate?: string;
-  onClick: (value: string) => void;
+  onClick: (value: string, count?: number) => void;
 }) => {
   const [state, setState] = useState(() => {
     const currentDate = new Date();
@@ -101,7 +101,7 @@ const Calendar = ({
 
   const selectedMonthDaysCount = useMemo(
     () => getDaysInMonth(new Date(state.year, state.month)),
-    [state.month, state.year],
+    [state.month, state.year]
   );
 
   const months = useMemo(() => {
@@ -117,7 +117,7 @@ const Calendar = ({
 
   const selectedMonth = useMemo(
     () => months.find((m) => m.id === String(state.month)),
-    [months, state.month],
+    [months, state.month]
   );
 
   const { data: calendarAppointments } =
@@ -179,7 +179,7 @@ const Calendar = ({
                 dayName={dayName}
                 dayNumber={idx + 1}
                 appointmentsCount={count}
-                onClick={() => onClick(formatted)}
+                onClick={() => onClick(formatted, count)}
               />
             );
           })}

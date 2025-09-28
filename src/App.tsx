@@ -30,6 +30,7 @@ import PriorityDegreesPage from "./features/priority-degres/pages/priority-degre
 import SatisticsPage from "./features/satistics/pages/satistics.page";
 import MedicinesPage from "./features/banks/pages/medicines/medicines.page";
 import AppointmentsPage from "./features/appointments/pages/appointments.page";
+import DisclosureAppointmentActionPage from "./features/disclosures/pages/disclosure-appointment-action.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -70,6 +71,11 @@ function App() {
             <Route
               path="/disclosures/:disclosureId/visit/action"
               element={<DisclosureVisitActionPage />}
+            />
+
+            <Route
+              path="/disclosures/:disclosureId/appointment/action"
+              element={<DisclosureAppointmentActionPage />}
             />
 
             <Route path="/beneficiaries" element={<BeneficiariesPage />} />

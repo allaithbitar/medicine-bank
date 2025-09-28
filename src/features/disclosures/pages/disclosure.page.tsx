@@ -24,6 +24,7 @@ import DisclosureVisists from "../components/disclosure-visits.component";
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
 import { useDisclosureLoader } from "../hooks/disclosure-loader.hook";
 import ErrorCard from "@/core/components/common/error-card/error-card.component";
+import DisclosureAppointment from "../components/disclosure-appointment/disclosure-appointment.component";
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -126,10 +127,14 @@ const DisclosurePage = () => {
           >
             <Tab label={STRINGS.ratings} />
             <Tab label={STRINGS.visits} />
+            <Tab label={STRINGS.appointment} />
           </Tabs>
         </Card>
         {currentTab === 0 && <DisclosureRatings disclosureId={disclosureId} />}
         {currentTab === 1 && <DisclosureVisists disclosureId={disclosureId} />}
+        {currentTab === 2 && (
+          <DisclosureAppointment disclosureId={disclosureId} />
+        )}
       </Stack>
 
       <ActionsFab
@@ -145,6 +150,12 @@ const DisclosurePage = () => {
             label: STRINGS.add_rating,
             onClick: () =>
               navigate(`/disclosures/${disclosureId}/rating/action`),
+          },
+          {
+            icon: <Add />,
+            label: STRINGS.add_disclosure_appointment,
+            onClick: () =>
+              navigate(`/disclosures/${disclosureId}/appointment/action`),
           },
         ]}
       />

@@ -150,6 +150,14 @@ const STRINGS = {
   kinship_brother: "اخ",
   kinship_grandparent: "جد",
   kinship_grandchild: "حفيد",
+  appointment: "مواعيد المراجعة",
+  add_disclosure_appointment: "اضافة موعد زيارة",
+  selected_date_cap_warning: "يوجد العديد من المراجعات في هذا اليوم !!!",
+  select_appointment_date: "أختر يوم للمراجعة",
+  edit_appointment_date: "تعديل يوم المراجعة",
+  warning: "انتبه",
+  appointment_warning_message:
+    "تجنبا للضغط يفضل اختيار تاريخ باقل عدد من المراجعين",
 };
 
 export default STRINGS;
