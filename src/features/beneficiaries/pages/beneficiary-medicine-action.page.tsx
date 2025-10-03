@@ -1,25 +1,27 @@
 import React, { useEffect } from "react";
-import { Box, Button, Stack, TextField, Typography, Chip } from "@mui/material";
+import { Box, Stack, TextField, Typography, Chip, Card } from "@mui/material";
 import { z } from "zod";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
-import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import {
   notifyError,
   notifySuccess,
 } from "@/core/components/common/toast/toast";
 import STRINGS from "@/core/constants/strings.constant";
 import useReducerState from "@/core/hooks/use-reducer.hook";
-import type {
-  TAddBeneficiaryMedicinePayload,
-  TBeneficiaryMedicine,
-  TUpdateBeneficiaryMedicinePayload,
-} from "../../types/beneficiary.types";
+
 import {
   DOSE_OPTIONS,
   type TMedicine,
 } from "@/features/banks/types/medicines.types";
-import beneficiaryApi from "../../api/beneficiary.api";
 import MedicinesAutocomplete from "@/features/banks/components/medicines/medicines-autocomplete/medicines-autocomplete.component";
+import type {
+  TAddBeneficiaryMedicinePayload,
+  TUpdateBeneficiaryMedicinePayload,
+} from "../types/beneficiary.types";
+import beneficiaryApi from "../api/beneficiary.api";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { Save } from "@mui/icons-material";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 const BeneficiaryMedicineSchema = z.object({
   patientId: z.string().min(1, { message: "Patient is required" }),
@@ -33,14 +35,11 @@ const BeneficiaryMedicineSchema = z.object({
 
 type TFormValues = z.infer<typeof BeneficiaryMedicineSchema>;
 
-const BeneficiaryMedicineFormModal = ({
-  oldBeneficiaryMedicine,
-  patientId: propPatientId,
-}: {
-  oldBeneficiaryMedicine?: TBeneficiaryMedicine;
-  patientId?: string;
-}) => {
-  const { closeModal } = useModal();
+const BeneficiaryMedicineActionPage = () => {
+  const navigate = useNavigate();
+  const { state: old } = useLocation();
+  const oldBeneficiaryMedicine = old?.oldBeneficiaryMedicine;
+  const { id: patientId } = useParams();
 
   const [addPatientMedicine, { isLoading: isAdding }] =
     beneficiaryApi.useAddBeneficiaryMedicineMutation();
@@ -50,7 +49,7 @@ const BeneficiaryMedicineFormModal = ({
   const [values, setValues] = useReducerState<
     TFormValues & { med: TMedicine | null }
   >({
-    patientId: oldBeneficiaryMedicine?.patientId ?? propPatientId ?? "",
+    patientId: oldBeneficiaryMedicine?.patientId ?? patientId ?? "",
     medicineId: oldBeneficiaryMedicine?.medicineId ?? "",
     dosePerIntake: oldBeneficiaryMedicine?.dosePerIntake ?? 500,
     intakeFrequency: oldBeneficiaryMedicine?.intakeFrequency
@@ -138,7 +137,7 @@ const BeneficiaryMedicineFormModal = ({
           ? STRINGS.edited_successfully
           : STRINGS.added_successfully
       );
-      closeModal();
+      navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
@@ -152,33 +151,12 @@ const BeneficiaryMedicineFormModal = ({
   const doseVariantsForSelected = DOSE_OPTIONS;
 
   return (
-    <ModalWrapper
-      isLoading={isLoading}
-      title={
-        oldBeneficiaryMedicine
+    <Card>
+      <Typography sx={{ pb: 2 }}>
+        {oldBeneficiaryMedicine
           ? STRINGS.edit_beneficiary_medicine
-          : STRINGS.add_beneficiary_medicine
-      }
-      actionButtons={
-        <Stack flexDirection="row" gap={1}>
-          <Button
-            variant="outlined"
-            onClick={() => closeModal()}
-            color="error"
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {STRINGS.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {oldBeneficiaryMedicine ? STRINGS.edit : STRINGS.add}
-          </Button>
-        </Stack>
-      }
-    >
+          : STRINGS.add_beneficiary_medicine}
+      </Typography>
       <Stack gap={2}>
         <Stack sx={{ flexDirection: "row", gap: 1, alignItems: "end" }}>
           <MedicinesAutocomplete
@@ -236,8 +214,15 @@ const BeneficiaryMedicineFormModal = ({
           minRows={2}
         />
       </Stack>
-    </ModalWrapper>
+      <ActionFab
+        icon={<Save />}
+        color="success"
+        onClick={handleSubmit}
+        disabled={isLoading}
+      />
+      {isLoading && <LoadingOverlay />}
+    </Card>
   );
 };
 
-export default BeneficiaryMedicineFormModal;
+export default BeneficiaryMedicineActionPage;

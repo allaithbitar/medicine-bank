@@ -12,7 +12,10 @@ import type {
 
 export const citiesApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCities: builder.query<TPaginatedResponse<TCity>, { name?: string }>({
+    getCities: builder.query<
+      TPaginatedResponse<TCity>,
+      { name?: string | null }
+    >({
       query: (params) => ({
         url: "/cities",
         method: "GET",
@@ -38,7 +41,7 @@ export const citiesApi = rootApi.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: [{ type: "Cities", id: "list" }],
+      invalidatesTags: [{ type: "Cities", id: "LIST" }],
     }),
   }),
 });

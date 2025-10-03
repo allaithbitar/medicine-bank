@@ -1,16 +1,23 @@
 import { CitySchema } from "@/features/banks/schemas/city.schema";
-import { TextField, Stack, Button } from "@mui/material";
+import { TextField, Card, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import z from "zod";
-import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TCity } from "@/features/banks/types/city.types";
 import citiesApi from "@/features/banks/api/cities-api/cities.api";
-import { notifyError, notifySuccess } from "../../toast/toast";
 import STRINGS from "@/core/constants/strings.constant";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  notifyError,
+  notifySuccess,
+} from "@/core/components/common/toast/toast";
+import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { Save } from "@mui/icons-material";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
-const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
-  const { closeModal } = useModal();
+const CityActionPage = () => {
+  const navigate = useNavigate();
+  const { state: old } = useLocation();
+  const oldCity = old?.oldCity;
   const [updateCity, { isLoading: isUpdatingCity }] =
     citiesApi.useUpdateCityMutation({});
   const [addCity, { isLoading: isAddingCity }] = citiesApi.useAddCityMutation(
@@ -41,7 +48,7 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
         await addCity({ name: cityName });
       }
       notifySuccess();
-      closeModal();
+      navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
@@ -59,29 +66,10 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
   }, []);
 
   return (
-    <ModalWrapper
-      isLoading={isUpdatingCity || isAddingCity}
-      title={oldCity ? STRINGS.edit_city : STRINGS.add_city}
-      actionButtons={
-        <Stack flexDirection="row" gap={1}>
-          <Button
-            variant="outlined"
-            onClick={() => closeModal()}
-            color="error"
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {STRINGS.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {oldCity ? STRINGS.edit : STRINGS.add}
-          </Button>
-        </Stack>
-      }
-    >
+    <Card>
+      <Typography sx={{ pb: 2 }}>
+        {oldCity ? STRINGS.edit_city : STRINGS.add_city}
+      </Typography>
       <TextField
         fullWidth
         label={STRINGS.city_name}
@@ -90,8 +78,15 @@ const CityFormModal = ({ oldCity }: { oldCity?: TCity }) => {
         error={!!getErrorForField("name")}
         helperText={getErrorForField("name")}
       />
-    </ModalWrapper>
+      <ActionFab
+        icon={<Save />}
+        color="success"
+        onClick={handleSubmit}
+        disabled={isUpdatingCity || isAddingCity}
+      />
+      {isUpdatingCity || (isAddingCity && <LoadingOverlay />)}
+    </Card>
   );
 };
 
-export default CityFormModal;
+export default CityActionPage;

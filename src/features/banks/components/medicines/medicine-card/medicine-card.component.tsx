@@ -9,6 +9,7 @@ import { teal, orange } from "@mui/material/colors";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import MedicationLiquidIcon from "@mui/icons-material/MedicationLiquid";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
+import { getStringsLabel } from "@/core/helpers/helpers";
 const MedicineCard = ({
   medicine,
   onEdit,
@@ -76,12 +77,12 @@ const MedicineCard = ({
           <DetailItemComponent
             label={STRINGS.med_form}
             icon={<MedicationLiquidIcon />}
-            value={medicine.form}
+            value={getStringsLabel({ key: "med_form", val: medicine.form })}
           />
           <DetailItemComponent
             label={STRINGS.dose_variants}
             icon={<VaccinesIcon />}
-            value={medicine.doseVariants.join(", ")}
+            value={medicine.doseVariants.map((dv) => `${dv}mg`).join(" , ")}
           />
         </Stack>
       }

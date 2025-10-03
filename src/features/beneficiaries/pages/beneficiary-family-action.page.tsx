@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import {
   Box,
-  Button,
+  Card,
   MenuItem,
   Select,
   Stack,
@@ -9,8 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import { z } from "zod";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
-import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import {
   notifyError,
   notifySuccess,
@@ -19,16 +17,20 @@ import STRINGS from "@/core/constants/strings.constant";
 import useReducerState from "@/core/hooks/use-reducer.hook";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
+import { formatDateToISO, getStringsLabel } from "@/core/helpers/helpers";
+import { MobileDatePicker } from "@mui/x-date-pickers";
 import type {
   TAddFamilyMemberPayload,
-  TFamilyMember,
   TGender,
   TKinship,
   TUpdateFamilyMemberPayload,
-} from "../../types/beneficiary.types";
-import beneficiaryApi from "../../api/beneficiary.api";
-import { formatDateToISO } from "@/core/helpers/helpers";
-import { MobileDatePicker } from "@mui/x-date-pickers";
+} from "../types/beneficiary.types";
+import beneficiaryApi from "../api/beneficiary.api";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { Save } from "@mui/icons-material";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 const FamilyMemberSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }).max(200),
@@ -59,14 +61,11 @@ const KINSHEP: TKinship[] = [
   "grandchild",
 ];
 
-const BeneficiaryFamilyMemberFormModal = ({
-  oldFamilyMember,
-  patientId: propPatientId,
-}: {
-  oldFamilyMember?: TFamilyMember;
-  patientId?: string;
-}) => {
-  const { closeModal } = useModal();
+const BeneficiaryFamilyActionPage = () => {
+  const navigate = useNavigate();
+  const { state: old } = useLocation();
+  const oldFamilyMember = old?.oldMember;
+  const { id: patientId } = useParams();
 
   const [addFamilyMember, { isLoading: isAdding }] =
     beneficiaryApi.useAddFamilyMemberMutation();
@@ -88,7 +87,7 @@ const BeneficiaryFamilyMemberFormModal = ({
     kinshep: (oldFamilyMember?.kinshep as TKinship) ?? "partner",
     jobOrSchool: oldFamilyMember?.jobOrSchool ?? "",
     note: oldFamilyMember?.note ?? "",
-    patientId: oldFamilyMember?.patientId ?? propPatientId ?? "",
+    patientId: oldFamilyMember?.patientId ?? patientId ?? "",
   });
 
   const [errors, setErrors] = React.useState<z.ZodIssue[]>([]);
@@ -133,7 +132,7 @@ const BeneficiaryFamilyMemberFormModal = ({
           ? STRINGS.edited_successfully
           : STRINGS.added_successfully
       );
-      closeModal();
+      navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
@@ -146,31 +145,12 @@ const BeneficiaryFamilyMemberFormModal = ({
   const isLoading = isAdding || isUpdating;
 
   return (
-    <ModalWrapper
-      isLoading={isLoading}
-      title={
-        oldFamilyMember ? STRINGS.edit_family_member : STRINGS.add_family_member
-      }
-      actionButtons={
-        <Stack flexDirection="row" gap={1}>
-          <Button
-            variant="outlined"
-            onClick={() => closeModal()}
-            color="error"
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {STRINGS.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {oldFamilyMember ? STRINGS.edit : STRINGS.add}
-          </Button>
-        </Stack>
-      }
-    >
+    <Card>
+      <Typography sx={{ pb: 2 }}>
+        {oldFamilyMember
+          ? STRINGS.edit_family_member
+          : STRINGS.add_family_member}
+      </Typography>
       <Stack gap={2}>
         <TextField
           fullWidth
@@ -192,14 +172,6 @@ const BeneficiaryFamilyMemberFormModal = ({
               setValues({ _birthDate: newDate ?? null });
               setErrors((p) => p.filter((er) => er.path[0] !== "birthDate"));
             }}
-            // renderInput={(params) => (
-            //   <TextField
-            //     {...params}
-            //     fullWidth
-            //     error={!!getErrorForField("birthDate")}
-            //     helperText={getErrorForField("birthDate")}
-            //   />
-            // )}
           />
         </LocalizationProvider>
         <Stack sx={{ flexDirection: "row", gap: 2 }}>
@@ -217,7 +189,7 @@ const BeneficiaryFamilyMemberFormModal = ({
             >
               {GENDERS.map((g) => (
                 <MenuItem key={g} value={g}>
-                  {g === "male" ? STRINGS.male : STRINGS.female}
+                  {STRINGS[g]}
                 </MenuItem>
               ))}
             </Select>
@@ -239,11 +211,9 @@ const BeneficiaryFamilyMemberFormModal = ({
               }}
             >
               {KINSHEP.map((k) => {
-                const labelKey = `kinship_${k}` as keyof typeof STRINGS;
-                const label = STRINGS[labelKey] ?? k;
                 return (
                   <MenuItem key={k} value={k}>
-                    {label}
+                    {getStringsLabel({ key: "kinship", val: k })}
                   </MenuItem>
                 );
               })}
@@ -270,8 +240,15 @@ const BeneficiaryFamilyMemberFormModal = ({
           minRows={2}
         />
       </Stack>
-    </ModalWrapper>
+      <ActionFab
+        icon={<Save />}
+        color="success"
+        onClick={handleSubmit}
+        disabled={isLoading}
+      />
+      {isLoading && <LoadingOverlay />}
+    </Card>
   );
 };
 
-export default BeneficiaryFamilyMemberFormModal;
+export default BeneficiaryFamilyActionPage;

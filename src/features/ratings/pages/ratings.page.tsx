@@ -6,21 +6,16 @@ import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar
 import RatingsList from "../components/ratings-list.component";
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
 import { Add } from "@mui/icons-material";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
+import { useNavigate } from "react-router-dom";
 
 const RatingsPage = () => {
-  const { openModal } = useModal();
+  const navigate = useNavigate();
 
   const { data: ratings = [], isLoading: isLoadingRatings } =
     ratingsApi.useGetRatingsQuery({});
 
-  const handleOpenRatingModal = (oldRating?: TRating) => {
-    openModal({
-      name: "RATING_FORM_MODAL",
-      props: {
-        oldRating,
-      },
-    });
+  const handleOpenRatingActionPage = (oldRating?: TRating) => {
+    navigate("/ratings/action", { state: { oldRating } });
   };
 
   return (
@@ -30,7 +25,7 @@ const RatingsPage = () => {
         subtitle={STRINGS.add_manage_ratings}
       />
       <RatingsList
-        onEditRating={handleOpenRatingModal}
+        onEditRating={handleOpenRatingActionPage}
         isLoadingRatings={isLoadingRatings}
         ratings={ratings}
       />
@@ -39,7 +34,7 @@ const RatingsPage = () => {
           {
             label: STRINGS.add,
             icon: <Add />,
-            onClick: () => handleOpenRatingModal(),
+            onClick: () => handleOpenRatingActionPage(),
           },
         ]}
       />

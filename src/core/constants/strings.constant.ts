@@ -144,12 +144,12 @@ const STRINGS = {
   kinship: "القرابة",
   male: "ذكر",
   female: "انثى",
-  kinship_partner: "شريك",
-  kinship_child: "ابن",
+  kinship_partner: "شريك/ة",
+  kinship_child: "ابن/ة",
   kinship_parent: "اهل",
-  kinship_brother: "اخ",
-  kinship_grandparent: "جد",
-  kinship_grandchild: "حفيد",
+  kinship_brother: "اخ/ت",
+  kinship_grandparent: "جد/ة",
+  kinship_grandchild: "حفيد/ة",
   appointment: "مواعيد المراجعة",
   add_disclosure_appointment: "اضافة موعد زيارة",
   selected_date_cap_warning: "يوجد العديد من المراجعات في هذا اليوم !!!",
@@ -158,6 +158,11 @@ const STRINGS = {
   warning: "انتبه",
   appointment_warning_message:
     "تجنبا للضغط يفضل اختيار تاريخ باقل عدد من المراجعين",
+  med_form_pill: "حب (اقراص)",
+  med_form_syrup: "شراب",
+  med_form_injection: "ابر (حقن)",
+  med_form_capsule: "كبسولة",
+  med_form_ointment: "مراهم",
 };
 
 export default STRINGS;

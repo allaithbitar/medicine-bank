@@ -9,6 +9,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import CakeIcon from "@mui/icons-material/Cake";
 import WorkIcon from "@mui/icons-material/Work";
 import type { TFamilyMember } from "../../types/beneficiary.types";
+import { getStringsLabel } from "@/core/helpers/helpers";
 
 const FamilyMemberCard = ({
   member,
@@ -52,7 +53,8 @@ const FamilyMemberCard = ({
             {member.name}
           </Typography>
           <Typography variant="caption" color="rgba(255,255,255,0.85)" noWrap>
-            {member.kinshep} • {member.gender}
+            {getStringsLabel({ key: "kinship", val: member.kinshep })} •{" "}
+            {STRINGS[member.gender]}
           </Typography>
         </Box>
       </Box>

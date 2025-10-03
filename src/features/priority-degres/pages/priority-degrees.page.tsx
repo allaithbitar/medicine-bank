@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { Stack } from "@mui/material";
 import Add from "@mui/icons-material/Add";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import priorityDegreesApi from "../api/priority-degrees.api";
 import CustomAppBarComponent from "@/core/components/common/custom-app-bar/custom-app-bar.component";
 import STRINGS from "@/core/constants/strings.constant";
@@ -9,24 +8,21 @@ import SearchFilter from "@/core/components/common/search-filter/search-filter.c
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
 import PriorityDegreesList from "../components/priority-degreesList.component";
 import type { TPriorityDegree } from "../types/priority-degree.types";
+import { useNavigate } from "react-router-dom";
 
 const PriorityDegreesPage = () => {
-  const { openModal } = useModal();
+  const navigate = useNavigate();
+
   const [query, setQuery] = useState<string | null>("");
 
   const { data: priorityDegrees = [], isLoading: isLoadingPriorityDegrees } =
     priorityDegreesApi.useGetPriorityDegreesQuery({ name: query ?? undefined });
 
-  const handleOpenPriorityDegreeModal = useCallback(
+  const handleOpenPriorityDegreeActionPage = useCallback(
     (oldPriorityDegree?: TPriorityDegree) => {
-      openModal({
-        name: "PRIORITY_DEGREE_FORM_MODAL",
-        props: {
-          oldPriorityDegree,
-        },
-      });
+      navigate(`/priority-degrees/action`, { state: { oldPriorityDegree } });
     },
-    [openModal]
+    [navigate]
   );
 
   const handleSearch = useCallback((q: string | null) => {
@@ -49,14 +45,14 @@ const PriorityDegreesPage = () => {
       <PriorityDegreesList
         isLoadingPriorityDegrees={isLoadingPriorityDegrees}
         priorityDegrees={priorityDegrees}
-        onEdit={handleOpenPriorityDegreeModal}
+        onEdit={handleOpenPriorityDegreeActionPage}
       />
       <ActionsFab
         actions={[
           {
             label: STRINGS.add,
             icon: <Add />,
-            onClick: () => handleOpenPriorityDegreeModal(),
+            onClick: () => handleOpenPriorityDegreeActionPage(),
           },
         ]}
       />

@@ -1,11 +1,9 @@
-import { useState } from "react";
-import { TextField, Stack, Button } from "@mui/material";
+import { useEffect, useState } from "react";
+import { TextField, Stack, Card, Typography } from "@mui/material";
 import {
   notifyError,
   notifySuccess,
 } from "@/core/components/common/toast/toast";
-import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import { z } from "zod";
 import workAreasApi from "@/features/banks/api/work-areas/work-areas.api";
 import {
@@ -16,24 +14,34 @@ import STRINGS from "@/core/constants/strings.constant";
 import CitiesAutocomplete from "@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component";
 import useReducerState from "@/core/hooks/use-reducer.hook";
 import type { IOptions } from "@/core/types/common.types";
-import type { TArea } from "@/features/banks/types/work-areas.types";
-
-interface IWorkAreaFormModalProps {
-  oldWorkAreaData?: TArea;
-}
+import { useLocation, useNavigate } from "react-router-dom";
+import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { Save } from "@mui/icons-material";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 interface IAreaData {
   selectedCity: IOptions | null;
   workAreaName: string;
 }
+const initialAreaData: IAreaData = {
+  selectedCity: null,
+  workAreaName: "",
+};
 
-const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
-  const initialAreaData: IAreaData = {
-    selectedCity: null,
-    workAreaName: oldWorkAreaData?.name || "",
-  };
-  const { closeModal } = useModal();
+const WorkAreaActionPage = () => {
+  const navigate = useNavigate();
+  const { state: old } = useLocation();
+  const oldWorkAreaData = old?.oldWorkArea;
+
   const [state, setState] = useReducerState<IAreaData>(initialAreaData);
+
+  useEffect(() => {
+    if (oldWorkAreaData) {
+      setState({ workAreaName: oldWorkAreaData.name });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [oldWorkAreaData]);
+
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
   const [updateWorkArea, { isLoading: isUpdatingWorkArea }] =
@@ -74,7 +82,7 @@ const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
           ? STRINGS.edited_successfully
           : STRINGS.added_successfully
       );
-      closeModal();
+      navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
@@ -88,29 +96,10 @@ const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
   const isLoading = isUpdatingWorkArea || isAddingWorkArea;
 
   return (
-    <ModalWrapper
-      isLoading={isLoading}
-      title={oldWorkAreaData ? STRINGS.edit_work_area : STRINGS.add_work_area}
-      actionButtons={
-        <Stack direction="row" gap={1}>
-          <Button
-            onClick={() => closeModal()}
-            color="error"
-            sx={{ flexGrow: 1 }}
-          >
-            {STRINGS.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={isLoading}
-            sx={{ flexGrow: 1 }}
-          >
-            {oldWorkAreaData ? STRINGS.edit : STRINGS.add}
-          </Button>
-        </Stack>
-      }
-    >
+    <Card>
+      <Typography sx={{ pb: 2 }}>
+        {oldWorkAreaData ? STRINGS.edit_city : STRINGS.add_city}
+      </Typography>
       <Stack gap={3}>
         <CitiesAutocomplete
           disabled
@@ -130,8 +119,15 @@ const WorkAreaFormModal = ({ oldWorkAreaData }: IWorkAreaFormModalProps) => {
           disabled={isLoading}
         />
       </Stack>
-    </ModalWrapper>
+      <ActionFab
+        icon={<Save />}
+        color="success"
+        onClick={handleSubmit}
+        disabled={isLoading}
+      />
+      {isLoading && <LoadingOverlay />}
+    </Card>
   );
 };
 
-export default WorkAreaFormModal;
+export default WorkAreaActionPage;

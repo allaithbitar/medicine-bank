@@ -1,20 +1,18 @@
 import { useState } from "react";
 import {
   Box,
-  Button,
   Stack,
   TextField,
   MenuItem,
   Select,
   type SelectChangeEvent,
   Typography,
+  Card,
 } from "@mui/material";
 import { red, green, orange } from "@mui/material/colors";
 import * as z from "zod";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type {
   TAddPriorityDegreeDto,
-  TPriorityDegree,
   TUpdatePriorityDegreeDto,
 } from "../types/priority-degree.types";
 import priorityDegreesApi from "../api/priority-degrees.api";
@@ -23,8 +21,11 @@ import {
   notifySuccess,
 } from "@/core/components/common/toast/toast";
 import STRINGS from "@/core/constants/strings.constant";
-import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import useReducerState from "@/core/hooks/use-reducer.hook";
+import { useLocation, useNavigate } from "react-router-dom";
+import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { Save } from "@mui/icons-material";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 const PriorityDegreeSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }).max(100),
@@ -60,12 +61,10 @@ const FLAT_COLORS: { color: string; group: string; label: string }[] = [
   })),
 ];
 
-const PriorityDegreeFormModal = ({
-  oldPriorityDegree,
-}: {
-  oldPriorityDegree?: TPriorityDegree;
-}) => {
-  const { closeModal } = useModal();
+const PriorityDegreesActionPage = () => {
+  const navigate = useNavigate();
+  const { state: old } = useLocation();
+  const oldPriorityDegree = old?.oldPriorityDegree;
 
   const [updatePriorityDegree, { isLoading: isUpdating }] =
     priorityDegreesApi.useUpdatePriorityDegreeMutation({});
@@ -115,7 +114,7 @@ const PriorityDegreeFormModal = ({
           ? STRINGS.edited_successfully
           : STRINGS.added_successfully
       );
-      closeModal();
+      navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
@@ -128,33 +127,10 @@ const PriorityDegreeFormModal = ({
   const isLoading = isAdding || isUpdating;
 
   return (
-    <ModalWrapper
-      isLoading={isLoading}
-      title={
-        oldPriorityDegree
-          ? STRINGS.edit_priority_degree
-          : STRINGS.add_priority_degree
-      }
-      actionButtons={
-        <Stack flexDirection="row" gap={1}>
-          <Button
-            variant="outlined"
-            onClick={() => closeModal()}
-            color="error"
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {STRINGS.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {oldPriorityDegree ? STRINGS.edit : STRINGS.add}
-          </Button>
-        </Stack>
-      }
-    >
+    <Card>
+      <Typography sx={{ pb: 2 }}>
+        {oldPriorityDegree ? STRINGS.edit : STRINGS.add}
+      </Typography>
       <Stack gap={2}>
         <TextField
           fullWidth
@@ -251,8 +227,15 @@ const PriorityDegreeFormModal = ({
           </Stack>
         </Box>
       </Stack>
-    </ModalWrapper>
+      <ActionFab
+        icon={<Save />}
+        color="success"
+        onClick={handleSubmit}
+        disabled={isLoading}
+      />
+      {isLoading && <LoadingOverlay />}
+    </Card>
   );
 };
 
-export default PriorityDegreeFormModal;
+export default PriorityDegreesActionPage;

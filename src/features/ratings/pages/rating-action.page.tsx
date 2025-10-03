@@ -1,34 +1,35 @@
 import STRINGS from "@/core/constants/strings.constant";
-import { Stack, TextField, Button } from "@mui/material";
+import { Stack, TextField, Card, Typography } from "@mui/material";
 import useReducerState from "@/core/hooks/use-reducer.hook";
 import z from "zod";
 import { useState } from "react";
-import type { TRating } from "../types/rating.types";
 import {
   notifyError,
   notifySuccess,
 } from "@/core/components/common/toast/toast";
 import ratingsApi from "../api/ratings.api";
-import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import { RatingSchema, UpdateRatingSchema } from "../schemas/rating.schema";
-
-interface IManageRatingsAccordionProps {
-  oldRating?: TRating;
-}
+import { useLocation, useNavigate } from "react-router-dom";
+import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { Save } from "@mui/icons-material";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 interface IRatingsData {
   name: string;
   code: string;
   description: string;
 }
-const RatingFormModal = ({ oldRating }: IManageRatingsAccordionProps) => {
+const RatingActionPage = () => {
+  const navigate = useNavigate();
+
+  const { state: old } = useLocation();
+  const oldRating = old?.oldRating;
+
   const initialRatingsData: IRatingsData = {
     code: oldRating?.code || "",
     name: oldRating?.name || "",
     description: oldRating?.description || "",
   };
-  const { closeModal } = useModal();
   const [state, setState] = useReducerState(initialRatingsData);
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
@@ -64,7 +65,7 @@ const RatingFormModal = ({ oldRating }: IManageRatingsAccordionProps) => {
         RatingSchema.parse(addPayload);
         await addRating(addPayload).unwrap();
       }
-      closeModal();
+      navigate(-1);
       notifySuccess();
     } catch (err: any) {
       if (err instanceof z.ZodError) {
@@ -77,29 +78,10 @@ const RatingFormModal = ({ oldRating }: IManageRatingsAccordionProps) => {
 
   const isLoading = isAddingRating || isUpdatingRating;
   return (
-    <ModalWrapper
-      isLoading={isLoading}
-      title={oldRating ? STRINGS.edit_rating : STRINGS.add_rating}
-      actionButtons={
-        <Stack flexDirection="row" gap={1}>
-          <Button
-            variant="outlined"
-            onClick={() => closeModal()}
-            color="error"
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {STRINGS.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSave}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {oldRating ? STRINGS.edit : STRINGS.add}
-          </Button>
-        </Stack>
-      }
-    >
+    <Card>
+      <Typography sx={{ pb: 2 }}>
+        {oldRating ? STRINGS.edit_rating : STRINGS.add_rating}
+      </Typography>
       <Stack sx={{ flexDirection: "column", gap: 1 }}>
         <TextField
           fullWidth
@@ -129,8 +111,15 @@ const RatingFormModal = ({ oldRating }: IManageRatingsAccordionProps) => {
           disabled={false}
         />
       </Stack>
-    </ModalWrapper>
+      <ActionFab
+        icon={<Save />}
+        color="success"
+        onClick={handleSave}
+        disabled={isLoading}
+      />
+      {isLoading && <LoadingOverlay />}
+    </Card>
   );
 };
 
-export default RatingFormModal;
+export default RatingActionPage;

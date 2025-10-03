@@ -8,22 +8,18 @@ import { Add } from "@mui/icons-material";
 import SearchFilter from "@/core/components/common/search-filter/search-filter.component";
 import { useCallback, useState } from "react";
 import type { TMedicine } from "../../types/medicines.types";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
+import { useNavigate } from "react-router-dom";
 
 const MedicinesPage = () => {
   const [query, setQuery] = useState<string | null>("");
-  const { openModal } = useModal();
-
+  const navigate = useNavigate();
   const {
     data: { items: medicines = [] } = { items: [] },
     isLoading: isLoadingMedicines,
   } = medicinesApi.useGetMedicinesQuery({ name: query });
 
   const handleOpenMedicineModal = (oldMedicine?: TMedicine) => {
-    openModal({
-      name: "MEDICINE_FORM_MODAL",
-      props: { oldMedicine },
-    });
+    navigate("/medicines/action", { state: { oldMedicine } });
   };
 
   const handleSearch = useCallback((query: string | null) => {

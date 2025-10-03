@@ -3,15 +3,16 @@ import { Stack } from "@mui/material";
 import WorkAreasLists from "../../components/work-areas/work-area-lists/work-area-lists.component";
 import WorkAreasAppBar from "../../components/work-areas/work-area-hidder/work-area-hidder.components";
 import workAreasApi from "../../api/work-areas/work-areas.api";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TArea } from "../../types/work-areas.types";
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
 import { Add } from "@mui/icons-material";
 import STRINGS from "@/core/constants/strings.constant";
 import type { TCity } from "../../types/city.types";
+import { useNavigate } from "react-router-dom";
 
 const WorkAreas = () => {
-  const { openModal } = useModal();
+  const navigate = useNavigate();
+
   const [selectedCity, setSelectedCity] = useState<TCity | null>(null);
   const [query, setQuery] = useState<string | null>("");
 
@@ -30,13 +31,8 @@ const WorkAreas = () => {
     setQuery(query);
   }, []);
 
-  const handleWorkAreaAction = (oldWorkArea?: TArea) => {
-    openModal({
-      name: "WORK_AREA_FORM_MODAL",
-      props: {
-        oldWorkAreaData: oldWorkArea,
-      },
-    });
+  const handleOpenWorkAreaActionPage = (oldWorkArea?: TArea) => {
+    navigate(`/work-areas/action`, { state: { oldWorkArea } });
   };
 
   return (
@@ -47,7 +43,7 @@ const WorkAreas = () => {
         setSelectedCity={setSelectedCity}
       />
       <WorkAreasLists
-        handleEditWorkArea={(wa) => handleWorkAreaAction(wa)}
+        handleEditWorkArea={(wa) => handleOpenWorkAreaActionPage(wa)}
         workAreas={workAreas}
         isLoadingWorkAreas={isLoadingWorkAreas}
       />
@@ -56,7 +52,7 @@ const WorkAreas = () => {
           {
             label: STRINGS.add,
             icon: <Add />,
-            onClick: () => handleWorkAreaAction(),
+            onClick: () => handleOpenWorkAreaActionPage(),
           },
         ]}
       />

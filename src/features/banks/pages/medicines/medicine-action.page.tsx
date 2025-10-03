@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Box,
-  Button,
   MenuItem,
   Select,
   Stack,
@@ -9,6 +8,7 @@ import {
   Typography,
   Chip,
   type SelectChangeEvent,
+  Card,
 } from "@mui/material";
 import { z } from "zod";
 import {
@@ -16,18 +16,20 @@ import {
   DOSE_OPTIONS,
   type TAddMedicinePayload,
   type TFormValue,
-  type TMedicine,
   type TUpdateMedicinePayload,
 } from "@/features/banks/types/medicines.types";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import medicinesApi from "@/features/banks/api/medicines-api/medicines-api";
 import {
   notifyError,
   notifySuccess,
 } from "@/core/components/common/toast/toast";
 import STRINGS from "@/core/constants/strings.constant";
-import ModalWrapper from "@/core/components/common/modal/modal-wrapper.component";
 import useReducerState from "@/core/hooks/use-reducer.hook";
+import { getStringsLabel } from "@/core/helpers/helpers";
+import { useLocation, useNavigate } from "react-router-dom";
+import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
+import { Save } from "@mui/icons-material";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 const MedicineSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }).max(200),
@@ -41,8 +43,10 @@ const MedicineSchema = z.object({
 
 type TFormValues = z.infer<typeof MedicineSchema>;
 
-const MedicineFormModal = ({ oldMedicine }: { oldMedicine?: TMedicine }) => {
-  const { closeModal } = useModal();
+const MedicineActionPage = () => {
+  const navigate = useNavigate();
+  const { state: old } = useLocation();
+  const oldMedicine = old?.oldMedicine;
 
   const [addMedicine, { isLoading: isAdding }] =
     medicinesApi.useAddMedicineMutation();
@@ -107,7 +111,7 @@ const MedicineFormModal = ({ oldMedicine }: { oldMedicine?: TMedicine }) => {
       notifySuccess(
         oldMedicine ? STRINGS.edited_successfully : STRINGS.added_successfully
       );
-      closeModal();
+      navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
@@ -120,29 +124,10 @@ const MedicineFormModal = ({ oldMedicine }: { oldMedicine?: TMedicine }) => {
   const isLoading = isAdding || isUpdating;
 
   return (
-    <ModalWrapper
-      isLoading={isLoading}
-      title={oldMedicine ? STRINGS.edit_medicine : STRINGS.add_medicine}
-      actionButtons={
-        <Stack flexDirection="row" gap={1}>
-          <Button
-            variant="outlined"
-            onClick={() => closeModal()}
-            color="error"
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {STRINGS.cancel}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            {oldMedicine ? STRINGS.edit : STRINGS.add}
-          </Button>
-        </Stack>
-      }
-    >
+    <Card>
+      <Typography sx={{ pb: 2 }}>
+        {oldMedicine ? STRINGS.edit_medicine : STRINGS.add_medicine}
+      </Typography>
       <Stack gap={2}>
         <TextField
           fullWidth
@@ -168,7 +153,7 @@ const MedicineFormModal = ({ oldMedicine }: { oldMedicine?: TMedicine }) => {
             {ALLOWED_FORMS.map((f) => (
               <MenuItem key={f} value={f}>
                 <Typography sx={{ textTransform: "capitalize" }}>
-                  {f}
+                  {getStringsLabel({ key: "med_form", val: f })}
                 </Typography>
               </MenuItem>
             ))}
@@ -218,8 +203,15 @@ const MedicineFormModal = ({ oldMedicine }: { oldMedicine?: TMedicine }) => {
           </Typography>
         </Box>
       </Stack>
-    </ModalWrapper>
+      <ActionFab
+        icon={<Save />}
+        color="success"
+        onClick={handleSubmit}
+        disabled={isLoading}
+      />
+      {isLoading && <LoadingOverlay />}
+    </Card>
   );
 };
 
-export default MedicineFormModal;
+export default MedicineActionPage;

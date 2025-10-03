@@ -1,6 +1,7 @@
 import type { SerializedError } from "@reduxjs/toolkit";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import type { ApiErrorResponse } from "../types/common.types";
+import STRINGS from "../constants/strings.constant";
 
 export const isFetchBaseQueryError = (obj: any): obj is FetchBaseQueryError => {
   return !!obj["status"];
@@ -57,4 +58,9 @@ export const formatDateToISO = (d?: Date | null) => {
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
+};
+
+export const getStringsLabel = ({ key, val }: { key: string; val: string }) => {
+  const labelKey = `${key}_${val}` as keyof typeof STRINGS;
+  return STRINGS[labelKey] ?? val;
 };

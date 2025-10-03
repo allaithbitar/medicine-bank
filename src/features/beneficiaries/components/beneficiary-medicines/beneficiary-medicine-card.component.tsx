@@ -11,6 +11,7 @@ import DetailItemComponent from "@/core/components/common/detail-item/detail-ite
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
 import STRINGS from "@/core/constants/strings.constant";
 import type { TBeneficiaryMedicine } from "../../types/beneficiary.types";
+import { getStringsLabel } from "@/core/helpers/helpers";
 
 const BeneficiaryMedicineCard = ({
   item,
@@ -56,7 +57,7 @@ const BeneficiaryMedicineCard = ({
           </Typography>
 
           <Typography variant="caption" color="rgba(255,255,255,0.85)" noWrap>
-            {medicine?.form}
+            {getStringsLabel({ key: "med_form", val: medicine?.form })}
           </Typography>
         </Box>
       </Box>
@@ -89,7 +90,7 @@ const BeneficiaryMedicineCard = ({
           <DetailItemComponent
             label={STRINGS.dose}
             icon={<VaccinesIcon />}
-            value={dose}
+            value={`${dose}mg`}
           />
           <DetailItemComponent
             label={STRINGS.intake_frequency_per_day}
