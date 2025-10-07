@@ -1,6 +1,8 @@
 import { IconButton, Stack } from "@mui/material";
 import type { Dispatch, SetStateAction } from "react";
 import { MdMenuOpen } from "react-icons/md";
+import RecordVoiceOverOutlinedIcon from "@mui/icons-material/RecordVoiceOverOutlined";
+import { Link } from "react-router-dom";
 
 function Navbar({
   setOpenSidebar,
@@ -23,11 +25,18 @@ function Navbar({
       >
         <MdMenuOpen />
       </IconButton>
-      <img
-        src={`/logo.jpeg`}
-        style={{ width: 50, borderRadius: "8px" }}
-        alt="bank-logo"
-      />
+      <Stack sx={{ gap: 1, flexDirection: "row", alignItems: "center" }}>
+        <Link to={`/system-broadcast`} style={{ marginInlineStart: "auto" }}>
+          <IconButton color="primary">
+            <RecordVoiceOverOutlinedIcon />
+          </IconButton>
+        </Link>
+        <img
+          src={`/logo.jpeg`}
+          style={{ width: 50, borderRadius: "8px" }}
+          alt="bank-logo"
+        />
+      </Stack>
     </Stack>
   );
 }

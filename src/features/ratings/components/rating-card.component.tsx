@@ -56,9 +56,11 @@ const RatingCard = ({
         sx={{ color: "white", flexShrink: 0, ml: 2 }}
       >
         <Tooltip title={STRINGS.delete} arrow>
-          <CustomIconButton disabled size="small">
-            <DeleteOutline sx={{ color: "white" }} />
-          </CustomIconButton>
+          <span>
+            <CustomIconButton disabled size="small">
+              <DeleteOutline sx={{ color: "white" }} />
+            </CustomIconButton>
+          </span>
         </Tooltip>
         <Tooltip title={STRINGS.edit} arrow>
           <CustomIconButton onClick={() => onEdit(rating)} size="small">

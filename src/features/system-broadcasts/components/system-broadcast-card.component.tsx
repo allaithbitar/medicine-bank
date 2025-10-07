@@ -1,22 +1,23 @@
 import { Box, Avatar, Stack, Tooltip, Typography } from "@mui/material";
-import { brown, orange } from "@mui/material/colors";
+import { indigo, deepPurple } from "@mui/material/colors";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
 import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import CustomIconButton from "@/core/components/common/custom-icon-button/custom-icon-button.component";
-import STRINGS from "@/core/constants/strings.constant";
 import { Edit, DeleteOutline } from "@mui/icons-material";
-import PersonIcon from "@mui/icons-material/Person";
-import CakeIcon from "@mui/icons-material/Cake";
-import WorkIcon from "@mui/icons-material/Work";
-import type { TFamilyMember } from "../../types/beneficiary.types";
-import { getStringsLabel } from "@/core/helpers/helpers";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import TextSnippetOutlinedIcon from "@mui/icons-material/TextSnippetOutlined";
 
-const FamilyMemberCard = ({
-  member,
+import STRINGS from "@/core/constants/strings.constant";
+import type { TSystemBroadcast } from "../types/system-broadcasts.types";
+import { formatDateTime } from "@/core/helpers/helpers";
+
+const SystemBroadcastCard = ({
+  broadcast,
   onEdit,
 }: {
-  member: TFamilyMember;
-  onEdit: (m: TFamilyMember) => void;
+  broadcast: TSystemBroadcast;
+  onEdit: (b: TSystemBroadcast) => void;
 }) => {
   const headerContent = (
     <Box
@@ -38,23 +39,18 @@ const FamilyMemberCard = ({
             mr: 2,
           }}
         >
-          <PersonIcon sx={{ color: "white" }} />
+          <AnnouncementIcon sx={{ color: "white" }} />
         </Avatar>
 
         <Box sx={{ minWidth: 0 }}>
           <Typography
             variant="h6"
-            component="div"
             color="white"
             fontWeight="semibold"
             noWrap
-            sx={{ flexShrink: 1, overflow: "hidden", textOverflow: "ellipsis" }}
+            sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
           >
-            {member.name}
-          </Typography>
-          <Typography variant="caption" color="rgba(255,255,255,0.85)" noWrap>
-            {getStringsLabel({ key: "kinship", val: member.kinshep })} •{" "}
-            {STRINGS[member.gender]}
+            {broadcast.title}
           </Typography>
         </Box>
       </Box>
@@ -73,7 +69,7 @@ const FamilyMemberCard = ({
         </Tooltip>
 
         <Tooltip title={STRINGS.edit} arrow>
-          <CustomIconButton onClick={() => onEdit(member)} size="small">
+          <CustomIconButton onClick={() => onEdit(broadcast)} size="small">
             <Edit sx={{ color: "white" }} />
           </CustomIconButton>
         </Tooltip>
@@ -84,24 +80,19 @@ const FamilyMemberCard = ({
   return (
     <ReusableCardComponent
       headerContent={headerContent}
-      headerBackground={`linear-gradient(to right, ${orange[400]}, ${brown[300]})`}
+      headerBackground={`linear-gradient(to right, ${indigo[400]}, ${deepPurple[400]})`}
       bodyContent={
         <Stack gap={2}>
           <DetailItemComponent
-            label={STRINGS.birth_date}
-            icon={<CakeIcon />}
-            value={member.birthDate}
+            label={STRINGS.details}
+            icon={<TextSnippetOutlinedIcon />}
+            value={broadcast.details}
           />
-          <DetailItemComponent
-            label={STRINGS.job_or_school}
-            icon={<WorkIcon />}
-            value={member.jobOrSchool}
-          />
-          {member.note ? (
+          {broadcast.createdAt ? (
             <DetailItemComponent
-              label={STRINGS.note}
-              icon={<PersonIcon />}
-              value={member.note}
+              label={STRINGS.created_at}
+              icon={<EventNoteIcon />}
+              value={formatDateTime(broadcast.createdAt)}
             />
           ) : null}
         </Stack>
@@ -111,4 +102,4 @@ const FamilyMemberCard = ({
   );
 };
 
-export default FamilyMemberCard;
+export default SystemBroadcastCard;

@@ -6,6 +6,7 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
 import SidebarExpandableItem from "./sidebar-expandable-list-item.component";
 import {
   Business as BuildingOfficeIcon,
@@ -14,6 +15,7 @@ import {
 } from "@mui/icons-material";
 import STRINGS from "@/core/constants/strings.constant";
 import CrisisAlertIcon from "@mui/icons-material/CrisisAlert";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 type BaseItem = {
   label: string;
@@ -84,9 +86,21 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       permissions: [],
     },
     {
+      label: STRINGS.meetings,
+      href: "/meetings",
+      icon: <MeetingRoomOutlinedIcon />,
+      permissions: [],
+    },
+    {
       label: STRINGS.priority_degrees,
       href: "/priority-degrees",
       icon: <CrisisAlertIcon />,
+      permissions: [],
+    },
+    {
+      label: STRINGS.calendar,
+      href: "/calendar",
+      icon: <CalendarMonthIcon />,
       permissions: [],
     },
     {

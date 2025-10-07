@@ -38,6 +38,10 @@ import RatingActionPage from "./features/ratings/pages/rating-action.page";
 import MedicineActionPage from "./features/banks/pages/medicines/medicine-action.page";
 import BeneficiaryMedicineActionPage from "./features/beneficiaries/pages/beneficiary-medicine-action.page";
 import BeneficiaryFamilyActionPage from "./features/beneficiaries/pages/beneficiary-family-action.page";
+import SystemBroadcastsPage from "./features/system-broadcasts/pages/system-broadcasts.page";
+import SystemBroadcastActionPage from "./features/system-broadcasts/pages/system-broadcast-action.page";
+import MeetingsPage from "./features/meetings/pages/meetings.page";
+import MeetingActionPage from "./features/meetings/pages/meetings-action.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -112,6 +116,9 @@ function App() {
             <Route path="/medicines" element={<MedicinesPage />} />
             <Route path="/medicines/action" element={<MedicineActionPage />} />
 
+            <Route path="/meetings" element={<MeetingsPage />} />
+            <Route path="/meetings/action" element={<MeetingActionPage />} />
+
             <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
             <Route
               path="/priority-degrees/action"
@@ -120,6 +127,15 @@ function App() {
 
             <Route path="/sync" element={<SyncPage />} />
             <Route path="/calendar" element={<AppointmentsPage />} />
+
+            <Route
+              path="/system-broadcast"
+              element={<SystemBroadcastsPage />}
+            />
+            <Route
+              path="/system-broadcast/action"
+              element={<SystemBroadcastActionPage />}
+            />
           </Route>
         </Route>
 

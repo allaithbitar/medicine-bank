@@ -163,6 +163,22 @@ const STRINGS = {
   med_form_injection: "ابر (حقن)",
   med_form_capsule: "كبسولة",
   med_form_ointment: "مراهم",
+  calendar: "التقويم",
+  details: "التفاصيل",
+  meetings: "الاجتماعات",
+  audience_all: "الكل",
+  audience_scouts: "الكشاف",
+  audience_supervisors: "المشرف",
+  audience: "المستهدف",
+  title: "النص",
+  type: "النوع",
+  broadcast_type_meeting: "اجتماع",
+  broadcast_type_custom: "مخصص",
+  add_manage_meetings: "اضافة وادارة الاجتماعات",
+  meetings_management: "ادراة الاجتماعات",
+  edit_meeting: "تعديل اجتماع",
+  add_meeting: "اضافة اجتماع",
+  date: "التاريخ",
 };
 
 export default STRINGS;

@@ -53,9 +53,11 @@ const PriorityDegreeCard = ({ priorityDegree, onEdit, onDelete }: IProps) => {
         sx={{ color: "white", flexShrink: 0, ml: 2 }}
       >
         <Tooltip title="Delete" arrow>
-          <CustomIconButton onClick={onDelete} size="small" disabled>
-            <DeleteOutlineIcon sx={{ color: "white" }} />
-          </CustomIconButton>
+          <span>
+            <CustomIconButton onClick={onDelete} size="small" disabled>
+              <DeleteOutlineIcon sx={{ color: "white" }} />
+            </CustomIconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Edit" arrow>
           <CustomIconButton onClick={onEdit} size="small">

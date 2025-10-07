@@ -73,9 +73,11 @@ const EmployeeCard = ({
         sx={{ color: "white", flexShrink: 0, ml: 2 }}
       >
         <Tooltip title="Delete Employee" arrow>
-          <CustomIconButton onClick={onDelete} size="small">
-            <DeleteOutlineIcon sx={{ color: "white", fontSize: 20 }} />
-          </CustomIconButton>
+          <span>
+            <CustomIconButton onClick={onDelete} size="small">
+              <DeleteOutlineIcon sx={{ color: "white", fontSize: 20 }} />
+            </CustomIconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Edit Employee" arrow>
           <CustomIconButton onClick={onEdit} size="small">

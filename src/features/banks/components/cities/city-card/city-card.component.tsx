@@ -54,9 +54,11 @@ const CityCard = ({ city, onEdit, onDelete }: ICityCardProps) => {
         sx={{ color: "white", flexShrink: 0, ml: 2 }}
       >
         <Tooltip title="Delete Employee" arrow>
-          <CustomIconButton disabled onClick={onDelete} size="small">
-            <DeleteOutlineIcon sx={{ color: "white" }} />
-          </CustomIconButton>
+          <span>
+            <CustomIconButton disabled onClick={onDelete} size="small">
+              <DeleteOutlineIcon sx={{ color: "white" }} />
+            </CustomIconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Edit Employee" arrow>
           <CustomIconButton onClick={onEdit} size="small">
