@@ -11,9 +11,7 @@ import MeetingCard from "../components/meeting-card.component";
 const MeetingsPage = () => {
   const navigate = useNavigate();
 
-  const { data: resp, isLoading } = meetingsApi.useGetMeetingsQuery({
-    pageSize: 100,
-  });
+  const { data: resp, isLoading } = meetingsApi.useGetMeetingsQuery({});
 
   const items = resp?.items ?? [];
 

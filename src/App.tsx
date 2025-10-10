@@ -42,6 +42,7 @@ import SystemBroadcastsPage from "./features/system-broadcasts/pages/system-broa
 import SystemBroadcastActionPage from "./features/system-broadcasts/pages/system-broadcast-action.page";
 import MeetingsPage from "./features/meetings/pages/meetings.page";
 import MeetingActionPage from "./features/meetings/pages/meetings-action.page";
+import DisclosureNoteActionPage from "./features/disclosures/pages/disclosure-note-action.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -88,8 +89,12 @@ function App() {
               path="/disclosures/:disclosureId/appointment/action"
               element={<DisclosureAppointmentActionPage />}
             />
-            <Route path="/beneficiaries" element={<BeneficiariesPage />} />
+            <Route
+              path="/disclosures/:disclosureId/note/action"
+              element={<DisclosureNoteActionPage />}
+            />
 
+            <Route path="/beneficiaries" element={<BeneficiariesPage />} />
             <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
             <Route
               path="/beneficiaries/:id/medicine/action"

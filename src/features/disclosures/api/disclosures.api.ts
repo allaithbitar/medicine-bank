@@ -5,15 +5,19 @@ import type {
 } from "@/core/types/common.types";
 import type {
   TAddDisclosureDto,
+  TAddDisclosureNotePayload,
   TAddDisclosureRatingDto,
   TAddDisclosureVisitDto,
   TDisclosure,
+  TDisclosureNote,
   TDisclosureRating,
   TDisclosureVisit,
+  TGetDisclosureNotesParams,
   TGetDisclosureRatingsDto,
   TGetDisclosureVisitsDto,
   TGetDisclosuresDto,
   TUpdateDisclosureDto,
+  TUpdateDisclosureNotePayload,
   TUpdateDisclosureRatingDto,
   TUpdateDisclosureVisitDto,
 } from "../types/disclosure.types";
@@ -80,7 +84,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         { id: args.disclosureId, type: "Disclosure_Ratings" },
       ],
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TDisclosureRating>>,
+        res: ApiResponse<TPaginatedResponse<TDisclosureRating>>
       ) => res.data,
     }),
 
@@ -134,7 +138,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
             : lastPage.pageNumber,
       },
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TDisclosureVisit>>,
+        res: ApiResponse<TPaginatedResponse<TDisclosureVisit>>
       ) => res.data,
       providesTags: (_, __, args) => [
         { id: args.disclosureId, type: "Disclosure_Visits" },
@@ -170,6 +174,56 @@ export const disclosuresApi = rootApi.injectEndpoints({
       invalidatesTags: (_, __, args) => [
         { id: args.disclosureId, type: "Disclosure_Visits" },
         { id: args.id, type: "Disclosure_Visit" },
+      ],
+    }),
+    getDisclosureNotes: builder.query<
+      TPaginatedResponse<TDisclosureNote>,
+      TGetDisclosureNotesParams
+    >({
+      query: (params) => ({
+        url: "/disclosures/notes",
+        method: "GET",
+        params,
+      }),
+
+      providesTags: () => [{ type: "Disclosure_Notes", id: "LIST" }],
+
+      transformResponse: (
+        res: ApiResponse<TPaginatedResponse<TDisclosureNote>>
+      ) => res.data,
+    }),
+    getDisclosureNoteById: builder.query<TDisclosureNote, string>({
+      query: (id) => ({
+        url: `/disclosures/notes/${id}`,
+        method: "GET",
+      }),
+      transformResponse: (res: ApiResponse<TDisclosureNote>) => res.data,
+      providesTags: (_, __, id) => [{ type: "Disclosure_Notes", id }],
+    }),
+
+    addDisclosureNote: builder.mutation<
+      TDisclosureNote,
+      TAddDisclosureNotePayload
+    >({
+      query: (body) => ({
+        url: "/disclosures/notes",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "Disclosure_Notes", id: "LIST" }],
+    }),
+    updateDisclosureNote: builder.mutation<
+      void,
+      Omit<TUpdateDisclosureNotePayload, "createdBy">
+    >({
+      query: (body) => ({
+        url: "/disclosures/notes",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_, __, arg) => [
+        { type: "Disclosure_Notes", id: "LIST" },
+        { type: "Disclosure_Notes", id: arg.id },
       ],
     }),
   }),

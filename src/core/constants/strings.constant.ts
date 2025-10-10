@@ -65,6 +65,7 @@ const STRINGS = {
   not_completed: "غير مكتملة",
   completed: "مكتملة",
   note: "ملاحظة",
+  notes: "ملاحظات",
   description: "الوصف",
   code: "الرمز",
   visit_result: "نتيجة الزيارة",
@@ -179,6 +180,11 @@ const STRINGS = {
   edit_meeting: "تعديل اجتماع",
   add_meeting: "اضافة اجتماع",
   date: "التاريخ",
+  add_disclosure_note: "اضافة ملاحظة",
+  add_note: "اضافة ملاحطة",
+  edit_note: "تعديل ملاحظة",
+  no_access: "ليس لديك الصلاحية للقيام بذلك",
+  created_By: "المنشئ",
 };
 
 export default STRINGS;

@@ -9,7 +9,7 @@ export type TUpdateMeetingPayload = TAddMeetingPayload & { id: string };
 
 export const meetingsApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getMeetings: builder.query<TPaginatedResponse<TMeeting>, undefined>({
+    getMeetings: builder.query<TPaginatedResponse<TMeeting>, object>({
       query: (params) => ({
         url: "/meetings",
         method: "GET",

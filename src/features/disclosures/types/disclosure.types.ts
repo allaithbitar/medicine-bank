@@ -133,3 +133,20 @@ export type TAddDisclosureVisitDto = Pick<
 >;
 
 export type TUpdateDisclosureVisitDto = TAddDisclosureVisitDto & { id: string };
+
+export type TDisclosureNote = {
+  id: string;
+  disclosureId: string;
+  note: string;
+} & TCreatedBy;
+
+export type TGetDisclosureNotesParams = {
+  disclosureId: string;
+};
+
+export type TAddDisclosureNotePayload = {
+  disclosureId: string;
+  note: string;
+};
+
+export type TUpdateDisclosureNotePayload = TDisclosureNote;
