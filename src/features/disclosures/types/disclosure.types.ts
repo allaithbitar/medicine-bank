@@ -150,3 +150,34 @@ export type TAddDisclosureNotePayload = {
 };
 
 export type TUpdateDisclosureNotePayload = TDisclosureNote;
+
+export type TAuditLogItem = {
+  id: string;
+  table: string | null;
+  column: string | null;
+  action_type: string;
+  old_value: any;
+  new_value: any;
+  record_id: string | null;
+  created_at: string;
+  created_by?: string | null;
+};
+
+export type TAuditGroup = {
+  createdAt: string;
+  logs: TAuditLogItem[];
+};
+
+export type TAuditDetailsRow = {
+  id: string;
+  table: string | null;
+  column: string | null;
+  action: string;
+  oldValue: any;
+  newValue: any;
+  recordId: string | null;
+  createdAt: string;
+  createdBy?: string | null;
+  newRecordValue?: any | null;
+  oldRecordValue?: any | null;
+};

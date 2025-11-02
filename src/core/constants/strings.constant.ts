@@ -185,6 +185,14 @@ const STRINGS = {
   edit_note: "تعديل ملاحظة",
   no_access: "ليس لديك الصلاحية للقيام بذلك",
   created_By: "المنشئ",
+  unknown: "غير معروف",
+  old: "القديم",
+  new: "الجديد",
+  changes: "تغيرات",
+  view_audit_log: "عرض التغيرات",
+  audit_log: "تغيرات الكشف",
+  changes_at: "تم العملية بوقت",
+  view_details: "رؤية التفاصيل",
 };
 
 export default STRINGS;

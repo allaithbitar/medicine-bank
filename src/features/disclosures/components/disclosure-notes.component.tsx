@@ -66,7 +66,6 @@ const DisclosureNotes = ({ disclosureId }: { disclosureId?: string }) => {
       { disclosureId: disclosureId! },
       { skip: !disclosureId }
     );
-
   return (
     <Stack gap={2} sx={{ position: "relative" }}>
       {notes.map((n) => (

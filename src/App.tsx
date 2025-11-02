@@ -43,6 +43,7 @@ import SystemBroadcastActionPage from "./features/system-broadcasts/pages/system
 import MeetingsPage from "./features/meetings/pages/meetings.page";
 import MeetingActionPage from "./features/meetings/pages/meetings-action.page";
 import DisclosureNoteActionPage from "./features/disclosures/pages/disclosure-note-action.page";
+import DisclosureAuditPage from "./features/disclosures/pages/disclosure-audit.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -91,6 +92,14 @@ function App() {
             />
             <Route
               path="/disclosures/:disclosureId/note/action"
+              element={<DisclosureNoteActionPage />}
+            />
+            <Route
+              path="/disclosures/:disclosureId/audit"
+              element={<DisclosureAuditPage />}
+            />
+            <Route
+              path="/disclosures/:disclosureId/audit/details"
               element={<DisclosureNoteActionPage />}
             />
 

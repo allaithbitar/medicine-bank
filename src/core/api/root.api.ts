@@ -86,6 +86,7 @@ export const rootApi = createApi({
     "system_Broadcasts",
     "meetings",
     "Disclosure_Notes",
+    "audit",
   ],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   endpoints: (_builder) => ({}),

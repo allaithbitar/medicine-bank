@@ -8,6 +8,8 @@ import type {
   TAddDisclosureNotePayload,
   TAddDisclosureRatingDto,
   TAddDisclosureVisitDto,
+  TAuditDetailsRow,
+  TAuditGroup,
   TDisclosure,
   TDisclosureNote,
   TDisclosureRating,
@@ -225,6 +227,30 @@ export const disclosuresApi = rootApi.injectEndpoints({
         { type: "Disclosure_Notes", id: "LIST" },
         { type: "Disclosure_Notes", id: arg.id },
       ],
+    }),
+    getAuditLog: builder.query<
+      TPaginatedResponse<TAuditGroup>,
+      { disclosureId?: string | null }
+    >({
+      query: (params) => ({
+        url: "/disclosures/audit-log",
+        method: "GET",
+        params,
+      }),
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TAuditGroup>>) =>
+        res.data,
+      providesTags: [{ type: "audit", id: "LIST" }],
+    }),
+    getAuditDetails: builder.mutation<
+      TAuditDetailsRow[],
+      { disclosureId: string; date: string }
+    >({
+      query: (body) => ({
+        url: "/disclosures/audit-log/details",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (res: ApiResponse<TAuditDetailsRow[]>) => res.data,
     }),
   }),
 });

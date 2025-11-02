@@ -26,6 +26,7 @@ import { useDisclosureLoader } from "../hooks/disclosure-loader.hook";
 import ErrorCard from "@/core/components/common/error-card/error-card.component";
 import DisclosureAppointment from "../components/disclosure-appointment/disclosure-appointment.component";
 import DisclosureNotes from "../components/disclosure-notes.component";
+import DifferenceIcon from "@mui/icons-material/Difference";
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -100,12 +101,22 @@ const DisclosurePage = () => {
               label={STRINGS.note}
               value={disclosure.note || STRINGS.none}
             />
-            <Link
-              to={`/disclosures/action?disclosureId=${disclosure.id}`}
-              style={{ alignSelf: "end" }}
+            <Stack
+              sx={{
+                flexDirection: "row-reverse",
+                gap: 1,
+                alignItems: "center",
+              }}
             >
-              <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
-            </Link>
+              <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
+                <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
+              </Link>
+              <Link to={`/disclosures/${disclosure.id}/audit`}>
+                <Button startIcon={<DifferenceIcon />}>
+                  {STRINGS.audit_log}
+                </Button>
+              </Link>
+            </Stack>
           </Stack>
         </Card>
         <Card sx={{ p: 1 }}>
