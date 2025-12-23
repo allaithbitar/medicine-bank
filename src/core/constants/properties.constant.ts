@@ -17,3 +17,5 @@ export const SATISTICS_TYPE = {
   SUMMARY: "SUMMARY",
   DETAILED: "DETAILED",
 } as const;
+
+export const MAX_AUDIO_SIZE_BYTES = 10 * 1024 * 1024; // aka 10 mb

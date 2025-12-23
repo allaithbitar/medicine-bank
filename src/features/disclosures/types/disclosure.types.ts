@@ -137,19 +137,40 @@ export type TUpdateDisclosureVisitDto = TAddDisclosureVisitDto & { id: string };
 export type TDisclosureNote = {
   id: string;
   disclosureId: string;
-  note: string;
+  noteText: string;
+  noteAudio: string;
+  type: string;
 } & TCreatedBy;
 
 export type TGetDisclosureNotesParams = {
   disclosureId: string;
 };
 
-export type TAddDisclosureNotePayload = {
-  disclosureId: string;
-  note: string;
-};
+export type TAddDisclosureNotePayload = FormData;
 
-export type TUpdateDisclosureNotePayload = TDisclosureNote;
+export type TUpdateDisclosureNotePayload = FormData;
+
+export type TDisclosureAdviserConsultation = {
+  id: string;
+  consultationStatus: "pending" | "completed";
+  disclosureRatingId: string;
+  disclosureId: string;
+  disclosureRating: TDisclosureRating;
+  consultedBy: null;
+  consultationNote: string;
+  consultationAudio: string;
+  createdAt: string;
+  updatedAt: string;
+  updatedBy: TUpdatedBy;
+  disclosure: TDisclosure;
+} & TCreatedBy;
+
+export type TAddDisclosureAdviserConsultationPayload = FormData;
+
+export type TGetDisclosureAdviserConsultationParams = {
+  disclosureId?: string;
+  createdBy?: string;
+};
 
 export type TAuditLogItem = {
   id: string;

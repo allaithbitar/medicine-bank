@@ -1,6 +1,7 @@
 import { List } from "@mui/material";
 import type { ReactElement } from "react";
 import HomeIcon from "@mui/icons-material/Home";
+import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
 import SideBarListItem from "./sidebar-list-item.component";
 import BadgeIcon from "@mui/icons-material/Badge";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
@@ -41,6 +42,12 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       label: STRINGS.home_page,
       icon: <HomeIcon />,
       href: "/",
+      permissions: [],
+    },
+    {
+      label: STRINGS.disclosure_consulting,
+      href: "/adviser_disclosure_consultations",
+      icon: <PsychologyAltIcon />,
       permissions: [],
     },
     {

@@ -44,6 +44,9 @@ import MeetingsPage from "./features/meetings/pages/meetings.page";
 import MeetingActionPage from "./features/meetings/pages/meetings-action.page";
 import DisclosureNoteActionPage from "./features/disclosures/pages/disclosure-note-action.page";
 import DisclosureAuditPage from "./features/disclosures/pages/disclosure-audit.page";
+import DisclosureConsultingAdviserPage from "./features/disclosures/pages/disclosure-consulting-adviser.page";
+import DisclosureConsultingAdviserActionPage from "./features/disclosures/pages/disclosure-consulting-adviser-action.page";
+import AdviserDisclosureConsultationsPage from "./features/disclosures/pages/adviser-disclosure-consultations.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -65,6 +68,10 @@ function App() {
             />
 
             <Route path="/disclosures" element={<DisclosuresPage />} />
+            <Route
+              path="/adviser_disclosure_consultations"
+              element={<AdviserDisclosureConsultationsPage />}
+            />
 
             <Route
               path="/disclosures/action"
@@ -93,6 +100,14 @@ function App() {
             <Route
               path="/disclosures/:disclosureId/note/action"
               element={<DisclosureNoteActionPage />}
+            />
+            <Route
+              path="/disclosures/:disclosureId/consulting_adviser"
+              element={<DisclosureConsultingAdviserPage />}
+            />
+            <Route
+              path="/disclosures/:disclosureId/consulting_adviser/action"
+              element={<DisclosureConsultingAdviserActionPage />}
             />
             <Route
               path="/disclosures/:disclosureId/audit"

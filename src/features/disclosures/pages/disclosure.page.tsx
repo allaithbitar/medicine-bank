@@ -4,6 +4,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
 import { Button, Card, Stack, Tab, Tabs } from "@mui/material";
 import STRINGS from "@/core/constants/strings.constant";
 import DetailItem from "@/core/components/common/detail-item/detail-item.component";
@@ -175,6 +176,12 @@ const DisclosurePage = () => {
             icon: <Add />,
             label: STRINGS.add_disclosure_note,
             onClick: () => navigate(`/disclosures/${disclosureId}/note/action`),
+          },
+          {
+            icon: <PsychologyAltIcon />,
+            label: STRINGS.consulting_adviser,
+            onClick: () =>
+              navigate(`/disclosures/${disclosureId}/consulting_adviser`),
           },
         ]}
       />

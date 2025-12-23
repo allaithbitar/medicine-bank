@@ -4,6 +4,7 @@ import type {
   TPaginatedResponse,
 } from "@/core/types/common.types";
 import type {
+  TAddDisclosureAdviserConsultationPayload,
   TAddDisclosureDto,
   TAddDisclosureNotePayload,
   TAddDisclosureRatingDto,
@@ -11,9 +12,11 @@ import type {
   TAuditDetailsRow,
   TAuditGroup,
   TDisclosure,
+  TDisclosureAdviserConsultation,
   TDisclosureNote,
   TDisclosureRating,
   TDisclosureVisit,
+  TGetDisclosureAdviserConsultationParams,
   TGetDisclosureNotesParams,
   TGetDisclosureRatingsDto,
   TGetDisclosureVisitsDto,
@@ -223,11 +226,59 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: "PUT",
         body,
       }),
-      invalidatesTags: (_, __, arg) => [
+      invalidatesTags: (_, __, arg: any) => [
         { type: "Disclosure_Notes", id: "LIST" },
         { type: "Disclosure_Notes", id: arg.id },
       ],
     }),
+    addDisclosureAdviserConsultation: builder.mutation<
+      TDisclosureAdviserConsultation,
+      TAddDisclosureAdviserConsultationPayload
+    >({
+      query: (body) => ({
+        url: "/disclosures/consultations",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [
+        { type: "Disclosure_Adviser_Consultations", id: "LIST" },
+      ],
+    }),
+
+    updateDisclosureAdviserConsultation: builder.mutation<
+      void,
+      TUpdateDisclosureNotePayload
+    >({
+      query: (body) => ({
+        url: "/disclosures/consultations",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_, __, arg: any) => [
+        { type: "Disclosure_Adviser_Consultations", id: "LIST" },
+        { type: "Disclosure_Adviser_Consultations", id: arg.id },
+      ],
+    }),
+
+    getDisclosureAdviserConsultations: builder.query<
+      TPaginatedResponse<TDisclosureAdviserConsultation>,
+      TGetDisclosureAdviserConsultationParams
+    >({
+      query: (params) => ({
+        url: "/disclosures/consultations",
+        method: "GET",
+        params,
+      }),
+
+      providesTags: () => [
+        { type: "Disclosure_Adviser_Consultations", id: "LIST" },
+      ],
+
+      transformResponse: (
+        res: ApiResponse<TPaginatedResponse<TDisclosureAdviserConsultation>>
+      ) => res.data,
+    }),
+
     getAuditLog: builder.query<
       TPaginatedResponse<TAuditGroup>,
       { disclosureId?: string | null }

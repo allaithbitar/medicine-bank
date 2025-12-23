@@ -193,6 +193,18 @@ const STRINGS = {
   audit_log: "تغيرات الكشف",
   changes_at: "تم العملية بوقت",
   view_details: "رؤية التفاصيل",
+  file_too_large: "الملف اكبر من الحد المسموح",
+  record_audio: "تسجيل صوت",
+  start_recording: "بدء التسجيل",
+  stop_recording: "انهاء التجسيل",
+  upload_audio: "رفع ملف",
+  clear: "مسح",
+  audio_help_text: "يمكن رفع نص و ملف صوتي معا",
+  recorded_audio: "تسجيل صوتي",
+  consulting_adviser: "استشارة المدير",
+  disclosure_consulting: "استشارة الكشوفات",
+  consulting_adviser_pending: "بالانتظار التحقق",
+  consulting_adviser_completed: "منتهي",
 };
 
 export default STRINGS;
