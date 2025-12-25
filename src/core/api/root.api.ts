@@ -9,11 +9,11 @@ import type { RootStoreState } from "../store/root.store.types";
 import type { TLogin } from "@/features/auth/types/auth.types";
 import { authActions } from "../slices/auth/auth.slice";
 
-export const baseUrl = "http://172.16.46.148:5000";
+// export const baseUrl = "http://172.16.46.148:5000";
 
-// const baseUrl = `http://${import.meta.env.VITE_API_HOST}:${
-//   import.meta.env.VITE_API_PORT
-// }`;
+export const baseUrl = `http://${import.meta.env.VITE_API_HOST}:${
+  import.meta.env.VITE_API_PORT
+}`;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
@@ -44,7 +44,7 @@ const baseQueryWithReauth: BaseQueryFn<
         method: "POST",
       },
       api,
-      args
+      args,
     );
     if (refreshResult.error) {
       api.dispatch(authActions.logoutUser());

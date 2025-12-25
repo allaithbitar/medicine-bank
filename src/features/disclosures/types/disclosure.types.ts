@@ -202,3 +202,21 @@ export type TAuditDetailsRow = {
   newRecordValue?: any | null;
   oldRecordValue?: any | null;
 };
+
+export type TGetDisclosureAppointmentsDto = {
+  fromDate: string;
+  toDate: string;
+  uncompletedOnly?: boolean;
+  employeeId?: string;
+};
+
+export type TGetDateAppointmentsDto = TPaginationDto & {
+  date: string;
+  uncompletedOnly?: boolean;
+  employeeId?: string;
+};
+
+export type TAppointmentsResponse = Record<
+  string,
+  { id: string; isAppointmentCompleted: boolean }[]
+>;

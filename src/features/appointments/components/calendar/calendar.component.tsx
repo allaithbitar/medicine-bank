@@ -13,7 +13,7 @@ import { ar } from "date-fns/locale";
 import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
 import useScreenSize from "@/core/hooks/use-screen-size.hook";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import appointmentsApi from "../../api/appointmets.api";
+import disclosuresApi from "@/features/disclosures/api/disclosures.api";
 
 const CalendarItem = ({
   dayName,
@@ -101,7 +101,7 @@ const Calendar = ({
 
   const selectedMonthDaysCount = useMemo(
     () => getDaysInMonth(new Date(state.year, state.month)),
-    [state.month, state.year]
+    [state.month, state.year],
   );
 
   const months = useMemo(() => {
@@ -117,14 +117,15 @@ const Calendar = ({
 
   const selectedMonth = useMemo(
     () => months.find((m) => m.id === String(state.month)),
-    [months, state.month]
+    [months, state.month],
   );
 
-  const { data: calendarAppointments } =
-    appointmentsApi.useGetCalendarAppointmentsQuery({
+  const { data: calendarAppointments } = disclosuresApi.useGetAppointmentsQuery(
+    {
       fromDate: `${state.year}-${state.month + 1}-${1}`,
       toDate: `${state.year}-${state.month + 1}-${selectedMonthDaysCount}`,
-    });
+    },
+  );
 
   const { isTablet } = useScreenSize();
 
@@ -170,7 +171,8 @@ const Calendar = ({
             const currentDate = new Date(state.year, state.month, idx + 1);
             const dayName = format(currentDate, "EEEE", { locale: ar });
             const formatted = format(currentDate, "yyyy-MM-dd");
-            const count = calendarAppointments?.appointments[formatted];
+            const count =
+              calendarAppointments?.[formatted]?.length ?? undefined;
 
             return (
               <CalendarItem

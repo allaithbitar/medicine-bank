@@ -2,13 +2,13 @@ import { Button, Divider, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 
 import { Check, Visibility } from "@mui/icons-material";
-import appointmentsApi from "../api/appointmets.api";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
 import CardAvatar from "@/core/components/common/reusable-card/card-avatar.component";
 import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import STRINGS from "@/core/constants/strings.constant";
 import Calendar from "../components/calendar/calendar.component";
 import { Link } from "react-router-dom";
+import disclosuresApi from "@/features/disclosures/api/disclosures.api";
 
 // const DAYS = {
 //   SUNDAY: 0,
@@ -34,9 +34,14 @@ const AppointmentsPage = () => {
   const [selectedDate, setSelectedDate] = useState("");
 
   const { data: selectedDateAppointments } =
-    appointmentsApi.useGetDateAppointmentsQuery(selectedDate, {
-      skip: !selectedDate,
-    });
+    disclosuresApi.useGetDateAppointmentsQuery(
+      {
+        date: selectedDate,
+      },
+      {
+        skip: !selectedDate,
+      },
+    );
 
   return (
     <Stack gap={2}>
@@ -47,7 +52,7 @@ const AppointmentsPage = () => {
           {selectedDateAppointments?.map((a) => (
             <ReusableCardComponent
               key={a.id}
-              headerContent={<CardAvatar name={a.disclosure?.patient.name} />}
+              headerContent={<CardAvatar name={a.patient.name} />}
               cardSx={{ border: "unset" }}
               bodyContent={
                 <Stack gap={1}>
@@ -77,9 +82,9 @@ const AppointmentsPage = () => {
                     value={
                       <Typography
                         variant="subtitle2"
-                        color={a.isCompleted ? "success" : "warning"}
+                        color={a.isAppointmentCompleted ? "success" : "warning"}
                       >
-                        {a.isCompleted
+                        {a.isAppointmentCompleted
                           ? STRINGS.appointment_completed
                           : STRINGS.appointment_not_completed}
                       </Typography>
@@ -89,7 +94,7 @@ const AppointmentsPage = () => {
               }
               footerContent={
                 <Link
-                  to={`/disclosures/${a.disclosure!.id}`}
+                  to={`/disclosures/${a!.id}`}
                   style={{ marginInlineStart: "auto" }}
                 >
                   <Button variant="outlined" startIcon={<Visibility />}>

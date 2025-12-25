@@ -1,8 +1,5 @@
 import { rootApi } from "@/core/api/root.api";
-import type {
-  ApiResponse,
-  TPaginatedResponse,
-} from "@/core/types/common.types";
+import { ApiResponse, TPaginatedResponse } from "@/core/types/common.types";
 import type {
   TAddDisclosureAdviserConsultationPayload,
   TAddDisclosureDto,
@@ -13,10 +10,12 @@ import type {
   TAuditGroup,
   TDisclosure,
   TDisclosureAdviserConsultation,
+  TAppointmentsResponse,
   TDisclosureNote,
   TDisclosureRating,
   TDisclosureVisit,
   TGetDisclosureAdviserConsultationParams,
+  TGetDisclosureAppointmentsDto,
   TGetDisclosureNotesParams,
   TGetDisclosureRatingsDto,
   TGetDisclosureVisitsDto,
@@ -25,6 +24,7 @@ import type {
   TUpdateDisclosureNotePayload,
   TUpdateDisclosureRatingDto,
   TUpdateDisclosureVisitDto,
+  TGetDateAppointmentsDto,
 } from "../types/disclosure.types";
 
 export const disclosuresApi = rootApi.injectEndpoints({
@@ -89,7 +89,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         { id: args.disclosureId, type: "Disclosure_Ratings" },
       ],
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TDisclosureRating>>
+        res: ApiResponse<TPaginatedResponse<TDisclosureRating>>,
       ) => res.data,
     }),
 
@@ -143,7 +143,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
             : lastPage.pageNumber,
       },
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TDisclosureVisit>>
+        res: ApiResponse<TPaginatedResponse<TDisclosureVisit>>,
       ) => res.data,
       providesTags: (_, __, args) => [
         { id: args.disclosureId, type: "Disclosure_Visits" },
@@ -194,7 +194,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
       providesTags: () => [{ type: "Disclosure_Notes", id: "LIST" }],
 
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TDisclosureNote>>
+        res: ApiResponse<TPaginatedResponse<TDisclosureNote>>,
       ) => res.data,
     }),
     getDisclosureNoteById: builder.query<TDisclosureNote, string>({
@@ -275,7 +275,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
       ],
 
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TDisclosureAdviserConsultation>>
+        res: ApiResponse<TPaginatedResponse<TDisclosureAdviserConsultation>>,
       ) => res.data,
     }),
 
@@ -302,6 +302,23 @@ export const disclosuresApi = rootApi.injectEndpoints({
         body,
       }),
       transformResponse: (res: ApiResponse<TAuditDetailsRow[]>) => res.data,
+    }),
+    getAppointments: builder.query<
+      TAppointmentsResponse,
+      TGetDisclosureAppointmentsDto
+    >({
+      query: (params) => ({
+        url: "/disclosures/appointments",
+        params,
+      }),
+      transformResponse: (res: ApiResponse<TAppointmentsResponse>) => res.data,
+    }),
+    getDateAppointments: builder.query<TDisclosure[], TGetDateAppointmentsDto>({
+      query: (params) => ({
+        url: "/disclosures/appointments/date",
+        params,
+      }),
+      transformResponse: (res: ApiResponse<TDisclosure[]>) => res.data,
     }),
   }),
 });
