@@ -5,7 +5,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { Card, Divider, Stack, Button } from "@mui/material";
+import { Card, Divider, Stack, Button, Grid } from "@mui/material";
 import Add from "@mui/icons-material/Add";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import DifferenceIcon from "@mui/icons-material/Difference";
@@ -23,6 +23,7 @@ import DisclosureNotesTab from "../components/tabs/disclosure-notes-tab";
 import DisclosureAppointmentTab from "../components/tabs/disclosure-appointment-tab";
 import DisclosureMedicinesTab from "../components/tabs/disclosure-medicines-tab";
 import DisclosureFamilyMembersTab from "../components/tabs/disclosure-family-members-tab";
+import DisclosureVisitAndRatingSection from "../components/disclosure-visit-and-rating-section";
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -104,28 +105,44 @@ const DisclosurePage = () => {
             <DisclosureHeaderCard disclosure={disclosure} />
             <Divider />
             <DisclosureDetailsSection details={disclosure.details} />
-            <Stack
-              sx={{
-                flexDirection: "row-reverse",
-                gap: 1,
-                alignItems: "center",
-                p: 1,
-              }}
-            >
-              <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
-                <Button startIcon={<Edit />}>
-                  {STRINGS.edit} {STRINGS.disclosure}
+            <DisclosureVisitAndRatingSection disclosure={disclosure} />
+            <Divider />
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
+                  <Button fullWidth startIcon={<Edit />}>
+                    {STRINGS.edit} {STRINGS.disclosure}
+                  </Button>
+                </Link>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Button
+                  fullWidth
+                  startIcon={<DifferenceIcon />}
+                  onClick={openAudit}
+                >
+                  {STRINGS.audit_log}
                 </Button>
-              </Link>
-
-              <Button startIcon={<DifferenceIcon />} onClick={openAudit}>
-                {STRINGS.audit_log}
-              </Button>
-
-              <Button startIcon={<ListAltIcon />} onClick={openEditDetails}>
-                {STRINGS.edit} {STRINGS.disclosures_details}
-              </Button>
-            </Stack>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Button
+                  fullWidth
+                  startIcon={<ListAltIcon />}
+                  onClick={openEditDetails}
+                >
+                  {STRINGS.edit} {STRINGS.disclosures_details}
+                </Button>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Button
+                  fullWidth
+                  onClick={() => openEditExtra && openEditExtra("appointment")}
+                  startIcon={<Edit />}
+                >
+                  {`${STRINGS.edit} ${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`}
+                </Button>
+              </Grid>
+            </Grid>
           </Stack>
         </Card>
 

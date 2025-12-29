@@ -6,7 +6,6 @@ const DisclosureNotesTab = ({
 }: {
   disclosureId?: string;
   disclosure?: TDisclosure;
-  openEditExtra?: (s: any) => void;
   handleOpenBeneficiaryMedicineActionPage?: (bm?: any) => void;
   handleOpenFamilyMembersActionPage?: (m?: any) => void;
   openNoteAction?: () => void;
