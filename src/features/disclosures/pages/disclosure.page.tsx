@@ -1,42 +1,35 @@
+import { useCallback, useMemo } from "react";
 import {
   Link,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
-import { Button, Card, Stack, Tab, Tabs } from "@mui/material";
-import STRINGS from "@/core/constants/strings.constant";
-import DetailItem from "@/core/components/common/detail-item/detail-item.component";
-import {
-  Add,
-  DirectionsWalk,
-  Edit,
-  EmojiPeople,
-  EventAvailable,
-  History,
-  InfoOutline,
-  Comment,
-} from "@mui/icons-material";
-import { formatDateTime } from "@/core/helpers/helpers";
-import PageLoading from "@/core/components/common/page-loading/page-loading.component";
-import DisclosureRatings from "../components/disclosure-ratings.component";
-import DisclosureVisists from "../components/disclosure-visits.component";
-import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
-import { useDisclosureLoader } from "../hooks/disclosure-loader.hook";
-import ErrorCard from "@/core/components/common/error-card/error-card.component";
-import DisclosureAppointment from "../components/disclosure-appointment/disclosure-appointment.component";
-import DisclosureNotes from "../components/disclosure-notes.component";
+import { Card, Divider, Stack, Button } from "@mui/material";
+import Add from "@mui/icons-material/Add";
+import ListAltIcon from "@mui/icons-material/ListAlt";
 import DifferenceIcon from "@mui/icons-material/Difference";
+import STRINGS from "@/core/constants/strings.constant";
+import PageLoading from "@/core/components/common/page-loading/page-loading.component";
+import ErrorCard from "@/core/components/common/error-card/error-card.component";
+import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
+
+import { useDisclosureLoader } from "../hooks/disclosure-loader.hook";
+import { Edit } from "@mui/icons-material";
+import DisclosureHeaderCard from "../components/disclosure-header-card";
+import DisclosureTabs from "../components/disclosure-tabs";
+import DisclosureDetailsSection from "../components/disclosure-details-section";
+import DisclosureNotesTab from "../components/tabs/disclosure-notes-tab";
+import DisclosureAppointmentTab from "../components/tabs/disclosure-appointment-tab";
+import DisclosureMedicinesTab from "../components/tabs/disclosure-medicines-tab";
+import DisclosureFamilyMembersTab from "../components/tabs/disclosure-family-members-tab";
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const tabIndex = Number(searchParams.get("tab") ?? 0);
 
-  const currentTab = Number(searchParams.get("tab") ?? 0);
-
+  const { disclosureId } = useParams<{ disclosureId: string }>();
   const navigate = useNavigate();
-
-  const { disclosureId } = useParams();
 
   const {
     data: disclosure,
@@ -44,144 +37,148 @@ const DisclosurePage = () => {
     error,
   } = useDisclosureLoader({ id: disclosureId });
 
-  if (error) {
-    return <ErrorCard error={error} />;
-  }
+  const openEditExtra = useCallback(
+    (section: "appointment" | "rating" | "visit" | "visit-rating") =>
+      navigate(`/disclosures/${section}/action`, { state: disclosure }),
+    [navigate, disclosure]
+  );
 
+  const openAudit = useCallback(
+    () => navigate(`/disclosures/${disclosure?.id}/audit`),
+    [navigate, disclosure?.id]
+  );
+
+  const openEditDetails = useCallback(
+    () =>
+      navigate(`/disclosures/details/action?disclosureId=${disclosure?.id}`),
+    [navigate, disclosure?.id]
+  );
+
+  const openNoteAction = useCallback(
+    () => navigate(`/disclosures/${disclosureId}/note/action`),
+    [navigate, disclosureId]
+  );
+
+  const handleOpenBeneficiaryMedicineActionPage = useCallback(
+    (bm?: any) =>
+      navigate(`/beneficiaries/${disclosure?.patientId}/medicine/action`, {
+        state: { oldBeneficiaryMedicine: bm },
+      }),
+    [navigate, disclosure?.patientId]
+  );
+
+  const handleOpenFamilyMembersActionPage = useCallback(
+    (oldMember?: any) =>
+      navigate(`/beneficiaries/${disclosure?.patientId}/family/action`, {
+        state: { oldMember },
+      }),
+    [navigate, disclosure?.patientId]
+  );
+
+  const tabProps = useMemo(
+    () => ({
+      disclosureId,
+      disclosure,
+      openEditExtra,
+      handleOpenBeneficiaryMedicineActionPage,
+      handleOpenFamilyMembersActionPage,
+      openNoteAction,
+    }),
+    [
+      disclosureId,
+      disclosure,
+      openEditExtra,
+      handleOpenBeneficiaryMedicineActionPage,
+      handleOpenFamilyMembersActionPage,
+      openNoteAction,
+    ]
+  );
+  if (error) return <ErrorCard error={error} />;
   if (isLoading || !disclosure) return <PageLoading />;
 
   return (
     <>
       <Stack gap={3}>
         <Card>
-          <Stack gap={2}>
-            <DetailItem
-              icon={<InfoOutline />}
-              label={STRINGS.status}
-              // iconColorPreset="green"
-              value={STRINGS[disclosure.status]}
-            />
-
-            <DetailItem
-              icon={<EmojiPeople />}
-              label={STRINGS.beneficiary}
-              // iconColorPreset="green"
-              value={disclosure.patient?.name ?? STRINGS.none}
-            />
-
-            <DetailItem
-              icon={<DirectionsWalk />}
-              label={STRINGS.disclosure_scout}
-              // iconColorPreset="green"
-              value={disclosure.scout?.name ?? STRINGS.none}
-            />
-
-            <DetailItem
-              icon={<EventAvailable />}
-              label={STRINGS.created_at}
-              value={`${formatDateTime(disclosure.createdAt)} ${STRINGS.by} ${
-                disclosure.createdBy?.name
-              }`}
-            />
-
-            <DetailItem
-              icon={<History />}
-              label={STRINGS.updated_at}
-              value={
-                !disclosure.updatedAt ||
-                disclosure.createdAt === disclosure.updatedAt
-                  ? STRINGS.none
-                  : `${formatDateTime(disclosure.updatedAt)} ${STRINGS.by} ${
-                      disclosure.updatedBy?.name
-                    }`
-              }
-            />
-
-            <DetailItem
-              icon={<Comment />}
-              label={STRINGS.note}
-              value={disclosure.note || STRINGS.none}
-            />
+          <Stack gap={1} sx={{ p: 0 }}>
+            <DisclosureHeaderCard disclosure={disclosure} />
+            <Divider />
+            <DisclosureDetailsSection details={disclosure.details} />
             <Stack
               sx={{
                 flexDirection: "row-reverse",
                 gap: 1,
                 alignItems: "center",
+                p: 1,
               }}
             >
               <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
-                <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
-              </Link>
-              <Link to={`/disclosures/${disclosure.id}/audit`}>
-                <Button startIcon={<DifferenceIcon />}>
-                  {STRINGS.audit_log}
+                <Button startIcon={<Edit />}>
+                  {STRINGS.edit} {STRINGS.disclosure}
                 </Button>
               </Link>
+
+              <Button startIcon={<DifferenceIcon />} onClick={openAudit}>
+                {STRINGS.audit_log}
+              </Button>
+
+              <Button startIcon={<ListAltIcon />} onClick={openEditDetails}>
+                {STRINGS.edit} {STRINGS.disclosures_details}
+              </Button>
             </Stack>
           </Stack>
         </Card>
-        <Card sx={{ p: 1 }}>
-          <Tabs
-            variant="fullWidth"
-            value={currentTab}
-            onChange={(_, v) =>
-              setSearchParams((prev) => ({ ...prev, tab: v }), {
-                replace: true,
-              })
-            }
-            slotProps={{
-              indicator: {
-                sx: {
-                  height: "15%",
-                  borderRadius: 10,
+
+        <Card>
+          <DisclosureTabs
+            value={tabIndex}
+            onChange={(newTab) =>
+              setSearchParams(
+                {
+                  ...Object.fromEntries(searchParams.entries()),
+                  tab: String(newTab),
                 },
+                { replace: true }
+              )
+            }
+            tabs={[
+              {
+                label: STRINGS.notes,
+                node: <DisclosureNotesTab {...tabProps} />,
               },
-            }}
-          >
-            <Tab label={STRINGS.ratings} />
-            <Tab label={STRINGS.visits} />
-            <Tab label={STRINGS.appointment} />
-            <Tab label={STRINGS.notes} />
-          </Tabs>
+              {
+                label: STRINGS.appointment,
+                node: <DisclosureAppointmentTab {...tabProps} />,
+              },
+              {
+                label: STRINGS.medicines,
+                node: <DisclosureMedicinesTab {...tabProps} />,
+              },
+              {
+                label: STRINGS.family_members,
+                node: <DisclosureFamilyMembersTab {...tabProps} />,
+              },
+            ]}
+          />
         </Card>
-        {currentTab === 0 && <DisclosureRatings disclosureId={disclosureId} />}
-        {currentTab === 1 && <DisclosureVisists disclosureId={disclosureId} />}
-        {currentTab === 2 && (
-          <DisclosureAppointment disclosureId={disclosureId} />
-        )}
-        {currentTab === 3 && <DisclosureNotes disclosureId={disclosureId} />}
       </Stack>
 
       <ActionsFab
         actions={[
           {
             icon: <Add />,
-            label: STRINGS.add_visit,
-            onClick: () =>
-              navigate(`/disclosures/${disclosureId}/visit/action`),
-          },
-          {
-            icon: <Add />,
-            label: STRINGS.add_rating,
-            onClick: () =>
-              navigate(`/disclosures/${disclosureId}/rating/action`),
-          },
-          {
-            icon: <Add />,
-            label: STRINGS.add_disclosure_appointment,
-            onClick: () =>
-              navigate(`/disclosures/${disclosureId}/appointment/action`),
-          },
-          {
-            icon: <Add />,
             label: STRINGS.add_disclosure_note,
             onClick: () => navigate(`/disclosures/${disclosureId}/note/action`),
           },
           {
-            icon: <PsychologyAltIcon />,
-            label: STRINGS.consulting_adviser,
-            onClick: () =>
-              navigate(`/disclosures/${disclosureId}/consulting_adviser`),
+            icon: <Add />,
+            label: STRINGS.add_medicine,
+            onClick: () => handleOpenBeneficiaryMedicineActionPage(undefined),
+          },
+          {
+            icon: <Add />,
+            label: STRINGS.add_family_member,
+            onClick: () => handleOpenFamilyMembersActionPage(undefined),
           },
         ]}
       />

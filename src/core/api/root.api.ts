@@ -9,7 +9,7 @@ import type { RootStoreState } from "../store/root.store.types";
 import type { TLogin } from "@/features/auth/types/auth.types";
 import { authActions } from "../slices/auth/auth.slice";
 
-// export const baseUrl = "http://172.16.46.148:5000";
+// export const baseUrl = "http://10.200.237.148:5000";
 
 export const baseUrl = `http://${import.meta.env.VITE_API_HOST}:${
   import.meta.env.VITE_API_PORT
@@ -44,7 +44,7 @@ const baseQueryWithReauth: BaseQueryFn<
         method: "POST",
       },
       api,
-      args,
+      args
     );
     if (refreshResult.error) {
       api.dispatch(authActions.logoutUser());
@@ -79,7 +79,9 @@ export const rootApi = createApi({
     "Detailed_Statistics",
     "Medicines",
     "Beneficiary_Medicines",
+    "Beneficiary_Autocomplete",
     "Calendar_Appointments",
+    "Disclosure_Appointment",
     "Disclosure_Appointments",
     "Date_Appointments",
     "family_Members",

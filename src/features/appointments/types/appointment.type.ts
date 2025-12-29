@@ -1,6 +1,3 @@
-import type { TUpdatedBy } from "@/core/types/common.types";
-import type { TDisclosure } from "../../disclosures/types/disclosure.types";
-
 export type TCalendarAppointment = Record<string, number>;
 
 export type TGetCalendarAppointmentsResponse = {
@@ -14,15 +11,14 @@ export type TGetCalendarAppointmentsDto = {
 };
 
 export type TAppointment = {
-  id: string;
-  disclosureId: string;
-  date: string;
-  isCompleted: boolean;
-  disclosure: TDisclosure | null;
-  createdAt: string;
-  updatedAt: string | null;
-} & TCreatedBy &
-  TUpdatedBy;
+  // id: string;
+  // disclosureId: string;
+  appointmentDate: string;
+  isAppointmentCompleted: boolean;
+  // disclosure: TDisclosure | null;
+  // createdAt: string;
+  // updatedAt: string | null;
+};
 
 export type TCreatedBy = {
   id: string;

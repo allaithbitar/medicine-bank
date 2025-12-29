@@ -47,7 +47,6 @@ const CustomAppBar = ({
         <Stack
           sx={{
             flexGrow: 1,
-
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",

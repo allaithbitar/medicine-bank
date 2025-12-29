@@ -13,42 +13,40 @@ import {
 import STRINGS from "@/core/constants/strings.constant";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 import type { TDisclosure } from "../types/disclosure.types";
+import DisclosureVisitActionForm, {
+  type TDisclosureVisitFormHandlers,
+} from "../components/disclosure-visit-action-form.component";
+import { Stack } from "@mui/material";
 
-const DisclosureRatingActionPage = () => {
+const DisclosureVisitAndRatingActionPage = () => {
   const { state } = useLocation();
   const disclosure: TDisclosure = state;
-  const ref = useRef<TDisclosureRatingFormHandlers | null>(null);
+  const ratingRef = useRef<TDisclosureRatingFormHandlers | null>(null);
+  const visitRef = useRef<TDisclosureVisitFormHandlers | null>(null);
 
   const navigate = useNavigate();
 
   const [updateDisclosureRating, { isLoading }] =
     disclosuresApi.useUpdateDisclosureMutation();
 
-  // const { disclosureId } = useParams();
-
-  // const { data: disclosureRatingData, isFetching: isGetting } =
-  //   disclosuresApi.useGetDisclosureRatingQuery(
-  //     { id: ratingId! },
-  //     { skip: !ratingId }
-  //   );
-
-  // const [addDisclosureRating, { isLoading: isAdding }] =
-  //   disclosuresApi.useAddDisclosureRatingMutation();
-
-  // const [updateDisclosureRating, { isLoading: isUpdating }] =
-  //   disclosuresApi.useUpdateDisclosureRatingMutation();
-
   const handleSave = async () => {
-    const { isValid, result } = await ref.current!.handleSubmit();
-    if (!isValid || !disclosure.id) return;
+    const { isValid: isVisitValid, result: visitResult } =
+      await visitRef.current!.handleSubmit();
+    const { isValid: isValidRate, result: rateResult } =
+      await ratingRef.current!.handleSubmit();
+    if (!isVisitValid || !isValidRate || !disclosure.id) return;
 
     try {
       const updateDto = {
         id: disclosure.id,
-        isCustomRating: result.isCustomRating,
-        ratingId: result.isCustomRating ? null : result.rating?.id,
-        customRating: result.customRating || null,
-        ratingNote: result.note || null,
+        isCustomRating: rateResult.isCustomRating,
+        ratingId: rateResult.isCustomRating ? null : rateResult.rating?.id,
+        customRating: rateResult.customRating || null,
+        ratingNote: rateResult.note || null,
+        visitResult: visitResult.result!.id,
+        visitReason:
+          visitResult.result?.id !== "completed" ? visitResult.reason : null,
+        visitNote: visitResult.note || null,
       };
 
       const { error } = await updateDisclosureRating(updateDto);
@@ -64,8 +62,6 @@ const DisclosureRatingActionPage = () => {
     }
   };
 
-  // const isLoading = isGetting || isAdding || isUpdating;
-
   const disclosureRatingData = {
     isCustom: disclosure.isCustomRating,
     customRating: disclosure.customRating,
@@ -73,9 +69,18 @@ const DisclosureRatingActionPage = () => {
     rating: disclosure.rating,
   };
   return (
-    <div>
+    <Stack>
+      <DisclosureVisitActionForm
+        ref={visitRef}
+        disclosureVisitData={{
+          visitNote: disclosure?.visitNote,
+          visitReason: disclosure?.visitReason,
+          visitResult: disclosure?.visitResult ?? "not_completed",
+        }}
+      />
+
       <DisclosureRatingActionForm
-        ref={ref}
+        ref={ratingRef}
         disclosureRatingData={disclosureRatingData as any}
       />
       <ActionFab
@@ -85,8 +90,8 @@ const DisclosureRatingActionPage = () => {
         onClick={handleSave}
       />
       {isLoading && <LoadingOverlay />}
-    </div>
+    </Stack>
   );
 };
 
-export default DisclosureRatingActionPage;
+export default DisclosureVisitAndRatingActionPage;

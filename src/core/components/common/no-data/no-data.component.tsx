@@ -1,4 +1,4 @@
-import { type ComponentProps } from "react";
+import { type ComponentProps, type ReactNode } from "react";
 import { Stack, Typography } from "@mui/material";
 import STRINGS from "@/core/constants/strings.constant";
 import { Info } from "@mui/icons-material";
@@ -7,11 +7,13 @@ function Nodata({
   title = STRINGS.no_data_found,
   subTitle,
   icon: Icon = Info,
+  extra,
   iconSx,
 }: {
   icon?: typeof Info;
   title?: string;
   subTitle?: string;
+  extra?: ReactNode;
   iconSx?: ComponentProps<typeof Info>["sx"];
 }) {
   return (
@@ -31,9 +33,12 @@ function Nodata({
       >
         {title}
       </Typography>
-      <Typography variant="subtitle2" color="text.disabled">
-        {subTitle}
-      </Typography>
+      {subTitle && (
+        <Typography variant="subtitle2" color="text.disabled">
+          {subTitle}
+        </Typography>
+      )}
+      {extra}
     </Stack>
   );
 }

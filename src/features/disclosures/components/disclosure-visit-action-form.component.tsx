@@ -4,11 +4,9 @@ import useForm, { type TFormSubmitResult } from "@/core/hooks/use-form.hook";
 import { Card, Stack } from "@mui/material";
 import { useEffect, useImperativeHandle, type Ref } from "react";
 import z from "zod";
-import type {
-  TDisclosureVisit,
-  TDisclosureVisitResult,
-} from "../types/disclosure.types";
+import type { TDisclosureVisitResult, TVisit } from "../types/disclosure.types";
 import DisclosureVisitResultAutocomplete from "./disclosure-visit-result-autocomplete.component";
+import Header from "@/core/components/common/header/header";
 
 const schema = z
   .object({
@@ -34,7 +32,7 @@ export type TDisclosureVisitFormHandlers = {
 
 type TProps = {
   ref: Ref<TDisclosureVisitFormHandlers>;
-  disclosureVisitData?: TDisclosureVisit;
+  disclosureVisitData?: TVisit;
 };
 
 const DisclosureVisitActionForm = ({ ref, disclosureVisitData }: TProps) => {
@@ -55,24 +53,25 @@ const DisclosureVisitActionForm = ({ ref, disclosureVisitData }: TProps) => {
         return handleSubmit();
       },
     }),
-    [handleSubmit],
+    [handleSubmit]
   );
 
   useEffect(() => {
     if (disclosureVisitData) {
       setFormState({
         result: {
-          id: disclosureVisitData?.result,
-          label: STRINGS[disclosureVisitData?.result],
+          id: disclosureVisitData?.visitResult,
+          label: STRINGS[disclosureVisitData?.visitResult],
         },
-        reason: disclosureVisitData.reason ?? "",
-        note: disclosureVisitData.note ?? "",
+        reason: disclosureVisitData.visitReason ?? "",
+        note: disclosureVisitData.visitNote ?? "",
       });
     }
   }, [disclosureVisitData, setFormState]);
 
   return (
-    <Card>
+    <Card sx={{ px: 2, py: 1 }}>
+      <Header title={STRINGS.visit} />
       <Stack gap={2}>
         <DisclosureVisitResultAutocomplete
           required

@@ -54,6 +54,20 @@ export const beneficiaryApi = rootApi.injectEndpoints({
       ) => res.data,
       providesTags: ["Beneficiaries"],
     }),
+    getAutocompletePatients: builder.query<
+      TPaginatedResponse<{ id: string; name: string }>,
+      TGetBeneficiariesDto
+    >({
+      query: (data) => ({
+        url: "autocomplete/patients",
+        body: data,
+        method: "POST",
+      }),
+      transformResponse: (
+        res: ApiResponse<TPaginatedResponse<{ id: string; name: string }>>
+      ) => res.data,
+      providesTags: ["Beneficiary_Autocomplete"],
+    }),
     getBeneficiary: builder.query<TBenefieciary, { id: string }>({
       query: ({ id }) => ({
         url: `patients/${id}`,

@@ -30,7 +30,7 @@ export const appointmentsApi = rootApi.injectEndpoints({
       query: ({ disclosureId }) => ({
         url: `appointments/disclosure/${disclosureId}`,
       }),
-      providesTags: ["Disclosure_Appointments"],
+      providesTags: ["Disclosure_Appointment"],
       transformResponse: (
         res: ApiResponse<TGetDisclosureAppointmentsResponse[]>
       ) => res.data,
@@ -44,7 +44,7 @@ export const appointmentsApi = rootApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Disclosure_Appointments", "Calendar_Appointments"],
+      invalidatesTags: ["Disclosure_Appointment", "Calendar_Appointments"],
     }),
     updateDisclosureAppointment: builder.mutation<
       void,
@@ -55,7 +55,7 @@ export const appointmentsApi = rootApi.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Disclosure_Appointments", "Calendar_Appointments"],
+      invalidatesTags: ["Disclosure_Appointment", "Calendar_Appointments"],
     }),
     getDateAppointments: builder.query<TAppointment[], string>({
       query: (date) => ({

@@ -3,6 +3,8 @@ import type { TDisclosure } from "../types/disclosure.types";
 import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
 import {
+  Comment,
+  HelpOutlined,
   InfoOutline,
   Person,
   PriorityHighOutlined,
@@ -15,6 +17,7 @@ import CardAvatar from "@/core/components/common/reusable-card/card-avatar.compo
 import { Link } from "react-router-dom";
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
+  console.log("🚀 ~ DisclosureCard ~ disclosure:", disclosure);
   const headerContent = <CardAvatar name={disclosure.patient.name} />;
 
   const bodyContent = (
@@ -33,6 +36,24 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         value={disclosure.scout?.name ?? STRINGS.none}
       />
 
+      {disclosure.visitResult !== "completed" && (
+        <>
+          <DetailItemComponent
+            icon={<HelpOutlined />}
+            label={`${STRINGS.visit} ( ${STRINGS[disclosure.visitResult]} )`}
+            content={STRINGS.visit_reason}
+            value={disclosure.visitReason ?? STRINGS.none}
+          />
+          {disclosure.visitNote && (
+            <DetailItemComponent
+              icon={<Comment />}
+              label={STRINGS.note}
+              value={disclosure.visitNote}
+            />
+          )}
+        </>
+      )}
+
       <DetailItemComponent
         icon={<PriorityHighOutlined />}
         label={STRINGS.disclosure_created_at}
@@ -41,7 +62,10 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
       />
     </Stack>
   );
+  const isAppointmentCompletedChip =
+    disclosure.isAppointmentCompleted && STRINGS.appointment_completed;
 
+  const isReceivedChip = disclosure.isReceived && STRINGS.is_received;
   return (
     <ReusableCardComponent
       headerBackground={`linear-gradient(to right, ${purple[800]}, ${purple[500]})`}
@@ -53,19 +77,30 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Chip
-            variant="filled"
-            label={disclosure.priority.name}
-            sx={{
-              background: `${disclosure.priority.color}`,
-              color: (theme) => theme.palette.info.contrastText,
-              zIndex: 1,
-            }}
-          />
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            gap={1}
+          >
+            <Chip
+              variant="filled"
+              label={disclosure.priority.name}
+              sx={{
+                background: `${disclosure.priority.color}`,
+                color: (theme) => theme.palette.info.contrastText,
+                zIndex: 1,
+              }}
+            />
+            {isAppointmentCompletedChip && (
+              <Chip label={isAppointmentCompletedChip} color="primary" />
+            )}
+            {isReceivedChip && <Chip label={isReceivedChip} color="primary" />}
+          </Stack>
 
           <Link to={`/disclosures/${disclosure.id}`}>
             <Button variant="outlined" startIcon={<Visibility />}>
-              عرض
+              {STRINGS.view}
             </Button>
           </Link>
         </Stack>

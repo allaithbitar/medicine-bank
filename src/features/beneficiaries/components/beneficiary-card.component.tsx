@@ -45,7 +45,7 @@ const BeneficiaryCard = ({
       <DetailItemComponent
         icon={<Phone />}
         label={STRINGS.phones}
-        value={beneficiary.phones.map((p) => p.phone).join(", ")}
+        value={beneficiary?.phones?.map((p) => p.phone).join(", ")}
       />
 
       <DetailItemComponent

@@ -8,6 +8,7 @@ import { Card, Stack } from "@mui/material";
 import { useEffect, useImperativeHandle, type Ref } from "react";
 import z from "zod";
 import type { TDisclosureRating } from "../types/disclosure.types";
+import Header from "@/core/components/common/header/header";
 
 const schema = z
   .object({
@@ -68,7 +69,7 @@ const DisclosureRatingActionForm = ({ ref, disclosureRatingData }: TProps) => {
         return handleSubmit();
       },
     }),
-    [handleSubmit],
+    [handleSubmit]
   );
 
   useEffect(() => {
@@ -85,7 +86,8 @@ const DisclosureRatingActionForm = ({ ref, disclosureRatingData }: TProps) => {
   }, [disclosureRatingData, setFormState]);
 
   return (
-    <Card>
+    <Card sx={{ px: 2, py: 1 }}>
+      <Header title={STRINGS.rating} />
       <Stack gap={2}>
         <FormCheckbxInput
           label={STRINGS.custom_rating}

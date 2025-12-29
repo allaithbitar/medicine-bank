@@ -4,6 +4,7 @@ import type {
   TPaginationDto,
   TUpdatedBy,
 } from "@/core/types/common.types";
+import type { TAppointment } from "@/features/appointments/types/appointment.type";
 import type { TBenefieciary } from "@/features/beneficiaries/types/beneficiary.types";
 import type { TPriorityDegree } from "@/features/priority-degres/types/priority-degree.types";
 import type { TRating } from "@/features/ratings/types/rating.types";
@@ -34,20 +35,37 @@ export type TDisclosureScout =
       scout: null;
     };
 
+export type TDisclosureDetails = {
+  electricity?: string;
+  expenses?: string;
+  home_condition?: string;
+  residential?: string;
+  cons?: string;
+  pons?: string;
+};
+
 export type TDisclosure = {
   id: string;
   status: TDisclosureStatus;
+  initialNote: string | null;
   priorityId: string;
   patientId: string;
   createdAt: string;
   updatedAt: string | null;
   patient: TBenefieciary;
   priority: TPriorityDegree;
-  note: string | null;
+  isReceived: boolean;
+  //
+  ratingNote: string | null;
+  rating: TRating;
+  customRating: string;
+  isCustomRating: boolean;
+  details: TDisclosureDetails | null;
 } & TDisclosureScout &
   TCreatedBy &
-  TUpdatedBy;
-
+  TUpdatedBy &
+  TVisit &
+  TAppointment;
 export type TGetDisclosuresDto = Partial<
   TPaginationDto & {
     patientId?: string;
@@ -66,46 +84,42 @@ export type TAddDisclosureDto = {
   scoutId?: string | null;
   patientId: string;
   priorityId: string;
+  details?: object;
 };
 
-export type TUpdateDisclosureDto = TAddDisclosureDto & { id: string };
+export type TUpdateDisclosureDto = Partial<TAddDisclosureDto> & { id: string };
 
-export type TDisclosureRating = {
-  id: string;
-  disclosureId: string;
-  note: string | null;
-  createdAt: string;
-  updatedAt: string;
-} & TCreatedBy &
-  TUpdatedBy &
-  (
-    | {
-        ratingId: string;
-        rating: TRating;
-        isCustom: false;
-        customRating: null;
-      }
-    | {
-        ratingId: null;
-        rating: null;
-        isCustom: true;
-        customRating: string;
-      }
-  );
+export type TDisclosureRating =
+  | {
+      ratingId: string;
+      rating: TRating;
+      isCustom: false;
+      customRating: null;
+    }
+  | {
+      ratingId: null;
+      rating: null;
+      isCustom: true;
+      customRating: string;
+    };
 
-export type TAddDisclosureRatingDto = Pick<
-  TDisclosureRating,
-  "disclosureId"
-> & {
-  isCustom: boolean;
-  note: string | null;
-  ratingId: string | null;
-  customRating: string | null;
+// export type TAddDisclosureRatingDto = Pick<
+//   TDisclosureRating,
+//   "disclosureId"
+// > & {
+//   isCustom: boolean;
+//   note: string | null;
+//   ratingId: string | null;
+//   customRating: string | null;
+// };
+
+// export type TUpdateDisclosureRatingDto = TAddDisclosureRatingDto &
+//   Pick<TDisclosureRating, "id">;
+export type TVisit = {
+  visitNote: string | null;
+  visitReason: string | null;
+  visitResult: TDisclosureVisitResult;
 };
-
-export type TUpdateDisclosureRatingDto = TAddDisclosureRatingDto &
-  Pick<TDisclosureRating, "id">;
-
 export type TDisclosureVisit = {
   id: string;
   disclosureId: string;

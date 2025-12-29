@@ -1,34 +1,18 @@
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import beneficiaryApi from "../api/beneficiary.api";
-import { Button, Card, Stack, Tab, Tabs } from "@mui/material";
+import { Card, Stack, Tab, Tabs } from "@mui/material";
 import PageLoading from "@/core/components/common/page-loading/page-loading.component";
-import DetailItem from "@/core/components/common/detail-item/detail-item.component";
 import STRINGS from "@/core/constants/strings.constant";
-import {
-  Add,
-  Edit,
-  EventAvailable,
-  History,
-  Info,
-  LocationPin,
-  Person,
-  Phone,
-  Pin,
-} from "@mui/icons-material";
-import { formatDateTime } from "@/core/helpers/helpers";
+import { Add } from "@mui/icons-material";
 import BeneficiaryDisclosures from "../components/beneficiary-disclosures.component";
-import BeneficiaryMedicines from "../components/beneficiary-medicines.component";
+// import BeneficiaryMedicines from "../components/beneficiary-medicines.component";
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
-import type {
-  TBeneficiaryMedicine,
-  TFamilyMember,
-} from "../types/beneficiary.types";
-import BeneficiaryFamilyMembers from "../components/beneficiary-family-members.component";
+// import type {
+//   TBeneficiaryMedicine,
+//   TFamilyMember,
+// } from "../types/beneficiary.types";
+// import BeneficiaryFamilyMembers from "../components/beneficiary-family-members.component";
+import BeneficiaryCommonCard from "@/shared/components/beneficiary-common-card";
 
 const BeneficiaryPage = () => {
   const navigate = useNavigate();
@@ -39,72 +23,30 @@ const BeneficiaryPage = () => {
   const { data: beneficiary, isLoading } =
     beneficiaryApi.useGetBeneficiaryQuery({ id: id! }, { skip: !id });
 
-  const handleOpenBeneficiaryMedicineActionPage = (
-    bm?: TBeneficiaryMedicine
-  ) => {
-    navigate(`/beneficiaries/${beneficiary?.id}/medicine/action`, {
-      state: { oldBeneficiaryMedicine: bm },
-    });
-  };
+  // const handleOpenBeneficiaryMedicineActionPage = (
+  //   bm?: TBeneficiaryMedicine
+  // ) => {
+  //   navigate(`/beneficiaries/${beneficiary?.id}/medicine/action`, {
+  //     state: { oldBeneficiaryMedicine: bm },
+  //   });
+  // };
 
   const handleAddBeneficiaryDisclosure = () => {
     navigate(`/disclosures/action?beneficiaryId=${beneficiary?.id}`);
   };
 
-  const handleOpenFamilyMembersActionPage = (oldMember?: TFamilyMember) => {
-    navigate(`/beneficiaries/${beneficiary?.id}/family/action`, {
-      state: { oldMember },
-    });
-  };
+  // const handleOpenFamilyMembersActionPage = (oldMember?: TFamilyMember) => {
+  //   navigate(`/beneficiaries/${beneficiary?.id}/family/action`, {
+  //     state: { oldMember },
+  //   });
+  // };
 
   if (isLoading || !beneficiary) return <PageLoading />;
 
   return (
     <Stack gap={2}>
       <Card>
-        <Stack gap={2}>
-          <DetailItem
-            label={STRINGS.name}
-            icon={<Person />}
-            value={beneficiary.name}
-          />
-          <DetailItem
-            label={STRINGS.national_number}
-            icon={<Pin />}
-            value={beneficiary.nationalNumber}
-          />
-          <DetailItem
-            label={STRINGS.phones}
-            icon={<Phone />}
-            value={beneficiary.phones.map((p) => p.phone).join(", ")}
-          />
-          <DetailItem
-            icon={<LocationPin />}
-            label={STRINGS.patient_address}
-            value={`${beneficiary.area?.name ?? ""}  - ${beneficiary.address}`}
-          />
-          <DetailItem
-            icon={<EventAvailable />}
-            label={STRINGS.created_at}
-            value={formatDateTime(beneficiary.createdAt)}
-          />
-          <DetailItem
-            icon={<History />}
-            label={STRINGS.updated_at}
-            value={formatDateTime(beneficiary.updatedAt)}
-          />
-          <DetailItem
-            icon={<Info />}
-            label={STRINGS.patient_about}
-            value={beneficiary.about}
-          />
-          <Link
-            to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}
-            style={{ marginInlineStart: "auto" }}
-          >
-            <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
-          </Link>
-        </Stack>
+        <BeneficiaryCommonCard beneficiary={beneficiary} />
       </Card>
       <Tabs
         variant="fullWidth"
@@ -122,13 +64,13 @@ const BeneficiaryPage = () => {
         }}
       >
         <Tab label={STRINGS.disclosures} />
-        <Tab label={STRINGS.medicines} />
-        <Tab label={STRINGS.family_members} />
+        {/* <Tab label={STRINGS.medicines} />
+        <Tab label={STRINGS.family_members} /> */}
       </Tabs>
       {currentTab === 0 && (
         <BeneficiaryDisclosures beneficiaryId={beneficiary.id} />
       )}
-      {currentTab === 1 && (
+      {/* {currentTab === 1 && (
         <BeneficiaryMedicines
           onEditBeneficiaryMedicine={(bm) =>
             handleOpenBeneficiaryMedicineActionPage(bm)
@@ -143,7 +85,7 @@ const BeneficiaryPage = () => {
           }
           beneficiaryId={beneficiary.id}
         />
-      )}
+      )} */}
       <ActionsFab
         actions={[
           {
@@ -151,16 +93,16 @@ const BeneficiaryPage = () => {
             label: STRINGS.disclosures,
             onClick: () => handleAddBeneficiaryDisclosure(),
           },
-          {
-            icon: <Add />,
-            label: STRINGS.add_medicine,
-            onClick: () => handleOpenBeneficiaryMedicineActionPage(undefined),
-          },
-          {
-            icon: <Add />,
-            label: STRINGS.add_family_member,
-            onClick: () => handleOpenFamilyMembersActionPage(undefined),
-          },
+          // {
+          //   icon: <Add />,
+          //   label: STRINGS.add_medicine,
+          //   onClick: () => handleOpenBeneficiaryMedicineActionPage(undefined),
+          // },
+          // {
+          //   icon: <Add />,
+          //   label: STRINGS.add_family_member,
+          //   onClick: () => handleOpenFamilyMembersActionPage(undefined),
+          // },
         ]}
       />
     </Stack>

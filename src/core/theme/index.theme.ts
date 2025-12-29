@@ -8,7 +8,7 @@ const theme = createTheme({
   direction: "rtl",
   spacing: 8,
   shape: {
-    borderRadius: 12,
+    borderRadius: 3,
   },
 
   shadows: baseTheme.shadows,

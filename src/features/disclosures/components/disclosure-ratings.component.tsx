@@ -1,51 +1,55 @@
 import { Button, Stack, Typography } from "@mui/material";
-import disclosuresApi from "../api/disclosures.api";
-import type { TDisclosureRating } from "../types/disclosure.types";
 import DetailItem from "@/core/components/common/detail-item/detail-item.component";
 import STRINGS from "@/core/constants/strings.constant";
-import { Comment, Edit, EventAvailable, History } from "@mui/icons-material";
-import { formatDateTime } from "@/core/helpers/helpers";
+import { Comment, Edit } from "@mui/icons-material";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
 import { blueGrey, indigo } from "@mui/material/colors";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
-import Nodata from "@/core/components/common/no-data/no-data.component";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import type { TRating } from "@/features/ratings/types/rating.types";
 
-const RatingCard = ({ rating }: { rating: TDisclosureRating }) => {
+const RatingCard = ({
+  rating,
+  customRating,
+  isCustom,
+}: {
+  rating: TRating;
+  customRating: string;
+  isCustom: boolean;
+}) => {
+  const { pathname } = useLocation();
+  const disclosureId = pathname.split("/").pop() || "";
   return (
     <ReusableCardComponent
       headerBackground={
-        rating.isCustom
+        isCustom
           ? `linear-gradient(to right, ${blueGrey[800]}, ${blueGrey[500]})`
           : `linear-gradient(to right, ${indigo[800]}, ${indigo[500]})`
       }
       headerContent={
-        rating.isCustom ? (
+        isCustom ? (
           <Typography color="white">{STRINGS.custom_rating}</Typography>
         ) : (
           <Typography color="white">
-            {rating.rating?.name} - ( {rating.rating?.code} )
+            {rating?.name} - ( {rating?.code} )
           </Typography>
         )
       }
       bodyContent={
         <Stack gap={2}>
-          {rating.customRating && (
-            <Typography>{rating.customRating}</Typography>
-          )}
+          {customRating && <Typography>{customRating}</Typography>}
           {/*   <DetailItem
             label={STRINGS.rating}
             icon={<RateReview />}
             value={`${rating.rating?.name} - ( ${rating.rating?.code} )`}
           /> */}
 
-          <DetailItem
+          {/* <DetailItem
             icon={<EventAvailable />}
             label={STRINGS.created_at}
             value={`${formatDateTime(rating.createdAt)} ${STRINGS.by} ${rating.createdBy?.name}`}
-          />
+          /> */}
 
-          <DetailItem
+          {/* <DetailItem
             icon={<History />}
             label={STRINGS.updated_at}
             value={
@@ -53,18 +57,18 @@ const RatingCard = ({ rating }: { rating: TDisclosureRating }) => {
                 ? STRINGS.none
                 : `${formatDateTime(rating.updatedAt)} ${STRINGS.by} ${rating.updatedBy?.name}`
             }
-          />
+          /> */}
           <DetailItem
             icon={<Comment />}
             label={STRINGS.note}
-            value={rating.note || STRINGS.none}
+            value={rating?.name || STRINGS.none}
           />
         </Stack>
       }
       footerContent={
         <Link
           style={{ alignSelf: "end" }}
-          to={`/disclosures/${rating.disclosureId}/rating/action?ratingId=${rating.id}`}
+          to={`/disclosures/${disclosureId}/rating/action`}
         >
           <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
         </Link>
@@ -73,20 +77,34 @@ const RatingCard = ({ rating }: { rating: TDisclosureRating }) => {
   );
 };
 
-const DisclosureRatings = ({ disclosureId }: { disclosureId?: string }) => {
-  const { data: { items: ratings } = { items: [] }, isFetching } =
-    disclosuresApi.useGetDisclosureRatingsQuery(
-      { disclosureId: disclosureId! },
-      { skip: !disclosureId },
-    );
+// const DisclosureRatings = ({ disclosureId }: { disclosureId?: string }) => {
+const DisclosureRatings = ({
+  rating,
+  customRating,
+  isCustom,
+}: {
+  rating: TRating;
+  customRating: string;
+  isCustom: boolean;
+}) => {
+  // const { data: { items: ratings } = { items: [] }, isFetching } =
+  //   disclosuresApi.useGetDisclosureRatingsQuery(
+  //     { disclosureId: disclosureId! },
+  //     { skip: !disclosureId },
+  //   );
 
   return (
     <Stack gap={2} sx={{ position: "relative" }}>
-      {ratings.map((r) => (
-        <RatingCard key={r.id} rating={r} />
-      ))}
-      {!isFetching && !ratings.length && <Nodata />}
-      {isFetching && <LoadingOverlay />}
+      {/* {ratings.map((r) => ( */}
+      rate
+      <RatingCard
+        rating={rating}
+        customRating={customRating}
+        isCustom={isCustom}
+      />
+      {/* ))} */}
+      {/* {!isFetching && !ratings.length && <Nodata />} */}
+      {/* {isFetching && <LoadingOverlay />} */}
     </Stack>
   );
 };

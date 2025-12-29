@@ -1,38 +1,40 @@
-import appointmentsApi from "@/features/appointments/api/appointmets.api";
+// import appointmentsApi from "@/features/appointments/api/appointmets.api";
 import { Button, Stack, Typography } from "@mui/material";
-import Nodata from "@/core/components/common/no-data/no-data.component";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
-import type { TGetDisclosureAppointmentsResponse } from "@/features/appointments/types/appointment.type";
+// import Nodata from "@/core/components/common/no-data/no-data.component";
+// import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import type { TAppointment } from "@/features/appointments/types/appointment.type";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
-import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
+// import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import STRINGS from "@/core/constants/strings.constant";
-import { Check, Edit, EventAvailable, History } from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import { amber, green, orange, teal } from "@mui/material/colors";
 import { formatDateTime } from "@/core/helpers/helpers";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const AppointmentCard = ({
   disclosureAppointment,
 }: {
-  disclosureAppointment: TGetDisclosureAppointmentsResponse;
+  disclosureAppointment: TAppointment;
 }) => {
+  const { pathname } = useLocation();
+  const disclosureId = pathname.split("/").pop() || "";
   return (
     <ReusableCardComponent
       headerBackground={
-        disclosureAppointment.isCompleted
+        disclosureAppointment.isAppointmentCompleted
           ? `linear-gradient(to right, ${teal[400]}, ${green[500]})`
           : `linear-gradient(to right, ${orange[400]}, ${amber[400]})`
       }
       headerContent={
         <Stack>
           <Typography color="white">
-            {formatDateTime(disclosureAppointment.date)}
+            {formatDateTime(disclosureAppointment.appointmentDate)}
           </Typography>
         </Stack>
       }
       bodyContent={
         <Stack gap={2}>
-          <DetailItemComponent
+          {/* <DetailItemComponent
             icon={<EventAvailable />}
             label={STRINGS.created_at}
             value={`${formatDateTime(disclosureAppointment.createdAt)} ${
@@ -54,8 +56,8 @@ const AppointmentCard = ({
                   : STRINGS.appointment_not_completed}
               </Typography>
             }
-          />
-          <DetailItemComponent
+          /> */}
+          {/* <DetailItemComponent
             icon={<History />}
             label={STRINGS.updated_at}
             value={
@@ -66,13 +68,13 @@ const AppointmentCard = ({
                     STRINGS.by
                   } ${disclosureAppointment.updatedBy?.name}`
             }
-          />
+          /> */}
         </Stack>
       }
       footerContent={
         <Link
           style={{ alignSelf: "end" }}
-          to={`/disclosures/${disclosureAppointment.disclosureId}/appointment/action?appointmentId=${disclosureAppointment.id}&date=${disclosureAppointment.date}`}
+          to={`/disclosures/${disclosureId}/appointment/action`}
         >
           <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
         </Link>
@@ -81,19 +83,24 @@ const AppointmentCard = ({
   );
 };
 
-function DisclosureAppointment({ disclosureId }: { disclosureId?: string }) {
-  const { data: disclosureAppointments = [], isFetching } =
-    appointmentsApi.useGetDisclosureAppointmentsQuery(
-      { disclosureId: disclosureId! },
-      { skip: !disclosureId }
-    );
+function DisclosureAppointment({
+  disclosureAppointment,
+}: {
+  disclosureAppointment: TAppointment;
+}) {
+  // const { data: disclosureAppointments = [], isFetching } =
+  //   appointmentsApi.useGetDisclosureAppointmentsQuery(
+  //     { disclosureId: disclosureId! },
+  //     { skip: !disclosureId }
+  //   );
   return (
     <Stack gap={2} sx={{ position: "relative" }}>
-      {disclosureAppointments.map((a) => (
-        <AppointmentCard key={a.id} disclosureAppointment={a} />
-      ))}
-      {!isFetching && !disclosureAppointments.length && <Nodata />}
-      {isFetching && <LoadingOverlay />}
+      appointment
+      {/* {disclosureAppointments.map((a) => ( */}
+      <AppointmentCard disclosureAppointment={disclosureAppointment} />
+      {/* ))} */}
+      {/* {!isFetching && !disclosureAppointments.length && <Nodata />} */}
+      {/* {isFetching && <LoadingOverlay />} */}
     </Stack>
   );
 }
