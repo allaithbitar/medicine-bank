@@ -17,7 +17,6 @@ import CardAvatar from "@/core/components/common/reusable-card/card-avatar.compo
 import { Link } from "react-router-dom";
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
-  console.log("🚀 ~ DisclosureCard ~ disclosure:", disclosure);
   const headerContent = <CardAvatar name={disclosure.patient.name} />;
 
   const bodyContent = (
@@ -36,22 +35,18 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         value={disclosure.scout?.name ?? STRINGS.none}
       />
 
-      {disclosure.visitResult !== "completed" && (
-        <>
-          <DetailItemComponent
-            icon={<HelpOutlined />}
-            label={`${STRINGS.visit} ( ${STRINGS[disclosure.visitResult]} )`}
-            content={STRINGS.visit_reason}
-            value={disclosure.visitReason ?? STRINGS.none}
-          />
-          {disclosure.visitNote && (
-            <DetailItemComponent
-              icon={<Comment />}
-              label={STRINGS.note}
-              value={disclosure.visitNote}
-            />
-          )}
-        </>
+      <DetailItemComponent
+        icon={<HelpOutlined />}
+        label={`${STRINGS.visit} ( ${STRINGS[disclosure.visitResult]} )`}
+        content={STRINGS.visit_reason}
+        value={disclosure.visitReason ?? STRINGS.none}
+      />
+      {disclosure.visitNote && (
+        <DetailItemComponent
+          icon={<Comment />}
+          label={STRINGS.note}
+          value={disclosure.visitNote}
+        />
       )}
 
       <DetailItemComponent

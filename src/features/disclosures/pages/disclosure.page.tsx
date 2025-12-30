@@ -136,7 +136,7 @@ const DisclosurePage = () => {
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Button
                   fullWidth
-                  onClick={() => openEditExtra && openEditExtra("appointment")}
+                  onClick={() => openEditExtra && openEditExtra("visit-rating")}
                   startIcon={<Edit />}
                 >
                   {`${STRINGS.edit} ${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`}
