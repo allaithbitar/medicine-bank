@@ -32,8 +32,10 @@ import DetailedReportResult from "../components/detailed-report-result.component
 import EmployeesAutocomplete from "@/features/employees/components/employees-autocomplete.component";
 import type { TEmployee } from "@/features/employees/types/employee.types";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import { useModal } from "@/core/components/common/modal/modal-provider.component";
 
 const SatisticsPage = () => {
+  const { openModal } = useModal();
   const [timePeriod, setTimePeriod] = useState<TListItem & { label: string }>({
     id: TIME_PERIOD_TYPE.THIS_MONTH,
     label: STRINGS.this_month,
@@ -194,6 +196,16 @@ const SatisticsPage = () => {
       {(isLoadingDetailedReport || isLoadingSummaryReport) && (
         <LoadingOverlay />
       )}
+      <Button
+        onClick={() => {
+          openModal({ name: "CONFIRM_MODAL" });
+          setTimeout(() => {
+            openModal({ name: "CONFIRM_MODAL" });
+          }, 1000);
+        }}
+      >
+        OPEN{" "}
+      </Button>
     </Stack>
   );
 };

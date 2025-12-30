@@ -20,6 +20,10 @@ import citiesApi from "@/features/banks/api/cities-api/cities.api";
 import { useAppDispatch } from "@/core/store/root.store.types";
 import workAreasApi from "@/features/banks/api/work-areas/work-areas.api";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
+import type { TListItem } from "@/core/types/input.type";
+import FormDateInput from "@/core/components/common/inputs/form-date-input-component";
+import { addTimeZoneOffestToIsoDate } from "@/core/helpers/helpers";
 
 const PatientFormSchema = z.object({
   name: z.string().min(5),
@@ -32,8 +36,14 @@ const PatientFormSchema = z.object({
   city: z.custom<TCity | null>((data) => !!data, {
     message: "City is required",
   }),
-
   phoneNumbers: z.array(z.string().length(10)).min(1),
+  birthDate: z.string(),
+  gender: z
+    .custom<(TListItem & { label: string }) | null>((data) => !!data, {
+      message: "Gender is required",
+    })
+    .nullable(),
+  job: z.string().nullable(),
 });
 
 export type TBenefificaryFormHandlers = {
@@ -71,12 +81,16 @@ function BeneficiaryActionForm({
       about: "",
       city: null,
       phoneNumbers: ["123"],
+      birthDate: "",
+      gender: null,
+      job: "",
     },
   });
 
   const handleChange = (key: keyof typeof formState, value: any) => {
     setFormState((prev) => ({ ...prev, [key]: value }));
   };
+  console.log(formErrors);
 
   // const handleSave = async () => {
   //   const { isValid, result } = await handleSubmit();
@@ -119,9 +133,10 @@ function BeneficiaryActionForm({
       (async () => {
         let _city: TCity | null = null;
         let _area: TArea | null = null;
+        let _gender: (TListItem & { label: string }) | null = null;
 
         const cities = await dispatch(
-          citiesApi.endpoints.getCities.initiate({})
+          citiesApi.endpoints.getCities.initiate({}),
         ).unwrap();
 
         if (beneficiaryData.area) {
@@ -129,15 +144,22 @@ function BeneficiaryActionForm({
             workAreasApi.endpoints.getWorkAreas.initiate({
               cityId: beneficiaryData.area?.cityId,
               name: beneficiaryData.area.name,
-            })
+            }),
           ).unwrap();
           _area =
             areas.items.find((a) => a.id === beneficiaryData.area.id) ?? null;
-          console.log({ _area, areas });
 
           _city =
             cities.items.find((c) => c.id === beneficiaryData.area.cityId) ??
             null;
+        }
+
+        if (beneficiaryData.gender) {
+          if (beneficiaryData.gender === "male") {
+            _gender = { id: "male", label: STRINGS.male };
+          } else {
+            _gender = { id: "female", label: STRINGS.female };
+          }
         }
         setFormState({
           name: beneficiaryData.name,
@@ -147,6 +169,9 @@ function BeneficiaryActionForm({
           city: _city,
           nationalNumber: beneficiaryData.nationalNumber,
           phoneNumbers: beneficiaryData.phones.map((p) => p.phone),
+          birthDate: beneficiaryData.birthDate ?? "",
+          job: beneficiaryData.job,
+          gender: _gender,
         });
       })();
       setIsLoading(false);
@@ -160,7 +185,7 @@ function BeneficiaryActionForm({
         return handleSubmit();
       },
     }),
-    [handleSubmit]
+    [handleSubmit],
   );
 
   return (
@@ -180,6 +205,25 @@ function BeneficiaryActionForm({
         value={formState.nationalNumber}
         onChange={(v) => handleChange("nationalNumber", v)}
         errorText={formErrors.nationalNumber?.[0].message ?? ""}
+      />
+      <FormAutocompleteInput<{ id: string; label: string }>
+        value={formState.gender}
+        label={STRINGS.gender}
+        options={[
+          { id: "male", label: STRINGS.male },
+          { id: "female", label: STRINGS.female },
+        ]}
+        onChange={(v) => handleChange("gender", v)}
+      />
+      <FormDateInput
+        label={STRINGS.birth_date}
+        value={formState.birthDate ?? ""}
+        onChange={(v) =>
+          handleChange(
+            "birthDate",
+            v ? addTimeZoneOffestToIsoDate(v).toISOString() : "",
+          )
+        }
       />
       <CitiesAutocomplete
         required
@@ -245,6 +289,13 @@ function BeneficiaryActionForm({
           </Button>
         </Stack>
       </FieldSet>
+
+      <FormTextFieldInput
+        label={STRINGS.job_or_school}
+        name="address"
+        value={formState.job ?? ""}
+        onChange={(v) => handleChange("job", v)}
+      />
 
       <FormTextFieldInput
         label={STRINGS.patient_address}

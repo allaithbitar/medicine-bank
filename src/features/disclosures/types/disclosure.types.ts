@@ -9,10 +9,16 @@ import type { TBenefieciary } from "@/features/beneficiaries/types/beneficiary.t
 import type { TPriorityDegree } from "@/features/priority-degres/types/priority-degree.types";
 import type { TRating } from "@/features/ratings/types/rating.types";
 
+export const DisclosureType = {
+  new: "new",
+  help: "help",
+  return: "return",
+} as const;
+
 export const DisclosureStatus = {
   active: "active",
-  canceled: "canceled",
-  finished: "finished",
+  suspended: "suspended",
+  archived: "archived",
 } as const;
 
 export const DisclosureVisitResult = {
@@ -22,6 +28,8 @@ export const DisclosureVisitResult = {
 } as const;
 
 export type TDisclosureStatus = keyof typeof DisclosureStatus;
+
+export type TDisclosureType = keyof typeof DisclosureType;
 
 export type TDisclosureVisitResult = keyof typeof DisclosureVisitResult;
 
@@ -68,14 +76,21 @@ export type TDisclosure = {
   TAppointment;
 export type TGetDisclosuresDto = Partial<
   TPaginationDto & {
-    patientId?: string;
-    status?: TDisclosureStatus[];
-    scoutIds?: string[];
-    ratingIds?: string[];
-    priorityIds?: string[];
-    createdAtStart?: string;
-    createdAtEnd?: string;
-    undelivered?: boolean;
+    isReceived: boolean;
+    archiveNumber: number;
+    visitResult: TDisclosureVisitResult;
+    isCustomRating: boolean;
+    appointmentDate: string;
+    isAppointmentCompleted: boolean;
+    scoutIds: string[];
+    patientId: string;
+    priorityIds: string[];
+    ratingIds: string[];
+    createdAtStart: string;
+    createdAtEnd: string;
+    status: TDisclosureStatus[];
+    type: TDisclosureType[];
+    undelivered: boolean;
   }
 >;
 

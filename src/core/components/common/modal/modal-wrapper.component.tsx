@@ -82,7 +82,9 @@ const ModalWrapper = ({
             )}
           </Stack>
 
-          <Stack sx={{ flex: 1, overflow: "auto", p: 1 }}>{children}</Stack>
+          <Stack sx={{ flex: 1, overflow: "auto", p: 1, py: 2 }}>
+            {children}
+          </Stack>
 
           {actionButtons && (
             <DialogActions

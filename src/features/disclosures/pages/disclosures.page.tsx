@@ -19,19 +19,19 @@ import ActionsFab from "@/core/components/common/actions-fab/actions-fab.compone
 import ReusableSidebar from "@/core/components/common/reusable-sidebar/reusable-sidebar.component";
 import useUrlToggleState from "@/core/hooks/use-url-state.hook";
 import { useNavigate } from "react-router-dom";
+import { useModal } from "@/core/components/common/modal/modal-provider.component";
+
+const defaultState = {
+  pageSize: DEFAULT_PAGE_SIZE,
+  pageNumber: DEFAULT_PAGE_NUMBER,
+};
 
 const DisclosuresPage = () => {
-  const [queryData, setQueryData] = useState<TGetDisclosuresDto>({
-    pageSize: DEFAULT_PAGE_SIZE,
-    pageNumber: DEFAULT_PAGE_NUMBER,
-  });
+  const { openModal, closeModal } = useModal();
+
+  const [queryData, setQueryData] = useState<TGetDisclosuresDto>(defaultState);
 
   const navigate = useNavigate();
-
-  const filtersRef = useRef<TDisclosureFiltesHandlers | null>(null);
-
-  const { value: openFiltersSidebar, toggleValue: toggleOpenFiltersSidebar } =
-    useUrlToggleState("open_filters");
 
   const {
     items,
@@ -45,7 +45,6 @@ const DisclosuresPage = () => {
   if (error) {
     return <ErrorCard error={error} />;
   }
-  console.log({ items });
 
   return (
     <Stack gap={2} sx={{ height: "100%" }}>
@@ -72,30 +71,19 @@ const DisclosuresPage = () => {
           {
             label: STRINGS.filter,
             icon: <Filter />,
-            onClick: () => toggleOpenFiltersSidebar(),
+            onClick: () =>
+              openModal({
+                name: "DISCLOSURE_FILTERS_MODAL",
+                props: {
+                  onSubmit: (values) => {
+                    closeModal();
+                    return setQueryData({ ...defaultState, ...values });
+                  },
+                },
+              }),
           },
         ]}
       />
-      <ReusableSidebar
-        open={openFiltersSidebar}
-        actions={
-          <Button
-            startIcon={<Search />}
-            onClick={() => {
-              setQueryData({
-                pageNumber: DEFAULT_PAGE_NUMBER,
-                pageSize: DEFAULT_PAGE_SIZE,
-                ...filtersRef.current!.getValues(),
-              });
-              toggleOpenFiltersSidebar();
-            }}
-          >
-            {STRINGS.search}
-          </Button>
-        }
-      >
-        <DisclosureFilters ref={filtersRef} />
-      </ReusableSidebar>
       {isLoading && <LoadingOverlay />}
     </Stack>
   );

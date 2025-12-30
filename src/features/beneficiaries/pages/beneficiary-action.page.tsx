@@ -1,7 +1,7 @@
 import STRINGS from "@/core/constants/strings.constant";
 import { Card, Stack } from "@mui/material";
 import type { TAddBeneficiaryDto } from "../types/beneficiary.types";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import beneficiaryApi from "../api/beneficiary.api";
 import {
   notifyError,
@@ -32,17 +32,35 @@ const BeneficiaryActionPage = () => {
   const { data: beneficiaryData, isLoading: isGetting } =
     beneficiaryApi.useGetBeneficiaryQuery(
       { id: beneficiaryId ?? "" },
-      { skip: !beneficiaryId }
+      { skip: !beneficiaryId },
     );
 
   const isLoading = isAdding || isUpdating || isGetting;
 
+  const [validateNationalNumber] =
+    beneficiaryApi.useValidateNationalNumberMutation();
+
+  const [validatePhoneNumber] =
+    beneficiaryApi.useValidatePhoneNumbersMutation();
+
   const handleSave = async () => {
     const { isValid, result } = await ref.current!.handleSubmit();
-    console.log({ isValid, result });
 
     if (!isValid) return;
     try {
+      const r = await validateNationalNumber({
+        nationalNumber: result.nationalNumber,
+        ...(beneficiaryId && { patientId: beneficiaryId }),
+      });
+
+      const rr = await validatePhoneNumber({
+        phoneNumbers: result.phoneNumbers,
+        ...(beneficiaryId && { patientId: beneficiaryId }),
+      });
+
+      console.log({ r, rr });
+      return;
+
       const addDto: TAddBeneficiaryDto = {
         name: result.name,
         nationalNumber: result.nationalNumber,
@@ -50,6 +68,14 @@ const BeneficiaryActionPage = () => {
         about: result.about,
         address: result.address,
         phoneNumbers: result.phoneNumbers,
+        gender: result.gender?.id ?? "",
+        job: result.job,
+        // birthDate: result.birthDate
+        //   ? addTimeZoneOffestToIsoDate(result.birthDate)
+        //       .toISOString()
+        //       .split("T")[0]
+        //   : "",
+        birthDate: (result.birthDate || "")?.split("T")[0] ?? "",
       };
 
       if (!beneficiaryId) {

@@ -1,22 +1,33 @@
 import { useNavigate } from "react-router-dom";
 import BeneficiaryCard from "../components/beneficiary-card.component";
-import { Add } from "@mui/icons-material";
+import { Add, Filter } from "@mui/icons-material";
 import STRINGS from "@/core/constants/strings.constant";
 import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
 import { Stack } from "@mui/material";
-import { DEFAULT_PAGE_NUMBER } from "@/core/constants/properties.constant";
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+} from "@/core/constants/properties.constant";
 import { useBeneficiariesLoader } from "../hooks/use-beneficiaries-loader.hook";
 import { useState } from "react";
 import type { TGetBeneficiariesDto } from "../types/beneficiary.types";
-import PageLoading from "@/core/components/common/page-loading/page-loading.component";
 import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
+import { useModal } from "@/core/components/common/modal/modal-provider.component";
+import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 
 const BeneficiariesPage = () => {
-  const [queryData] = useState<TGetBeneficiariesDto>({
-    pageSize: 1000,
+  const [queryData, setQueryData] = useState<TGetBeneficiariesDto>({
+    pageSize: DEFAULT_PAGE_SIZE,
     pageNumber: DEFAULT_PAGE_NUMBER,
   });
-  const { items = [], isLoading } = useBeneficiariesLoader(queryData);
+  const { openModal, closeModal } = useModal();
+  const {
+    items = [],
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    isLoading,
+  } = useBeneficiariesLoader(queryData);
 
   // const filtersRef = useRef<TBeneficiariesFiltersHandlers | null>(null);
 
@@ -24,23 +35,11 @@ const BeneficiariesPage = () => {
 
   return (
     <Stack gap={2} sx={{ height: "100%" }}>
-      {/*  <Card>
-        <Stack gap={2}>
-          <BeneficiariesFilters ref={filtersRef} />
-          <Button
-            onClick={() =>
-              setQueryData((prev) => ({
-                ...prev,
-                ...filtersRef.current!.getValues(),
-              }))
-            }
-          >
-            {STRINGS.search}
-          </Button>
-        </Stack>
-      </Card>
-  */}
       <VirtualizedList
+        onEndReach={
+          hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined
+        }
+        isLoading={isFetchingNextPage}
         items={items}
         containerStyle={{ flex: 1 }}
         virtualizationOptions={{
@@ -64,9 +63,24 @@ const BeneficiariesPage = () => {
             label: STRINGS.add_beneficiary,
             onClick: () => navigate("/beneficiaries/action"),
           },
+          {
+            icon: <Filter />,
+            label: STRINGS.filter,
+            onClick: () =>
+              openModal({
+                name: "BENEFICIARIES_FILTERS_MODAL",
+                props: {
+                  onSubmit: (values) => {
+                    closeModal();
+                    return setQueryData((prev) => ({ ...prev, ...values }));
+                  },
+                },
+              }),
+          },
         ]}
       />
-      {isLoading && <PageLoading />}
+
+      {isLoading && <LoadingOverlay />}
     </Stack>
   );
 };

@@ -2,6 +2,7 @@ import type {
   TFormValue,
   TMedicine,
 } from "@/features/banks/types/medicines.types";
+import { TPaginationDto } from "../../../core/types/common.types";
 
 export type TAddBeneficiaryDto = {
   name: string;
@@ -10,16 +11,20 @@ export type TAddBeneficiaryDto = {
   address?: string;
   about?: string;
   phoneNumbers: string[];
+  birthDate: string;
+  job: string;
+  gender: string | null;
 };
 
 export type TUpdateBeneficiaryDto = TAddBeneficiaryDto & { id: string };
 
-export type TGetBeneficiariesDto = {
-  query?: string | undefined;
-  pageSize?: number | undefined;
-  pageNumber?: number | undefined;
-  areaIds?: string[];
-};
+export type TGetBeneficiariesDto = TPaginationDto &
+  Partial<
+    Omit<TAddBeneficiaryDto, "areaId" | "phoneNumbers"> & {
+      phone: string;
+      areaIds: string[];
+    }
+  >;
 
 type TArea = {
   id: string;
@@ -49,6 +54,9 @@ export type TBenefieciary = {
   createdAt: string;
   updatedAt: string;
   phones: TBeneficiaryPhone[];
+  birthDate: string;
+  job: string;
+  gender: string | null;
 } & TBeneficiaryArea;
 
 export type TBeneficiaryMedicine = {
@@ -79,8 +87,9 @@ export type TUpdateBeneficiaryMedicinePayload = {
   id: string;
 } & TAddBeneficiaryMedicinePayload;
 
-export const ALLOWED_GENDERS = ["male", "female"] as const;
-export type TGender = (typeof ALLOWED_GENDERS)[number];
+export const Genders = { male: "male", female: "female" } as const;
+
+export type TGender = keyof typeof Genders;
 
 export const ALLOWED_KINSHIP = [
   "partner",
@@ -111,3 +120,11 @@ export type TGetFamilyMembersParams = {
 export type TAddFamilyMemberPayload = Omit<TFamilyMember, "id">;
 
 export type TUpdateFamilyMemberPayload = TFamilyMember;
+
+export type TValidateNationalNumberPayload = {
+  nationalNumber: string;
+};
+
+export type TValidatePhoneNumbersPayload = {
+  phoneNumbers: string[];
+};

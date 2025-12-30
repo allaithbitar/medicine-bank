@@ -1,73 +1,56 @@
-import useReactivity from "@/core/hooks/use-reactivity.hook";
+import useIsOffline from "@/core/hooks/use-is-offline.hook";
 import type { TGetBeneficiariesDto } from "../types/beneficiary.types";
 import beneficiaryApi from "../api/beneficiary.api";
-import beneficiariesLocalDb from "@/libs/signaldb/beneficiaries.db";
-import useIsOffline from "@/core/hooks/use-is-offline.hook";
+
+// import { useLocalDisclosuresLoader } from "./local-disclosures-loader.hook";
 
 export const useBeneficiariesLoader = (dto: TGetBeneficiariesDto = {}) => {
   const isOffline = useIsOffline();
 
-  const {
-    data,
-    error,
-    isFetching: isLoading,
-  } = beneficiaryApi.useGetBeneficiariesQuery(dto, {
-    skip: isOffline,
-  });
+  const { data: onlineData, ...onlineQueryResult } =
+    beneficiaryApi.useGetBeneficiariesInfiniteQuery(dto, {
+      skip: isOffline,
+    });
 
-  const localResult = useReactivity(() => {
-    const filters = {
-      $and: [
-        ...(dto.areaIds?.length
-          ? [{ areaId: { $in: dto.areaIds ?? [] } }]
-          : []),
-        ...(dto.query?.length
-          ? [
-              {
-                $or: [
-                  {
-                    name: { $regex: dto.query },
-                  },
-                  {
-                    nationalNumber: { $regex: dto.query },
-                  },
-                  {
-                    about: { $regex: dto.query },
-                  },
-                  {
-                    address: { $regex: dto.query },
-                  },
-                  {
-                    "phones.phone": { $regex: dto.query },
-                  },
-                ],
-              },
-            ]
-          : []),
-      ],
-    };
-    const totalCount = beneficiariesLocalDb
-      .find(filters, {
-        limit: dto.pageSize,
-        skip: dto.pageSize,
-      })
-      .count();
-    const items = beneficiariesLocalDb
-      .find(filters, {
-        limit: dto.pageSize,
-        skip: dto.pageNumber! * dto.pageSize!,
-      })
-      .fetch();
+  // const {
+  //   items: offlineData,
+  //   totalCount,
+  //   ...offlineQueryResult
+  // } = useLocalDisclosuresLoader(dto);
+  // console.log({ offlineData, onlineData });
 
-    return { items, totalCount };
-  }, [dto]);
-
+  // return {
+  //   items: isOffline
+  //     ? offlineData
+  //     : (onlineData?.pages.map((p) => p.items).flat() ?? []),
+  //   totalCount: isOffline ? totalCount : (onlineData?.pages[0].totalCount ?? 0),
+  //   hasNextPage: isOffline
+  //     ? offlineQueryResult.hasNextPage
+  //     : onlineQueryResult.hasNextPage,
+  //   fetchNextPage: isOffline
+  //     ? offlineQueryResult.fetchNextPage
+  //     : onlineQueryResult.fetchNextPage,
+  //   isFetchingNextPage: isOffline
+  //     ? offlineQueryResult.isFetchingNextPage
+  //     : onlineQueryResult.isFetchingNextPage,
+  //   isFetching: isOffline
+  //     ? offlineQueryResult.isFetching
+  //     : onlineQueryResult.isFetching,
+  //
+  //   isLoading: isOffline
+  //     ? offlineQueryResult.isLoading
+  //     : onlineQueryResult.isLoading,
+  //
+  //   error: isOffline ? offlineQueryResult.error : onlineQueryResult.error,
+  // };
   return {
-    items: (isOffline ? localResult?.items : data?.items) ?? [],
-    pageSize: dto.pageSize,
-    pageNumber: dto.pageNumber,
-    totalCount: (isOffline ? localResult?.totalCount : data?.totalCount) ?? 0,
-    isLoading,
-    error,
+    items: onlineData?.pages.map((p) => p.items).flat() ?? [],
+    totalCount: onlineData?.pages[0].totalCount ?? 0,
+    hasNextPage: onlineQueryResult.hasNextPage,
+    fetchNextPage: onlineQueryResult.fetchNextPage,
+    isFetchingNextPage: onlineQueryResult.isFetchingNextPage,
+    isFetching: onlineQueryResult.isFetching,
+    isLoading: onlineQueryResult.isLoading,
+    error: onlineQueryResult.error,
   };
 };

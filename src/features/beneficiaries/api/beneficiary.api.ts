@@ -12,6 +12,8 @@ import type {
   TGetFamilyMembersParams,
   TAddFamilyMemberPayload,
   TUpdateFamilyMemberPayload,
+  TValidateNationalNumberPayload,
+  TValidatePhoneNumbersPayload,
 } from "../types/beneficiary.types";
 import type {
   ApiResponse,
@@ -39,24 +41,46 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         { type: "Beneficiaries", id: args.id },
       ],
     }),
-
-    getBeneficiaries: builder.query<
+    //
+    // getBeneficiaries: builder.query<
+    //   TPaginatedResponse<TBenefieciary>,
+    //   TGetBeneficiariesDto
+    // >({
+    //   query: (data) => ({
+    //     url: "patients/search",
+    //     body: data,
+    //     method: "POST",
+    //   }),
+    //   transformResponse: (
+    //     res: ApiResponse<TPaginatedResponse<TBenefieciary>>,
+    //   ) => res.data,
+    //   providesTags: ["Beneficiaries"],
+    // }),
+    getBeneficiaries: builder.infiniteQuery<
       TPaginatedResponse<TBenefieciary>,
-      TGetBeneficiariesDto
+      TGetBeneficiariesDto,
+      number
     >({
-      query: (data) => ({
+      query: ({ queryArg, pageParam }) => ({
         url: "patients/search",
-        body: data,
         method: "POST",
+        body: { ...queryArg, pageNumber: pageParam },
       }),
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize
+            ? undefined
+            : lastPage.pageNumber + 1,
+      },
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TBenefieciary>>
+        res: ApiResponse<TPaginatedResponse<TBenefieciary>>,
       ) => res.data,
-      providesTags: ["Beneficiaries"],
+      providesTags: ["Disclosures"],
     }),
     getAutocompletePatients: builder.query<
       TPaginatedResponse<{ id: string; name: string }>,
-      TGetBeneficiariesDto
+      { query?: string }
     >({
       query: (data) => ({
         url: "autocomplete/patients",
@@ -64,10 +88,11 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         method: "POST",
       }),
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<{ id: string; name: string }>>
+        res: ApiResponse<TPaginatedResponse<{ id: string; name: string }>>,
       ) => res.data,
       providesTags: ["Beneficiary_Autocomplete"],
     }),
+
     getBeneficiary: builder.query<TBenefieciary, { id: string }>({
       query: ({ id }) => ({
         url: `patients/${id}`,
@@ -85,7 +110,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         params,
       }),
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TBeneficiaryMedicine>>
+        res: ApiResponse<TPaginatedResponse<TBeneficiaryMedicine>>,
       ) => res.data,
       providesTags: [{ type: "Beneficiary_Medicines", id: "LIST" }],
     }),
@@ -124,7 +149,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         params,
       }),
       transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TFamilyMember>>
+        res: ApiResponse<TPaginatedResponse<TFamilyMember>>,
       ) => res.data,
       providesTags: [{ type: "family_Members", id: "LIST" }],
     }),
@@ -146,6 +171,23 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         { type: "family_Members", id: "LIST" },
         { type: "family_Members", id: arg.id },
       ],
+    }),
+    validateNationalNumber: builder.mutation<
+      TFamilyMember,
+      TValidateNationalNumberPayload
+    >({
+      query: (data) => ({
+        url: "patients/validate/national-number",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    validatePhoneNumbers: builder.mutation<void, TValidatePhoneNumbersPayload>({
+      query: (data) => ({
+        url: "patients/validate/phone-numbers",
+        method: "POST",
+        body: data,
+      }),
     }),
   }),
 });

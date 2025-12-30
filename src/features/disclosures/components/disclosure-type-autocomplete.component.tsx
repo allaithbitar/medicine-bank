@@ -2,37 +2,37 @@ import { type ComponentProps } from "react";
 import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
 import STRINGS from "@/core/constants/strings.constant";
 import {
-  DisclosureStatus,
-  type TDisclosureStatus,
+  DisclosureType,
+  type TDisclosureType,
 } from "../types/disclosure.types";
 
 type TStatusAutocompleteProps<T extends boolean> = Partial<
   ComponentProps<
-    typeof FormAutocompleteInput<{ id: TDisclosureStatus; label: string }, T>
+    typeof FormAutocompleteInput<{ id: TDisclosureType; label: string }, T>
   >
 >;
 
-function DisclosureStatusAutocomplete<T extends boolean>({
+function DisclosureTypeAutocomplete<T extends boolean>({
   ...props
 }: TStatusAutocompleteProps<T>) {
   const options = [
     {
-      label: STRINGS.active,
-      id: DisclosureStatus.active,
+      label: STRINGS.new,
+      id: DisclosureType.new,
     },
     {
-      label: STRINGS.suspensedَ,
-      id: DisclosureStatus.suspended,
+      label: STRINGS.help,
+      id: DisclosureType.help,
     },
     {
-      label: STRINGS.archived,
-      id: DisclosureStatus.archived,
+      label: STRINGS.return,
+      id: DisclosureType.return,
     },
   ];
 
   return (
     <FormAutocompleteInput
-      label={STRINGS.status}
+      label={STRINGS.type}
       getOptionLabel={(option) => option.label}
       getOptionKey={(option) => option.id}
       isOptionEqualToValue={(option, val) => option.id === val.id}
@@ -43,4 +43,4 @@ function DisclosureStatusAutocomplete<T extends boolean>({
   );
 }
 
-export default DisclosureStatusAutocomplete;
+export default DisclosureTypeAutocomplete;
