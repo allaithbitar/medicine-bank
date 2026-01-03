@@ -42,7 +42,8 @@ export type TDisclosureDetails = {
   electricity?: string;
   expenses?: string;
   home_condition?: string;
-  residential?: string;
+  job_or_school?: string;
+  diseases_or_Surgeries?: string;
   cons?: string;
   pons?: string;
 };
@@ -114,12 +115,14 @@ export type TDisclosureRating = {
       rating: TRating;
       isCustomRating: false;
       customRating: null;
+      ratingNote?: string | null;
     }
   | {
       ratingId: null;
       rating: null;
       isCustomRating: true;
       customRating: string;
+      ratingNote?: string | null;
     }
 );
 

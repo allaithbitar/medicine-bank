@@ -11,9 +11,10 @@ import WorkIcon from '@mui/icons-material/Work';
 
 interface IBeneficiaryCommonCard {
   beneficiary: TBenefieciary;
+  isDisclosurePage?: boolean;
 }
 
-function BeneficiaryCommonCard({ beneficiary }: IBeneficiaryCommonCard) {
+function BeneficiaryCommonCard({ beneficiary, isDisclosurePage = false }: IBeneficiaryCommonCard) {
   return (
     <Stack gap={2}>
       <DetailItem label={STRINGS.beneficiary} icon={<Person />} value={beneficiary.name} />
@@ -26,11 +27,13 @@ function BeneficiaryCommonCard({ beneficiary }: IBeneficiaryCommonCard) {
           value={beneficiary.birthDate || STRINGS.none}
         />
       }
-      <DetailItem
-        icon={<WorkIcon />}
-        label={STRINGS.job_or_school}
-        value={beneficiary.job ? beneficiary.job : STRINGS.none}
-      />
+      {!isDisclosurePage && (
+        <DetailItem
+          icon={<WorkIcon />}
+          label={STRINGS.job_or_school}
+          value={beneficiary.job ? beneficiary.job : STRINGS.none}
+        />
+      )}
       <DetailItem
         icon={<LocationPin />}
         label={STRINGS.patient_address}

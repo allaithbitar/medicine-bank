@@ -23,8 +23,8 @@ function DisclosureVisitAndRatingSection({ disclosure }: { disclosure: TDisclosu
                   disclosure.visitResult === 'completed'
                     ? 'success'
                     : disclosure.visitResult === 'not_completed'
-                      ? 'warning'
-                      : 'error'
+                    ? 'warning'
+                    : 'error'
                 }
               >
                 {STRINGS[disclosure.visitResult]}

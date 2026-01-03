@@ -4,7 +4,7 @@ import ReusableCardComponent from "@/core/components/common/reusable-card/reusab
 import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import CustomIconButton from "@/core/components/common/custom-icon-button/custom-icon-button.component";
 import STRINGS from "@/core/constants/strings.constant";
-import { Edit, DeleteOutline } from "@mui/icons-material";
+import { Edit, DeleteOutline, Home } from "@mui/icons-material";
 import PersonIcon from "@mui/icons-material/Person";
 import CakeIcon from "@mui/icons-material/Cake";
 import WorkIcon from "@mui/icons-material/Work";
@@ -96,6 +96,11 @@ const FamilyMemberCard = ({
             label={STRINGS.job_or_school}
             icon={<WorkIcon />}
             value={member.jobOrSchool}
+          />
+          <DetailItemComponent
+            label={STRINGS.residential}
+            icon={<Home />}
+            value={member.residential ?? STRINGS.none}
           />
           {member.note ? (
             <DetailItemComponent

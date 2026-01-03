@@ -293,7 +293,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         res.data,
       providesTags: [{ type: "audit", id: "LIST" }],
     }),
-    getAuditDetails: builder.mutation<
+    getAuditDetails: builder.query<
       TAuditDetailsRow[],
       { disclosureId: string; date: string }
     >({

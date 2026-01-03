@@ -15,7 +15,7 @@ const IntersectionTrigger = ({ onIntersect }: { onIntersect?: () => void }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isIntersecting]);
 
-  return <div ref={ref} style={{ height: 200 }} />;
+  return <div ref={ref} style={{ height: 100 }} />;
 };
 
 export default IntersectionTrigger;

@@ -7,6 +7,7 @@ import {
   TimelineConnector,
   TimelineContent,
   TimelineDot,
+  TimelineOppositeContent,
 } from "@mui/lab";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomAppBar from "@/core/components/common/custom-app-bar/custom-app-bar.component";
@@ -14,14 +15,11 @@ import STRINGS from "@/core/constants/strings.constant";
 import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
 import type { TAuditGroup } from "../types/disclosure.types";
 import disclosuresApi from "../api/disclosures.api";
-import { formatDateTime } from "@/core/helpers/helpers";
-
-const ACTION_COLOR_MAP: Record<string, string> = {
-  INSERT: "#43a047",
-  UPDATE: "#fb8c00",
-  DELETE: "#e53935",
-  DEFAULT: "#90a4ae",
-};
+import {
+  ACTION_COLOR_MAP,
+  formatDateTime,
+  getStringsLabel,
+} from "@/core/helpers/helpers";
 
 const getDominantAction = (group: TAuditGroup) => {
   const counts: Record<string, number> = {};
@@ -79,9 +77,16 @@ const DisclosureAuditTimelinePage = () => {
         )}
 
         {!isLoading && groups.length > 0 && (
-          <Timeline position="alternate">
+          <Timeline position="right">
             {enriched.map(({ group, color }) => (
               <TimelineItem key={group.createdAt}>
+                <TimelineOppositeContent
+                  style={{
+                    maxWidth: "1px",
+                    paddingLeft: "0px",
+                    paddingRight: "0px",
+                  }}
+                />
                 <TimelineSeparator>
                   <TimelineDot
                     sx={{
@@ -108,7 +113,32 @@ const DisclosureAuditTimelinePage = () => {
                       justifyContent="space-between"
                       alignItems="center"
                     >
-                      <Stack sx={{ gap: 1 }}>
+                      <Stack sx={{ gap: 1, width: "100%" }}>
+                        <Typography
+                          sx={{
+                            textAlign: "start",
+                          }}
+                          variant="subtitle2"
+                        >
+                          {STRINGS.edit_done}
+                        </Typography>
+                        <Stack sx={{ flexDirection: "row", gap: 1 }}>
+                          {group?.logs.map(({ column, id }) => (
+                            <Typography
+                              key={id}
+                              variant="caption"
+                              color="textDisabled"
+                            >
+                              {getStringsLabel({
+                                key: "update_column",
+                                val:
+                                  column ||
+                                  STRINGS.update_column_disclosure_notes,
+                              })}
+                            </Typography>
+                          ))}
+                        </Stack>
+
                         <Typography
                           sx={{
                             textAlign: "start",
@@ -124,7 +154,7 @@ const DisclosureAuditTimelinePage = () => {
                           {/* {getEmployeeName(group.)} */}
                         </Typography>
                         <Typography
-                          sx={{ pt: 2, textAlign: "start" }}
+                          sx={{ pt: 1, textAlign: "start" }}
                           color="primary"
                           variant="subtitle2"
                         >

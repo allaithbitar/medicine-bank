@@ -21,9 +21,7 @@ import BeneficiaryPage from "./features/beneficiaries/pages/beneficiary.page";
 import EmployeesPage from "./features/employees/pages/employees.page";
 import BeneficiaryActionPage from "./features/beneficiaries/pages/beneficiary-action.page";
 import DisclosurePage from "./features/disclosures/pages/disclosure.page";
-import DisclosureRatingActionPage from "./features/disclosures/pages/disclosure-rating-action.page";
 import RatingsPage from "./features/ratings/pages/ratings.page";
-import DisclosureVisitActionPage from "./features/disclosures/pages/disclosure-visit-action.page";
 import SyncPage from "./features/offline/pages/sync.page";
 import EmployeeActionPage from "./features/employees/pages/employee-action.page";
 import PriorityDegreesPage from "./features/priority-degres/pages/priority-degrees.page";
@@ -49,6 +47,7 @@ import DisclosureConsultingAdviserActionPage from "./features/disclosures/pages/
 import AdviserDisclosureConsultationsPage from "./features/disclosures/pages/adviser-disclosure-consultations.page";
 import DisclosureDetailsActionPage from "./features/disclosures/pages/disclosure-details-action.page";
 import DisclosureVisitAndRatingActionPage from "./features/disclosures/pages/disclosure-visit-and-rating-action.page";
+import AuditDetailsActionPage from "./features/disclosures/pages/disclosue-audit-details.page";
 
 function App() {
   const router = createBrowserRouter(
@@ -91,15 +90,6 @@ function App() {
             />
 
             <Route
-              path="/disclosures/rating/action"
-              element={<DisclosureRatingActionPage />}
-            />
-
-            <Route
-              path="/disclosures/visit/action"
-              element={<DisclosureVisitActionPage />}
-            />
-            <Route
               path="/disclosures/visit-rating/action"
               element={<DisclosureVisitAndRatingActionPage />}
             />
@@ -125,7 +115,7 @@ function App() {
             />
             <Route
               path="/disclosures/:disclosureId/audit/details"
-              element={<DisclosureNoteActionPage />}
+              element={<AuditDetailsActionPage />}
             />
 
             <Route path="/beneficiaries" element={<BeneficiariesPage />} />

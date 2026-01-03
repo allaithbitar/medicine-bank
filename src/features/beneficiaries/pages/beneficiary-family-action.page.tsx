@@ -43,6 +43,7 @@ const FamilyMemberSchema = z.object({
     { errorMap: () => ({ message: "Kinshep is required" }) }
   ),
   jobOrSchool: z.string().optional().nullable(),
+  residential: z.string().optional().nullable(),
   note: z.string().optional().nullable(),
   patientId: z.string().min(1, { message: "Patient is required" }),
 });
@@ -86,6 +87,7 @@ const BeneficiaryFamilyActionPage = () => {
     gender: (oldFamilyMember?.gender as TGender) ?? "male",
     kinshep: (oldFamilyMember?.kinshep as TKinship) ?? "partner",
     jobOrSchool: oldFamilyMember?.jobOrSchool ?? "",
+    residential: oldFamilyMember?.residential ?? "",
     note: oldFamilyMember?.note ?? "",
     patientId: oldFamilyMember?.patientId ?? patientId ?? "",
   });
@@ -166,6 +168,8 @@ const BeneficiaryFamilyActionPage = () => {
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <MobileDatePicker
+            views={["year"]}
+            disableFuture
             label={STRINGS.birth_date}
             value={values._birthDate ?? null}
             onChange={(newDate) => {
@@ -173,6 +177,9 @@ const BeneficiaryFamilyActionPage = () => {
               setErrors((p) => p.filter((er) => er.path[0] !== "birthDate"));
             }}
           />
+          <Typography color="error" variant="caption">
+            {getErrorForField("birthDate")}
+          </Typography>
         </LocalizationProvider>
         <Stack sx={{ flexDirection: "row", gap: 2 }}>
           <Box sx={{ width: "100%" }}>
@@ -229,6 +236,13 @@ const BeneficiaryFamilyActionPage = () => {
           label={STRINGS.job_or_school}
           value={values.jobOrSchool ?? ""}
           onChange={(e) => setValues({ jobOrSchool: e.target.value })}
+        />
+
+        <TextField
+          fullWidth
+          label={STRINGS.residential}
+          value={values.residential ?? ""}
+          onChange={(e) => setValues({ residential: e.target.value })}
         />
 
         <TextField

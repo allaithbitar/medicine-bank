@@ -1,4 +1,3 @@
-import { Stack } from "@mui/material";
 import beneficiaryApi from "../api/beneficiary.api";
 import BeneficiaryMedicinesList from "./beneficiary-medicines/beneficiary-medicines-list.component";
 import type { TBeneficiaryMedicine } from "../types/beneficiary.types";
@@ -18,13 +17,11 @@ function BeneficiaryMedicines({
     { skip: !beneficiaryId }
   );
   return (
-    <Stack>
-      <BeneficiaryMedicinesList
-        items={beneficiaryMedicines}
-        isLoading={isLoading}
-        onEdit={onEditBeneficiaryMedicine}
-      />
-    </Stack>
+    <BeneficiaryMedicinesList
+      items={beneficiaryMedicines}
+      isLoading={isLoading}
+      onEdit={onEditBeneficiaryMedicine}
+    />
   );
 }
 

@@ -65,3 +65,9 @@ export const addTimeZoneOffestToIsoDate = (isoDate: string) => {
     hours: alreadyHaveTimezoneOffset ? 0 : -timezoneOffset / 60,
   });
 };
+export const ACTION_COLOR_MAP: Record<string, string> = {
+  INSERT: '#43a047',
+  UPDATE: '#fb8c00',
+  DELETE: '#e53935',
+  DEFAULT: '#90a4ae',
+};

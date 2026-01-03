@@ -12,7 +12,7 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => (
   <>
     <Card>
       <Header title={STRINGS.patient} />
-      <BeneficiaryCommonCard beneficiary={disclosure.patient} />
+      <BeneficiaryCommonCard isDisclosurePage beneficiary={disclosure.patient} />
     </Card>
     <Card>
       <Header title={STRINGS.disclosure} />

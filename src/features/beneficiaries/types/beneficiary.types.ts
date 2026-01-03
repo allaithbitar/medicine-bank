@@ -101,6 +101,7 @@ export type TFamilyMember = {
   jobOrSchool?: string | null;
   note?: string | null;
   patientId: string;
+  residential?: string | null;
 };
 
 export type TGetFamilyMembersParams = {

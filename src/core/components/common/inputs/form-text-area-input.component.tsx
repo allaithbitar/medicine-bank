@@ -5,12 +5,7 @@ type Props = ComponentProps<typeof FormTextFieldInput>;
 
 const FormTextAreaInput = ({ rows = 5, ...props }: Props) => {
   return (
-    <FormTextFieldInput
-      {...props}
-      label={props.label ?? "Text Area"}
-      multiline
-      rows={rows}
-    />
+    <FormTextFieldInput {...props} label={props.label} multiline rows={rows} />
   );
 };
 

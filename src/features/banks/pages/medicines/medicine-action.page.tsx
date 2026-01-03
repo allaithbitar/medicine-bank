@@ -9,6 +9,8 @@ import {
   Chip,
   type SelectChangeEvent,
   Card,
+  InputAdornment,
+  Button,
 } from "@mui/material";
 import { z } from "zod";
 import {
@@ -61,6 +63,8 @@ const MedicineActionPage = () => {
 
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
+  const [customDoseInput, setCustomDoseInput] = useState<string>("");
+
   const getErrorForField = (field: keyof TFormValues) => {
     const err = errors.find((e) => e.path[0] === field);
     return err ? err.message : "";
@@ -85,6 +89,41 @@ const MedicineActionPage = () => {
         : [...values.doseVariants, dose].sort((a, b) => a - b),
     });
     setErrors((prev) => prev.filter((e) => e.path[0] !== "doseVariants"));
+  };
+
+  const handleRemoveDose = (dose: number) => {
+    setValues({
+      doseVariants: values.doseVariants.filter((d) => d !== dose),
+    });
+    setErrors((prev) => prev.filter((e) => e.path[0] !== "doseVariants"));
+  };
+
+  const handleAddCustomDose = () => {
+    const trimmed = customDoseInput.trim();
+    if (!trimmed) return;
+    const parsed = Number(trimmed);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      notifyError("Enter a valid positive number for dose");
+      return;
+    }
+
+    if (values.doseVariants.includes(parsed)) {
+      setCustomDoseInput("");
+      return;
+    }
+
+    setValues({
+      doseVariants: [...values.doseVariants, parsed].sort((a, b) => a - b),
+    });
+    setCustomDoseInput("");
+    setErrors((prev) => prev.filter((e) => e.path[0] !== "doseVariants"));
+  };
+
+  const onCustomDoseKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddCustomDose();
+    }
   };
 
   const handleSubmit = async () => {
@@ -167,23 +206,62 @@ const MedicineActionPage = () => {
           <Typography variant="body2" sx={{ mb: 1 }}>
             {STRINGS.dose_variants}
           </Typography>
+          <Stack gap={2}>
+            <Stack direction="row" gap={1} alignItems="center" sx={{ mt: 1 }}>
+              <TextField
+                label={STRINGS.custom_dose}
+                value={customDoseInput}
+                onChange={(e) => setCustomDoseInput(e.target.value)}
+                onKeyDown={onCustomDoseKeyDown}
+                size="small"
+                type="number"
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          size="small"
+                          variant="contained"
+                          onClick={handleAddCustomDose}
+                        >
+                          {STRINGS.add}
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Stack>
+            <Stack direction="row" gap={1} flexWrap="wrap" alignItems="center">
+              {DOSE_OPTIONS.map((d) => {
+                const selected = values.doseVariants.includes(d);
+                return (
+                  <Chip
+                    key={d}
+                    label={`${d} mg`}
+                    color={selected ? "primary" : "default"}
+                    onClick={() => handleDoseToggle(d)}
+                    clickable
+                    sx={{
+                      cursor: "pointer",
+                    }}
+                  />
+                );
+              })}
 
-          <Stack direction="row" gap={1} flexWrap="wrap">
-            {DOSE_OPTIONS.map((d) => {
-              const selected = values.doseVariants.includes(d);
-              return (
-                <Chip
-                  key={d}
-                  label={`${d} mg`}
-                  color={selected ? "primary" : "default"}
-                  onClick={() => handleDoseToggle(d)}
-                  clickable
-                  sx={{
-                    cursor: "pointer",
-                  }}
-                />
-              );
-            })}
+              {values.doseVariants
+                .filter((d) => !DOSE_OPTIONS.includes(d as any))
+                .map((d) => (
+                  <Chip
+                    key={d}
+                    label={`${d} mg`}
+                    color="secondary"
+                    onClick={() => handleDoseToggle(d)}
+                    onDelete={() => handleRemoveDose(d)}
+                    deleteIcon={<span style={{ fontSize: 12 }}>×</span>}
+                  />
+                ))}
+            </Stack>
           </Stack>
 
           <Typography

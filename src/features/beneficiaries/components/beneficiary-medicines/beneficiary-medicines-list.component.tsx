@@ -30,7 +30,7 @@ const BeneficiaryMedicinesList = ({
       <VirtualizedList
         isLoading={isLoading}
         items={items}
-        containerStyle={{ flex: 1 }}
+        containerStyle={{ flex: 1, height: "400px" }}
         virtualizationOptions={{ count: items.length }}
       >
         {({ item }) => {

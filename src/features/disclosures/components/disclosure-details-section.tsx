@@ -27,6 +27,12 @@ const DisclosureDetailsSection = ({
       </Card>
     );
 
+  const getDetailsValue = (val: any) => {
+    if (!val) return STRINGS.none;
+    if (typeof val === 'object') return val?.label || STRINGS.none;
+    return String(val);
+  };
+
   return (
     <Card>
       <Header title={STRINGS.disclosures_details} />
@@ -39,7 +45,7 @@ const DisclosureDetailsSection = ({
               </Typography>
             </Card>
             <Typography variant="subtitle2" color="text.secondary">
-              {val ? String(val) : STRINGS.none}
+              {getDetailsValue(val)}
             </Typography>
           </Stack>
         ))}

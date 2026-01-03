@@ -66,6 +66,8 @@ const BeneficiaryMedicineActionPage = () => {
       const dv = oldBeneficiaryMedicine.medicine.doseVariants;
       if (!dv.includes(oldBeneficiaryMedicine.dosePerIntake)) {
         setValues({ dosePerIntake: dv[0] ?? 0 });
+      } else {
+        setValues({ med: oldBeneficiaryMedicine.medicine as TMedicine });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,10 +150,10 @@ const BeneficiaryMedicineActionPage = () => {
   };
 
   const isLoading = isAdding || isUpdating;
-  const doseVariantsForSelected = DOSE_OPTIONS;
+  const doseVariantsForSelected = values.med?.doseVariants ?? DOSE_OPTIONS;
 
   return (
-    <Card>
+    <Card sx={{ p: 2 }}>
       <Typography sx={{ pb: 2 }}>
         {oldBeneficiaryMedicine
           ? STRINGS.edit_beneficiary_medicine
@@ -172,9 +174,7 @@ const BeneficiaryMedicineActionPage = () => {
             onChange={(e) => handleFrequencyChange(e.target.value)}
             error={!!getErrorForField("intakeFrequency")}
             helperText={getErrorForField("intakeFrequency")}
-            slotProps={{
-              htmlInput: { inputMode: "numeric", pattern: "[0-9]*", min: 0 },
-            }}
+            inputProps={{ inputMode: "numeric", pattern: "[0-9]*", min: 0 }}
           />
         </Stack>
         <Box>
@@ -182,7 +182,7 @@ const BeneficiaryMedicineActionPage = () => {
             {STRINGS.dose_per_intake}
           </Typography>
 
-          <Stack direction="row" gap={1} flexWrap="wrap">
+          <Stack direction="row" gap={1} flexWrap="wrap" alignItems="center">
             {doseVariantsForSelected.map((d) => {
               const selected = values.dosePerIntake === d;
               return (
@@ -195,7 +195,17 @@ const BeneficiaryMedicineActionPage = () => {
                 />
               );
             })}
+
+            {!doseVariantsForSelected.includes(values.dosePerIntake as any) &&
+            values.dosePerIntake > 0 ? (
+              <Chip
+                key={`custom-${values.dosePerIntake}`}
+                label={`${values.dosePerIntake} mg`}
+                color="secondary"
+              />
+            ) : null}
           </Stack>
+
           <Typography
             color="error"
             variant="caption"

@@ -36,8 +36,11 @@ function DisclosureDetailsActionPage() {
     try {
       const { error } = await updateDisclosure({
         id: disclosureId,
-        // details: JSON.stringify(result),
         details: result,
+        //  {
+        //   ...result,
+        //   home_condition_status: result.home_condition_status?.label,
+        // },
       });
       if (error) {
         notifyError(error);

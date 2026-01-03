@@ -2,7 +2,15 @@ import { Button, Chip, Stack } from '@mui/material';
 import type { TDisclosure } from '../types/disclosure.types';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
-import { HelpOutlined, InfoOutline, Person, PriorityHighOutlined, Visibility } from '@mui/icons-material';
+import {
+  Comment,
+  HelpOutlined,
+  InfoOutline,
+  Person,
+  PriorityHighOutlined,
+  RateReview,
+  Visibility,
+} from '@mui/icons-material';
 import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 import { purple } from '@mui/material/colors';
@@ -27,7 +35,6 @@ const FormattedVisitResult = ({ disclosure }: { disclosure: TDisclosure }) => {
         return 'grey';
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disclosure.visitResult]);
 
   return (
@@ -43,6 +50,7 @@ const FormattedRatingResult = ({ disclosure }: { disclosure: TDisclosure }) => {
       return 'grey';
     }
     return 'info';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disclosure.visitResult]);
 
   return (
@@ -101,6 +109,33 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         label={`${STRINGS.last_rating_result} `}
         value={<FormattedRatingResult disclosure={disclosure} />}
       />
+      {disclosure.visitNote && (
+        <DetailItemComponent icon={<Comment />} label={STRINGS.note} value={disclosure.visitNote} />
+      )}
+      {disclosure.isCustomRating && (
+        <DetailItemComponent icon={<RateReview />} label={STRINGS.result} value={STRINGS.custom_rating} />
+      )}
+      {disclosure.rating && (
+        <DetailItemComponent
+          icon={<RateReview />}
+          label={STRINGS.result}
+          value={`  ${disclosure.rating?.name} - ( ${disclosure.rating?.code} )`}
+        />
+      )}
+      {disclosure.isCustomRating && (
+        <DetailItemComponent
+          icon={<Comment />}
+          label={STRINGS.custom_rating}
+          value={disclosure.customRating || STRINGS.none}
+        />
+      )}
+      {!disclosure.isCustomRating && disclosure?.rating && (
+        <DetailItemComponent
+          icon={<Comment />}
+          label={`${STRINGS.note} ${STRINGS.rating}`}
+          value={disclosure.rating?.name || STRINGS.none}
+        />
+      )}
 
       <DetailItemComponent
         icon={<PriorityHighOutlined />}
