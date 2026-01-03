@@ -209,6 +209,7 @@ export type TAddDisclosureAdviserConsultationPayload = FormData;
 export type TGetDisclosureAdviserConsultationParams = {
   disclosureId?: string;
   createdBy?: string;
+  consultationStatus?: 'pending' | 'completed';
 };
 
 export type TAuditLogItem = {

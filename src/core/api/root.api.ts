@@ -4,16 +4,14 @@ import {
   type BaseQueryFn,
   type FetchArgs,
   type FetchBaseQueryError,
-} from "@reduxjs/toolkit/query/react";
-import type { RootStoreState } from "../store/root.store.types";
-import type { TLogin } from "@/features/auth/types/auth.types";
-import { authActions } from "../slices/auth/auth.slice";
+} from '@reduxjs/toolkit/query/react';
+import type { RootStoreState } from '../store/root.store.types';
+import type { TLogin } from '@/features/auth/types/auth.types';
+import { authActions } from '../slices/auth/auth.slice';
 
 // export const baseUrl = "http://10.200.237.148:5000";
 
-export const baseUrl = `http://${import.meta.env.VITE_API_HOST}:${
-  import.meta.env.VITE_API_PORT
-}`;
+export const baseUrl = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
@@ -21,17 +19,17 @@ const baseQuery = fetchBaseQuery({
     const token = (getState() as RootStoreState).auth.token;
 
     if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
+      headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
   },
 });
 
-const baseQueryWithReauth: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
+const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
@@ -39,12 +37,12 @@ const baseQueryWithReauth: BaseQueryFn<
 
     const refreshResult = await baseQuery(
       {
-        url: "/auth/refresh",
+        url: '/auth/refresh',
         body: { refreshToken },
-        method: "POST",
+        method: 'POST',
       },
       api,
-      args,
+      args
     );
     if (refreshResult.error) {
       api.dispatch(authActions.logoutUser());
@@ -60,39 +58,40 @@ const baseQueryWithReauth: BaseQueryFn<
 };
 
 export const rootApi = createApi({
-  reducerPath: "api",
+  reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
   tagTypes: [
-    "Auth",
-    "Cities",
-    "Work-Areas",
-    "Beneficiaries",
-    "Employees",
-    "Priority_Degrees",
-    "Disclosures",
-    "Disclosure_Ratings",
-    "Disclosure_Rating",
-    "Disclosure_Visits",
-    "Disclosure_Visit",
-    "Ratings",
-    "Summary_Statistics",
-    "Detailed_Statistics",
-    "Medicines",
-    "Beneficiary_Medicines",
-    "Beneficiaries_Autocomplete",
-    "Employees_Autocomplete",
-    "Cities_Autocomplete",
-    "Areas_Autocomplete",
-    "Calendar_Appointments",
-    "Disclosure_Appointment",
-    "Disclosure_Appointments",
-    "Date_Appointments",
-    "family_Members",
-    "system_Broadcasts",
-    "meetings",
-    "Disclosure_Notes",
-    "audit",
-    "Disclosure_Adviser_Consultations",
+    'Auth',
+    'Cities',
+    'Work-Areas',
+    'Beneficiaries',
+    'Employees',
+    'Priority_Degrees',
+    'Disclosures',
+    'Disclosure_Ratings',
+    'Disclosure_Rating',
+    'Disclosure_Visits',
+    'Disclosure_Visit',
+    'Ratings',
+    'Summary_Statistics',
+    'Detailed_Statistics',
+    'Medicines',
+    'Beneficiary_Medicines',
+    'Beneficiaries_Autocomplete',
+    'Employees_Autocomplete',
+    'Cities_Autocomplete',
+    'Areas_Autocomplete',
+    'Calendar_Appointments',
+    'Disclosure_Appointment',
+    'Disclosure_Appointments',
+    'Date_Appointments',
+    'family_Members',
+    'system_Broadcasts',
+    'meetings',
+    'Disclosure_Notes',
+    'audit',
+    'Disclosure_Adviser_Consultations',
+    'Disclosure',
   ],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   endpoints: (_builder) => ({}),

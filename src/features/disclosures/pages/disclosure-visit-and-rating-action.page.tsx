@@ -80,7 +80,11 @@ const DisclosureVisitAndRatingActionPage = () => {
 
   return (
     <Stack>
-      <DisclosureVisitAndRateActionForm ref={visitAndRateRef} disclosureVisitRateData={disclosureVisitRateData} />
+      <DisclosureVisitAndRateActionForm
+        ref={visitAndRateRef}
+        disclosureVisitRateData={disclosureVisitRateData}
+        disclosureId={disclosure.id}
+      />
       <ActionFab color="success" icon={<Save />} disabled={isLoading} onClick={handleSave} />
       {isLoading && <LoadingOverlay />}
     </Stack>

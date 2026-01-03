@@ -272,8 +272,13 @@ const STRINGS = {
   common_good: 'جيد',
   common_excellent: 'ممتاز',
   custom_dose: 'جرعة مخصص (mg)',
-  rating_available_when_visit_completed: 'يكمن اخيتار تقييم عندما تكون الزيارة مكتملة',
+  rating_available_when_visit_completed:
+    'يكمن اخيتار تقييم عندما تكون الزيارة مكتملة ولا يوجد استشارة مدير غير منتهية (معلقة) لهذا الكشف',
   diseases_or_surgeries: 'الامرض او العمليات',
+  confirm: 'تأكيد',
+  r_u_sure: 'هل انت متاكد',
+  receive_disclosure_confirmation: 'هل تريد استلام هذا الكشف ؟',
+  complete_appointment_confirmation: ' هل تريد اتمام المراجعة ؟',
 };
 
 export default STRINGS;

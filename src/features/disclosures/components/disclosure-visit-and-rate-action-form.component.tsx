@@ -10,6 +10,7 @@ import Header from '@/core/components/common/header/header';
 import FormCheckbxInput from '@/core/components/common/inputs/form-checkbox-input.component';
 import RatingsAutocomplete from '@/features/ratings/components/ratings-autocomplete.component';
 import type { TRating } from '@/features/ratings/types/rating.types';
+import disclosuresApi from '../api/disclosures.api';
 
 const defaultRatingData = {
   rating: null,
@@ -78,9 +79,10 @@ export type TDisclosureVisitAndRateFormHandlers = {
 type TProps = {
   ref: Ref<TDisclosureVisitAndRateFormHandlers>;
   disclosureVisitRateData?: TDisclosureRating & TVisit;
+  disclosureId: string;
 };
 
-const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData }: TProps) => {
+const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclosureId }: TProps) => {
   const { formState, formErrors, setValue, handleSubmit, setFormState } = useForm({
     schema,
     initalState: {
@@ -91,6 +93,12 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData }: TPro
     },
   });
   console.log({ formErrors });
+  //  { items: groups = [] } = { items: [] },
+  const { data: { items: adviserConsultations = [] } = { items: [] }, isFetching: isFetchingConsultations } =
+    disclosuresApi.useGetDisclosureAdviserConsultationsQuery({
+      disclosureId,
+      consultationStatus: 'pending',
+    });
 
   useImperativeHandle(
     ref,
@@ -121,7 +129,8 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData }: TPro
     }
   }, [disclosureVisitRateData, setFormState]);
 
-  const ratingEnabled = formState.visitResult?.id === 'completed';
+  const ratingEnabled =
+    formState.visitResult?.id === 'completed' && !isFetchingConsultations && !adviserConsultations?.length;
 
   return (
     <Stack gap={2}>

@@ -5,11 +5,45 @@ import { Button, Card, Divider, Stack, Typography } from '@mui/material';
 import CustomBadge from '../components/custom-badge.component';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, DateRange } from '@mui/icons-material';
+import { useCallback } from 'react';
+import { useModal } from '@/core/components/common/modal/modal-provider.component';
+import disclosuresApi from '../api/disclosures.api';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 
 export default function DisclosureProperties({ disclosure }: { disclosure: TDisclosure }) {
   const navigate = useNavigate();
+  const { openModal } = useModal();
+  const [updateDisclosure, { isLoading: isUpdating }] = disclosuresApi.useUpdateDisclosureMutation();
+
+  const handleCompleteAppointment = useCallback(() => {
+    openModal({
+      name: 'CONFIRM_MODAL',
+      props: {
+        message: STRINGS.complete_appointment_confirmation,
+        onConfirm: async () => {
+          await updateDisclosure({ isAppointmentCompleted: true, id: disclosure.id });
+        },
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleReceiveDisclosure = useCallback(() => {
+    openModal({
+      name: 'CONFIRM_MODAL',
+      props: {
+        message: STRINGS.receive_disclosure_confirmation,
+        onConfirm: async () => {
+          await updateDisclosure({ isReceived: true, id: disclosure.id });
+        },
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Card>
+      {isUpdating && <LoadingOverlay />}
       <Stack gap={1.5} alignItems="start">
         <Header title={STRINGS.disclosure_properties} />
         <Stack direction="row" sx={{ width: '100%' }} gap={2}>
@@ -41,7 +75,7 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
             {STRINGS.select_appointment_date}
           </Button>
           {!disclosure.isAppointmentCompleted && (
-            <Button fullWidth color="success" startIcon={<CheckCircle />}>
+            <Button onClick={handleCompleteAppointment} fullWidth color="success" startIcon={<CheckCircle />}>
               {STRINGS.appointment_completed}
             </Button>
           )}
@@ -59,7 +93,7 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
         {!disclosure.isReceived && (
           <>
             <Divider flexItem />
-            <Button startIcon={<CheckCircle />} fullWidth color="success">
+            <Button onClick={handleReceiveDisclosure} startIcon={<CheckCircle />} fullWidth color="success">
               {STRINGS.is_received}
             </Button>
           </>

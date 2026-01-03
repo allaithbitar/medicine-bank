@@ -1,16 +1,16 @@
-import { baseUrl } from "@/core/api/root.api";
-import { getStringsLabel } from "@/core/helpers/helpers";
-import { Person, ThumbsUpDown } from "@mui/icons-material";
-import { Typography, Stack } from "@mui/material";
-import VolumeDownIcon from "@mui/icons-material/VolumeDown";
-import { Comment } from "@mui/icons-material";
-import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
-import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
-import DetailItem from "@/core/components/common/detail-item/detail-item.component";
-import STRINGS from "@/core/constants/strings.constant";
-import { purple } from "@mui/material/colors";
-import type { TDisclosureAdviserConsultation } from "../types/disclosure.types";
-import type { ReactNode } from "react";
+import { baseUrl } from '@/core/api/root.api';
+import { formatDateTime, getStringsLabel } from '@/core/helpers/helpers';
+import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
+import { Typography, Stack } from '@mui/material';
+import VolumeDownIcon from '@mui/icons-material/VolumeDown';
+import { Comment } from '@mui/icons-material';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
+import DetailItem from '@/core/components/common/detail-item/detail-item.component';
+import STRINGS from '@/core/constants/strings.constant';
+import { purple } from '@mui/material/colors';
+import type { TDisclosureAdviserConsultation } from '../types/disclosure.types';
+import type { ReactNode } from 'react';
 
 export const ConsultingAdviserCard = ({
   adviserConsultation,
@@ -27,26 +27,24 @@ export const ConsultingAdviserCard = ({
       headerContent={<Typography color="white">{STRINGS.note}</Typography>}
       bodyContent={
         <Stack gap={2}>
-          <DetailItem
-            icon={<Comment />}
-            label={STRINGS.details}
-            value={adviserConsultation.consultationNote}
-          />
+          <DetailItem icon={<Comment />} label={STRINGS.details} value={adviserConsultation.consultationNote} />
           <DetailItem
             icon={<Person />}
             label={STRINGS.created_By}
-            value={
-              (adviserConsultation.createdBy as any)?.name ??
-              adviserConsultation.createdBy
-            }
+            value={(adviserConsultation.createdBy as any)?.name ?? adviserConsultation.createdBy}
           />
           <DetailItem
             icon={<PublishedWithChangesIcon />}
             label={STRINGS.status}
             value={getStringsLabel({
-              key: "consulting_adviser",
+              key: 'consulting_adviser',
               val: adviserConsultation.consultationStatus,
             })}
+          />
+          <DetailItem
+            icon={<EventAvailable />}
+            label={STRINGS.created_at}
+            value={formatDateTime(adviserConsultation.createdAt)}
           />
           {adviserConsultation.disclosureRating?.rating?.code && (
             <DetailItem
@@ -59,7 +57,7 @@ export const ConsultingAdviserCard = ({
           {adviserConsultation.consultationAudio ? (
             <DetailItem
               icon={<VolumeDownIcon />}
-              label={""}
+              label={''}
               value={
                 <Stack direction="row" alignItems="center">
                   <audio controlsList="nodownload" controls src={VoiceSrc}>

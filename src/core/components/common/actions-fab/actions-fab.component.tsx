@@ -1,7 +1,7 @@
-import useScreenSize from "@/core/hooks/use-screen-size.hook";
-import { Add, MoreHoriz } from "@mui/icons-material";
-import { SpeedDial, SpeedDialAction } from "@mui/material";
-import type { ReactNode } from "react";
+import useScreenSize from '@/core/hooks/use-screen-size.hook';
+import { Add, MoreHoriz } from '@mui/icons-material';
+import { SpeedDial, SpeedDialAction } from '@mui/material';
+import type { ReactNode } from 'react';
 
 type TProps = {
   actions: {
@@ -18,14 +18,14 @@ const ActionsFab = ({ icon, actions }: TProps) => {
     <SpeedDial
       ariaLabel=""
       sx={{
-        position: "fixed",
+        position: 'fixed',
         right: 25,
         bottom: 10,
         zIndex: 998,
         ...(isTablet
           ? {
-              left: "50%",
-              transform: "translateX(-50%)",
+              left: '50%',
+              transform: 'translateX(-50%)',
             }
           : {}),
       }}
@@ -35,13 +35,13 @@ const ActionsFab = ({ icon, actions }: TProps) => {
         <SpeedDialAction
           onClick={a.onClick}
           key={a.label}
-          icon={<Add />}
+          icon={a.icon ?? <Add />}
           slotProps={{
             tooltip: {
               open: true,
               title: a.label,
             },
-            staticTooltipLabel: { sx: { textWrap: "nowrap" } },
+            staticTooltipLabel: { sx: { textWrap: 'nowrap' } },
           }}
         />
       ))}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -9,16 +9,17 @@ import {
   Box,
   CircularProgress,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import WarningOutlinedIcon from "@mui/icons-material/WarningOutlined";
-import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import { useModal } from "../../modal/modal-provider.component";
-import { notifyError } from "../../toast/toast";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined';
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import { useModal } from '../../modal/modal-provider.component';
+import { notifyError } from '../../toast/toast';
+import STRINGS from '@/core/constants/strings.constant';
 
-type TSeverity = "info" | "warning" | "error" | "success";
+type TSeverity = 'info' | 'warning' | 'error' | 'success';
 
 type TConfirmModalProps = {
   title?: string;
@@ -34,13 +35,13 @@ type TConfirmModalProps = {
 const getSeverityIcon = (severity: TSeverity | undefined, color: string) => {
   const fontSize = 30;
   switch (severity) {
-    case "info":
+    case 'info':
       return <InfoOutlinedIcon sx={{ color, fontSize }} />;
-    case "warning":
+    case 'warning':
       return <WarningOutlinedIcon sx={{ color, fontSize: fontSize }} />;
-    case "error":
+    case 'error':
       return <ErrorOutlineOutlinedIcon sx={{ color, fontSize }} />;
-    case "success":
+    case 'success':
       return <CheckCircleOutlineOutlinedIcon sx={{ color, fontSize }} />;
     default:
       return null;
@@ -48,12 +49,12 @@ const getSeverityIcon = (severity: TSeverity | undefined, color: string) => {
 };
 
 const ConfirmModal = ({
-  title = "Confirm Action",
+  title = STRINGS.r_u_sure,
   message,
   description,
-  severity = "warning",
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  severity = 'info',
+  confirmText = STRINGS.confirm,
+  cancelText = STRINGS.cancel,
   onConfirm,
   onCancel,
 }: TConfirmModalProps) => {
@@ -76,15 +77,15 @@ const ConfirmModal = ({
     closeModal();
   };
 
-  const confirmButtonColor = severity === "error" ? "error" : "primary";
+  const confirmButtonColor = severity === 'error' ? 'error' : 'primary';
   const iconColor =
-    severity === "error"
-      ? "error.main"
-      : severity === "warning"
-      ? "warning.main"
-      : severity === "success"
-      ? "success.main"
-      : "info.main";
+    severity === 'error'
+      ? 'error.main'
+      : severity === 'warning'
+      ? 'warning.main'
+      : severity === 'success'
+      ? 'success.main'
+      : 'info.main';
 
   const isConfirmDisabled = isLoading;
 
@@ -100,18 +101,14 @@ const ConfirmModal = ({
       <DialogTitle id="confirmation-dialog-title">
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
+            display: 'flex',
+            alignItems: 'center',
             gap: 1.5,
             color: iconColor,
           }}
         >
           {getSeverityIcon(severity, iconColor)}
-          <Typography
-            variant="h6"
-            component="span"
-            sx={{ color: "text.primary" }}
-          >
+          <Typography variant="h6" component="span" sx={{ color: 'text.primary' }}>
             {title}
           </Typography>
         </Box>
@@ -121,7 +118,7 @@ const ConfirmModal = ({
           {message}
         </DialogContentText>
         {description && (
-          <DialogContentText variant="body2" sx={{ color: "text.secondary" }}>
+          <DialogContentText variant="body2" sx={{ color: 'text.secondary' }}>
             {description}
           </DialogContentText>
         )}

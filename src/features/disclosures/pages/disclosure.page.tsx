@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Stack, Button } from '@mui/material';
+import { Stack } from '@mui/material';
 import Add from '@mui/icons-material/Add';
-import ListAltIcon from '@mui/icons-material/ListAlt';
 import DifferenceIcon from '@mui/icons-material/Difference';
 import STRINGS from '@/core/constants/strings.constant';
 import PageLoading from '@/core/components/common/page-loading/page-loading.component';
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
+import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 
 import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
 import DisclosureHeaderCard from '../components/disclosure-header-card';
@@ -70,6 +70,7 @@ const DisclosurePage = () => {
       handleOpenBeneficiaryMedicineActionPage,
       handleOpenFamilyMembersActionPage,
       openNoteAction,
+      openEditDetails,
     }),
     [
       disclosureId,
@@ -78,6 +79,7 @@ const DisclosurePage = () => {
       handleOpenBeneficiaryMedicineActionPage,
       handleOpenFamilyMembersActionPage,
       openNoteAction,
+      openEditDetails,
     ]
   );
   if (error) return <ErrorCard error={error} />;
@@ -89,12 +91,6 @@ const DisclosurePage = () => {
       <Stack gap={1}>
         <DisclosureHeaderCard disclosure={disclosure} />
         <DisclosureVisitAndRatingSection disclosure={disclosure} />
-        <Button fullWidth startIcon={<DifferenceIcon />} onClick={openAudit}>
-          {STRINGS.audit_log}
-        </Button>
-        <Button fullWidth startIcon={<ListAltIcon />} onClick={openEditDetails}>
-          {STRINGS.edit} {STRINGS.disclosures_details}
-        </Button>
 
         <DisclosureProperties disclosure={disclosure} />
 
@@ -147,6 +143,16 @@ const DisclosurePage = () => {
             icon: <Add />,
             label: STRINGS.add_family_member,
             onClick: () => handleOpenFamilyMembersActionPage(undefined),
+          },
+          {
+            icon: <DifferenceIcon />,
+            label: STRINGS.audit_log,
+            onClick: () => openAudit(),
+          },
+          {
+            icon: <PsychologyAltIcon />,
+            label: STRINGS.consulting_adviser,
+            onClick: () => navigate(`/disclosures/${disclosureId}/consulting_adviser`),
           },
         ]}
       />

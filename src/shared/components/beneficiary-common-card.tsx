@@ -8,6 +8,8 @@ import { Stack, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WorkIcon from '@mui/icons-material/Work';
+import disclosuresApi from '@/features/disclosures/api/disclosures.api';
+import FormattedVisitRatingResult from '@/features/disclosures/components/formatted-visit-rating-result';
 
 interface IBeneficiaryCommonCard {
   beneficiary: TBenefieciary;
@@ -15,6 +17,11 @@ interface IBeneficiaryCommonCard {
 }
 
 function BeneficiaryCommonCard({ beneficiary, isDisclosurePage = false }: IBeneficiaryCommonCard) {
+  const { data: disclosure } = disclosuresApi.useGetLastDisclosureQuery(
+    { patientId: beneficiary.id },
+    { skip: !beneficiary.id || isDisclosurePage }
+  );
+
   return (
     <Stack gap={2}>
       <DetailItem label={STRINGS.beneficiary} icon={<Person />} value={beneficiary.name} />
@@ -51,6 +58,7 @@ function BeneficiaryCommonCard({ beneficiary, isDisclosurePage = false }: IBenef
         value={formatDateTime(beneficiary.createdAt)}
       />
       <DetailItem icon={<History />} label={STRINGS.patient_updated_at} value={formatDateTime(beneficiary.updatedAt)} />
+      {disclosure && !isDisclosurePage && <FormattedVisitRatingResult disclosure={disclosure} />}
       <DetailItem
         icon={<Info />}
         label={STRINGS.patient_about}

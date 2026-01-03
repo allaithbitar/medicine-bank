@@ -2,63 +2,14 @@ import { Button, Chip, Stack } from '@mui/material';
 import type { TDisclosure } from '../types/disclosure.types';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
-import {
-  Comment,
-  HelpOutlined,
-  InfoOutline,
-  Person,
-  PriorityHighOutlined,
-  RateReview,
-  Visibility,
-} from '@mui/icons-material';
+import { InfoOutline, Person, PriorityHighOutlined, Visibility } from '@mui/icons-material';
 import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 import { purple } from '@mui/material/colors';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 import { Link } from 'react-router-dom';
-import { useMemo } from 'react';
 import CustomBadge from './custom-badge.component';
-
-const FormattedVisitResult = ({ disclosure }: { disclosure: TDisclosure }) => {
-  const colors = useMemo(() => {
-    switch (disclosure.visitResult) {
-      case 'not_completed': {
-        return 'warning';
-      }
-      case 'cant_be_completed': {
-        return 'error';
-      }
-      case 'completed': {
-        return 'success';
-      }
-      default: {
-        return 'grey';
-      }
-    }
-  }, [disclosure.visitResult]);
-
-  return (
-    <CustomBadge colors={colors}>
-      {disclosure.visitResult ? STRINGS[disclosure.visitResult] : STRINGS.hasnt_been_visited_yet}
-    </CustomBadge>
-  );
-};
-
-const FormattedRatingResult = ({ disclosure }: { disclosure: TDisclosure }) => {
-  const colors = useMemo(() => {
-    if (!disclosure.ratingId && !disclosure.isCustomRating && !disclosure.customRating) {
-      return 'grey';
-    }
-    return 'info';
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [disclosure.visitResult]);
-
-  return (
-    <CustomBadge colors={colors}>
-      {disclosure.rating?.name || (disclosure.isCustomRating && STRINGS.custom_rating) || STRINGS.hasnt_been_rated_yet}
-    </CustomBadge>
-  );
-};
+import FormattedVisitRatingResult from './formatted-visit-rating-result';
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const headerContent = (
@@ -99,43 +50,7 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         value={disclosure.scout?.name ?? STRINGS.none}
       />
 
-      <DetailItemComponent
-        icon={<HelpOutlined />}
-        label={`${STRINGS.last_visit_result} `}
-        value={<FormattedVisitResult disclosure={disclosure} />}
-      />
-      <DetailItemComponent
-        icon={<HelpOutlined />}
-        label={`${STRINGS.last_rating_result} `}
-        value={<FormattedRatingResult disclosure={disclosure} />}
-      />
-      {disclosure.visitNote && (
-        <DetailItemComponent icon={<Comment />} label={STRINGS.note} value={disclosure.visitNote} />
-      )}
-      {disclosure.isCustomRating && (
-        <DetailItemComponent icon={<RateReview />} label={STRINGS.result} value={STRINGS.custom_rating} />
-      )}
-      {disclosure.rating && (
-        <DetailItemComponent
-          icon={<RateReview />}
-          label={STRINGS.result}
-          value={`  ${disclosure.rating?.name} - ( ${disclosure.rating?.code} )`}
-        />
-      )}
-      {disclosure.isCustomRating && (
-        <DetailItemComponent
-          icon={<Comment />}
-          label={STRINGS.custom_rating}
-          value={disclosure.customRating || STRINGS.none}
-        />
-      )}
-      {!disclosure.isCustomRating && disclosure?.rating && (
-        <DetailItemComponent
-          icon={<Comment />}
-          label={`${STRINGS.note} ${STRINGS.rating}`}
-          value={disclosure.rating?.name || STRINGS.none}
-        />
-      )}
+      <FormattedVisitRatingResult disclosure={disclosure} />
 
       <DetailItemComponent
         icon={<PriorityHighOutlined />}
