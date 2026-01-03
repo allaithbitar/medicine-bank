@@ -32,11 +32,11 @@ const theme = createTheme({
     MuiCard: {
       defaultProps: {
         elevation: 0,
-        sx: { p: 2 },
       },
       styleOverrides: {
         root: {
           border: `solid 1px ${grey[300]}`,
+          padding: 16,
         },
       },
     },

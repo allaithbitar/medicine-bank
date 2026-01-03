@@ -146,7 +146,7 @@ const STRINGS = {
   add_family_member: 'اضافة فرد عائلة',
   edit_family_member: 'تعديل فرد عائلة',
   birth_date: 'تاريخ الميلاد',
-  job_or_school: 'العمل | الدراسة',
+  job_or_school: 'العمل / الدراسة',
   gender: 'الجنس',
   kinship: 'القرابة',
   male: 'ذكر',
@@ -273,6 +273,7 @@ const STRINGS = {
   common_excellent: 'ممتاز',
   custom_dose: 'جرعة مخصص (mg)',
   rating_available_when_visit_completed: 'يكمن اخيتار تقييم عندما تكون الزيارة مكتملة',
+  diseases_or_surgeries: 'الامرض او العمليات',
 };
 
 export default STRINGS;

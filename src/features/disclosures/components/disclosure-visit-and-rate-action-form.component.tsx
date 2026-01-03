@@ -20,12 +20,11 @@ const defaultRatingData = {
 
 const schema = z
   .object({
-    visitResult: z
-      .custom<{ id: TDisclosureVisitResult; label: string } | null>(
-        (data) => data === null || typeof data === 'object',
-        { message: 'required' }
-      )
-      .nullable(),
+    visitResult: z.custom<{
+      id: NonNullable<TDisclosureVisitResult>;
+      label: string;
+    } | null>((data) => !!data, { message: 'required' }),
+
     visitReason: z.string().optional(),
     visitNote: z.string().optional(),
     rating: z.custom<TRating | null>().optional(),
@@ -40,7 +39,7 @@ const schema = z
       if (!state.visitReason || String(state.visitReason).trim() === '') {
         ctx.addIssue({
           code: 'custom',
-          path: ['reason'],
+          path: ['visitReason'],
           message: 'required',
         });
       }
@@ -91,6 +90,7 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData }: TPro
       ...defaultRatingData,
     },
   });
+  console.log({ formErrors });
 
   useImperativeHandle(
     ref,
@@ -105,10 +105,12 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData }: TPro
   useEffect(() => {
     if (disclosureVisitRateData) {
       setFormState({
-        visitResult: {
-          id: disclosureVisitRateData?.visitResult,
-          label: STRINGS[disclosureVisitRateData?.visitResult as keyof typeof STRINGS],
-        },
+        visitResult: disclosureVisitRateData.visitResult
+          ? {
+              id: disclosureVisitRateData.visitResult,
+              label: STRINGS[disclosureVisitRateData.visitResult as keyof typeof STRINGS],
+            }
+          : null,
         visitReason: disclosureVisitRateData.visitReason ?? '',
         visitNote: disclosureVisitRateData.visitNote ?? '',
         isCustomRating: disclosureVisitRateData?.isCustomRating,
@@ -123,7 +125,7 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData }: TPro
 
   return (
     <Stack gap={2}>
-      <Card sx={{ px: 2, py: 1 }}>
+      <Card>
         <Header title={STRINGS.visit} />
         <Stack gap={2}>
           <DisclosureVisitResultAutocomplete
@@ -152,14 +154,12 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData }: TPro
         </Stack>
       </Card>
       {!ratingEnabled && (
-        <Box sx={{ mb: 2 }}>
+        <Box>
           <Alert severity="info">{STRINGS.rating_available_when_visit_completed}</Alert>
         </Box>
       )}
       <Card
         sx={{
-          px: 2,
-          py: 1,
           opacity: ratingEnabled ? 1 : 0.6,
         }}
       >

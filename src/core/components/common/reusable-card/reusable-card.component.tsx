@@ -1,6 +1,6 @@
-import { memo, type ReactNode } from "react";
-import { Card, Stack, Divider } from "@mui/material";
-import theme from "@/core/theme/index.theme";
+import { memo, type ReactNode } from 'react';
+import { Card, Stack, Divider } from '@mui/material';
+import theme from '@/core/theme/index.theme';
 
 interface IReusableCardProps {
   headerBackground?: string;
@@ -10,18 +10,13 @@ interface IReusableCardProps {
   cardSx?: object;
 }
 
-const ReusableCard = ({
-  headerBackground,
-  headerContent,
-  bodyContent,
-  footerContent,
-  cardSx,
-}: IReusableCardProps) => {
+const ReusableCard = ({ headerBackground, headerContent, bodyContent, footerContent, cardSx }: IReusableCardProps) => {
   return (
     <Card
       sx={{
-        width: "100%",
-        transition: "all 0.3s ease-in-out",
+        p: 0,
+        width: '100%',
+        transition: 'all 0.3s ease-in-out',
         // boxShadow: 3,
         ...cardSx,
       }}
@@ -30,8 +25,8 @@ const ReusableCard = ({
         <Stack
           sx={{
             height: 70,
-            width: "100%",
-            justifyContent: "center",
+            width: '100%',
+            justifyContent: 'center',
             px: 2,
             background:
               headerBackground ||
@@ -40,7 +35,7 @@ const ReusableCard = ({
         >
           {headerContent}
         </Stack>
-      )}{" "}
+      )}{' '}
       {bodyContent && <Stack sx={{ p: 2 }}>{bodyContent}</Stack>}
       {footerContent && (
         <>
@@ -48,7 +43,7 @@ const ReusableCard = ({
           <Stack
             sx={{
               p: 1.5,
-              borderColor: "grey.100",
+              borderColor: 'grey.100',
             }}
           >
             {footerContent}

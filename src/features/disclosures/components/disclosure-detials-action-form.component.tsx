@@ -1,18 +1,11 @@
-import useForm, { type TFormSubmitResult } from "@/core/hooks/use-form.hook";
-import {
-  Stack,
-  Autocomplete,
-  TextField,
-  Typography,
-  Divider,
-  Card,
-} from "@mui/material";
-import z from "zod";
-import { type TDisclosure } from "../types/disclosure.types";
-import STRINGS from "@/core/constants/strings.constant";
-import { useEffect, useImperativeHandle, type Ref } from "react";
-import FormTextAreaInput from "@/core/components/common/inputs/form-text-area-input.component";
-import theme from "@/core/theme/index.theme";
+import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
+import { Stack, Autocomplete, TextField } from '@mui/material';
+import z from 'zod';
+import { type TDisclosure } from '../types/disclosure.types';
+import STRINGS from '@/core/constants/strings.constant';
+import { useEffect, useImperativeHandle, type Ref } from 'react';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import FieldSet from '@/core/components/common/fieldset/fieldset.component';
 
 const HomeConditionStatusSchema = z
   .object({
@@ -34,9 +27,7 @@ const createDisclosureDetailsSchema = () =>
   });
 
 export type TDisclosureDetailsFormHandlers = {
-  handleSubmit: () => Promise<
-    TFormSubmitResult<z.infer<ReturnType<typeof createDisclosureDetailsSchema>>>
-  >;
+  handleSubmit: () => Promise<TFormSubmitResult<z.infer<ReturnType<typeof createDisclosureDetailsSchema>>>>;
 };
 
 type TProps = {
@@ -45,19 +36,19 @@ type TProps = {
 };
 const HOME_CONDITION_OPTIONS = [
   {
-    id: "bad",
+    id: 'bad',
     label: STRINGS.common_bad,
   },
   {
-    id: "normal",
+    id: 'normal',
     label: STRINGS.common_normal,
   },
   {
-    id: "good",
+    id: 'good',
     label: STRINGS.common_good,
   },
   {
-    id: "excellent",
+    id: 'excellent',
     label: STRINGS.common_excellent,
   },
 ];
@@ -89,7 +80,7 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
   return (
     <Stack gap={2}>
       <FormTextAreaInput
-        label={STRINGS.diseases_or_Surgeries}
+        label={STRINGS.diseases_or_surgeries}
         name="diseases_or_Surgeries"
         value={formState.diseases_or_Surgeries}
         onChange={(v) => setValue({ diseases_or_Surgeries: v })}
@@ -115,10 +106,8 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
         value={formState.expenses}
         onChange={(v) => setValue({ expenses: v })}
       />
-      <Divider />
-      <Card sx={{ bgcolor: theme.palette.grey[100], p: 1 }}>
+      <FieldSet label={STRINGS.home_condition}>
         <Stack sx={{ gap: 2 }}>
-          <Typography>{STRINGS.home_condition}</Typography>
           <Autocomplete
             options={HOME_CONDITION_OPTIONS}
             value={formState.home_condition_status}
@@ -127,15 +116,10 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
                 home_condition_status: newValue ?? HOME_CONDITION_OPTIONS[1],
               })
             }
-            getOptionLabel={(option) => (option ? option.label : "")}
+            getOptionLabel={(option) => (option ? option.label : '')}
             isOptionEqualToValue={(option, value) => option.id === value?.id}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label={STRINGS.home_condition}
-                variant="outlined"
-                size="small"
-              />
+              <TextField {...params} label={STRINGS.home_condition} variant="outlined" size="small" />
             )}
             clearOnEscape
             freeSolo={false}
@@ -147,8 +131,7 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
             onChange={(v) => setValue({ home_condition_note: v })}
           />
         </Stack>
-      </Card>
-      <Divider />
+      </FieldSet>
 
       <FormTextAreaInput
         label={STRINGS.pons}
