@@ -1,11 +1,11 @@
-import { Button, Card, Stack } from "@mui/material";
-import satisticsApi from "../api/satistics.api";
-import STRINGS from "@/core/constants/strings.constant";
-import { useEffect, useState } from "react";
-import { notifyError } from "@/core/components/common/toast/toast";
-import { getErrorMessage } from "@/core/helpers/helpers";
-import useUser from "@/core/hooks/user-user.hook";
-import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
+import { Button, Card, Stack } from '@mui/material';
+import satisticsApi from '../api/satistics.api';
+import STRINGS from '@/core/constants/strings.constant';
+import { useEffect, useState } from 'react';
+import { notifyError } from '@/core/components/common/toast/toast';
+import { getErrorMessage } from '@/core/helpers/helpers';
+import useUser from '@/core/hooks/user-user.hook';
+import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomplete-input.component';
 import {
   endOfDay,
   endOfMonth,
@@ -15,60 +15,50 @@ import {
   startOfMonth,
   startOfWeek,
   startOfYear,
-} from "date-fns";
-import type { TListItem } from "@/core/types/input.type";
-import FormDateInput from "@/core/components/common/inputs/form-date-input-component";
-import type {
-  TDetailedReportResult,
-  TSummaryReportResult,
-} from "../types/satistics.types";
-import {
-  FRIDAY,
-  SATISTICS_TYPE,
-  TIME_PERIOD_TYPE,
-} from "@/core/constants/properties.constant";
-import SummaryReportResult from "../components/summary-report-result.component";
-import DetailedReportResult from "../components/detailed-report-result.component";
-import EmployeesAutocomplete from "@/features/employees/components/employees-autocomplete.component";
-import type { TEmployee } from "@/features/employees/types/employee.types";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
+} from 'date-fns';
+import type { TListItem } from '@/core/types/input.type';
+import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
+import type { TDetailedReportResult, TSummaryReportResult } from '../types/satistics.types';
+import { FRIDAY, SATISTICS_TYPE, TIME_PERIOD_TYPE } from '@/core/constants/properties.constant';
+import SummaryReportResult from '../components/summary-report-result.component';
+import DetailedReportResult from '../components/detailed-report-result.component';
+import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const SatisticsPage = () => {
-  const { openModal } = useModal();
   const [timePeriod, setTimePeriod] = useState<TListItem & { label: string }>({
     id: TIME_PERIOD_TYPE.THIS_MONTH,
     label: STRINGS.this_month,
   });
 
-  const [satisticsType, setSatisticsType] = useState<
-    (TListItem & { label: string }) | null
-  >({ id: SATISTICS_TYPE.SUMMARY, label: STRINGS.summary });
+  const [satisticsType, setSatisticsType] = useState<(TListItem & { label: string }) | null>({
+    id: SATISTICS_TYPE.SUMMARY,
+    label: STRINGS.summary,
+  });
 
   const user = useUser();
 
   const [customPeriod, setCustomPeriod] = useState({
-    fromDate: "",
-    toDate: "",
+    fromDate: '',
+    toDate: '',
   });
 
-  const [employee, setEmployee] = useState<TEmployee | null>(null);
+  const [employee, setEmployee] = useState<TAutocompleteItem | null>(null);
 
   const [result, setResult] = useState<TSummaryReportResult | null>(null);
 
-  const [detailedResult, setDetailedResult] =
-    useState<TDetailedReportResult | null>(null);
+  const [detailedResult, setDetailedResult] = useState<TDetailedReportResult | null>(null);
   console.log({ detailedResult });
 
-  const [getSatistics, { isFetching: isLoadingSummaryReport }] =
-    satisticsApi.useLazyGetSummarySatisticsQuery();
+  const [getSatistics, { isFetching: isLoadingSummaryReport }] = satisticsApi.useLazyGetSummarySatisticsQuery();
 
   const [getDetailedSatistics, { isFetching: isLoadingDetailedReport }] =
     satisticsApi.useLazyGetDetailedSatisticsQuery();
 
   const handleGetSatistics = async () => {
-    let fromDate = "";
-    let toDate = "";
+    let fromDate = '';
+    let toDate = '';
 
     switch (timePeriod.id) {
       case TIME_PERIOD_TYPE.THIS_WEEK: {
@@ -106,8 +96,7 @@ const SatisticsPage = () => {
         const _result = await getSatistics({
           fromDate,
           toDate,
-          employeeId:
-            user.role === "scout" ? user.id : (employee?.id ?? undefined),
+          employeeId: user.role === 'scout' ? user.id : (employee?.id ?? undefined),
         }).unwrap();
         setDetailedResult(null);
         setResult(_result);
@@ -115,8 +104,7 @@ const SatisticsPage = () => {
         const __result = await getDetailedSatistics({
           fromDate,
           toDate,
-          employeeId:
-            user.role === "scout" ? user.id : (employee?.id ?? undefined),
+          employeeId: user.role === 'scout' ? user.id : (employee?.id ?? undefined),
         }).unwrap();
         setResult(null);
         setDetailedResult(__result);
@@ -127,8 +115,7 @@ const SatisticsPage = () => {
   };
 
   const disableGetButton =
-    (timePeriod.id === TIME_PERIOD_TYPE.CUSTOM &&
-      !Object.values(customPeriod).every(Boolean)) ||
+    (timePeriod.id === TIME_PERIOD_TYPE.CUSTOM && !Object.values(customPeriod).every(Boolean)) ||
     isLoadingDetailedReport ||
     isLoadingSummaryReport;
 
@@ -169,22 +156,16 @@ const SatisticsPage = () => {
               <FormDateInput
                 label={STRINGS.from_date}
                 value={customPeriod.fromDate}
-                onChange={(fromDate) =>
-                  setCustomPeriod((prev) => ({ ...prev, fromDate }))
-                }
+                onChange={(fromDate) => setCustomPeriod((prev) => ({ ...prev, fromDate }))}
               />
               <FormDateInput
                 label={STRINGS.to_date}
                 value={customPeriod.toDate}
-                onChange={(toDate) =>
-                  setCustomPeriod((prev) => ({ ...prev, toDate }))
-                }
+                onChange={(toDate) => setCustomPeriod((prev) => ({ ...prev, toDate }))}
               />
             </>
           )}
-          {user.role === "manager" && (
-            <EmployeesAutocomplete value={employee} onChange={setEmployee} />
-          )}
+          {user.role === 'manager' && <EmployeesAutocomplete value={employee} onChange={setEmployee} />}
 
           <Button disabled={disableGetButton} onClick={handleGetSatistics}>
             {STRINGS.view}
@@ -193,19 +174,7 @@ const SatisticsPage = () => {
       </Card>
       {result && <SummaryReportResult result={result} />}
       {detailedResult && <DetailedReportResult result={detailedResult} />}
-      {(isLoadingDetailedReport || isLoadingSummaryReport) && (
-        <LoadingOverlay />
-      )}
-      <Button
-        onClick={() => {
-          openModal({ name: "CONFIRM_MODAL" });
-          setTimeout(() => {
-            openModal({ name: "CONFIRM_MODAL" });
-          }, 1000);
-        }}
-      >
-        OPEN{" "}
-      </Button>
+      {(isLoadingDetailedReport || isLoadingSummaryReport) && <LoadingOverlay />}
     </Stack>
   );
 };

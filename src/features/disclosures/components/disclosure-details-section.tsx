@@ -1,10 +1,8 @@
-import { Stack, Typography, Box, Button, Card } from '@mui/material';
+import { Stack, Typography, Button, Card } from '@mui/material';
 import Header from '@/core/components/common/header/header';
 import STRINGS from '@/core/constants/strings.constant';
-import theme from '@/core/theme/index.theme';
 import Nodata from '@/core/components/common/no-data/no-data.component';
 import { Link } from 'react-router-dom';
-import CustomBadge from './custom-badge.component';
 
 const DisclosureDetailsSection = ({
   details,

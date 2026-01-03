@@ -1,14 +1,14 @@
-import FormCheckbxInput from "@/core/components/common/inputs/form-checkbox-input.component";
-import FormTextAreaInput from "@/core/components/common/inputs/form-text-area-input.component";
-import STRINGS from "@/core/constants/strings.constant";
-import useForm, { type TFormSubmitResult } from "@/core/hooks/use-form.hook";
-import RatingsAutocomplete from "@/features/ratings/components/ratings-autocomplete.component";
-import type { TRating } from "@/features/ratings/types/rating.types";
-import { Card, Stack } from "@mui/material";
-import { useEffect, useImperativeHandle, type Ref } from "react";
-import z from "zod";
-import type { TDisclosureRating } from "../types/disclosure.types";
-import Header from "@/core/components/common/header/header";
+import FormCheckbxInput from '@/core/components/common/inputs/form-checkbox-input.component';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import STRINGS from '@/core/constants/strings.constant';
+import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
+import RatingsAutocomplete from '@/features/ratings/components/ratings-autocomplete.component';
+import type { TRating } from '@/features/ratings/types/rating.types';
+import { Card, Stack } from '@mui/material';
+import { useEffect, useImperativeHandle, type Ref } from 'react';
+import z from 'zod';
+import type { TDisclosureRating } from '../types/disclosure.types';
+import Header from '@/core/components/common/header/header';
 
 const schema = z
   .object({
@@ -21,22 +21,22 @@ const schema = z
     if (state.isCustomRating) {
       if (!state.customRating)
         return ctx.addIssue({
-          code: "custom",
-          path: ["customRating"],
-          message: "required",
+          code: 'custom',
+          path: ['customRating'],
+          message: 'required',
         });
       if (state.customRating.length < 5)
         return ctx.addIssue({
-          code: "custom",
-          path: ["customRating"],
-          message: "too_short",
+          code: 'custom',
+          path: ['customRating'],
+          message: 'too_short',
         });
     } else {
       if (!state.rating)
         return ctx.addIssue({
-          code: "custom",
-          path: ["rating"],
-          message: "required",
+          code: 'custom',
+          path: ['rating'],
+          message: 'required',
         });
     }
   });
@@ -51,16 +51,15 @@ type TProps = {
 };
 
 const DisclosureRatingActionForm = ({ ref, disclosureRatingData }: TProps) => {
-  const { formState, formErrors, setValue, handleSubmit, setFormState } =
-    useForm({
-      schema,
-      initalState: {
-        rating: null,
-        isCustomRating: false,
-        customRating: "",
-        note: "",
-      },
-    });
+  const { formState, formErrors, setValue, handleSubmit, setFormState } = useForm({
+    schema,
+    initalState: {
+      rating: null,
+      isCustomRating: false,
+      customRating: '',
+      note: '',
+    },
+  });
 
   useImperativeHandle(
     ref,
@@ -76,12 +75,12 @@ const DisclosureRatingActionForm = ({ ref, disclosureRatingData }: TProps) => {
     if (disclosureRatingData) {
       console.log(disclosureRatingData);
 
-      setFormState({
-        isCustomRating: disclosureRatingData?.isCustom,
-        customRating: disclosureRatingData.customRating ?? "",
-        note: disclosureRatingData.note ?? "",
-        rating: disclosureRatingData.rating,
-      });
+      // setFormState({
+      //   isCustomRating: disclosureRatingData?.isCustom,
+      //   customRating: disclosureRatingData.customRating ?? "",
+      //   note: disclosureRatingData.note ?? "",
+      //   rating: disclosureRatingData.rating,
+      // });
     }
   }, [disclosureRatingData, setFormState]);
 
@@ -112,11 +111,7 @@ const DisclosureRatingActionForm = ({ ref, disclosureRatingData }: TProps) => {
           />
         )}
 
-        <FormTextAreaInput
-          label={STRINGS.note}
-          value={formState.note}
-          onChange={(note) => setValue({ note })}
-        />
+        <FormTextAreaInput label={STRINGS.note} value={formState.note} onChange={(note) => setValue({ note })} />
       </Stack>
     </Card>
   );

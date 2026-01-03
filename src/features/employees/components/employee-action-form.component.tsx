@@ -1,34 +1,32 @@
-import useForm, { type TFormSubmitResult } from "@/core/hooks/use-form.hook";
-import type { TEmployeeRole } from "@/features/accounts-forms/types/employee.types";
-import z from "zod";
-import EmployeeRoleAutocomplete from "./employee-role-autocomplete.component";
-import { Stack } from "@mui/material";
-import FormTextFieldInput from "@/core/components/common/inputs/form-text-field-input.component";
-import STRINGS from "@/core/constants/strings.constant";
-import type { TArea } from "@/features/banks/types/work-areas.types";
-import type { TCity } from "@/features/banks/types/city.types";
-import CitiesAutocomplete from "@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component";
-import AreasAutocomplete from "@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component";
-import { useEffect, useImperativeHandle, useState, type Ref } from "react";
-import citiesApi from "@/features/banks/api/cities-api/cities.api";
-import { useAppDispatch } from "@/core/store/root.store.types";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
-import type { TEmployee } from "../types/employee.types";
+import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
+import type { TEmployeeRole } from '@/features/accounts-forms/types/employee.types';
+import z from 'zod';
+import EmployeeRoleAutocomplete from './employee-role-autocomplete.component';
+import { Stack } from '@mui/material';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
+import STRINGS from '@/core/constants/strings.constant';
+import type { TArea } from '@/features/banks/types/work-areas.types';
+import type { TCity } from '@/features/banks/types/city.types';
+import CitiesAutocomplete from '@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component';
+import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
+import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
+import citiesApi from '@/features/banks/api/cities-api/cities.api';
+import { useAppDispatch } from '@/core/store/root.store.types';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import type { TEmployee } from '../types/employee.types';
+import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const createEmployeeFormSchema = (optionalPassword = false) => {
   return z
     .object({
-      role: z.custom<{ id: TEmployeeRole; label: string } | null>(
-        (data) => !!data,
-        {
-          message: "Role is required",
-        }
-      ),
-      name: z.string().min(5, { message: "too short" }),
+      role: z.custom<{ id: TEmployeeRole; label: string } | null>((data) => !!data, {
+        message: 'Role is required',
+      }),
+      name: z.string().min(5, { message: 'too short' }),
       password: z.string(),
-      phone: z.string().min(10, { message: "invalid" }),
+      phone: z.string().min(10, { message: 'invalid' }),
       city: z.custom<TCity | null>(),
-      areas: z.custom<TArea[]>(),
+      areas: z.custom<TAutocompleteItem[]>(),
     })
     .superRefine((state, ctx) => {
       if (
@@ -36,18 +34,16 @@ const createEmployeeFormSchema = (optionalPassword = false) => {
         (optionalPassword && state.password && state.password.length < 8)
       ) {
         ctx.addIssue({
-          code: "custom",
-          message: "Weaka password",
-          path: ["password"],
+          code: 'custom',
+          message: 'Weaka password',
+          path: ['password'],
         });
       }
     });
 };
 
 export type TEmployeeFormHandlers = {
-  handleSubmit: () => Promise<
-    TFormSubmitResult<z.infer<ReturnType<typeof createEmployeeFormSchema>>>
-  >;
+  handleSubmit: () => Promise<TFormSubmitResult<z.infer<ReturnType<typeof createEmployeeFormSchema>>>>;
 };
 
 type TProps = {
@@ -57,18 +53,17 @@ type TProps = {
 
 const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { formState, setValue, formErrors, handleSubmit, setFormState } =
-    useForm({
-      schema: createEmployeeFormSchema(!!employeeData),
-      initalState: {
-        role: null,
-        name: "",
-        password: "",
-        phone: "",
-        city: null,
-        areas: [],
-      },
-    });
+  const { formState, setValue, formErrors, handleSubmit, setFormState } = useForm({
+    schema: createEmployeeFormSchema(!!employeeData),
+    initalState: {
+      role: null,
+      name: '',
+      password: '',
+      phone: '',
+      city: null,
+      areas: [],
+    },
+  });
 
   useImperativeHandle(
     ref,
@@ -89,9 +84,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         let _city: TCity | null = null;
         let _areas: TArea[] = [];
 
-        const cities = await dispatch(
-          citiesApi.endpoints.getCities.initiate({})
-        ).unwrap();
+        const cities = await dispatch(citiesApi.endpoints.getCities.initiate({})).unwrap();
 
         if (employeeData.areas) {
           _areas = employeeData.areas.map((a) => a.area);
@@ -108,7 +101,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
             id: employeeData.role,
             label: STRINGS[employeeData.role as keyof typeof STRINGS],
           },
-          password: "",
+          password: '',
         });
       })();
       setIsLoading(false);

@@ -1,39 +1,36 @@
-import { Stack } from "@mui/material";
+import { Stack } from '@mui/material';
 
-import { useCallback, useImperativeHandle, type Ref } from "react";
+import { useCallback, useImperativeHandle, type Ref } from 'react';
 import type {
   TDisclosureStatus,
   TDisclosureType,
   TDisclosureVisitResult,
   TGetDisclosuresDto,
-} from "../types/disclosure.types";
-import DisclosureStatusAutocomplete from "./disclosure-status-autocomplete";
-import FormDateInput from "@/core/components/common/inputs/form-date-input-component";
-import STRINGS from "@/core/constants/strings.constant";
-import FieldSet from "@/core/components/common/fieldset/fieldset.component";
-import EmployeesAutocomplete from "@/features/employees/components/employees-autocomplete.component";
-import PriorityDegreesAutocomplete from "@/features/priority-degres/components/priority-degees-autocomplete.component";
-import type { TPriorityDegree } from "@/features/priority-degres/types/priority-degree.types";
-import type { TRating } from "@/features/ratings/types/rating.types";
-import RatingsAutocomplete from "@/features/ratings/components/ratings-autocomplete.component";
-import BeneficiariesAutocomplete from "@/features/beneficiaries/components/beneficiaries-autocomplete.component";
-import FormCheckbxInput from "@/core/components/common/inputs/form-checkbox-input.component";
-import DisclosureTypeAutocomplete from "./disclosure-type-autocomplete.component";
-import useStorage from "@/core/hooks/use-storage.hook";
-import FormSelectInput from "@/core/components/common/inputs/form-select-input.component";
-import type { TAutocompleteItem } from "@/core/types/common.types";
-import DisclosureVisitResultAutocomplete from "./disclosure-visit-result-autocomplete.component";
+} from '../types/disclosure.types';
+import DisclosureStatusAutocomplete from './disclosure-status-autocomplete';
+import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
+import STRINGS from '@/core/constants/strings.constant';
+import FieldSet from '@/core/components/common/fieldset/fieldset.component';
+import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
+import PriorityDegreesAutocomplete from '@/features/priority-degres/components/priority-degees-autocomplete.component';
+import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
+import type { TRating } from '@/features/ratings/types/rating.types';
+import RatingsAutocomplete from '@/features/ratings/components/ratings-autocomplete.component';
+import BeneficiariesAutocomplete from '@/features/beneficiaries/components/beneficiaries-autocomplete.component';
+import FormCheckbxInput from '@/core/components/common/inputs/form-checkbox-input.component';
+import DisclosureTypeAutocomplete from './disclosure-type-autocomplete.component';
+import useStorage from '@/core/hooks/use-storage.hook';
+import FormSelectInput from '@/core/components/common/inputs/form-select-input.component';
+import type { TAutocompleteItem } from '@/core/types/common.types';
+import DisclosureVisitResultAutocomplete from './disclosure-visit-result-autocomplete.component';
 
-const parseStringBooleanValue = (value: "true" | "false" | string) => {
-  if (value === "true") return true;
-  if (value === "false") return false;
+const parseStringBooleanValue = (value: 'true' | 'false' | string) => {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
   return null;
 };
 
-type TNormalizedFormValues = Omit<
-  TGetDisclosuresDto,
-  "pageSize" | "pageNumber"
->;
+type TNormalizedFormValues = Omit<TGetDisclosuresDto, 'pageSize' | 'pageNumber'>;
 
 export type TDisclosureFiltesHandlers = {
   getValues: () => TNormalizedFormValues;
@@ -47,17 +44,17 @@ type TProps = {
 const defaultValues = {
   status: [],
   type: [],
-  createdAtStart: "",
-  createdAtEnd: "",
+  createdAtStart: '',
+  createdAtEnd: '',
   scouts: [],
   priorityDegrees: [],
   ratings: [],
   visitResult: [],
   beneficiary: null,
   isCustomRating: false,
-  isAppointmentCompleted: "",
-  isReceived: "",
-  appointmentDate: "",
+  isAppointmentCompleted: '',
+  isReceived: '',
+  appointmentDate: '',
   undelivered: false,
   unvisited: false,
 };
@@ -70,7 +67,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
       scouts: TAutocompleteItem[];
       priorityDegrees: TPriorityDegree[];
       ratings: TRating[];
-      visitResult: { id: TDisclosureVisitResult; label: string }[];
+      visitResult: { id: NonNullable<TDisclosureVisitResult>; label: string }[];
       isCustomRating: boolean;
       beneficiary: TAutocompleteItem | null;
       appointmentDate: string;
@@ -78,8 +75,8 @@ const DisclosureFilters = ({ ref }: TProps) => {
       isReceived: string;
       undelivered: boolean;
       unvisited: boolean;
-    } & Pick<TGetDisclosuresDto, "createdAtStart" | "createdAtEnd">
-  >("disclosure-filters", defaultValues);
+    } & Pick<TGetDisclosuresDto, 'createdAtStart' | 'createdAtEnd'>
+  >('disclosure-filters', defaultValues);
 
   const handleSubmit = useCallback(() => {
     const result: TNormalizedFormValues = {
@@ -103,18 +100,13 @@ const DisclosureFilters = ({ ref }: TProps) => {
     }
     result.undelivered = filters.undelivered;
 
-    if (result.appointmentDate)
-      result.appointmentDate = filters.appointmentDate;
+    if (result.appointmentDate) result.appointmentDate = filters.appointmentDate;
 
     if (parseStringBooleanValue(filters.isAppointmentCompleted) !== null)
-      result.isAppointmentCompleted = parseStringBooleanValue(
-        filters.isAppointmentCompleted,
-      ) as boolean;
+      result.isAppointmentCompleted = parseStringBooleanValue(filters.isAppointmentCompleted) as boolean;
 
     if (parseStringBooleanValue(filters.isReceived) !== null)
-      result.isReceived = parseStringBooleanValue(
-        filters.isReceived,
-      ) as boolean;
+      result.isReceived = parseStringBooleanValue(filters.isReceived) as boolean;
 
     if (filters.isCustomRating) result.isCustomRating = filters.isCustomRating;
 
@@ -137,7 +129,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
         return handleReset();
       },
     }),
-    [handleSubmit, handleReset],
+    [handleSubmit, handleReset]
   );
 
   return (
@@ -157,35 +149,27 @@ const DisclosureFilters = ({ ref }: TProps) => {
       <BeneficiariesAutocomplete
         multiple={false}
         value={filters.beneficiary}
-        onChange={(beneficiary) =>
-          setFilters((prev) => ({ ...prev, beneficiary }))
-        }
+        onChange={(beneficiary) => setFilters((prev) => ({ ...prev, beneficiary }))}
       />
       <FormCheckbxInput
         label={STRINGS.undelivered}
         value={filters.undelivered}
-        onChange={(undelivered) =>
-          setFilters((prev) => ({ ...prev, undelivered }))
-        }
+        onChange={(undelivered) => setFilters((prev) => ({ ...prev, undelivered }))}
       />
 
       <EmployeesAutocomplete
         disabled={filters.undelivered}
-        roles={["scout"]}
+        roles={['scout']}
         label={STRINGS.the_scout}
         multiple
         value={filters.scouts}
-        onChange={(employees) =>
-          setFilters((prev) => ({ ...prev, scouts: employees }))
-        }
+        onChange={(employees) => setFilters((prev) => ({ ...prev, scouts: employees }))}
       />
 
       <PriorityDegreesAutocomplete
         multiple
         value={filters.priorityDegrees}
-        onChange={(priorityDegrees) =>
-          setFilters((prev) => ({ ...prev, priorityDegrees }))
-        }
+        onChange={(priorityDegrees) => setFilters((prev) => ({ ...prev, priorityDegrees }))}
       />
       <FormCheckbxInput
         label={STRINGS.hasnt_been_visited_yet}
@@ -203,9 +187,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
         multiple
         disabled={filters.unvisited}
         value={filters.visitResult}
-        onChange={(visitResult) =>
-          setFilters((prev) => ({ ...prev, visitResult }))
-        }
+        onChange={(visitResult) => setFilters((prev) => ({ ...prev, visitResult }))}
       />
       <FormCheckbxInput
         label={STRINGS.custom_rating}
@@ -230,16 +212,12 @@ const DisclosureFilters = ({ ref }: TProps) => {
           <FormDateInput
             label={STRINGS.from_date}
             value={filters.createdAtStart}
-            onChange={(createdAtStart) =>
-              setFilters((prev) => ({ ...prev, createdAtStart }))
-            }
+            onChange={(createdAtStart) => setFilters((prev) => ({ ...prev, createdAtStart }))}
           />
           <FormDateInput
             label={STRINGS.to_date}
             value={filters.createdAtEnd}
-            onChange={(createdAtEnd) =>
-              setFilters((prev) => ({ ...prev, createdAtEnd }))
-            }
+            onChange={(createdAtEnd) => setFilters((prev) => ({ ...prev, createdAtEnd }))}
           />
         </Stack>
       </FieldSet>
@@ -247,13 +225,11 @@ const DisclosureFilters = ({ ref }: TProps) => {
       <FormDateInput
         label={STRINGS.appointment_date}
         value={filters.appointmentDate}
-        onChange={(appointmentDate) =>
-          setFilters((prev) => ({ ...prev, appointmentDate }))
-        }
+        onChange={(appointmentDate) => setFilters((prev) => ({ ...prev, appointmentDate }))}
       />
 
       <FormSelectInput
-        label={"is_appointment_completed"}
+        label={'is_appointment_completed'}
         value={filters.isAppointmentCompleted}
         getOptionLabel={(option) => option.label}
         onChange={(value) => {
@@ -263,8 +239,8 @@ const DisclosureFilters = ({ ref }: TProps) => {
           }));
         }}
         options={[
-          { id: "true", label: "true" },
-          { id: "false", label: "false" },
+          { id: 'true', label: 'true' },
+          { id: 'false', label: 'false' },
         ]}
       />
 
@@ -280,7 +256,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
       {/* /> */}
 
       <FormSelectInput
-        label={"is_received"}
+        label={'is_received'}
         value={filters.isReceived}
         getOptionLabel={(option) => option.label}
         onChange={(value) => {
@@ -290,8 +266,8 @@ const DisclosureFilters = ({ ref }: TProps) => {
           }));
         }}
         options={[
-          { id: "true", label: "true" },
-          { id: "false", label: "false" },
+          { id: 'true', label: 'true' },
+          { id: 'false', label: 'false' },
         ]}
       />
     </Stack>

@@ -1,26 +1,20 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import beneficiaryApi from "../api/beneficiary.api";
-import { Card, Stack, Tab, Tabs } from "@mui/material";
-import PageLoading from "@/core/components/common/page-loading/page-loading.component";
-import STRINGS from "@/core/constants/strings.constant";
-import { Add } from "@mui/icons-material";
-import BeneficiaryDisclosures from "../components/beneficiary-disclosures.component";
+import { useParams } from 'react-router-dom';
+import beneficiaryApi from '../api/beneficiary.api';
+import { Card, Stack } from '@mui/material';
+import PageLoading from '@/core/components/common/page-loading/page-loading.component';
+import BeneficiaryDisclosures from '../components/beneficiary-disclosures.component';
 // import BeneficiaryMedicines from "../components/beneficiary-medicines.component";
-import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
 // import type {
 //   TBeneficiaryMedicine,
 //   TFamilyMember,
 // } from "../types/beneficiary.types";
 // import BeneficiaryFamilyMembers from "../components/beneficiary-family-members.component";
-import BeneficiaryCommonCard from "@/shared/components/beneficiary-common-card";
+import BeneficiaryCommonCard from '@/shared/components/beneficiary-common-card';
 
 const BeneficiaryPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = Number(searchParams.get("tab") ?? 0);
   const { id } = useParams();
 
-  const { data: beneficiary, isLoading } =
-    beneficiaryApi.useGetBeneficiaryQuery({ id: id! }, { skip: !id });
+  const { data: beneficiary, isLoading } = beneficiaryApi.useGetBeneficiaryQuery({ id: id! }, { skip: !id });
 
   // const handleOpenBeneficiaryMedicineActionPage = (
   //   bm?: TBeneficiaryMedicine

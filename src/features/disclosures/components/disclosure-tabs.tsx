@@ -1,4 +1,4 @@
-import { Tabs, Tab, Box, Card, Stack } from '@mui/material';
+import { Tabs, Tab, Card, Stack } from '@mui/material';
 
 const DisclosureTabs = ({
   value = 0,

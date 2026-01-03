@@ -1,37 +1,31 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import DisclosureRatingActionForm, {
-  type TDisclosureRatingFormHandlers,
-} from "../components/disclosure-rating-action-form.component";
-import { useEffect, useRef } from "react";
-import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
-import { Save } from "@mui/icons-material";
-import disclosuresApi from "../api/disclosures.api";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/core/components/common/toast/toast";
-import STRINGS from "@/core/constants/strings.constant";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
+import { Save } from '@mui/icons-material';
+import disclosuresApi from '../api/disclosures.api';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import STRINGS from '@/core/constants/strings.constant';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import type {
   TDisclosure,
   TDisclosureVisitResult,
   TUpdateDisclosureVisitAndRatingDto,
-} from "../types/disclosure.types";
-import { Card, Stack } from "@mui/material";
-import z from "zod";
-import type { TRating } from "@/features/ratings/types/rating.types";
-import useForm from "@/core/hooks/use-form.hook";
-import DisclosureVisitResultAutocomplete from "../components/disclosure-visit-result-autocomplete.component";
-import FormTextAreaInput from "@/core/components/common/inputs/form-text-area-input.component";
-import FormCheckbxInput from "@/core/components/common/inputs/form-checkbox-input.component";
-import RatingsAutocomplete from "@/features/ratings/components/ratings-autocomplete.component";
+} from '../types/disclosure.types';
+import { Card, Stack } from '@mui/material';
+import z from 'zod';
+import type { TRating } from '@/features/ratings/types/rating.types';
+import useForm from '@/core/hooks/use-form.hook';
+import DisclosureVisitResultAutocomplete from '../components/disclosure-visit-result-autocomplete.component';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import FormCheckbxInput from '@/core/components/common/inputs/form-checkbox-input.component';
+import RatingsAutocomplete from '@/features/ratings/components/ratings-autocomplete.component';
 
 const schema = z
   .object({
     visitResult: z.custom<{
-      id: TDisclosureVisitResult;
+      id: NonNullable<TDisclosureVisitResult>;
       label: string;
-    } | null>((data) => !!data, { message: "required" }),
+    } | null>((data) => !!data, { message: 'required' }),
     visitReason: z.string(),
     visitNote: z.string(),
     rating: z.custom<TRating | null>(),
@@ -40,32 +34,32 @@ const schema = z
     ratingNote: z.string(),
   })
   .superRefine((state, ctx) => {
-    if (state.visitResult?.id !== "completed" && !state.visitReason) {
+    if (state.visitResult?.id !== 'completed' && !state.visitReason) {
       return ctx.addIssue({
-        code: "custom",
-        path: ["visitReason"],
-        message: "required",
+        code: 'custom',
+        path: ['visitReason'],
+        message: 'required',
       });
     }
     if (state.isCustomRating) {
       if (!state.customRating)
         ctx.addIssue({
-          code: "custom",
-          path: ["customRating"],
-          message: "required",
+          code: 'custom',
+          path: ['customRating'],
+          message: 'required',
         });
       if (state.customRating.length < 5)
         ctx.addIssue({
-          code: "custom",
-          path: ["customRating"],
-          message: "too_short",
+          code: 'custom',
+          path: ['customRating'],
+          message: 'too_short',
         });
     } else {
       if (!state.rating)
         ctx.addIssue({
-          code: "custom",
-          path: ["rating"],
-          message: "required",
+          code: 'custom',
+          path: ['rating'],
+          message: 'required',
         });
     }
   });
@@ -78,10 +72,10 @@ const DisclosureVisitAndRatingActionPage = () => {
     schema,
     initalState: {
       isCustomRating: false,
-      customRating: "",
-      ratingNote: "",
-      visitNote: "",
-      visitReason: "",
+      customRating: '',
+      ratingNote: '',
+      visitNote: '',
+      visitReason: '',
       rating: null,
       visitResult: null,
     },
@@ -90,8 +84,7 @@ const DisclosureVisitAndRatingActionPage = () => {
 
   const navigate = useNavigate();
 
-  const [updateDisclosureRating, { isLoading }] =
-    disclosuresApi.useUpdateDisclosureMutation();
+  const [updateDisclosureRating, { isLoading }] = disclosuresApi.useUpdateDisclosureMutation();
 
   const handleSave = async () => {
     const { isValid, result } = await handleSubmit();
@@ -135,12 +128,12 @@ const DisclosureVisitAndRatingActionPage = () => {
   useEffect(() => {
     if (disclosure) {
       setValue({
-        customRating: disclosure.customRating ?? "",
+        customRating: disclosure.customRating ?? '',
         isCustomRating: disclosure.isCustomRating,
         rating: disclosure.rating ?? null,
-        ratingNote: disclosure.ratingNote ?? "",
-        visitNote: disclosure.visitNote ?? "",
-        visitReason: disclosure.visitReason ?? "",
+        ratingNote: disclosure.ratingNote ?? '',
+        visitNote: disclosure.visitNote ?? '',
+        visitReason: disclosure.visitReason ?? '',
         visitResult: disclosure.visitResult
           ? {
               id: disclosure.visitResult,
@@ -161,7 +154,7 @@ const DisclosureVisitAndRatingActionPage = () => {
           onChange={(visitResult) => setValue({ visitResult })}
           errorText={formErrors.visitResult?.[0].message}
         />
-        {formState.visitResult && formState.visitResult?.id !== "completed" && (
+        {formState.visitResult && formState.visitResult?.id !== 'completed' && (
           <>
             <FormTextAreaInput
               required
@@ -177,7 +170,7 @@ const DisclosureVisitAndRatingActionPage = () => {
             />
           </>
         )}
-        {formState.visitResult?.id === "completed" && (
+        {formState.visitResult?.id === 'completed' && (
           <>
             <FormCheckbxInput
               label={STRINGS.custom_rating}
@@ -210,12 +203,7 @@ const DisclosureVisitAndRatingActionPage = () => {
           </>
         )}
 
-        <ActionFab
-          color="success"
-          icon={<Save />}
-          disabled={isLoading}
-          onClick={handleSave}
-        />
+        <ActionFab color="success" icon={<Save />} disabled={isLoading} onClick={handleSave} />
         {isLoading && <LoadingOverlay />}
       </Stack>
     </Card>

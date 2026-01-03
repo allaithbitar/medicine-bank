@@ -1,4 +1,4 @@
-import { Stack, Divider, Button, Card } from '@mui/material';
+import { Stack, Button, Card } from '@mui/material';
 import DetailItem from '@/core/components/common/detail-item/detail-item.component';
 import BeneficiaryCommonCard from '@/shared/components/beneficiary-common-card';
 import Header from '@/core/components/common/header/header';

@@ -1,40 +1,34 @@
-import { Button, Stack, Typography } from "@mui/material";
-import type { TVisit } from "../types/disclosure.types";
-import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
-import { deepPurple } from "@mui/material/colors";
-import STRINGS from "@/core/constants/strings.constant";
+import { Button, Stack, Typography } from '@mui/material';
+import type { TVisit } from '../types/disclosure.types';
+import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
+import { deepPurple } from '@mui/material/colors';
+import STRINGS from '@/core/constants/strings.constant';
 // import { formatDateTime } from "@/core/helpers/helpers";
-import DetailItem from "@/core/components/common/detail-item/detail-item.component";
+import DetailItem from '@/core/components/common/detail-item/detail-item.component';
 import {
   Comment,
   Edit,
   // EventAvailable,
   HelpOutlined,
   // History,
-} from "@mui/icons-material";
+} from '@mui/icons-material';
 // import Nodata from "@/core/components/common/no-data/no-data.component";
 // import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
 // import { useVisitsLoader } from "../hooks/visits-loader.hook";
 // import { DEFAULT_PAGE_SIZE } from "@/core/constants/properties.constant";
 
 const VisitCard = ({ visit }: { visit: TVisit }) => {
   const { pathname } = useLocation();
-  const disclosureId = pathname.split("/").pop() || "";
+  const disclosureId = pathname.split('/').pop() || '';
   return (
     <ReusableCardComponent
-      headerContent={
-        <Typography color="white">{STRINGS[visit.visitResult]}</Typography>
-      }
+      headerContent={<Typography color="white">{visit.visitResult && STRINGS[visit.visitResult]}</Typography>}
       headerBackground={`linear-gradient(to right, ${deepPurple[800]}, ${deepPurple[500]})`}
       bodyContent={
         <Stack gap={2}>
-          {visit.visitResult !== "completed" && (
-            <DetailItem
-              icon={<HelpOutlined />}
-              label={STRINGS.visit_reason}
-              value={visit.visitReason ?? ""}
-            />
+          {visit.visitResult !== 'completed' && (
+            <DetailItem icon={<HelpOutlined />} label={STRINGS.visit_reason} value={visit.visitReason ?? ''} />
           )}
           {/* <DetailItem
             icon={<EventAvailable />}
@@ -55,18 +49,11 @@ const VisitCard = ({ visit }: { visit: TVisit }) => {
                   }`
             }
           /> */}
-          <DetailItem
-            icon={<Comment />}
-            label={STRINGS.note}
-            value={visit.visitNote || STRINGS.none}
-          />
+          <DetailItem icon={<Comment />} label={STRINGS.note} value={visit.visitNote || STRINGS.none} />
         </Stack>
       }
       footerContent={
-        <Link
-          style={{ alignSelf: "end" }}
-          to={`/disclosures/${disclosureId}/visit/action`}
-        >
+        <Link style={{ alignSelf: 'end' }} to={`/disclosures/${disclosureId}/visit/action`}>
           <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
         </Link>
       }

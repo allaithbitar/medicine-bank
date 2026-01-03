@@ -1,17 +1,12 @@
-import Header from "@/core/components/common/header/header";
-import Nodata from "@/core/components/common/no-data/no-data.component";
-import { DEFAULT_PAGE_SIZE } from "@/core/constants/properties.constant";
-import STRINGS from "@/core/constants/strings.constant";
-import DisclosureCard from "@/features/disclosures/components/disclosure-card.component";
-import { useDisclosuresLoader } from "@/features/disclosures/hooks/disclosures-loader.hook";
-import { Button, Card, Stack } from "@mui/material";
-import { Link } from "react-router-dom";
+import Nodata from '@/core/components/common/no-data/no-data.component';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
+import STRINGS from '@/core/constants/strings.constant';
+import DisclosureCard from '@/features/disclosures/components/disclosure-card.component';
+import { useDisclosuresLoader } from '@/features/disclosures/hooks/disclosures-loader.hook';
+import { Button, Card, Stack } from '@mui/material';
+import { Link } from 'react-router-dom';
 
-const BeneficiaryDisclosures = ({
-  beneficiaryId,
-}: {
-  beneficiaryId?: string;
-}) => {
+const BeneficiaryDisclosures = ({ beneficiaryId }: { beneficiaryId?: string }) => {
   const { items, isLoading, isFetching } = useDisclosuresLoader({
     pageSize: DEFAULT_PAGE_SIZE,
     patientId: beneficiaryId,

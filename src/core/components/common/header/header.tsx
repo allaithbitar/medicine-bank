@@ -1,6 +1,5 @@
-import theme from '@/core/theme/index.theme';
 import type { Theme } from '@emotion/react';
-import { Card, Stack, Typography, type SxProps } from '@mui/material';
+import { Card, Typography, type SxProps } from '@mui/material';
 
 function Header({ title, sx }: { title: string; sx?: SxProps<Theme> }) {
   return (

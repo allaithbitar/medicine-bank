@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Card, Divider, Stack, Button, Grid } from '@mui/material';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Stack, Button } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import DifferenceIcon from '@mui/icons-material/Difference';
@@ -10,12 +10,10 @@ import ErrorCard from '@/core/components/common/error-card/error-card.component'
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 
 import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
-import { Edit } from '@mui/icons-material';
 import DisclosureHeaderCard from '../components/disclosure-header-card';
 import DisclosureTabs from '../components/disclosure-tabs';
 import DisclosureDetailsSection from '../components/disclosure-details-section';
 import DisclosureNotesTab from '../components/tabs/disclosure-notes-tab';
-import DisclosureAppointmentTab from '../components/tabs/disclosure-appointment-tab';
 import DisclosureMedicinesTab from '../components/tabs/disclosure-medicines-tab';
 import DisclosureFamilyMembersTab from '../components/tabs/disclosure-family-members-tab';
 import DisclosureVisitAndRatingSection from '../components/disclosure-visit-and-rating-section';

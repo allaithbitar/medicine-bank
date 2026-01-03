@@ -1,23 +1,13 @@
-import { type ComponentProps } from "react";
-import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
-import STRINGS from "@/core/constants/strings.constant";
-import {
-  DisclosureVisitResult,
-  type TDisclosureVisitResult,
-} from "../types/disclosure.types";
+import { type ComponentProps } from 'react';
+import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomplete-input.component';
+import STRINGS from '@/core/constants/strings.constant';
+import { DisclosureVisitResult, type TDisclosureVisitResult } from '../types/disclosure.types';
 
 type TStatusAutocompleteProps<T extends boolean> = Partial<
-  ComponentProps<
-    typeof FormAutocompleteInput<
-      { id: TDisclosureVisitResult; label: string },
-      T
-    >
-  >
+  ComponentProps<typeof FormAutocompleteInput<{ id: NonNullable<TDisclosureVisitResult>; label: string }, T>>
 >;
 
-function DisclosureVisitResultAutocomplete<T extends boolean>({
-  ...props
-}: TStatusAutocompleteProps<T>) {
+function DisclosureVisitResultAutocomplete<T extends boolean>({ ...props }: TStatusAutocompleteProps<T>) {
   const options = [
     {
       label: `${STRINGS.not_completed} (${STRINGS.hg})`,

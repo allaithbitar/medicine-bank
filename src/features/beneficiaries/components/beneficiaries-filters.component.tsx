@@ -1,21 +1,18 @@
-import { Stack } from "@mui/material";
-import { useCallback, useImperativeHandle, useState, type Ref } from "react";
-import STRINGS from "@/core/constants/strings.constant";
-import type {
-  TGender,
-  TGetBeneficiariesDto,
-} from "@/features/beneficiaries/types/beneficiary.types";
-import AreasAutocomplete from "@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component";
-import type { TArea } from "@/features/banks/types/work-areas.types";
-import FormTextFieldInput from "@/core/components/common/inputs/form-text-field-input.component";
-import BeneficiaryGenderAutocomplete from "./beneficiary-gender-autocomplete.component";
-import FormTextAreaInput from "@/core/components/common/inputs/form-text-area-input.component";
-import { addTimeZoneOffestToIsoDate } from "@/core/helpers/helpers";
-import FormDateInput from "@/core/components/common/inputs/form-date-input-component";
+import { Stack } from '@mui/material';
+import { useCallback, useImperativeHandle, useState, type Ref } from 'react';
+import STRINGS from '@/core/constants/strings.constant';
+import type { TGender, TGetBeneficiariesDto } from '@/features/beneficiaries/types/beneficiary.types';
+import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
+import BeneficiaryGenderAutocomplete from './beneficiary-gender-autocomplete.component';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import { addTimeZoneOffestToIsoDate } from '@/core/helpers/helpers';
+import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
+import type { TAutocompleteItem } from '@/core/types/common.types';
 
 export type TBeneficiariesFiltersHandlers = {
-  getValues: () => Omit<TGetBeneficiariesDto, "pageSize" | "pageNumber">;
-  reset: () => Omit<TGetBeneficiariesDto, "pageSize" | "pageNumber">;
+  getValues: () => Omit<TGetBeneficiariesDto, 'pageSize' | 'pageNumber'>;
+  reset: () => Omit<TGetBeneficiariesDto, 'pageSize' | 'pageNumber'>;
 };
 
 type TProps = {
@@ -24,19 +21,19 @@ type TProps = {
 
 const defaultState = {
   areas: [],
-  name: "",
-  about: "",
-  address: "",
-  birthDate: "",
+  name: '',
+  about: '',
+  address: '',
+  birthDate: '',
   gender: null,
-  job: "",
-  phone: "",
-  nationalNumber: "",
+  job: '',
+  phone: '',
+  nationalNumber: '',
 };
 
 const BeneficiariesFilters = ({ ref }: TProps) => {
   const [filters, setFilters] = useState<{
-    areas: TArea[];
+    areas: TAutocompleteItem[];
     name: string;
     nationalNumber: string;
     gender: { id: TGender; label: string } | null;
@@ -48,11 +45,11 @@ const BeneficiariesFilters = ({ ref }: TProps) => {
   }>(defaultState);
 
   const handleSubmit = useCallback(() => {
-    const result: Omit<TGetBeneficiariesDto, "pageSize" | "pageNumber"> = {
+    const result: Omit<TGetBeneficiariesDto, 'pageSize' | 'pageNumber'> = {
       areaIds: filters.areas.map((a) => a.id),
       about: filters.about,
       address: filters.address,
-      birthDate: filters.birthDate.split("T")[0] ?? "",
+      birthDate: filters.birthDate.split('T')[0] ?? '',
       job: filters.job,
       name: filters.name,
       nationalNumber: filters.nationalNumber,
@@ -77,7 +74,7 @@ const BeneficiariesFilters = ({ ref }: TProps) => {
         return handleReset();
       },
     }),
-    [handleReset, handleSubmit],
+    [handleReset, handleSubmit]
   );
 
   return (
@@ -90,9 +87,7 @@ const BeneficiariesFilters = ({ ref }: TProps) => {
       <FormTextFieldInput
         label={STRINGS.national_number}
         value={filters.nationalNumber}
-        onChange={(nationalNumber) =>
-          setFilters((prev) => ({ ...prev, nationalNumber }))
-        }
+        onChange={(nationalNumber) => setFilters((prev) => ({ ...prev, nationalNumber }))}
       />
 
       <FormTextFieldInput
@@ -119,9 +114,7 @@ const BeneficiariesFilters = ({ ref }: TProps) => {
         onChange={(birthDate) =>
           setFilters((prev) => ({
             ...prev,
-            birthDate: birthDate
-              ? addTimeZoneOffestToIsoDate(birthDate).toISOString()
-              : "",
+            birthDate: birthDate ? addTimeZoneOffestToIsoDate(birthDate).toISOString() : '',
           }))
         }
       />
