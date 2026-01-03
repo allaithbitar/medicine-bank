@@ -10,16 +10,22 @@ const FamilyMembersList = ({
   familyMembers,
   isLoading,
   onEdit,
+  onAdd,
 }: {
   familyMembers: TFamilyMember[];
   isLoading: boolean;
   onEdit: (m: TFamilyMember) => void;
+  onAdd: () => void;
 }) => {
   return (
     <Stack>
       {familyMembers.length === 0 && !isLoading && (
         <Card>
-          <Nodata icon={Diversity3Icon} title={STRINGS.no_family_members} extra={<Button>{STRINGS.add}</Button>} />
+          <Nodata
+            icon={Diversity3Icon}
+            title={STRINGS.no_family_members}
+            extra={<Button onClick={onAdd}>{STRINGS.add}</Button>}
+          />
         </Card>
       )}
 

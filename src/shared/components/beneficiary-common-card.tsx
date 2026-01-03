@@ -18,7 +18,7 @@ function BeneficiaryCommonCard({ beneficiary, isDisclosurePage = false }: IBenef
   return (
     <Stack gap={2}>
       <DetailItem label={STRINGS.beneficiary} icon={<Person />} value={beneficiary.name} />
-      <DetailItem label={STRINGS.national_number} icon={<Pin />} value={beneficiary.nationalNumber} />
+      <DetailItem label={STRINGS.national_number} icon={<Pin />} value={beneficiary.nationalNumber ?? STRINGS.none} />
       <DetailItem label={STRINGS.phones} icon={<Phone />} value={beneficiary?.phones?.map((p) => p.phone).join(', ')} />
       {
         <DetailItem

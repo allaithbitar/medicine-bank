@@ -10,10 +10,12 @@ const BeneficiaryMedicinesList = ({
   items,
   isLoading,
   onEdit,
+  onAdd,
 }: {
   items: TBeneficiaryMedicine[];
   isLoading: boolean;
   onEdit: (bm: TBeneficiaryMedicine) => void;
+  onAdd: () => void;
 }) => {
   return (
     <>
@@ -22,7 +24,7 @@ const BeneficiaryMedicinesList = ({
           <Nodata
             icon={MedicalServicesIcon}
             title={STRINGS.no_medicines_found}
-            extra={<Button>{STRINGS.add}</Button>}
+            extra={<Button onClick={onAdd}>{STRINGS.add}</Button>}
           />
         </Card>
       )}
@@ -30,7 +32,7 @@ const BeneficiaryMedicinesList = ({
       <VirtualizedList
         isLoading={isLoading}
         items={items}
-        containerStyle={{ flex: 1, height: "400px" }}
+        containerStyle={{ flex: 1, height: '400px' }}
         virtualizationOptions={{ count: items.length }}
       >
         {({ item }) => {

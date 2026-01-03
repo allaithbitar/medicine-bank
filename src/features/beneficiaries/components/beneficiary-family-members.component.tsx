@@ -5,9 +5,11 @@ import type { TFamilyMember } from '../types/beneficiary.types';
 const BeneficiaryFamilyMembers = ({
   beneficiaryId,
   onEditBeneficiaryFamilyMember,
+  onAddBeneficiaryFamilyMember,
 }: {
   beneficiaryId?: string;
   onEditBeneficiaryFamilyMember: (m: TFamilyMember) => void;
+  onAddBeneficiaryFamilyMember: () => void;
 }) => {
   const { data: resp, isLoading } = beneficiaryApi.useGetFamilyMembersQuery({
     patientId: beneficiaryId,
@@ -15,7 +17,14 @@ const BeneficiaryFamilyMembers = ({
 
   const items = resp?.items ?? [];
 
-  return <FamilyMembersList familyMembers={items} isLoading={isLoading} onEdit={onEditBeneficiaryFamilyMember} />;
+  return (
+    <FamilyMembersList
+      familyMembers={items}
+      isLoading={isLoading}
+      onAdd={onAddBeneficiaryFamilyMember}
+      onEdit={onEditBeneficiaryFamilyMember}
+    />
+  );
 };
 
 export default BeneficiaryFamilyMembers;

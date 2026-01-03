@@ -1,18 +1,12 @@
-import { Button, Stack } from "@mui/material";
-import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
-import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
-import {
-  LocationPin,
-  Phone,
-  Pin,
-  PriorityHighOutlined,
-  Visibility,
-} from "@mui/icons-material";
-import { formatDateTime } from "@/core/helpers/helpers";
-import STRINGS from "@/core/constants/strings.constant";
-import type { TBenefieciary } from "../types/beneficiary.types";
-import { teal } from "@mui/material/colors";
-import CardAvatar from "@/core/components/common/reusable-card/card-avatar.component";
+import { Button, Stack } from '@mui/material';
+import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
+import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
+import { LocationPin, Phone, Pin, PriorityHighOutlined, Visibility } from '@mui/icons-material';
+import { formatDateTime } from '@/core/helpers/helpers';
+import STRINGS from '@/core/constants/strings.constant';
+import type { TBenefieciary } from '../types/beneficiary.types';
+import { teal } from '@mui/material/colors';
+import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 
 const BeneficiaryCard = ({
   beneficiary,
@@ -39,20 +33,20 @@ const BeneficiaryCard = ({
         icon={<Pin />}
         label={STRINGS.national_number}
         iconColorPreset="green"
-        value={beneficiary.nationalNumber}
+        value={beneficiary.nationalNumber ?? STRINGS.none}
       />
 
       <DetailItemComponent
         icon={<Phone />}
         label={STRINGS.phones}
-        value={beneficiary?.phones?.map((p) => p.phone).join(", ")}
+        value={beneficiary?.phones?.map((p) => p.phone).join(', ')}
       />
 
       <DetailItemComponent
         icon={<LocationPin />}
         label={STRINGS.patient_address}
         iconColorPreset="deepPurple"
-        value={`${beneficiary.area?.name} - ${beneficiary.address ?? ""}`}
+        value={`${beneficiary.area?.name} - ${beneficiary.address ?? ''}`}
       />
 
       <DetailItemComponent
@@ -75,7 +69,7 @@ const BeneficiaryCard = ({
             onClick={() => onEnterClick(beneficiary.id)}
             variant="outlined"
             startIcon={<Visibility />}
-            sx={{ ml: "auto" }}
+            sx={{ ml: 'auto' }}
           >
             {STRINGS.view}
           </Button>

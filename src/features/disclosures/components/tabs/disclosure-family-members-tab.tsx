@@ -13,6 +13,7 @@ const DisclosureFamilyMembersTab = ({
     <BeneficiaryFamilyMembers
       beneficiaryId={beneficiaryId}
       onEditBeneficiaryFamilyMember={(m) => handleOpenFamilyMembersActionPage && handleOpenFamilyMembersActionPage(m)}
+      onAddBeneficiaryFamilyMember={() => handleOpenFamilyMembersActionPage && handleOpenFamilyMembersActionPage()}
     />
   );
 };

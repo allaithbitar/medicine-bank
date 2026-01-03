@@ -12,6 +12,9 @@ const DisclosureMedicinesTab = ({
   return (
     <BeneficiaryMedicines
       beneficiaryId={beneficiaryId}
+      onAddBeneficiaryMedicine={() =>
+        handleOpenBeneficiaryMedicineActionPage && handleOpenBeneficiaryMedicineActionPage()
+      }
       onEditBeneficiaryMedicine={(bm) =>
         handleOpenBeneficiaryMedicineActionPage && handleOpenBeneficiaryMedicineActionPage(bm)
       }
