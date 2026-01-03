@@ -1,5 +1,5 @@
-import BeneficiaryMedicines from "@/features/beneficiaries/components/beneficiary-medicines.component";
-import type { TDisclosure } from "@/features/disclosures/types/disclosure.types";
+import BeneficiaryMedicines from '@/features/beneficiaries/components/beneficiary-medicines.component';
+import type { TDisclosure } from '@/features/disclosures/types/disclosure.types';
 
 const DisclosureMedicinesTab = ({
   disclosure,
@@ -10,15 +10,12 @@ const DisclosureMedicinesTab = ({
 }) => {
   const beneficiaryId = disclosure?.patientId;
   return (
-    <div>
-      <BeneficiaryMedicines
-        beneficiaryId={beneficiaryId}
-        onEditBeneficiaryMedicine={(bm) =>
-          handleOpenBeneficiaryMedicineActionPage &&
-          handleOpenBeneficiaryMedicineActionPage(bm)
-        }
-      />
-    </div>
+    <BeneficiaryMedicines
+      beneficiaryId={beneficiaryId}
+      onEditBeneficiaryMedicine={(bm) =>
+        handleOpenBeneficiaryMedicineActionPage && handleOpenBeneficiaryMedicineActionPage(bm)
+      }
+    />
   );
 };
 

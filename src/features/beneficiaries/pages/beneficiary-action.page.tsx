@@ -1,7 +1,7 @@
 import STRINGS from "@/core/constants/strings.constant";
 import { Card, Stack } from "@mui/material";
 import type { TAddBeneficiaryDto } from "../types/beneficiary.types";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import beneficiaryApi from "../api/beneficiary.api";
 import {
   notifyError,
@@ -37,45 +37,44 @@ const BeneficiaryActionPage = () => {
 
   const isLoading = isAdding || isUpdating || isGetting;
 
-  const [validateNationalNumber] =
-    beneficiaryApi.useValidateNationalNumberMutation();
-
-  const [validatePhoneNumber] =
-    beneficiaryApi.useValidatePhoneNumbersMutation();
+  // const [validateNationalNumber] =
+  //   beneficiaryApi.useValidateNationalNumberMutation();
+  //
+  // const [validatePhoneNumber] =
+  //   beneficiaryApi.useValidatePhoneNumbersMutation();
 
   const handleSave = async () => {
     const { isValid, result } = await ref.current!.handleSubmit();
 
     if (!isValid) return;
     try {
-      const r = await validateNationalNumber({
-        nationalNumber: result.nationalNumber,
-        ...(beneficiaryId && { patientId: beneficiaryId }),
-      });
+      // const r = await validateNationalNumber({
+      //   nationalNumber: result.nationalNumber,
+      //   ...(beneficiaryId && { patientId: beneficiaryId }),
+      // });
+      //
+      // const rr = await validatePhoneNumber({
+      //   phoneNumbers: result.phoneNumbers,
+      //   ...(beneficiaryId && { patientId: beneficiaryId }),
+      // });
 
-      const rr = await validatePhoneNumber({
-        phoneNumbers: result.phoneNumbers,
-        ...(beneficiaryId && { patientId: beneficiaryId }),
-      });
-
-      console.log({ r, rr });
-      return;
+      // TODO check for phone and national number and warn the user before continuing
 
       const addDto: TAddBeneficiaryDto = {
         name: result.name,
-        nationalNumber: result.nationalNumber,
-        areaId: result.area?.id,
-        about: result.about,
-        address: result.address,
+        nationalNumber: result.nationalNumber || null,
+        areaId: result.area?.id || null,
+        about: result.about || null,
+        address: result.address || null,
         phoneNumbers: result.phoneNumbers,
-        gender: result.gender?.id ?? "",
-        job: result.job,
+        gender: result.gender?.id || null,
+        job: result.job || null,
         // birthDate: result.birthDate
         //   ? addTimeZoneOffestToIsoDate(result.birthDate)
         //       .toISOString()
         //       .split("T")[0]
         //   : "",
-        birthDate: (result.birthDate || "")?.split("T")[0] ?? "",
+        birthDate: (result.birthDate || "")?.split("T")[0] || null,
       };
 
       if (!beneficiaryId) {

@@ -37,3 +37,8 @@ export type TActioner = { id: string; name: string };
 export type TCreatedBy = { createdBy: TActioner | null };
 
 export type TUpdatedBy = { updatedBy: TActioner | null };
+
+export type TAutocompleteItem = Record<string, string> & {
+  id: string;
+  name: string;
+};

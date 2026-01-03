@@ -1,4 +1,4 @@
-import { Button, Chip, Stack } from "@mui/material";
+import { Button, Card, Chip, Stack, Typography, useTheme } from "@mui/material";
 import type { TDisclosure } from "../types/disclosure.types";
 import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
 import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
@@ -15,44 +15,148 @@ import STRINGS from "@/core/constants/strings.constant";
 import { purple } from "@mui/material/colors";
 import CardAvatar from "@/core/components/common/reusable-card/card-avatar.component";
 import { Link } from "react-router-dom";
+import { useMemo } from "react";
+import CustomBadge from "./custom-badge.component";
+
+const FormattedVisitResult = ({ disclosure }: { disclosure: TDisclosure }) => {
+  const colors = useMemo(() => {
+    switch (disclosure.visitResult) {
+      case "not_completed": {
+        return "warning";
+      }
+      case "cant_be_completed": {
+        return "error";
+      }
+      case "completed": {
+        return "success";
+      }
+      default: {
+        return "grey";
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [disclosure.visitResult]);
+
+  return (
+    <CustomBadge colors={colors}>
+      {disclosure.visitResult
+        ? STRINGS[disclosure.visitResult]
+        : STRINGS.hasnt_been_visited_yet}
+    </CustomBadge>
+  );
+};
+
+const FormattedRatingResult = ({ disclosure }: { disclosure: TDisclosure }) => {
+  const theme = useTheme();
+  const colors = useMemo(() => {
+    if (
+      !disclosure.ratingId &&
+      !disclosure.isCustomRating &&
+      !disclosure.customRating
+    ) {
+      return "grey";
+    }
+    return "info";
+
+    // case !!disclosure.customRating && !!disclosure.isCustomRating: {
+    //   return {
+    //     bgcolor: theme.palette.warning.main,
+    //     color: theme.palette.warning.contrastText,
+    //     ..._defaultStyles,
+    //   };
+    // }
+    // case "cant_be_completed": {
+    //   return {
+    //     bgcolor: theme.palette.error.main,
+    //     color: theme.palette.error.contrastText,
+    //
+    //     ..._defaultStyles,
+    //   };
+    // }
+    // case "completed": {
+    //   return {
+    //     bgcolor: theme.palette.success.main,
+    //     color: theme.palette.success.contrastText,
+    //     ..._defaultStyles,
+    //   };
+    // }
+    // default: {
+    //   return {
+    //     color: theme.palette.info.contrastText,
+    //     bgcolor: theme.palette.info.main,
+    //     ..._defaultStyles,
+    //   };
+    // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [disclosure.visitResult]);
+
+  return (
+    <CustomBadge colors={colors}>
+      {disclosure.rating?.name ||
+        (disclosure.isCustomRating && STRINGS.custom_rating) ||
+        STRINGS.hasnt_been_rated_yet}
+    </CustomBadge>
+  );
+};
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
-  const headerContent = <CardAvatar name={disclosure.patient.name} />;
+  const headerContent = (
+    <CardAvatar
+      name={disclosure.patient.name}
+      extras={
+        <Chip
+          label={disclosure.priority.name}
+          sx={{
+            bgcolor: (theme) =>
+              disclosure.priority.color || theme.palette.grey[800],
+            color: (theme) => theme.palette.info.contrastText,
+            zIndex: 1,
+          }}
+        />
+      }
+    />
+  );
 
   const bodyContent = (
     <Stack gap={2}>
       <DetailItemComponent
         icon={<InfoOutline />}
         label={STRINGS.status}
-        iconColorPreset="green"
-        value={STRINGS[disclosure.status]}
+        value={
+          <CustomBadge
+            colors={
+              disclosure.status === "active"
+                ? "success"
+                : disclosure.status === "suspended"
+                  ? "error"
+                  : "secondary"
+            }
+          >
+            {STRINGS[disclosure.status]}
+          </CustomBadge>
+        }
       />
 
       <DetailItemComponent
         icon={<Person />}
         label={STRINGS.disclosure_scout}
-        iconColorPreset="green"
         value={disclosure.scout?.name ?? STRINGS.none}
       />
 
       <DetailItemComponent
         icon={<HelpOutlined />}
-        label={`${STRINGS.visit} ( ${STRINGS[disclosure.visitResult]} )`}
-        content={STRINGS.visit_reason}
-        value={disclosure.visitReason ?? STRINGS.none}
+        label={`${STRINGS.last_visit_result} `}
+        value={<FormattedVisitResult disclosure={disclosure} />}
       />
-      {disclosure.visitNote && (
-        <DetailItemComponent
-          icon={<Comment />}
-          label={STRINGS.note}
-          value={disclosure.visitNote}
-        />
-      )}
+      <DetailItemComponent
+        icon={<HelpOutlined />}
+        label={`${STRINGS.last_rating_result} `}
+        value={<FormattedRatingResult disclosure={disclosure} />}
+      />
 
       <DetailItemComponent
         icon={<PriorityHighOutlined />}
         label={STRINGS.disclosure_created_at}
-        iconColorPreset="blue"
         value={formatDateTime(disclosure.createdAt)}
       />
     </Stack>
@@ -76,21 +180,22 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
             direction="row"
             justifyContent="space-between"
             alignItems="center"
-            gap={1}
+            gap={0.5}
           >
-            <Chip
-              variant="filled"
-              label={disclosure.priority.name}
-              sx={{
-                background: `${disclosure.priority.color}`,
-                color: (theme) => theme.palette.info.contrastText,
-                zIndex: 1,
-              }}
-            />
             {isAppointmentCompletedChip && (
-              <Chip label={isAppointmentCompletedChip} color="primary" />
+              <Chip
+                variant="outlined"
+                label={isAppointmentCompletedChip}
+                color="primary"
+              />
             )}
-            {isReceivedChip && <Chip label={isReceivedChip} color="primary" />}
+            {isReceivedChip && (
+              <Chip
+                variant="outlined"
+                label={isReceivedChip}
+                color="secondary"
+              />
+            )}
           </Stack>
 
           <Link to={`/disclosures/${disclosure.id}`}>

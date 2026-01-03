@@ -21,7 +21,7 @@ function DisclosureStatusAutocomplete<T extends boolean>({
       id: DisclosureStatus.active,
     },
     {
-      label: STRINGS.suspensedَ,
+      label: STRINGS.suspended,
       id: DisclosureStatus.suspended,
     },
     {

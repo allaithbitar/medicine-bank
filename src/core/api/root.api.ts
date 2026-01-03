@@ -44,7 +44,7 @@ const baseQueryWithReauth: BaseQueryFn<
         method: "POST",
       },
       api,
-      args
+      args,
     );
     if (refreshResult.error) {
       api.dispatch(authActions.logoutUser());
@@ -79,7 +79,10 @@ export const rootApi = createApi({
     "Detailed_Statistics",
     "Medicines",
     "Beneficiary_Medicines",
-    "Beneficiary_Autocomplete",
+    "Beneficiaries_Autocomplete",
+    "Employees_Autocomplete",
+    "Cities_Autocomplete",
+    "Areas_Autocomplete",
     "Calendar_Appointments",
     "Disclosure_Appointment",
     "Disclosure_Appointments",

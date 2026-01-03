@@ -1,9 +1,10 @@
-import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
-import Nodata from "@/core/components/common/no-data/no-data.component";
-import STRINGS from "@/core/constants/strings.constant";
-import Diversity3Icon from "@mui/icons-material/Diversity3";
-import type { TFamilyMember } from "../../types/beneficiary.types";
-import FamilyMemberCard from "./family-member-card.component";
+import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
+import Nodata from '@/core/components/common/no-data/no-data.component';
+import STRINGS from '@/core/constants/strings.constant';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
+import type { TFamilyMember } from '../../types/beneficiary.types';
+import FamilyMemberCard from './family-member-card.component';
+import { Button, Card, Stack } from '@mui/material';
 
 const FamilyMembersList = ({
   familyMembers,
@@ -15,13 +16,11 @@ const FamilyMembersList = ({
   onEdit: (m: TFamilyMember) => void;
 }) => {
   return (
-    <>
+    <Stack>
       {familyMembers.length === 0 && !isLoading && (
-        <Nodata
-          icon={Diversity3Icon}
-          title={STRINGS.no_data_found}
-          subTitle={STRINGS.add_to_see}
-        />
+        <Card>
+          <Nodata icon={Diversity3Icon} title={STRINGS.no_family_members} extra={<Button>{STRINGS.add}</Button>} />
+        </Card>
       )}
 
       <VirtualizedList
@@ -32,7 +31,7 @@ const FamilyMembersList = ({
       >
         {({ item }) => <FamilyMemberCard member={item} onEdit={onEdit} />}
       </VirtualizedList>
-    </>
+    </Stack>
   );
 };
 

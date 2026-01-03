@@ -2,35 +2,25 @@ import useForm, { type TFormSubmitResult } from "@/core/hooks/use-form.hook";
 
 import { Stack } from "@mui/material";
 import z from "zod";
-import DisclosureStatusAutocomplete from "./disclosure-status-autocomplete";
-import {
-  DisclosureStatus,
-  type TDisclosure,
-  type TDisclosureStatus,
-} from "../types/disclosure.types";
+import { type TDisclosure } from "../types/disclosure.types";
 import STRINGS from "@/core/constants/strings.constant";
 import EmployeesAutocomplete from "@/features/employees/components/employees-autocomplete.component";
-import type { TEmployee } from "@/features/employees/types/employee.types";
 import PriorityDegreesAutocomplete from "@/features/priority-degres/components/priority-degees-autocomplete.component";
 import type { TPriorityDegree } from "@/features/priority-degres/types/priority-degree.types";
 import { useEffect, useImperativeHandle, type Ref } from "react";
-import type { TBenefieciary } from "@/features/beneficiaries/types/beneficiary.types";
 import BeneficiariesAutocomplete from "@/features/beneficiaries/components/beneficiaries-autocomplete.component";
+import type { TAutocompleteItem } from "@/core/types/common.types";
+import FormTextAreaInput from "@/core/components/common/inputs/form-text-area-input.component";
 
 const createDisclosureSchema = (beneficiaryAlreadyDefined = false) =>
   z
     .object({
-      status: z.custom<{ id: TDisclosureStatus; label: string } | null>(
-        (data) => !!data,
-        {
-          message: "required",
-        },
-      ),
-      employee: z.custom<TEmployee | null>(),
-      beneficiary: z.custom<TBenefieciary | null>(),
+      employee: z.custom<TAutocompleteItem | null>(),
+      beneficiary: z.custom<TAutocompleteItem | null>(),
       priorityDegree: z.custom<TPriorityDegree | null>((data) => !!data, {
         message: "required",
       }),
+      initialNote: z.string(),
     })
     .superRefine((state, ctx) => {
       if (!beneficiaryAlreadyDefined && !state.beneficiary) {
@@ -63,13 +53,10 @@ const DisclosureActionForm = ({
     useForm({
       schema: createDisclosureSchema(beneficiaryAlreadyDefined),
       initalState: {
-        status: {
-          id: DisclosureStatus.active,
-          label: STRINGS.active,
-        },
         priorityDegree: null,
         employee: null,
         beneficiary: null,
+        initialNote: "",
       },
     });
 
@@ -86,31 +73,26 @@ const DisclosureActionForm = ({
   useEffect(() => {
     if (disclosureData) {
       setFormState({
-        beneficiary: disclosureData.patient,
         employee: disclosureData.scout
-          ? ({
+          ? {
               id: disclosureData.scout?.id,
               name: disclosureData.scout.name,
-            } as TEmployee)
+            }
+          : null,
+        beneficiary: disclosureData.patient
+          ? {
+              id: disclosureData.patient?.id,
+              name: disclosureData.patient.name,
+            }
           : null,
         priorityDegree: disclosureData.priority,
-        status: {
-          id: disclosureData.status,
-          label: STRINGS[disclosureData.status],
-        },
+        initialNote: disclosureData.initialNote ?? "",
       });
     }
   }, [disclosureData, setFormState]);
 
   return (
     <Stack gap={2}>
-      <DisclosureStatusAutocomplete
-        required
-        multiple={false}
-        value={formState.status}
-        onChange={(v) => setValue({ status: v })}
-        errorText={formErrors.status?.[0].message}
-      />
       <PriorityDegreesAutocomplete
         required
         multiple={false}
@@ -136,6 +118,12 @@ const DisclosureActionForm = ({
         value={formState.employee}
         onChange={(v) => setValue({ employee: v })}
         errorText={formErrors.employee?.[0].message}
+      />
+      <FormTextAreaInput
+        label={STRINGS.initial_note}
+        value={formState.initialNote}
+        onChange={(v) => setValue({ initialNote: v })}
+        errorText={formErrors.initialNote?.[0].message}
       />
     </Stack>
   );

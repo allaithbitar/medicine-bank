@@ -1,57 +1,45 @@
-import { useCallback, useMemo } from "react";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { Card, Divider, Stack, Button, Grid } from "@mui/material";
-import Add from "@mui/icons-material/Add";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import DifferenceIcon from "@mui/icons-material/Difference";
-import STRINGS from "@/core/constants/strings.constant";
-import PageLoading from "@/core/components/common/page-loading/page-loading.component";
-import ErrorCard from "@/core/components/common/error-card/error-card.component";
-import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
+import { useCallback, useMemo } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Card, Divider, Stack, Button, Grid } from '@mui/material';
+import Add from '@mui/icons-material/Add';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import DifferenceIcon from '@mui/icons-material/Difference';
+import STRINGS from '@/core/constants/strings.constant';
+import PageLoading from '@/core/components/common/page-loading/page-loading.component';
+import ErrorCard from '@/core/components/common/error-card/error-card.component';
+import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 
-import { useDisclosureLoader } from "../hooks/disclosure-loader.hook";
-import { Edit } from "@mui/icons-material";
-import DisclosureHeaderCard from "../components/disclosure-header-card";
-import DisclosureTabs from "../components/disclosure-tabs";
-import DisclosureDetailsSection from "../components/disclosure-details-section";
-import DisclosureNotesTab from "../components/tabs/disclosure-notes-tab";
-import DisclosureAppointmentTab from "../components/tabs/disclosure-appointment-tab";
-import DisclosureMedicinesTab from "../components/tabs/disclosure-medicines-tab";
-import DisclosureFamilyMembersTab from "../components/tabs/disclosure-family-members-tab";
-import DisclosureVisitAndRatingSection from "../components/disclosure-visit-and-rating-section";
+import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
+import { Edit } from '@mui/icons-material';
+import DisclosureHeaderCard from '../components/disclosure-header-card';
+import DisclosureTabs from '../components/disclosure-tabs';
+import DisclosureDetailsSection from '../components/disclosure-details-section';
+import DisclosureNotesTab from '../components/tabs/disclosure-notes-tab';
+import DisclosureAppointmentTab from '../components/tabs/disclosure-appointment-tab';
+import DisclosureMedicinesTab from '../components/tabs/disclosure-medicines-tab';
+import DisclosureFamilyMembersTab from '../components/tabs/disclosure-family-members-tab';
+import DisclosureVisitAndRatingSection from '../components/disclosure-visit-and-rating-section';
+import DisclosureProperties from './disclosure-properties.component';
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const tabIndex = Number(searchParams.get("tab") ?? 0);
+  const tabIndex = Number(searchParams.get('tab') ?? 0);
 
   const { disclosureId } = useParams<{ disclosureId: string }>();
   const navigate = useNavigate();
 
-  const {
-    data: disclosure,
-    isLoading,
-    error,
-  } = useDisclosureLoader({ id: disclosureId });
+  const { data: disclosure, isLoading, error } = useDisclosureLoader({ id: disclosureId });
 
   const openEditExtra = useCallback(
-    (section: "appointment" | "rating" | "visit" | "visit-rating") =>
+    (section: 'appointment' | 'rating' | 'visit' | 'visit-rating') =>
       navigate(`/disclosures/${section}/action`, { state: disclosure }),
     [navigate, disclosure]
   );
 
-  const openAudit = useCallback(
-    () => navigate(`/disclosures/${disclosure?.id}/audit`),
-    [navigate, disclosure?.id]
-  );
+  const openAudit = useCallback(() => navigate(`/disclosures/${disclosure?.id}/audit`), [navigate, disclosure?.id]);
 
   const openEditDetails = useCallback(
-    () =>
-      navigate(`/disclosures/details/action?disclosureId=${disclosure?.id}`),
+    () => navigate(`/disclosures/details/action?disclosureId=${disclosure?.id}`),
     [navigate, disclosure?.id]
   );
 
@@ -95,89 +83,54 @@ const DisclosurePage = () => {
     ]
   );
   if (error) return <ErrorCard error={error} />;
+
   if (isLoading || !disclosure) return <PageLoading />;
 
   return (
     <>
-      <Stack gap={3}>
-        <Card>
-          <Stack gap={1} sx={{ p: 0 }}>
-            <DisclosureHeaderCard disclosure={disclosure} />
-            <Divider />
-            <DisclosureDetailsSection details={disclosure.details} />
-            <DisclosureVisitAndRatingSection disclosure={disclosure} />
-            <Divider />
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
-                  <Button fullWidth startIcon={<Edit />}>
-                    {STRINGS.edit} {STRINGS.disclosure}
-                  </Button>
-                </Link>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Button
-                  fullWidth
-                  startIcon={<DifferenceIcon />}
-                  onClick={openAudit}
-                >
-                  {STRINGS.audit_log}
-                </Button>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Button
-                  fullWidth
-                  startIcon={<ListAltIcon />}
-                  onClick={openEditDetails}
-                >
-                  {STRINGS.edit} {STRINGS.disclosures_details}
-                </Button>
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Button
-                  fullWidth
-                  onClick={() => openEditExtra && openEditExtra("visit-rating")}
-                  startIcon={<Edit />}
-                >
-                  {`${STRINGS.edit} ${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`}
-                </Button>
-              </Grid>
-            </Grid>
-          </Stack>
-        </Card>
+      <Stack gap={1}>
+        <DisclosureHeaderCard disclosure={disclosure} />
+        <DisclosureVisitAndRatingSection disclosure={disclosure} />
+        <Button fullWidth startIcon={<DifferenceIcon />} onClick={openAudit}>
+          {STRINGS.audit_log}
+        </Button>
+        <Button fullWidth startIcon={<ListAltIcon />} onClick={openEditDetails}>
+          {STRINGS.edit} {STRINGS.disclosures_details}
+        </Button>
 
-        <Card>
-          <DisclosureTabs
-            value={tabIndex}
-            onChange={(newTab) =>
-              setSearchParams(
-                {
-                  ...Object.fromEntries(searchParams.entries()),
-                  tab: String(newTab),
-                },
-                { replace: true }
-              )
-            }
-            tabs={[
+        <DisclosureProperties disclosure={disclosure} />
+
+        <DisclosureTabs
+          value={tabIndex}
+          onChange={(newTab) =>
+            setSearchParams(
               {
-                label: STRINGS.notes,
-                node: <DisclosureNotesTab {...tabProps} />,
+                ...Object.fromEntries(searchParams.entries()),
+                tab: String(newTab),
               },
-              {
-                label: STRINGS.appointment,
-                node: <DisclosureAppointmentTab {...tabProps} />,
-              },
-              {
-                label: STRINGS.medicines,
-                node: <DisclosureMedicinesTab {...tabProps} />,
-              },
-              {
-                label: STRINGS.family_members,
-                node: <DisclosureFamilyMembersTab {...tabProps} />,
-              },
-            ]}
-          />
-        </Card>
+              { replace: true }
+            )
+          }
+          tabs={[
+            {
+              label: STRINGS.disclosures_details,
+              node: <DisclosureDetailsSection details={disclosure.details} {...tabProps} />,
+            },
+
+            {
+              label: STRINGS.notes,
+              node: <DisclosureNotesTab {...tabProps} />,
+            },
+            {
+              label: STRINGS.medicines,
+              node: <DisclosureMedicinesTab {...tabProps} />,
+            },
+            {
+              label: STRINGS.family_members,
+              node: <DisclosureFamilyMembersTab {...tabProps} />,
+            },
+          ]}
+        />
       </Stack>
 
       <ActionsFab

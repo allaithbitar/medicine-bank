@@ -31,7 +31,6 @@ const EmployeeManagement = () => {
         }
       />
 
-      <EmployeesList />
       <Fab
         color="primary"
         aria-label="add"

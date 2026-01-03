@@ -4,6 +4,7 @@ import { useCallback, useImperativeHandle, type Ref } from "react";
 import type {
   TDisclosureStatus,
   TDisclosureType,
+  TDisclosureVisitResult,
   TGetDisclosuresDto,
 } from "../types/disclosure.types";
 import DisclosureStatusAutocomplete from "./disclosure-status-autocomplete";
@@ -11,17 +12,17 @@ import FormDateInput from "@/core/components/common/inputs/form-date-input-compo
 import STRINGS from "@/core/constants/strings.constant";
 import FieldSet from "@/core/components/common/fieldset/fieldset.component";
 import EmployeesAutocomplete from "@/features/employees/components/employees-autocomplete.component";
-import { type TEmployee } from "@/features/employees/types/employee.types";
 import PriorityDegreesAutocomplete from "@/features/priority-degres/components/priority-degees-autocomplete.component";
 import type { TPriorityDegree } from "@/features/priority-degres/types/priority-degree.types";
 import type { TRating } from "@/features/ratings/types/rating.types";
 import RatingsAutocomplete from "@/features/ratings/components/ratings-autocomplete.component";
-import type { TBenefieciary } from "@/features/beneficiaries/types/beneficiary.types";
 import BeneficiariesAutocomplete from "@/features/beneficiaries/components/beneficiaries-autocomplete.component";
 import FormCheckbxInput from "@/core/components/common/inputs/form-checkbox-input.component";
 import DisclosureTypeAutocomplete from "./disclosure-type-autocomplete.component";
 import useStorage from "@/core/hooks/use-storage.hook";
 import FormSelectInput from "@/core/components/common/inputs/form-select-input.component";
+import type { TAutocompleteItem } from "@/core/types/common.types";
+import DisclosureVisitResultAutocomplete from "./disclosure-visit-result-autocomplete.component";
 
 const parseStringBooleanValue = (value: "true" | "false" | string) => {
   if (value === "true") return true;
@@ -51,12 +52,14 @@ const defaultValues = {
   scouts: [],
   priorityDegrees: [],
   ratings: [],
+  visitResult: [],
   beneficiary: null,
-  undelivered: false,
   isCustomRating: false,
   isAppointmentCompleted: "",
   isReceived: "",
   appointmentDate: "",
+  undelivered: false,
+  unvisited: false,
 };
 
 const DisclosureFilters = ({ ref }: TProps) => {
@@ -64,15 +67,17 @@ const DisclosureFilters = ({ ref }: TProps) => {
     {
       type: { id: TDisclosureType; label: string }[];
       status: { id: TDisclosureStatus; label: string }[];
-      scouts: TEmployee[];
+      scouts: TAutocompleteItem[];
       priorityDegrees: TPriorityDegree[];
       ratings: TRating[];
+      visitResult: { id: TDisclosureVisitResult; label: string }[];
       isCustomRating: boolean;
-      beneficiary: TBenefieciary | null;
-      undelivered: boolean;
+      beneficiary: TAutocompleteItem | null;
       appointmentDate: string;
       isAppointmentCompleted: string;
       isReceived: string;
+      undelivered: boolean;
+      unvisited: boolean;
     } & Pick<TGetDisclosuresDto, "createdAtStart" | "createdAtEnd">
   >("disclosure-filters", defaultValues);
 
@@ -83,6 +88,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
       ratingIds: filters.ratings.map((r) => r.id),
       status: filters.status.map((s) => s.id),
       type: filters.type.map((s) => s.id),
+      visitResult: filters.visitResult.map((s) => s.id),
     };
     if (filters.beneficiary) {
       result.patientId = filters.beneficiary.id;
@@ -112,7 +118,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
 
     if (filters.isCustomRating) result.isCustomRating = filters.isCustomRating;
 
-    // if (filters.isReceived) result.isReceived = filters.isReceived;
+    if (filters.unvisited) result.unvisited = filters.unvisited;
 
     return result;
   }, [filters]);
@@ -181,11 +187,25 @@ const DisclosureFilters = ({ ref }: TProps) => {
           setFilters((prev) => ({ ...prev, priorityDegrees }))
         }
       />
-      <RatingsAutocomplete
-        disabled={filters.isCustomRating}
+      <FormCheckbxInput
+        label={STRINGS.hasnt_been_visited_yet}
+        value={filters.unvisited}
+        onChange={(value) => {
+          setFilters((prev) => ({
+            ...prev,
+            unvisited: value,
+            ...(value && { visitResult: [], ratings: [] }),
+          }));
+        }}
+      />
+
+      <DisclosureVisitResultAutocomplete
         multiple
-        value={filters.ratings}
-        onChange={(ratings) => setFilters((prev) => ({ ...prev, ratings }))}
+        disabled={filters.unvisited}
+        value={filters.visitResult}
+        onChange={(visitResult) =>
+          setFilters((prev) => ({ ...prev, visitResult }))
+        }
       />
       <FormCheckbxInput
         label={STRINGS.custom_rating}
@@ -197,6 +217,12 @@ const DisclosureFilters = ({ ref }: TProps) => {
             ...(value && { ratings: [] }),
           }));
         }}
+      />
+      <RatingsAutocomplete
+        disabled={filters.isCustomRating}
+        multiple
+        value={filters.ratings}
+        onChange={(ratings) => setFilters((prev) => ({ ...prev, ratings }))}
       />
 
       <FieldSet label={STRINGS.created_at}>

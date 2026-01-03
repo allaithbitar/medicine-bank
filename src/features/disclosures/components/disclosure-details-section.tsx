@@ -1,42 +1,52 @@
-import { Stack, Typography, Box } from "@mui/material";
-import Header from "@/core/components/common/header/header";
-import STRINGS from "@/core/constants/strings.constant";
-import theme from "@/core/theme/index.theme";
+import { Stack, Typography, Box, Button, Card } from '@mui/material';
+import Header from '@/core/components/common/header/header';
+import STRINGS from '@/core/constants/strings.constant';
+import theme from '@/core/theme/index.theme';
+import Nodata from '@/core/components/common/no-data/no-data.component';
+import { Link } from 'react-router-dom';
+import CustomBadge from './custom-badge.component';
 
 const DisclosureDetailsSection = ({
   details,
+  disclosureId,
 }: {
   details?: Record<string, any> | null;
+  disclosureId?: string;
 }) => {
-  if (!details || Object.keys(details).length === 0) return null;
+  const hasNoDetails = !details || Object.keys(details).length === 0;
+
+  if (hasNoDetails)
+    return (
+      <Card>
+        <Nodata
+          title={STRINGS.no_details}
+          extra={
+            <Link to={`/disclosures/details/action?disclosureId=${disclosureId}`}>
+              <Button>{STRINGS.add}</Button>
+            </Link>
+          }
+        />
+      </Card>
+    );
 
   return (
-    <>
-      <Box sx={{ px: 2, pt: 1 }}>
-        <Header title={STRINGS.disclosures_details} />
-      </Box>
-
-      <Stack gap={2} sx={{ p: 2 }}>
+    <Card>
+      <Header title={STRINGS.disclosures_details} />
+      <Stack gap={3}>
         {Object.entries(details).map(([key, val]) => (
           <Stack key={key} gap={1}>
-            <Typography
-              variant="body1"
-              sx={{
-                bgcolor: theme.palette.grey[200],
-                px: 1,
-                py: 0.5,
-                borderRadius: 0.5,
-              }}
-            >
-              {STRINGS[key as keyof typeof STRINGS] ?? key}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Card sx={{ px: 2, py: 0.5 }}>
+              <Typography variant="subtitle1" textAlign="center">
+                {STRINGS[key as keyof typeof STRINGS] ?? key}
+              </Typography>
+            </Card>
+            <Typography variant="subtitle2" color="text.secondary">
               {val ? String(val) : STRINGS.none}
             </Typography>
           </Stack>
         ))}
       </Stack>
-    </>
+    </Card>
   );
 };
 

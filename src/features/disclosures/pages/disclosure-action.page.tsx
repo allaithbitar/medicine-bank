@@ -1,40 +1,32 @@
-import { Card } from "@mui/material";
-import DisclosureActionForm, {
-  type TDisclosureFormHandlers,
-} from "../components/disclosure-action-form.component";
-import { useRef } from "react";
-import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
-import { Save } from "@mui/icons-material";
-import disclosuresApi from "../api/disclosures.api";
-import type { TAddDisclosureDto } from "../types/disclosure.types";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/core/components/common/toast/toast";
-import STRINGS from "@/core/constants/strings.constant";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import { Card } from '@mui/material';
+import DisclosureActionForm, { type TDisclosureFormHandlers } from '../components/disclosure-action-form.component';
+import { useRef } from 'react';
+import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
+import { Save } from '@mui/icons-material';
+import disclosuresApi from '../api/disclosures.api';
+import type { TAddDisclosureDto } from '../types/disclosure.types';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import STRINGS from '@/core/constants/strings.constant';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 
 const DisclosureActionPage = () => {
   const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
 
-  const beneficiaryId = searchParams.get("beneficiaryId");
+  const beneficiaryId = searchParams.get('beneficiaryId');
 
-  const disclosureId = searchParams.get("disclosureId");
+  const disclosureId = searchParams.get('disclosureId');
 
-  const { data: disclosureData, isFetching: isGetting } =
-    disclosuresApi.useGetDisclosureQuery(
-      { id: disclosureId! },
-      { skip: !disclosureId }
-    );
+  const { data: disclosureData, isFetching: isGetting } = disclosuresApi.useGetDisclosureQuery(
+    { id: disclosureId! },
+    { skip: !disclosureId }
+  );
 
-  const [addDisclosure, { isLoading: isAdding }] =
-    disclosuresApi.useAddDisclosureMutation();
+  const [addDisclosure, { isLoading: isAdding }] = disclosuresApi.useAddDisclosureMutation();
 
-  const [updateDisclosure, { isLoading: isUpdating }] =
-    disclosuresApi.useUpdateDisclosureMutation();
+  const [updateDisclosure, { isLoading: isUpdating }] = disclosuresApi.useUpdateDisclosureMutation();
 
   const ref = useRef<TDisclosureFormHandlers | null>(null);
 
@@ -44,19 +36,20 @@ const DisclosureActionPage = () => {
 
     try {
       const addDto: TAddDisclosureDto = {
-        status: result.status?.id,
         scoutId: result.employee?.id ?? null,
         patientId: beneficiaryId ?? result.beneficiary!.id,
         priorityId: result.priorityDegree!.id,
+        initialNote: result.initialNote || null,
       };
 
       if (!disclosureId) {
         const { error } = await addDisclosure(addDto);
+        console.log('1');
 
         if (error) {
           notifyError(error);
         } else {
-          navigate(-1);
+          navigate('/disclosures');
           notifySuccess(STRINGS.added_successfully);
         }
       } else {
@@ -64,10 +57,11 @@ const DisclosureActionPage = () => {
           ...addDto,
           id: disclosureId,
         });
+
         if (error) {
           notifyError(error);
         } else {
-          navigate(-1);
+          navigate(`/disclosures/${disclosureId}`);
           notifySuccess(STRINGS.edited_successfully);
         }
       }
@@ -79,17 +73,8 @@ const DisclosureActionPage = () => {
 
   return (
     <Card>
-      <DisclosureActionForm
-        ref={ref}
-        beneficiaryAlreadyDefined={!!beneficiaryId}
-        disclosureData={disclosureData}
-      />
-      <ActionFab
-        icon={<Save />}
-        color="success"
-        onClick={handleSave}
-        disabled={isLoading}
-      />
+      <DisclosureActionForm ref={ref} beneficiaryAlreadyDefined={!!beneficiaryId} disclosureData={disclosureData} />
+      <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}
     </Card>
   );

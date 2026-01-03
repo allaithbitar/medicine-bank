@@ -1,22 +1,13 @@
-import DetailItem from "@/core/components/common/detail-item/detail-item.component";
-import STRINGS from "@/core/constants/strings.constant";
-import { formatDateTime } from "@/core/helpers/helpers";
-import type { TBenefieciary } from "@/features/beneficiaries/types/beneficiary.types";
-import Man4Icon from "@mui/icons-material/Man4";
-import {
-  Person,
-  Pin,
-  Phone,
-  LocationPin,
-  EventAvailable,
-  Info,
-  Edit,
-  History,
-} from "@mui/icons-material";
-import { Stack, Button } from "@mui/material";
-import { Link } from "react-router-dom";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import WorkIcon from "@mui/icons-material/Work";
+import DetailItem from '@/core/components/common/detail-item/detail-item.component';
+import STRINGS from '@/core/constants/strings.constant';
+import { formatDateTime } from '@/core/helpers/helpers';
+import type { TBenefieciary } from '@/features/beneficiaries/types/beneficiary.types';
+import Man4Icon from '@mui/icons-material/Man4';
+import { Person, Pin, Phone, LocationPin, EventAvailable, Info, Edit, History } from '@mui/icons-material';
+import { Stack, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import WorkIcon from '@mui/icons-material/Work';
 
 interface IBeneficiaryCommonCard {
   beneficiary: TBenefieciary;
@@ -25,30 +16,14 @@ interface IBeneficiaryCommonCard {
 function BeneficiaryCommonCard({ beneficiary }: IBeneficiaryCommonCard) {
   return (
     <Stack gap={2}>
-      <DetailItem
-        label={STRINGS.beneficiary}
-        icon={<Person />}
-        value={beneficiary.name}
-      />
-      <DetailItem
-        label={STRINGS.national_number}
-        icon={<Pin />}
-        value={beneficiary.nationalNumber}
-      />
-      <DetailItem
-        label={STRINGS.phones}
-        icon={<Phone />}
-        value={beneficiary?.phones?.map((p) => p.phone).join(", ")}
-      />
+      <DetailItem label={STRINGS.beneficiary} icon={<Person />} value={beneficiary.name} />
+      <DetailItem label={STRINGS.national_number} icon={<Pin />} value={beneficiary.nationalNumber} />
+      <DetailItem label={STRINGS.phones} icon={<Phone />} value={beneficiary?.phones?.map((p) => p.phone).join(', ')} />
       {
         <DetailItem
           icon={<CalendarTodayIcon />}
           label={STRINGS.birth_date}
-          value={
-            beneficiary.birthDate
-              ? (beneficiary.birthDate, false)
-              : STRINGS.none
-          }
+          value={beneficiary.birthDate || STRINGS.none}
         />
       }
       <DetailItem
@@ -59,12 +34,12 @@ function BeneficiaryCommonCard({ beneficiary }: IBeneficiaryCommonCard) {
       <DetailItem
         icon={<LocationPin />}
         label={STRINGS.patient_address}
-        value={`${beneficiary.area?.name ?? ""}  - ${beneficiary.address}`}
+        value={`${beneficiary.area?.name ?? ''}  - ${beneficiary.address}`}
       />
       <DetailItem
         icon={<Man4Icon />}
         label={STRINGS.gender}
-        value={STRINGS[beneficiary.gender]}
+        value={beneficiary.gender ? STRINGS[beneficiary.gender] : STRINGS.none}
       />
 
       <DetailItem
@@ -72,21 +47,14 @@ function BeneficiaryCommonCard({ beneficiary }: IBeneficiaryCommonCard) {
         label={STRINGS.Patient_created_at}
         value={formatDateTime(beneficiary.createdAt)}
       />
-      <DetailItem
-        icon={<History />}
-        label={STRINGS.patient_updated_at}
-        value={formatDateTime(beneficiary.updatedAt)}
-      />
+      <DetailItem icon={<History />} label={STRINGS.patient_updated_at} value={formatDateTime(beneficiary.updatedAt)} />
       <DetailItem
         icon={<Info />}
         label={STRINGS.patient_about}
         value={beneficiary.about ? beneficiary.about : STRINGS.none}
       />
-      <Link
-        to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}
-        style={{ marginInlineStart: "auto" }}
-      >
-        <Button startIcon={<Edit />}>
+      <Link to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}>
+        <Button fullWidth startIcon={<Edit />}>
           {STRINGS.edit} {STRINGS.patient}
         </Button>
       </Link>

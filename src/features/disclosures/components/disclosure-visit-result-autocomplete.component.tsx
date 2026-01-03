@@ -6,7 +6,7 @@ import {
   type TDisclosureVisitResult,
 } from "../types/disclosure.types";
 
-type TResultAutocompleteProps<T extends boolean> = Partial<
+type TStatusAutocompleteProps<T extends boolean> = Partial<
   ComponentProps<
     typeof FormAutocompleteInput<
       { id: TDisclosureVisitResult; label: string },
@@ -17,14 +17,14 @@ type TResultAutocompleteProps<T extends boolean> = Partial<
 
 function DisclosureVisitResultAutocomplete<T extends boolean>({
   ...props
-}: TResultAutocompleteProps<T>) {
+}: TStatusAutocompleteProps<T>) {
   const options = [
     {
-      label: STRINGS.not_completed,
+      label: `${STRINGS.not_completed} (${STRINGS.hg})`,
       id: DisclosureVisitResult.not_completed,
     },
     {
-      label: STRINGS.cant_be_completed,
+      label: `${STRINGS.cant_be_completed} (${STRINGS.hg_plus})`,
       id: DisclosureVisitResult.cant_be_completed,
     },
     {

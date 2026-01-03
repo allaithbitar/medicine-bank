@@ -15,7 +15,6 @@ import ActionsFab from "@/core/components/common/actions-fab/actions-fab.compone
 import BeneficiaryCommonCard from "@/shared/components/beneficiary-common-card";
 
 const BeneficiaryPage = () => {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = Number(searchParams.get("tab") ?? 0);
   const { id } = useParams();
@@ -31,10 +30,6 @@ const BeneficiaryPage = () => {
   //   });
   // };
 
-  const handleAddBeneficiaryDisclosure = () => {
-    navigate(`/disclosures/action?beneficiaryId=${beneficiary?.id}`);
-  };
-
   // const handleOpenFamilyMembersActionPage = (oldMember?: TFamilyMember) => {
   //   navigate(`/beneficiaries/${beneficiary?.id}/family/action`, {
   //     state: { oldMember },
@@ -44,67 +39,11 @@ const BeneficiaryPage = () => {
   if (isLoading || !beneficiary) return <PageLoading />;
 
   return (
-    <Stack gap={2}>
+    <Stack gap={1}>
       <Card>
         <BeneficiaryCommonCard beneficiary={beneficiary} />
       </Card>
-      <Tabs
-        variant="fullWidth"
-        value={currentTab}
-        onChange={(_, v) =>
-          setSearchParams((prev) => ({ ...prev, tab: v }), { replace: true })
-        }
-        slotProps={{
-          indicator: {
-            sx: {
-              height: "15%",
-              borderRadius: 10,
-            },
-          },
-        }}
-      >
-        <Tab label={STRINGS.disclosures} />
-        {/* <Tab label={STRINGS.medicines} />
-        <Tab label={STRINGS.family_members} /> */}
-      </Tabs>
-      {currentTab === 0 && (
-        <BeneficiaryDisclosures beneficiaryId={beneficiary.id} />
-      )}
-      {/* {currentTab === 1 && (
-        <BeneficiaryMedicines
-          onEditBeneficiaryMedicine={(bm) =>
-            handleOpenBeneficiaryMedicineActionPage(bm)
-          }
-          beneficiaryId={beneficiary.id}
-        />
-      )}
-      {currentTab === 2 && (
-        <BeneficiaryFamilyMembers
-          onEditBeneficiaryFamilyMember={(m) =>
-            handleOpenFamilyMembersActionPage(m)
-          }
-          beneficiaryId={beneficiary.id}
-        />
-      )} */}
-      <ActionsFab
-        actions={[
-          {
-            icon: <Add />,
-            label: STRINGS.disclosures,
-            onClick: () => handleAddBeneficiaryDisclosure(),
-          },
-          // {
-          //   icon: <Add />,
-          //   label: STRINGS.add_medicine,
-          //   onClick: () => handleOpenBeneficiaryMedicineActionPage(undefined),
-          // },
-          // {
-          //   icon: <Add />,
-          //   label: STRINGS.add_family_member,
-          //   onClick: () => handleOpenFamilyMembersActionPage(undefined),
-          // },
-        ]}
-      />
+      <BeneficiaryDisclosures beneficiaryId={beneficiary.id} />
     </Stack>
   );
 };

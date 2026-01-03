@@ -6,15 +6,16 @@ import { TPaginationDto } from "../../../core/types/common.types";
 
 export type TAddBeneficiaryDto = {
   name: string;
-  nationalNumber: string;
-  areaId?: string | null | undefined;
-  address?: string;
-  about?: string;
   phoneNumbers: string[];
-  birthDate: string;
-  job: string;
+} & Partial<{
+  nationalNumber: string | null;
+  areaId: string | null;
+  address: string | null;
+  about: string | null;
+  birthDate: string | null;
+  job: string | null;
   gender: string | null;
-};
+}>;
 
 export type TUpdateBeneficiaryDto = TAddBeneficiaryDto & { id: string };
 
@@ -56,7 +57,7 @@ export type TBenefieciary = {
   phones: TBeneficiaryPhone[];
   birthDate: string;
   job: string;
-  gender: string | null;
+  gender: "male" | "female" | null;
 } & TBeneficiaryArea;
 
 export type TBeneficiaryMedicine = {

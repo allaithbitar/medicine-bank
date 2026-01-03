@@ -1,37 +1,32 @@
-import type {
-  TActioner,
-  TCreatedBy,
-  TPaginationDto,
-  TUpdatedBy,
-} from "@/core/types/common.types";
-import type { TAppointment } from "@/features/appointments/types/appointment.type";
-import type { TBenefieciary } from "@/features/beneficiaries/types/beneficiary.types";
-import type { TPriorityDegree } from "@/features/priority-degres/types/priority-degree.types";
-import type { TRating } from "@/features/ratings/types/rating.types";
+import type { TActioner, TCreatedBy, TPaginationDto, TUpdatedBy } from '@/core/types/common.types';
+import type { TAppointment } from '@/features/appointments/types/appointment.type';
+import type { TBenefieciary } from '@/features/beneficiaries/types/beneficiary.types';
+import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
+import type { TRating } from '@/features/ratings/types/rating.types';
 
 export const DisclosureType = {
-  new: "new",
-  help: "help",
-  return: "return",
+  new: 'new',
+  help: 'help',
+  return: 'return',
 } as const;
 
 export const DisclosureStatus = {
-  active: "active",
-  suspended: "suspended",
-  archived: "archived",
+  active: 'active',
+  suspended: 'suspended',
+  archived: 'archived',
 } as const;
 
 export const DisclosureVisitResult = {
-  not_completed: "not_completed",
-  cant_be_completed: "cant_be_completed",
-  completed: "completed",
+  not_completed: 'not_completed',
+  cant_be_completed: 'cant_be_completed',
+  completed: 'completed',
 } as const;
 
 export type TDisclosureStatus = keyof typeof DisclosureStatus;
 
 export type TDisclosureType = keyof typeof DisclosureType;
 
-export type TDisclosureVisitResult = keyof typeof DisclosureVisitResult;
+export type TDisclosureVisitResult = keyof typeof DisclosureVisitResult | null;
 
 export type TDisclosureScout =
   | {
@@ -64,21 +59,24 @@ export type TDisclosure = {
   priority: TPriorityDegree;
   isReceived: boolean;
   //
-  ratingNote: string | null;
-  rating: TRating;
-  customRating: string;
-  isCustomRating: boolean;
+  // ratingNote: string | null;
+  // rating: TRating | null;
+  // ratingId: string | null;
+  // customRating: string;
+  // isCustomRating: boolean;
   details: TDisclosureDetails | null;
 } & TDisclosureScout &
   TCreatedBy &
   TUpdatedBy &
   TVisit &
-  TAppointment;
+  TAppointment &
+  TDisclosureRating;
+
 export type TGetDisclosuresDto = Partial<
   TPaginationDto & {
     isReceived: boolean;
     archiveNumber: number;
-    visitResult: TDisclosureVisitResult;
+    visitResult: TDisclosureVisitResult[];
     isCustomRating: boolean;
     appointmentDate: string;
     isAppointmentCompleted: boolean;
@@ -91,6 +89,7 @@ export type TGetDisclosuresDto = Partial<
     status: TDisclosureStatus[];
     type: TDisclosureType[];
     undelivered: boolean;
+    unvisited: boolean;
   }
 >;
 
@@ -99,24 +98,35 @@ export type TAddDisclosureDto = {
   scoutId?: string | null;
   patientId: string;
   priorityId: string;
-  details?: object;
+  details?: object | null;
+  initialNote?: string | null;
 };
 
-export type TUpdateDisclosureDto = Partial<TAddDisclosureDto> & { id: string };
+export type TUpdateDisclosureDto = Partial<Omit<TDisclosure, 'scout'>> & {
+  id: string;
+};
 
-export type TDisclosureRating =
+export type TDisclosureRating = {
+  ratingNote: string | null;
+} & (
   | {
       ratingId: string;
       rating: TRating;
-      isCustom: false;
+      isCustomRating: false;
       customRating: null;
     }
   | {
       ratingId: null;
       rating: null;
-      isCustom: true;
+      isCustomRating: true;
       customRating: string;
-    };
+    }
+);
+
+export type TUpdateDisclosureVisitAndRatingDto = Pick<
+  TUpdateDisclosureDto,
+  'ratingNote' | 'ratingId' | 'customRating' | 'isCustomRating' | 'visitNote' | 'visitResult' | 'visitReason' | 'id'
+>;
 
 // export type TAddDisclosureRatingDto = Pick<
 //   TDisclosureRating,
@@ -153,13 +163,10 @@ export type TGetDisclosureRatingsDto = TPaginationDto & {
 
 export type TGetDisclosureVisitsDto = TPaginationDto & {
   disclosureId: string;
-  result?: TDisclosureVisit["result"];
+  result?: TDisclosureVisit['result'];
 };
 
-export type TAddDisclosureVisitDto = Pick<
-  TDisclosureVisit,
-  "disclosureId" | "result" | "reason" | "note"
->;
+export type TAddDisclosureVisitDto = Pick<TDisclosureVisit, 'disclosureId' | 'result' | 'reason' | 'note'>;
 
 export type TUpdateDisclosureVisitDto = TAddDisclosureVisitDto & { id: string };
 
@@ -181,7 +188,7 @@ export type TUpdateDisclosureNotePayload = FormData;
 
 export type TDisclosureAdviserConsultation = {
   id: string;
-  consultationStatus: "pending" | "completed";
+  consultationStatus: 'pending' | 'completed';
   disclosureRatingId: string;
   disclosureId: string;
   disclosureRating: TDisclosureRating;
@@ -245,7 +252,4 @@ export type TGetDateAppointmentsDto = TPaginationDto & {
   employeeId?: string;
 };
 
-export type TAppointmentsResponse = Record<
-  string,
-  { id: string; isAppointmentCompleted: boolean }[]
->;
+export type TAppointmentsResponse = Record<string, { id: string; isAppointmentCompleted: boolean }[]>;

@@ -2,8 +2,8 @@ import { useState, type ComponentProps } from "react";
 import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
 import { getErrorMessage } from "@/core/helpers/helpers";
 import STRINGS from "@/core/constants/strings.constant";
-import beneficiaryApi from "../api/beneficiary.api";
 import useDebounce from "@/core/hooks/use-debounce.hook";
+import autocompleteApi from "@/features/autocomplete/api/autocomplete.api";
 
 type TBeneficiariesAutocomplete<T extends boolean> = Partial<
   ComponentProps<typeof FormAutocompleteInput<{ id: string; name: string }, T>>
@@ -13,14 +13,14 @@ function BeneficiariesAutocomplete<T extends boolean>({
   ...props
 }: TBeneficiariesAutocomplete<T>) {
   const [query, setQuery] = useState("");
-  const debouncedSearchTerm = useDebounce<string>(query, 300);
+  const debouncedQuery = useDebounce(query);
   const {
     data: { items: employees = [] } = { items: [] },
     isFetching,
     isLoading,
     error,
-  } = beneficiaryApi.useGetAutocompletePatientsQuery({
-    query: debouncedSearchTerm,
+  } = autocompleteApi.usePatientsAutocompleteQuery({
+    query: debouncedQuery,
   });
 
   return (

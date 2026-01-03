@@ -1,9 +1,10 @@
-import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
-import Nodata from "@/core/components/common/no-data/no-data.component";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-import STRINGS from "@/core/constants/strings.constant";
-import type { TBeneficiaryMedicine } from "../../types/beneficiary.types";
-import BeneficiaryMedicineCard from "./beneficiary-medicine-card.component";
+import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
+import Nodata from '@/core/components/common/no-data/no-data.component';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import STRINGS from '@/core/constants/strings.constant';
+import type { TBeneficiaryMedicine } from '../../types/beneficiary.types';
+import BeneficiaryMedicineCard from './beneficiary-medicine-card.component';
+import { Button, Card } from '@mui/material';
 
 const BeneficiaryMedicinesList = ({
   items,
@@ -17,11 +18,13 @@ const BeneficiaryMedicinesList = ({
   return (
     <>
       {items.length === 0 && !isLoading && (
-        <Nodata
-          icon={MedicalServicesIcon}
-          title={STRINGS.no_medicines_found}
-          subTitle={STRINGS.add_to_see}
-        />
+        <Card>
+          <Nodata
+            icon={MedicalServicesIcon}
+            title={STRINGS.no_medicines_found}
+            extra={<Button>{STRINGS.add}</Button>}
+          />
+        </Card>
       )}
 
       <VirtualizedList

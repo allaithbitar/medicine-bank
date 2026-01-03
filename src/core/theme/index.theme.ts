@@ -1,11 +1,11 @@
 // src/theme/index.ts (or wherever you define your MUI theme)
-import { grey } from "@mui/material/colors";
-import { createTheme } from "@mui/material/styles";
+import { grey } from '@mui/material/colors';
+import { createTheme } from '@mui/material/styles';
 
 const baseTheme = createTheme();
 
 const theme = createTheme({
-  direction: "rtl",
+  direction: 'rtl',
   spacing: 8,
   shape: {
     borderRadius: 3,
@@ -14,20 +14,19 @@ const theme = createTheme({
   shadows: baseTheme.shadows,
   transitions: baseTheme.transitions,
   typography: {
-    fontFamily: "alexandria",
+    fontFamily: 'alexandria',
   },
 
   components: {
     MuiGrid: {
       defaultProps: {
-        component: "div",
+        component: 'div',
       },
     },
     MuiButton: {
       defaultProps: {
         disableElevation: true,
-        variant: "contained",
-        size: "large",
+        variant: 'contained',
       },
     },
     MuiCard: {
@@ -44,7 +43,7 @@ const theme = createTheme({
   },
   custom: {
     containerWidths: {
-      mobile: "100%",
+      mobile: '100%',
       card: 400,
       cardSm: 450,
       cardMd: 500,
@@ -54,7 +53,7 @@ const theme = createTheme({
   },
 });
 
-declare module "@mui/material/styles" {
+declare module '@mui/material/styles' {
   interface Theme {
     custom: {
       containerWidths: {

@@ -15,7 +15,6 @@ interface IDetailItemProps {
   iconColorPreset?: keyof typeof iconColorPresets;
   value: ReactNode;
   actions?: ReactNode;
-  content?: ReactNode;
 }
 
 const DetailItem = ({

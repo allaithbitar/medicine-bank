@@ -28,6 +28,7 @@ const schema = z
   });
 export type TDisclosureVisitFormHandlers = {
   handleSubmit: () => Promise<TFormSubmitResult<z.infer<typeof schema>>>;
+  formState: z.infer<typeof schema>;
 };
 
 type TProps = {
@@ -52,8 +53,9 @@ const DisclosureVisitActionForm = ({ ref, disclosureVisitData }: TProps) => {
       handleSubmit() {
         return handleSubmit();
       },
+      formState,
     }),
-    [handleSubmit]
+    [handleSubmit, formState],
   );
 
   useEffect(() => {

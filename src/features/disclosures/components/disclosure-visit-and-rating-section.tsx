@@ -1,75 +1,108 @@
-import DetailItem from "@/core/components/common/detail-item/detail-item.component";
-import Header from "@/core/components/common/header/header";
-import STRINGS from "@/core/constants/strings.constant";
-import { Comment, HelpOutlined, RateReview } from "@mui/icons-material";
-import { Stack, Divider, Typography } from "@mui/material";
-import type { TDisclosure } from "../types/disclosure.types";
+import Header from '@/core/components/common/header/header';
+import STRINGS from '@/core/constants/strings.constant';
+import { Edit } from '@mui/icons-material';
+import { Stack, Divider, Typography, Card, Button } from '@mui/material';
+import type { TDisclosure } from '../types/disclosure.types';
+import CustomBadge from './custom-badge.component';
+import { Link } from 'react-router-dom';
 
-function DisclosureVisitAndRatingSection({
-  disclosure,
-}: {
-  disclosure: TDisclosure;
-}) {
+function DisclosureVisitAndRatingSection({ disclosure }: { disclosure: TDisclosure }) {
   return (
-    <Stack>
-      <Divider />
-      <Header title={`${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`} />
-      <Stack>
-        <Stack gap={2}>
-          {disclosure.visitResult && (
-            <Typography>
-              {STRINGS.visit} {STRINGS[disclosure.visitResult]}
-            </Typography>
-          )}
-          <DetailItem
-            icon={<HelpOutlined />}
-            label={STRINGS.visit_reason}
-            value={disclosure.visitReason ?? STRINGS.none}
-          />
-          <DetailItem
-            icon={<Comment />}
-            label={STRINGS.note}
-            value={disclosure.visitNote || STRINGS.none}
-          />
-        </Stack>
-        <Stack gap={2}>
-          {(disclosure.isCustomRating || disclosure.rating) && (
+    <Card>
+      <Stack gap={1.5} alignItems="start">
+        <Header title={`${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`} />
+        <Stack sx={{ width: '100%' }} gap={1}>
+          <Card sx={{ px: 2, py: 0.5 }}>
+            <Typography textAlign="center">{STRINGS.visit}</Typography>
+          </Card>
+          {disclosure.visitResult ? (
             <>
-              <Divider />
-              <Typography>{STRINGS.rating}</Typography>
+              <CustomBadge
+                textAlign="center"
+                colors={
+                  disclosure.visitResult === 'completed'
+                    ? 'success'
+                    : disclosure.visitResult === 'not_completed'
+                      ? 'warning'
+                      : 'error'
+                }
+              >
+                {STRINGS[disclosure.visitResult]}
+                {disclosure.visitResult === 'not_completed' && ` (${STRINGS.hg})`}
+                {disclosure.visitResult === 'cant_be_completed' && ` (${STRINGS.hg_plus})`}
+              </CustomBadge>
+              {disclosure.visitReason && (
+                <>
+                  <Card sx={{ px: 2, py: 0.5 }}>
+                    <Typography textAlign="center">{STRINGS.visit_reason}</Typography>
+                  </Card>
+                  <Typography variant="subtitle2">{disclosure.visitReason}</Typography>
+                </>
+              )}
+              {disclosure.visitNote && (
+                <>
+                  <Card sx={{ px: 2, py: 0.5 }}>
+                    <Typography textAlign="center">{STRINGS.note}</Typography>
+                  </Card>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    {disclosure.visitNote}
+                  </Typography>
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              <CustomBadge textAlign="center" colors="grey">
+                {STRINGS.hasnt_been_visited_yet}
+              </CustomBadge>
             </>
           )}
-          {disclosure.isCustomRating && (
-            <DetailItem
-              icon={<RateReview />}
-              label={STRINGS.result}
-              value={STRINGS.custom_rating}
-            />
-          )}
-          {disclosure.rating && (
-            <DetailItem
-              icon={<RateReview />}
-              label={STRINGS.result}
-              value={`  ${disclosure.rating?.name} - ( ${disclosure.rating?.code} )`}
-            />
-          )}
-          {disclosure.isCustomRating && (
-            <DetailItem
-              icon={<Comment />}
-              label={STRINGS.custom_rating}
-              value={disclosure.customRating || STRINGS.none}
-            />
-          )}
-          {!disclosure.isCustomRating && disclosure?.rating && (
-            <DetailItem
-              icon={<Comment />}
-              label={STRINGS.note}
-              value={disclosure.rating?.name || STRINGS.none}
-            />
+        </Stack>
+        <Divider flexItem />
+        <Stack sx={{ width: '100%' }} gap={1.5}>
+          <Card sx={{ px: 2, py: 0.5 }}>
+            <Typography textAlign="center">{STRINGS.rating}</Typography>
+          </Card>
+
+          {!disclosure.ratingId && !disclosure.isCustomRating && !disclosure.customRating ? (
+            <>
+              <CustomBadge textAlign="center" colors="grey">
+                {STRINGS.hasnt_been_rated_yet}
+              </CustomBadge>
+            </>
+          ) : (
+            <>
+              <CustomBadge textAlign="center" colors="info">
+                {(disclosure.rating?.name && `${disclosure.rating.name} - (${disclosure.rating.code})`) ||
+                  (disclosure.isCustomRating && STRINGS.custom_rating)}
+              </CustomBadge>
+              {disclosure.isCustomRating && (
+                <>
+                  <Typography>{disclosure.customRating}</Typography>
+                </>
+              )}
+              {disclosure.ratingNote && (
+                <>
+                  <Card sx={{ px: 2, py: 0.5 }}>
+                    <Typography textAlign="center">{STRINGS.note}</Typography>
+                  </Card>
+
+                  <Typography variant="subtitle2" color="textSecondary">
+                    {disclosure.ratingNote}
+                  </Typography>
+                </>
+              )}
+            </>
           )}
         </Stack>
+        <Divider flexItem />
+        <Link style={{ width: '100%' }} to="/disclosures/visit-rating/action" state={disclosure}>
+          <Button fullWidth startIcon={<Edit />}>
+            {`${STRINGS.edit} ${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`}
+          </Button>
+        </Link>
       </Stack>
-    </Stack>
+    </Card>
   );
 }
 
