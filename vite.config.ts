@@ -11,11 +11,36 @@ export default defineConfig({
       srcDir: "./src/",
       filename: "sw.ts",
       manifest: {
-        name: "mid-lab",
+        name: "medicine bank",
+        short_name: "mid-bank",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
         theme_color: "#000000",
+        icons: [
+          {
+            src: "pwa-64x64.png",
+            sizes: "64x64",
+            type: "image/png",
+          },
+
+          {
+            src: "pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+          {
+            src: "maskable-icon-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
+          },
+        ],
       },
       strategies: "injectManifest",
       injectRegister: "auto",
