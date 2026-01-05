@@ -1,19 +1,19 @@
-import { type ReactNode } from "react";
-import { DialogActions, Modal, Card, Stack, Typography } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import { useModal } from "./modal-provider.component";
-import type { TModalExtraProps } from "./modal-types";
-import LoadingOverlay from "../loading-overlay/loading-overlay";
+import { type ReactNode } from 'react';
+import { DialogActions, Modal, Card, Stack, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import { useModal } from './modal-provider.component';
+import type { TModalExtraProps } from './modal-types';
+import LoadingOverlay from '../loading-overlay/loading-overlay';
 
 const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "95vw",
-  height: "95dvh",
-  border: "none",
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '95vw',
+  height: '95dvh',
+  border: 'none',
 };
 const ModalWrapper = ({
   children,
@@ -49,15 +49,16 @@ const ModalWrapper = ({
     >
       <Card
         sx={{
+          p: 0,
           ...style,
           ...(isLoading && {
-            pointerEvents: "none",
-            userSelect: "none",
-            overflow: "hidden",
+            pointerEvents: 'none',
+            userSelect: 'none',
+            overflow: 'hidden',
           }),
         }}
       >
-        <Stack sx={{ height: "100%", position: "relative" }}>
+        <Stack sx={{ height: '100%', position: 'relative' }}>
           <Stack
             direction="row"
             alignItems="center"
@@ -65,7 +66,7 @@ const ModalWrapper = ({
             sx={{
               bgcolor: (theme) => theme.palette.primary.dark,
               color: (theme) => theme.palette.primary.contrastText,
-              p: 1.5,
+              p: 0.5,
             }}
           >
             <Typography>{title}</Typography>
@@ -74,7 +75,7 @@ const ModalWrapper = ({
                 aria-label="close"
                 onClick={handleClose}
                 sx={{
-                  color: "primary.contrastText",
+                  color: 'primary.contrastText',
                 }}
               >
                 <CloseIcon />
@@ -82,20 +83,18 @@ const ModalWrapper = ({
             )}
           </Stack>
 
-          <Stack sx={{ flex: 1, overflow: "auto", p: 1, py: 2 }}>
-            {children}
-          </Stack>
+          <Stack sx={{ flex: 1, overflow: 'auto', p: 1, py: 2 }}>{children}</Stack>
 
           {actionButtons && (
             <DialogActions
               sx={{
-                position: "sticky",
+                position: 'sticky',
                 bottom: 0,
                 left: 0,
-                width: "100%",
+                width: '100%',
                 p: 1,
-                justifyContent: "flex-end",
-                backgroundColor: "background.paper",
+                justifyContent: 'flex-end',
+                backgroundColor: 'background.paper',
               }}
             >
               {actionButtons}
