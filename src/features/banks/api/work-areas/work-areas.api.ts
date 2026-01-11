@@ -1,14 +1,6 @@
-// src/features/work-areas/api/work-areas.api.ts
-import { rootApi } from "@/core/api/root.api";
-import type {
-  ApiResponse,
-  TPaginatedResponse,
-} from "@/core/types/common.types";
-import type {
-  TArea,
-  TAddWorkAreaPayload,
-  TUpdateWorkAreaPayload,
-} from "../../types/work-areas.types";
+import { rootApi } from '@/core/api/root.api';
+import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
+import type { TArea, TAddWorkAreaPayload, TUpdateWorkAreaPayload } from '../../types/work-areas.types';
 
 export const workAreasApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -22,31 +14,30 @@ export const workAreasApi = rootApi.injectEndpoints({
       }
     >({
       query: ({ cityId, ...params }) => ({
-        url: "/areas",
-        method: "GET",
+        url: '/areas',
+        method: 'GET',
         params: { cityId, ...params },
       }),
-      transformResponse: (res: ApiResponse<TPaginatedResponse<TArea>>) =>
-        res.data,
-      providesTags: [{ type: "Work-Areas" }],
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TArea>>) => res.data,
+      providesTags: [{ type: 'Work-Areas' }],
     }),
     addWorkArea: builder.mutation<void, TAddWorkAreaPayload>({
       query: (data) => ({
-        url: "/areas",
-        method: "POST",
+        url: '/areas',
+        method: 'POST',
         body: data,
       }),
       transformResponse: () => {},
-      invalidatesTags: [{ type: "Work-Areas" }],
+      invalidatesTags: [{ type: 'Work-Areas' }],
     }),
     updateWorkArea: builder.mutation<void, TUpdateWorkAreaPayload>({
       query: (data) => ({
         url: `/areas`,
-        method: "PUT",
+        method: 'PUT',
         body: data,
       }),
       transformResponse: () => {},
-      invalidatesTags: [{ type: "Work-Areas" }],
+      invalidatesTags: [{ type: 'Work-Areas' }],
     }),
   }),
 });

@@ -1,51 +1,59 @@
-import { CitySchema } from "@/features/banks/schemas/city.schema";
-import { TextField, Card, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import z from "zod";
-import type { TCity } from "@/features/banks/types/city.types";
-import citiesApi from "@/features/banks/api/cities-api/cities.api";
-import STRINGS from "@/core/constants/strings.constant";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/core/components/common/toast/toast";
-import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
-import { Save } from "@mui/icons-material";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Card, TextField, Typography } from '@mui/material';
+import { Save } from '@mui/icons-material';
+import z from 'zod';
+import type { TCity } from '@/features/banks/types/city.types';
+import citiesApi from '@/features/banks/api/cities-api/cities.api';
+import { CitySchema } from '@/features/banks/schemas/city.schema';
+import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import STRINGS from '@/core/constants/strings.constant';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 
-const CityActionPage = () => {
+const CityActionPage: React.FC = () => {
   const navigate = useNavigate();
-  const { state: old } = useLocation();
-  const oldCity = old?.oldCity;
-  const [updateCity, { isLoading: isUpdatingCity }] =
-    citiesApi.useUpdateCityMutation({});
-  const [addCity, { isLoading: isAddingCity }] = citiesApi.useAddCityMutation(
-    {}
+  const location = useLocation();
+
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const id = searchParams.get('id') ?? undefined;
+
+  const { data: { items: cities = [] } = { items: [] }, isLoading: isLoadingCities } = citiesApi.useGetCitiesQuery(
+    {
+      pageSize: 1000,
+    },
+    { skip: !id }
   );
 
-  const [cityName, setCityName] = useState<string>("");
+  const cachedCity = useMemo(
+    () => (id ? (cities.find((c) => String(c.id) === String(id)) as TCity | undefined) : undefined),
+    [cities, id]
+  );
+
+  const [updateCity, { isLoading: isUpdatingCity }] = citiesApi.useUpdateCityMutation();
+  const [addCity, { isLoading: isAddingCity }] = citiesApi.useAddCityMutation();
+
+  const [cityName, setCityName] = useState<string>('');
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
   const handleCityNameChange = (value: string) => {
     setCityName(value);
-    setErrors((prevErrors) =>
-      prevErrors.filter((error) => error.path[0] !== "name")
-    );
+    setErrors((prev) => prev.filter((err) => String(err.path[0]) !== 'name'));
   };
 
   const getErrorForField = (fieldName: keyof TCity) => {
     const error = errors.find((err) => err.path[0] === fieldName);
-    return error ? error.message : "";
+    return error ? error.message : '';
   };
 
   const handleSubmit = async () => {
     try {
       CitySchema.parse({ name: cityName });
-      if (oldCity) {
-        await updateCity({ name: cityName, id: oldCity.id });
+
+      if (id) {
+        await updateCity({ id, name: cityName }).unwrap();
       } else {
-        await addCity({ name: cityName });
+        await addCity({ name: cityName }).unwrap();
       }
       notifySuccess();
       navigate(-1);
@@ -58,33 +66,30 @@ const CityActionPage = () => {
     }
   };
 
+  const isBusy = isUpdatingCity || isAddingCity || isLoadingCities;
+
   useEffect(() => {
-    if (oldCity) {
-      setCityName(oldCity.name);
+    if (cachedCity) {
+      setCityName(cachedCity.name);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cachedCity]);
 
   return (
-    <Card>
-      <Typography sx={{ pb: 2 }}>
-        {oldCity ? STRINGS.edit_city : STRINGS.add_city}
-      </Typography>
+    <Card sx={{ p: 2 }}>
+      <Typography sx={{ pb: 2 }}>{id ? STRINGS.edit_city : STRINGS.add_city}</Typography>
+
       <TextField
         fullWidth
         label={STRINGS.city_name}
         value={cityName}
         onChange={(e) => handleCityNameChange(e.target.value)}
-        error={!!getErrorForField("name")}
-        helperText={getErrorForField("name")}
+        error={!!getErrorForField('name')}
+        helperText={getErrorForField('name')}
       />
-      <ActionFab
-        icon={<Save />}
-        color="success"
-        onClick={handleSubmit}
-        disabled={isUpdatingCity || isAddingCity}
-      />
-      {isUpdatingCity || (isAddingCity && <LoadingOverlay />)}
+
+      <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isBusy} />
+
+      {isBusy && <LoadingOverlay />}
     </Card>
   );
 };

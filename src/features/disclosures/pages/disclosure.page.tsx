@@ -107,21 +107,20 @@ const DisclosurePage = () => {
           }
           tabs={[
             {
+              label: STRINGS.family_members,
+              node: <DisclosureFamilyMembersTab {...tabProps} />,
+            },
+            {
               label: STRINGS.disclosures_details,
               node: <DisclosureDetailsSection details={disclosure.details} {...tabProps} />,
-            },
-
-            {
-              label: STRINGS.notes,
-              node: <DisclosureNotesTab {...tabProps} />,
             },
             {
               label: STRINGS.medicines,
               node: <DisclosureMedicinesTab {...tabProps} />,
             },
             {
-              label: STRINGS.family_members,
-              node: <DisclosureFamilyMembersTab {...tabProps} />,
+              label: STRINGS.notes,
+              node: <DisclosureNotesTab {...tabProps} />,
             },
           ]}
         />

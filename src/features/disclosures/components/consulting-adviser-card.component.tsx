@@ -1,7 +1,7 @@
 import { baseUrl } from '@/core/api/root.api';
 import { formatDateTime, getStringsLabel } from '@/core/helpers/helpers';
 import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
-import { Typography, Stack } from '@mui/material';
+import { Typography, Stack, Chip } from '@mui/material';
 import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import { Comment } from '@mui/icons-material';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
@@ -10,13 +10,18 @@ import DetailItem from '@/core/components/common/detail-item/detail-item.compone
 import STRINGS from '@/core/constants/strings.constant';
 import { purple } from '@mui/material/colors';
 import type { TDisclosureAdviserConsultation } from '../types/disclosure.types';
+import type { TRating } from '@/features/ratings/types/rating.types';
 import type { ReactNode } from 'react';
 
 export const ConsultingAdviserCard = ({
   adviserConsultation,
+  ratings,
+  handleSelectRating,
   footerContent,
 }: {
   adviserConsultation: TDisclosureAdviserConsultation;
+  handleSelectRating?: (ratingId: string, adviserConsultationId: string, ratingName: string) => void;
+  ratings?: TRating[];
   footerContent?: ReactNode;
 }) => {
   const VoiceSrc = `${baseUrl}/public/audio/${adviserConsultation.consultationAudio}`;
@@ -69,7 +74,25 @@ export const ConsultingAdviserCard = ({
           ) : null}
         </Stack>
       }
-      footerContent={footerContent}
+      footerContent={
+        footerContent ? (
+          footerContent
+        ) : (
+          <Stack sx={{ gap: 1, paddingInlineStart: 2 }}>
+            <Typography variant="body2">{STRINGS.select_rating_quickly}</Typography>
+            <Stack sx={{ flexDirection: 'row', gap: 1, flexWrap: 'wrap' }}>
+              {ratings?.map((r) => (
+                <Chip
+                  key={r.id}
+                  label={r.name}
+                  color="primary"
+                  onClick={() => handleSelectRating?.(r.id, adviserConsultation.id, r.name)}
+                />
+              ))}
+            </Stack>
+          </Stack>
+        )
+      }
     />
   );
 };

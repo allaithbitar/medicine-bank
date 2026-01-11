@@ -1,17 +1,10 @@
-import {
-  useState,
-  useCallback,
-  createContext,
-  type ReactNode,
-  useMemo,
-  useContext,
-} from "react";
-import { MODAL_NAMES, type TOpenModalPayload } from "./modal-types";
-import ConfirmModal from "../modals/confirm/confirm.modal";
-import { useSearchParams } from "react-router-dom";
-import BeneficiariesFiltersModal from "@/features/beneficiaries/components/beneficiaries-filters.modal";
-import useDebouncedEffect from "@/core/hooks/use-debounced-effect.hook";
-import DisclosureFiltersModal from "@/features/disclosures/components/disclosure-filters.modal";
+import { useState, useCallback, createContext, type ReactNode, useMemo, useContext } from 'react';
+import { MODAL_NAMES, type TOpenModalPayload } from './modal-types';
+import ConfirmModal from '../modals/confirm/confirm.modal';
+import { useSearchParams } from 'react-router-dom';
+import BeneficiariesFiltersModal from '@/features/beneficiaries/components/beneficiaries-filters.modal';
+import useDebouncedEffect from '@/core/hooks/use-debounced-effect.hook';
+import DisclosureFiltersModal from '@/features/disclosures/components/disclosure-filters.modal';
 
 const MODALS = {
   [MODAL_NAMES.CONFIRM_MODAL]: ConfirmModal,
@@ -37,58 +30,46 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
   const openModal = useCallback(
     (payload: TOpenModalPayload) => {
       const id = Date.now();
-      searchParams.append("modal", String(id));
+      searchParams.append('modal', String(id));
       setSearchParams(searchParams);
       setModalState((prev) => [...prev, { ...payload, id }]);
     },
-    [searchParams, setSearchParams],
+    [searchParams, setSearchParams]
   );
 
   const closeModal = useCallback(
     (modalId?: number) => {
-      let newModalsState = searchParams.getAll("modal");
+      let newModalsState = searchParams.getAll('modal');
 
       if (modalId) {
-        newModalsState = newModalsState.filter(
-          (mid) => mid !== modalId.toString(),
-        );
+        newModalsState = newModalsState.filter((mid) => mid !== modalId.toString());
         setSearchParams((prev) => ({ ...prev, modal: newModalsState }));
 
-        return setModalState((prev) =>
-          prev.filter((m) => newModalsState.includes(m.id.toString())),
-        );
+        return setModalState((prev) => prev.filter((m) => newModalsState.includes(m.id.toString())));
       }
       newModalsState = newModalsState.slice(0, -1);
       setSearchParams((prev) => ({ ...prev, modal: newModalsState }));
-      setModalState((prev) =>
-        prev.filter((m) => newModalsState.includes(m.id.toString())),
-      );
+      setModalState((prev) => prev.filter((m) => newModalsState.includes(m.id.toString())));
     },
-    [searchParams, setSearchParams],
+    [searchParams, setSearchParams]
   );
 
-  const contextValue = useMemo(
-    () => ({ openModal, closeModal }),
-    [closeModal, openModal],
-  );
+  const contextValue = useMemo(() => ({ openModal, closeModal }), [closeModal, openModal]);
 
   const openedModals = useMemo(
-    () =>
-      modalState.filter((m) =>
-        searchParams.getAll("modal").includes(m.id.toString()),
-      ),
-    [modalState, searchParams],
+    () => modalState.filter((m) => searchParams.getAll('modal').includes(m.id.toString())),
+    [modalState, searchParams]
   );
 
   useDebouncedEffect({
     func: () => {
       const modalIdToDelete = searchParams
-        .getAll("modal")
+        .getAll('modal')
         .slice()
         .filter((mid) => !modalState.some((m) => m.id.toString() === mid));
       setSearchParams((prev) => {
         modalIdToDelete.forEach((mid) => {
-          prev.delete("modal", mid);
+          prev.delete('modal', mid);
         });
 
         return prev;
@@ -102,9 +83,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
       {children}
       {openedModals.map((m) => {
         const ModalComponent = MODALS[m.name];
-        return (
-          <ModalComponent key={m.id} {...(m.props as any)} modalId={m.id} />
-        );
+        return <ModalComponent key={m.id} {...(m.props as any)} modalId={m.id} />;
       })}
     </ModalContext.Provider>
   );

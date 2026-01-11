@@ -7,7 +7,7 @@ import { useEffect, useImperativeHandle, type Ref } from 'react';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 import FieldSet from '@/core/components/common/fieldset/fieldset.component';
 
-const HomeConditionStatusSchema = z
+const StatusSchema = z
   .object({
     id: z.string(),
     label: z.string(),
@@ -17,10 +17,12 @@ const HomeConditionStatusSchema = z
 const createDisclosureDetailsSchema = () =>
   z.object({
     job_or_school: z.string().optional(),
-    diseases_or_Surgeries: z.string().optional(),
+    patient_or_surgeries: z.string().optional(),
     expenses: z.string().optional(),
-    home_condition_status: HomeConditionStatusSchema,
+    home_condition_status: StatusSchema,
     home_condition_note: z.string().optional(),
+    home_status: StatusSchema,
+    home_status_note: z.string().optional(),
     electricity: z.string().optional(),
     pons: z.string().optional(),
     cons: z.string().optional(),
@@ -52,12 +54,27 @@ const HOME_CONDITION_OPTIONS = [
     label: STRINGS.common_excellent,
   },
 ];
+const HOME_STATUS_OPTIONS = [
+  {
+    id: 'ownership',
+    label: STRINGS.common_ownership,
+  },
+  {
+    id: 'rent',
+    label: STRINGS.common_rent,
+  },
+  {
+    id: 'loan',
+    label: STRINGS.common_loan,
+  },
+];
 
 const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
   const { formState, setValue, handleSubmit, setFormState } = useForm({
     schema: createDisclosureDetailsSchema(),
     initalState: {
       home_condition_status: HOME_CONDITION_OPTIONS[1],
+      home_status: HOME_STATUS_OPTIONS[1],
     },
   });
 
@@ -80,10 +97,10 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
   return (
     <Stack gap={2}>
       <FormTextAreaInput
-        label={STRINGS.diseases_or_surgeries}
-        name="diseases_or_Surgeries"
-        value={formState.diseases_or_Surgeries}
-        onChange={(v) => setValue({ diseases_or_Surgeries: v })}
+        label={STRINGS.patient_or_surgeries}
+        name="patient_or_surgeries"
+        value={formState.patient_or_surgeries}
+        onChange={(v) => setValue({ patient_or_surgeries: v })}
       />
 
       <FormTextAreaInput
@@ -92,6 +109,32 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
         value={formState.job_or_school}
         onChange={(v) => setValue({ job_or_school: v })}
       />
+      <FieldSet label={STRINGS.home_status}>
+        <Stack sx={{ gap: 2 }}>
+          <Autocomplete
+            options={HOME_STATUS_OPTIONS}
+            value={formState.home_status}
+            onChange={(_, newValue) =>
+              setValue({
+                home_status: newValue ?? HOME_STATUS_OPTIONS[1],
+              })
+            }
+            getOptionLabel={(option) => (option ? option.label : '')}
+            isOptionEqualToValue={(option, value) => option.id === value?.id}
+            renderInput={(params) => (
+              <TextField {...params} label={STRINGS.home_status} variant="outlined" size="small" />
+            )}
+            clearOnEscape
+            freeSolo={false}
+          />
+          <FormTextAreaInput
+            placeholder={`${STRINGS.note} ${STRINGS.home_status_note}`}
+            name="home_status_note"
+            value={formState.home_status_note}
+            onChange={(v) => setValue({ home_status_note: v })}
+          />
+        </Stack>
+      </FieldSet>
 
       <FormTextAreaInput
         label={STRINGS.electricity}

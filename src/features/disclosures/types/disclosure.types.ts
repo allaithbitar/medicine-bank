@@ -43,7 +43,7 @@ export type TDisclosureDetails = {
   expenses?: string;
   home_condition?: string;
   job_or_school?: string;
-  diseases_or_Surgeries?: string;
+  patient_or_surgeries?: string;
   cons?: string;
   pons?: string;
 };

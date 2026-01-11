@@ -239,7 +239,8 @@ const STRINGS = {
   disclosure_properties: 'خصائص الكشف',
   edit_done: 'تم تعديل',
   home_condition_status: 'حالة السكن',
-  home_condition_note: 'ملاحظة حالة السكن',
+  home_status: 'وضع الملكية',
+  home_status_note: 'ملاحظة وضع الملكية',
   update_column_rating_id: 'التقيم',
   update_column_is_custom_rating: 'التقييم المخصص',
   update_column_rating_note: 'ملاحظة الزيارة',
@@ -274,11 +275,17 @@ const STRINGS = {
   custom_dose: 'جرعة مخصص (mg)',
   rating_available_when_visit_completed:
     'يكمن اخيتار تقييم عندما تكون الزيارة مكتملة ولا يوجد استشارة مدير غير منتهية (معلقة) لهذا الكشف',
-  diseases_or_surgeries: 'الامرض او العمليات',
+  patient_or_surgeries: 'المريض / العمليات',
   confirm: 'تأكيد',
   r_u_sure: 'هل انت متاكد',
   receive_disclosure_confirmation: 'هل تريد استلام هذا الكشف ؟',
   complete_appointment_confirmation: ' هل تريد اتمام المراجعة ؟',
+  common_loan: 'اعارة',
+  common_rent: 'أجار',
+  common_ownership: 'ملك',
+  quick_rate: 'تقييم سريع',
+  select_rating_quickly: 'اختار تقييم سريع',
+  rate_patient: 'تقييم هذا المريض',
 };
 
 export default STRINGS;

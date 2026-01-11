@@ -232,6 +232,10 @@ export const disclosuresApi = rootApi.injectEndpoints({
 
       transformResponse: (res: ApiResponse<TPaginatedResponse<TDisclosureAdviserConsultation>>) => res.data,
     }),
+    completeConsultation: builder.mutation<void, { id: string; ratingId: string }>({
+      query: (body) => ({ url: '/disclosures/consultations/complete', method: 'PUT', body }),
+      invalidatesTags: [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }],
+    }),
 
     getAuditLog: builder.query<TPaginatedResponse<TAuditGroup>, { disclosureId?: string | null }>({
       query: (params) => ({

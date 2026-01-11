@@ -17,6 +17,11 @@ export type TPaginatedResponse<T> = {
   pageSize: number;
 };
 
+export type TPayload = {
+  pageNumber?: number;
+  pageSize?: number;
+};
+
 export interface ApiErrorResponse {
   data: null;
   errorMessage: TErrorMessage;

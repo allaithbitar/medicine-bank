@@ -1,7 +1,7 @@
-import type { ComponentProps } from "react";
-import type ConfirmModal from "../modals/confirm/confirm.modal";
-import type BeneficiariesFiltersModal from "@/features/beneficiaries/components/beneficiaries-filters.modal";
-import type DisclosureFiltersModal from "@/features/disclosures/components/disclosure-filters.modal";
+import type { ComponentProps } from 'react';
+import type ConfirmModal from '../modals/confirm/confirm.modal';
+import type BeneficiariesFiltersModal from '@/features/beneficiaries/components/beneficiaries-filters.modal';
+import type DisclosureFiltersModal from '@/features/disclosures/components/disclosure-filters.modal';
 
 export type TModalExtraProps = {
   // it will always be sent but just to stop the ts compiler from parking
@@ -9,9 +9,9 @@ export type TModalExtraProps = {
 };
 
 export const MODAL_NAMES = {
-  CONFIRM_MODAL: "CONFIRM_MODAL",
-  BENEFICIARIES_FILTERS_MODAL: "BENEFICIARIES_FILTERS_MODAL",
-  DISCLOSURE_FILTERS_MODAL: "DISCLOSURE_FILTERS_MODAL",
+  CONFIRM_MODAL: 'CONFIRM_MODAL',
+  BENEFICIARIES_FILTERS_MODAL: 'BENEFICIARIES_FILTERS_MODAL',
+  DISCLOSURE_FILTERS_MODAL: 'DISCLOSURE_FILTERS_MODAL',
 } as const;
 
 export type TOpenModalPayload =

@@ -1,47 +1,35 @@
-// src/features/cities/api/cities.api.ts
-import { rootApi } from "@/core/api/root.api";
-import type {
-  ApiResponse,
-  TPaginatedResponse,
-} from "@/core/types/common.types";
-import type {
-  TAddCityPayload,
-  TCity,
-  TUpdateCityPayload,
-} from "../../types/city.types";
+import { rootApi } from '@/core/api/root.api';
+import type { ApiResponse, TPaginatedResponse, TPayload } from '@/core/types/common.types';
+import type { TAddCityPayload, TCity, TUpdateCityPayload } from '../../types/city.types';
 
 export const citiesApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCities: builder.query<
-      TPaginatedResponse<TCity>,
-      { name?: string | null }
-    >({
+    getCities: builder.query<TPaginatedResponse<TCity>, { name?: string | null } & TPayload>({
       query: (params) => ({
-        url: "/cities",
-        method: "GET",
+        url: '/cities',
+        method: 'GET',
         params,
       }),
-      transformResponse: (res: ApiResponse<TPaginatedResponse<TCity>>) =>
-        res.data,
-      providesTags: [{ type: "Cities", id: "LIST" }],
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TCity>>) => res.data,
+      providesTags: [{ type: 'Cities', id: 'LIST' }],
     }),
 
     addCity: builder.mutation<TCity, TAddCityPayload>({
       query: (data) => ({
-        url: "/cities",
-        method: "POST",
+        url: '/cities',
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: [{ type: "Cities", id: "LIST" }],
+      invalidatesTags: [{ type: 'Cities', id: 'LIST' }],
     }),
 
     updateCity: builder.mutation<void, TUpdateCityPayload>({
       query: (data) => ({
         url: `/cities`,
-        method: "PUT",
+        method: 'PUT',
         body: data,
       }),
-      invalidatesTags: [{ type: "Cities", id: "LIST" }],
+      invalidatesTags: [{ type: 'Cities', id: 'LIST' }],
     }),
   }),
 });

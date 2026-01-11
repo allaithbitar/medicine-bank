@@ -1,53 +1,48 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from "react-router-dom";
-import FallbackUI from "./components/errorBoundary/fallback-ui.component";
-import AppUiWrapper from "./core/components/layout/app-ui-wrapper/app-ui-wrapper.component";
-import Layout from "./core/components/layout/layout/layout.component";
-import EmployeeAccountForm from "./features/accounts-forms/pages/employee-account-form.page";
-import RequireAuth from "./features/auth/components/require-auth/require-auth.component";
-import Cities from "./features/banks/pages/cities/cities.page";
-import WorkAreas from "./features/banks/pages/work-areas/work-areas.page";
-import Unauthorized from "./pages/unauthorized.page";
-import LoginPage from "./features/auth/pages/login.page";
-import NotFoundPage from "./core/pages/not-found.page";
-import DisclosuresPage from "./features/disclosures/pages/disclosures.page";
-import DisclosureActionPage from "./features/disclosures/pages/disclosure-action.page";
-import BeneficiariesPage from "./features/beneficiaries/pages/beneficiaries.page";
-import BeneficiaryPage from "./features/beneficiaries/pages/beneficiary.page";
-import EmployeesPage from "./features/employees/pages/employees.page";
-import BeneficiaryActionPage from "./features/beneficiaries/pages/beneficiary-action.page";
-import DisclosurePage from "./features/disclosures/pages/disclosure.page";
-import RatingsPage from "./features/ratings/pages/ratings.page";
-import SyncPage from "./features/offline/pages/sync.page";
-import EmployeeActionPage from "./features/employees/pages/employee-action.page";
-import PriorityDegreesPage from "./features/priority-degres/pages/priority-degrees.page";
-import SatisticsPage from "./features/satistics/pages/satistics.page";
-import MedicinesPage from "./features/banks/pages/medicines/medicines.page";
-import AppointmentsPage from "./features/appointments/pages/appointments.page";
-import DisclosureAppointmentActionPage from "./features/disclosures/pages/disclosure-appointment-action.page";
-import PriorityDegreesActionPage from "./features/priority-degres/pages/priority-degrees-action.page";
-import CityActionPage from "./features/banks/pages/cities/city-action.page";
-import WorkAreaActionPage from "./features/banks/pages/work-areas/work-area-action.page";
-import RatingActionPage from "./features/ratings/pages/rating-action.page";
-import MedicineActionPage from "./features/banks/pages/medicines/medicine-action.page";
-import BeneficiaryMedicineActionPage from "./features/beneficiaries/pages/beneficiary-medicine-action.page";
-import BeneficiaryFamilyActionPage from "./features/beneficiaries/pages/beneficiary-family-action.page";
-import SystemBroadcastsPage from "./features/system-broadcasts/pages/system-broadcasts.page";
-import SystemBroadcastActionPage from "./features/system-broadcasts/pages/system-broadcast-action.page";
-import MeetingsPage from "./features/meetings/pages/meetings.page";
-import MeetingActionPage from "./features/meetings/pages/meetings-action.page";
-import DisclosureNoteActionPage from "./features/disclosures/pages/disclosure-note-action.page";
-import DisclosureAuditPage from "./features/disclosures/pages/disclosure-audit.page";
-import DisclosureConsultingAdviserPage from "./features/disclosures/pages/disclosure-consulting-adviser.page";
-import DisclosureConsultingAdviserActionPage from "./features/disclosures/pages/disclosure-consulting-adviser-action.page";
-import AdviserDisclosureConsultationsPage from "./features/disclosures/pages/adviser-disclosure-consultations.page";
-import DisclosureDetailsActionPage from "./features/disclosures/pages/disclosure-details-action.page";
-import DisclosureVisitAndRatingActionPage from "./features/disclosures/pages/disclosure-visit-and-rating-action.page";
-import AuditDetailsActionPage from "./features/disclosures/pages/disclosue-audit-details.page";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import FallbackUI from './components/errorBoundary/fallback-ui.component';
+import AppUiWrapper from './core/components/layout/app-ui-wrapper/app-ui-wrapper.component';
+import Layout from './core/components/layout/layout/layout.component';
+import EmployeeAccountForm from './features/accounts-forms/pages/employee-account-form.page';
+import RequireAuth from './features/auth/components/require-auth/require-auth.component';
+import Cities from './features/banks/pages/cities/cities.page';
+import WorkAreas from './features/banks/pages/work-areas/work-areas.page';
+import Unauthorized from './pages/unauthorized.page';
+import LoginPage from './features/auth/pages/login.page';
+import NotFoundPage from './core/pages/not-found.page';
+import DisclosuresPage from './features/disclosures/pages/disclosures.page';
+import DisclosureActionPage from './features/disclosures/pages/disclosure-action.page';
+import BeneficiariesPage from './features/beneficiaries/pages/beneficiaries.page';
+import BeneficiaryPage from './features/beneficiaries/pages/beneficiary.page';
+import EmployeesPage from './features/employees/pages/employees.page';
+import BeneficiaryActionPage from './features/beneficiaries/pages/beneficiary-action.page';
+import DisclosurePage from './features/disclosures/pages/disclosure.page';
+import RatingsPage from './features/ratings/pages/ratings.page';
+import SyncPage from './features/offline/pages/sync.page';
+import EmployeeActionPage from './features/employees/pages/employee-action.page';
+import PriorityDegreesPage from './features/priority-degres/pages/priority-degrees.page';
+import SatisticsPage from './features/satistics/pages/satistics.page';
+import MedicinesPage from './features/banks/pages/medicines/medicines.page';
+import AppointmentsPage from './features/appointments/pages/appointments.page';
+import DisclosureAppointmentActionPage from './features/disclosures/pages/disclosure-appointment-action.page';
+import PriorityDegreesActionPage from './features/priority-degres/pages/priority-degrees-action.page';
+import CityActionPage from './features/banks/pages/cities/city-action.page';
+import WorkAreaActionPage from './features/banks/pages/work-areas/work-area-action.page';
+import RatingActionPage from './features/ratings/pages/rating-action.page';
+import MedicineActionPage from './features/banks/pages/medicines/medicine-action.page';
+import BeneficiaryMedicineActionPage from './features/beneficiaries/pages/beneficiary-medicine-action.page';
+import BeneficiaryFamilyActionPage from './features/beneficiaries/pages/beneficiary-family-action.page';
+import SystemBroadcastsPage from './features/system-broadcasts/pages/system-broadcasts.page';
+import SystemBroadcastActionPage from './features/system-broadcasts/pages/system-broadcast-action.page';
+import MeetingsPage from './features/meetings/pages/meetings.page';
+import MeetingActionPage from './features/meetings/pages/meetings-action.page';
+import DisclosureNoteActionPage from './features/disclosures/pages/disclosure-note-action.page';
+import DisclosureAuditPage from './features/disclosures/pages/disclosure-audit.page';
+import DisclosureConsultingAdviserPage from './features/disclosures/pages/disclosure-consulting-adviser.page';
+import DisclosureConsultingAdviserActionPage from './features/disclosures/pages/disclosure-consulting-adviser-action.page';
+import AdviserDisclosureConsultationsPage from './features/disclosures/pages/adviser-disclosure-consultations.page';
+import DisclosureDetailsActionPage from './features/disclosures/pages/disclosure-details-action.page';
+import DisclosureVisitAndRatingActionPage from './features/disclosures/pages/disclosure-visit-and-rating-action.page';
+import AuditDetailsActionPage from './features/disclosures/pages/disclosue-audit-details.page';
 
 function App() {
   const router = createBrowserRouter(
@@ -63,76 +58,34 @@ function App() {
 
             <Route path="/employees/action" element={<EmployeeActionPage />} />
 
-            <Route
-              path="/employee/manage/:type"
-              element={<EmployeeAccountForm />}
-            />
+            <Route path="/employee/manage/:type" element={<EmployeeAccountForm />} />
 
             <Route path="/disclosures" element={<DisclosuresPage />} />
-            <Route
-              path="/adviser_disclosure_consultations"
-              element={<AdviserDisclosureConsultationsPage />}
-            />
+            <Route path="/adviser_disclosure_consultations" element={<AdviserDisclosureConsultationsPage />} />
 
-            <Route
-              path="/disclosures/action"
-              element={<DisclosureActionPage />}
-            />
+            <Route path="/disclosures/action" element={<DisclosureActionPage />} />
 
-            <Route
-              path="/disclosures/details/action"
-              element={<DisclosureDetailsActionPage />}
-            />
+            <Route path="/disclosures/details/action" element={<DisclosureDetailsActionPage />} />
 
-            <Route
-              path="/disclosures/:disclosureId"
-              element={<DisclosurePage />}
-            />
+            <Route path="/disclosures/:disclosureId" element={<DisclosurePage />} />
 
-            <Route
-              path="/disclosures/visit-rating/action"
-              element={<DisclosureVisitAndRatingActionPage />}
-            />
-            <Route
-              path="/disclosures/appointment/action"
-              element={<DisclosureAppointmentActionPage />}
-            />
-            <Route
-              path="/disclosures/:disclosureId/note/action"
-              element={<DisclosureNoteActionPage />}
-            />
-            <Route
-              path="/disclosures/:disclosureId/consulting_adviser"
-              element={<DisclosureConsultingAdviserPage />}
-            />
+            <Route path="/disclosures/visit-rating/action" element={<DisclosureVisitAndRatingActionPage />} />
+            <Route path="/disclosures/appointment/action" element={<DisclosureAppointmentActionPage />} />
+            <Route path="/disclosures/:disclosureId/note/action" element={<DisclosureNoteActionPage />} />
+            <Route path="/disclosures/:disclosureId/consulting_adviser" element={<DisclosureConsultingAdviserPage />} />
             <Route
               path="/disclosures/:disclosureId/consulting_adviser/action"
               element={<DisclosureConsultingAdviserActionPage />}
             />
-            <Route
-              path="/disclosures/:disclosureId/audit"
-              element={<DisclosureAuditPage />}
-            />
-            <Route
-              path="/disclosures/:disclosureId/audit/details"
-              element={<AuditDetailsActionPage />}
-            />
+            <Route path="/disclosures/:disclosureId/audit" element={<DisclosureAuditPage />} />
+            <Route path="/disclosures/:disclosureId/audit/details" element={<AuditDetailsActionPage />} />
 
             <Route path="/beneficiaries" element={<BeneficiariesPage />} />
             <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
-            <Route
-              path="/beneficiaries/:id/medicine/action"
-              element={<BeneficiaryMedicineActionPage />}
-            />
-            <Route
-              path="/beneficiaries/:id/family/action"
-              element={<BeneficiaryFamilyActionPage />}
-            />
+            <Route path="/beneficiaries/:id/medicine/action" element={<BeneficiaryMedicineActionPage />} />
+            <Route path="/beneficiaries/:id/family/action" element={<BeneficiaryFamilyActionPage />} />
 
-            <Route
-              path="/beneficiaries/action"
-              element={<BeneficiaryActionPage />}
-            />
+            <Route path="/beneficiaries/action" element={<BeneficiaryActionPage />} />
             <Route path="/work-areas" element={<WorkAreas />} />
             <Route path="/work-areas/action" element={<WorkAreaActionPage />} />
 
@@ -149,22 +102,13 @@ function App() {
             <Route path="/meetings/action" element={<MeetingActionPage />} />
 
             <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
-            <Route
-              path="/priority-degrees/action"
-              element={<PriorityDegreesActionPage />}
-            />
+            <Route path="/priority-degrees/action" element={<PriorityDegreesActionPage />} />
 
             <Route path="/sync" element={<SyncPage />} />
             <Route path="/calendar" element={<AppointmentsPage />} />
 
-            <Route
-              path="/system-broadcast"
-              element={<SystemBroadcastsPage />}
-            />
-            <Route
-              path="/system-broadcast/action"
-              element={<SystemBroadcastActionPage />}
-            />
+            <Route path="/system-broadcast" element={<SystemBroadcastsPage />} />
+            <Route path="/system-broadcast/action" element={<SystemBroadcastActionPage />} />
           </Route>
         </Route>
 
