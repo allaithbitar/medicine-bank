@@ -23,9 +23,7 @@ const NoteCard = ({ note }: { note: TDisclosureNote }) => {
     const noteCreatorId = (note.createdBy as any)?.id ?? note.createdBy;
     const hasAccess = noteCreatorId === currentUserId;
     if (hasAccess) {
-      navigate(`/disclosures/${note.disclosureId}/note/action`, {
-        state: { oldNote: note },
-      });
+      navigate(`/disclosures/${note.disclosureId}/note/action?id=${note.id}`);
     } else {
       notifyInfo(STRINGS.no_access);
     }

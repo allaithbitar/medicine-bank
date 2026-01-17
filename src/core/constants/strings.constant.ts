@@ -127,7 +127,7 @@ const STRINGS = {
   medicines: 'الأدوية',
   med_form: 'الاستخدام',
   dose_variants: 'الجرعات',
-  no_medicines_found: 'لا يوجد ادوية لهذا المستفيد',
+  no_medicines_found: 'لا يوجد ادوية',
   medicines_management: 'ادارة الادوية',
   add_manage_medicines: 'اضافة و ادارة الأدوية',
   search_med: 'ابحث عن دواء ...',

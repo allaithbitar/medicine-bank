@@ -17,7 +17,7 @@ const BeneficiaryDisclosures = ({ beneficiaryId }: { beneficiaryId?: string }) =
   return (
     <Stack>
       {items.map((d) => (
-        <DisclosureCard disclosure={d} />
+        <DisclosureCard key={d.id} disclosure={d} />
       ))}
       {isEmpty && (
         <Card>

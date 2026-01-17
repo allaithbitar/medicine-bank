@@ -32,7 +32,7 @@ const PatientFormSchema = z.object({
     message: 'Area is required',
   }),
   address: z.string(),
-  about: z.string(),
+  about: z.string().nullable(),
   city: z.custom<TCity | null>((data) => !!data, {
     message: 'City is required',
   }),
@@ -294,7 +294,7 @@ function BeneficiaryActionForm({
       <FormTextAreaInput
         label={STRINGS.patient_about}
         name="about"
-        value={formState.about}
+        value={formState.about ?? ''}
         onChange={(v) => handleChange('about', v)}
       />
       {/*  <Button onClick={() => handleSave()}>

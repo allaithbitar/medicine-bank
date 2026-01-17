@@ -61,22 +61,22 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     [modalState, searchParams]
   );
 
-  useDebouncedEffect({
-    func: () => {
-      const modalIdToDelete = searchParams
-        .getAll('modal')
-        .slice()
-        .filter((mid) => !modalState.some((m) => m.id.toString() === mid));
-      setSearchParams((prev) => {
-        modalIdToDelete.forEach((mid) => {
-          prev.delete('modal', mid);
-        });
+  // useDebouncedEffect({
+  //   func: () => {
+  //     const modalIdToDelete = searchParams
+  //       .getAll('modal')
+  //       .slice()
+  //       .filter((mid) => !modalState.some((m) => m.id.toString() === mid));
+  //     setSearchParams((prev) => {
+  //       modalIdToDelete.forEach((mid) => {
+  //         prev.delete('modal', mid);
+  //       });
 
-        return prev;
-      });
-    },
-    deps: [searchParams],
-  });
+  //       return prev;
+  //     });
+  //   },
+  //   deps: [searchParams],
+  // });
 
   return (
     <ModalContext.Provider value={contextValue}>

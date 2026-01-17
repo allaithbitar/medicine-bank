@@ -70,7 +70,7 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
           <Button
             startIcon={<DateRange />}
             fullWidth
-            onClick={() => navigate(`/disclosures/appointment/action`, { state: disclosure })}
+            onClick={() => navigate(`/disclosures/appointment/action?id=${disclosure.id}`)}
           >
             {STRINGS.select_appointment_date}
           </Button>

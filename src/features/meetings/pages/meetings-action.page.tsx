@@ -1,25 +1,22 @@
-import { useState } from "react";
-import { Card, Stack, TextField, Typography } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Save } from "@mui/icons-material";
-import z from "zod";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/core/components/common/toast/toast";
-import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
-import useReducerState from "@/core/hooks/use-reducer.hook";
-import STRINGS from "@/core/constants/strings.constant";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import type { TMeeting } from "../types/meetings.types";
-import meetingsApi from "../api/meetings.api";
-import FormDateTimeInput from "@/core/components/common/inputs/form-date-time-input.componenet";
+import { useEffect, useState } from 'react';
+import { Card, Stack, TextField, Typography } from '@mui/material';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Save } from '@mui/icons-material';
+import z from 'zod';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import useReducerState from '@/core/hooks/use-reducer.hook';
+import STRINGS from '@/core/constants/strings.constant';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import meetingsApi from '../api/meetings.api';
+import FormDateTimeInput from '@/core/components/common/inputs/form-date-time-input.componenet';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 const MeetingSchema = z.object({
-  note: z.string().min(1, { message: "note is required" }),
-  date: z.string().min(1, { message: "date is required" }),
+  note: z.string().min(1, { message: 'note is required' }),
+  date: z.string().min(1, { message: 'date is required' }),
   createdAt: z.string().optional().nullable(),
 });
 
@@ -29,18 +26,17 @@ type TFormValues = z.infer<typeof MeetingSchema>;
 
 const MeetingActionPage = () => {
   const navigate = useNavigate();
-  const { state } = useLocation();
-  const oldMeeting: TMeeting | undefined = state?.oldMeeting;
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id') ?? undefined;
+  const { data: oldMeeting, isLoading: isLoadingById } = meetingsApi.useGetMeetingsByIdQuery(id ? { id } : skipToken);
 
-  const [addMeeting, { isLoading: isAdding }] =
-    meetingsApi.useAddMeetingMutation();
-  const [updateMeeting, { isLoading: isUpdating }] =
-    meetingsApi.useUpdateMeetingMutation();
+  const [addMeeting, { isLoading: isAdding }] = meetingsApi.useAddMeetingMutation();
+  const [updateMeeting, { isLoading: isUpdating }] = meetingsApi.useUpdateMeetingMutation();
 
   const initialValues: TFormValues = {
-    note: oldMeeting?.note ?? "",
-    date: oldMeeting?.date ?? "",
-    createdAt: oldMeeting?.createdAt ?? "",
+    note: '',
+    date: '',
+    createdAt: '',
   };
 
   const [values, setValues] = useReducerState(initialValues);
@@ -48,8 +44,19 @@ const MeetingActionPage = () => {
 
   const getErrorForField = (field: keyof TFormValues) => {
     const err = errors.find((e) => e.path[0] === field);
-    return err ? err.message : "";
+    return err ? err.message : '';
   };
+
+  useEffect(() => {
+    if (oldMeeting) {
+      setValues({
+        note: oldMeeting?.note,
+        createdAt: oldMeeting?.createdAt,
+        date: oldMeeting?.date,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [oldMeeting]);
 
   const handleSave = async () => {
     try {
@@ -69,9 +76,7 @@ const MeetingActionPage = () => {
         await addMeeting(payload).unwrap();
       }
 
-      notifySuccess(
-        oldMeeting ? STRINGS.edited_successfully : STRINGS.added_successfully
-      );
+      notifySuccess(oldMeeting ? STRINGS.edited_successfully : STRINGS.added_successfully);
       navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
@@ -82,7 +87,7 @@ const MeetingActionPage = () => {
     }
   };
 
-  const isLoading = isAdding || isUpdating;
+  const isLoading = isAdding || isUpdating || isLoadingById;
 
   return (
     <Card sx={{ p: 2 }}>
@@ -97,10 +102,10 @@ const MeetingActionPage = () => {
           value={values.note}
           onChange={(e) => {
             setValues({ note: e.target.value });
-            setErrors((p) => p.filter((er) => er.path[0] !== "note"));
+            setErrors((p) => p.filter((er) => er.path[0] !== 'note'));
           }}
-          error={!!getErrorForField("note")}
-          helperText={getErrorForField("note")}
+          error={!!getErrorForField('note')}
+          helperText={getErrorForField('note')}
         />
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -109,23 +114,18 @@ const MeetingActionPage = () => {
             value={values.date}
             onChange={(newDate) => {
               setValues({ date: newDate });
-              setErrors((p) => p.filter((er) => er.path[0] !== "date"));
+              setErrors((p) => p.filter((er) => er.path[0] !== 'date'));
             }}
           />
-          {!!getErrorForField("date") && (
+          {!!getErrorForField('date') && (
             <Typography variant="caption" color="error">
-              {getErrorForField("date")}
+              {getErrorForField('date')}
             </Typography>
           )}
         </LocalizationProvider>
       </Stack>
 
-      <ActionFab
-        icon={<Save />}
-        color="success"
-        onClick={handleSave}
-        disabled={isLoading}
-      />
+      <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
 
       {isLoading && <LoadingOverlay />}
     </Card>

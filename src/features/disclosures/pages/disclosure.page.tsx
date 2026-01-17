@@ -18,6 +18,7 @@ import DisclosureMedicinesTab from '../components/tabs/disclosure-medicines-tab'
 import DisclosureFamilyMembersTab from '../components/tabs/disclosure-family-members-tab';
 import DisclosureVisitAndRatingSection from '../components/disclosure-visit-and-rating-section';
 import DisclosureProperties from './disclosure-properties.component';
+import type { TBeneficiaryMedicine, TFamilyMember } from '@/features/beneficiaries/types/beneficiary.types';
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,7 +31,7 @@ const DisclosurePage = () => {
 
   const openEditExtra = useCallback(
     (section: 'appointment' | 'rating' | 'visit' | 'visit-rating') =>
-      navigate(`/disclosures/${section}/action`, { state: disclosure }),
+      navigate(`/disclosures/${section}/action?id=${disclosure?.id}`),
     [navigate, disclosure]
   );
 
@@ -47,18 +48,24 @@ const DisclosurePage = () => {
   );
 
   const handleOpenBeneficiaryMedicineActionPage = useCallback(
-    (bm?: any) =>
-      navigate(`/beneficiaries/${disclosure?.patientId}/medicine/action`, {
-        state: { oldBeneficiaryMedicine: bm },
-      }),
+    (bm?: TBeneficiaryMedicine) => {
+      if (bm) {
+        navigate(`/beneficiaries/${disclosure?.patientId}/medicine/action?id=${bm.id}`);
+      } else {
+        navigate(`/beneficiaries/${disclosure?.patientId}/medicine/action`);
+      }
+    },
     [navigate, disclosure?.patientId]
   );
 
   const handleOpenFamilyMembersActionPage = useCallback(
-    (oldMember?: any) =>
-      navigate(`/beneficiaries/${disclosure?.patientId}/family/action`, {
-        state: { oldMember },
-      }),
+    (oldMember?: TFamilyMember) => {
+      if (oldMember) {
+        navigate(`/beneficiaries/${disclosure?.patientId}/family/action?id=${oldMember.id}`);
+      } else {
+        navigate(`/beneficiaries/${disclosure?.patientId}/family/action`);
+      }
+    },
     [navigate, disclosure?.patientId]
   );
 

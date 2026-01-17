@@ -96,7 +96,7 @@ function DisclosureVisitAndRatingSection({ disclosure }: { disclosure: TDisclosu
           )}
         </Stack>
         <Divider flexItem />
-        <Link style={{ width: '100%' }} to="/disclosures/visit-rating/action" state={disclosure}>
+        <Link style={{ width: '100%' }} to={`/disclosures/visit-rating/action?id=${disclosure.id}`}>
           <Button fullWidth startIcon={<Edit />}>
             {`${STRINGS.edit} ${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`}
           </Button>

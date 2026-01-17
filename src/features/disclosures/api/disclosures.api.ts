@@ -172,7 +172,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: 'GET',
       }),
       transformResponse: (res: ApiResponse<TDisclosureNote>) => res.data,
-      providesTags: (_, __, id) => [{ type: 'Disclosure_Notes', id }],
+      providesTags: ['Disclosure_Note'],
     }),
 
     addDisclosureNote: builder.mutation<TDisclosureNote, TAddDisclosureNotePayload>({
@@ -181,7 +181,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: [{ type: 'Disclosure_Notes', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Disclosure_Notes', id: 'LIST' }, 'Disclosure_Note'],
     }),
     updateDisclosureNote: builder.mutation<void, Omit<TUpdateDisclosureNotePayload, 'createdBy'>>({
       query: (body) => ({
@@ -192,6 +192,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
       invalidatesTags: (_, __, arg: any) => [
         { type: 'Disclosure_Notes', id: 'LIST' },
         { type: 'Disclosure_Notes', id: arg.id },
+        'Disclosure_Note',
       ],
     }),
     addDisclosureAdviserConsultation: builder.mutation<
@@ -203,7 +204,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }, 'Disclosure_Adviser_Consultation'],
     }),
 
     updateDisclosureAdviserConsultation: builder.mutation<void, TUpdateDisclosureNotePayload>({
@@ -215,6 +216,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
       invalidatesTags: (_, __, arg: any) => [
         { type: 'Disclosure_Adviser_Consultations', id: 'LIST' },
         { type: 'Disclosure_Adviser_Consultations', id: arg.id },
+        'Disclosure_Adviser_Consultation',
       ],
     }),
 
@@ -222,19 +224,33 @@ export const disclosuresApi = rootApi.injectEndpoints({
       TPaginatedResponse<TDisclosureAdviserConsultation>,
       TGetDisclosureAdviserConsultationParams
     >({
-      query: (params) => ({
+      query: ({ consultationStatus, createdBy, disclosureId }) => ({
         url: '/disclosures/consultations',
         method: 'GET',
-        params,
+        params: {
+          consultationStatus,
+          createdBy,
+          disclosureId,
+        },
       }),
 
       providesTags: () => [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }],
 
       transformResponse: (res: ApiResponse<TPaginatedResponse<TDisclosureAdviserConsultation>>) => res.data,
     }),
+
+    getDisclosureAdviserConsultationById: builder.query<TDisclosureAdviserConsultation, { id: string }>({
+      query: ({ id }) => ({
+        url: `/disclosures/consultations/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Disclosure_Adviser_Consultation'],
+      transformResponse: (res: ApiResponse<TDisclosureAdviserConsultation>) => res.data,
+    }),
+
     completeConsultation: builder.mutation<void, { id: string; ratingId: string }>({
       query: (body) => ({ url: '/disclosures/consultations/complete', method: 'PUT', body }),
-      invalidatesTags: [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }, 'Disclosure_Adviser_Consultation'],
     }),
 
     getAuditLog: builder.query<TPaginatedResponse<TAuditGroup>, { disclosureId?: string | null }>({

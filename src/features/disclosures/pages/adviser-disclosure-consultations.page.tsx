@@ -12,7 +12,9 @@ import { useCallback } from 'react';
 
 function AdviserDisclosureConsultationsPage() {
   const { closeModal, openModal } = useModal();
-  const { data: response = { items: [] }, isFetching } = disclosuresApi.useGetDisclosureAdviserConsultationsQuery({});
+  const { data: response = { items: [] }, isFetching } = disclosuresApi.useGetDisclosureAdviserConsultationsQuery({
+    consultationStatus: 'pending',
+  });
   const adviserConsultations = response.items ?? [];
 
   const { data: ratings = [], isFetching: isFetchingRatings } = ratingsApi.useGetRatingsQuery({});

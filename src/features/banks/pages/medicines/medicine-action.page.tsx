@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   MenuItem,
@@ -11,35 +11,33 @@ import {
   Card,
   InputAdornment,
   Button,
-} from "@mui/material";
-import { z } from "zod";
+} from '@mui/material';
+import { z } from 'zod';
 import {
   ALLOWED_FORMS,
   DOSE_OPTIONS,
   type TAddMedicinePayload,
   type TFormValue,
   type TUpdateMedicinePayload,
-} from "@/features/banks/types/medicines.types";
-import medicinesApi from "@/features/banks/api/medicines-api/medicines-api";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/core/components/common/toast/toast";
-import STRINGS from "@/core/constants/strings.constant";
-import useReducerState from "@/core/hooks/use-reducer.hook";
-import { getStringsLabel } from "@/core/helpers/helpers";
-import { useLocation, useNavigate } from "react-router-dom";
-import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
-import { Save } from "@mui/icons-material";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+} from '@/features/banks/types/medicines.types';
+import medicinesApi from '@/features/banks/api/medicines-api/medicines-api';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import STRINGS from '@/core/constants/strings.constant';
+import useReducerState from '@/core/hooks/use-reducer.hook';
+import { getStringsLabel } from '@/core/helpers/helpers';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
+import { Save } from '@mui/icons-material';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import { skipToken } from '@reduxjs/toolkit/query/react';
 
 const MedicineSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }).max(200),
+  name: z.string().min(1, { message: 'Name is required' }).max(200),
   form: z.enum(ALLOWED_FORMS, {
-    errorMap: () => ({ message: "Form is required" }),
+    errorMap: () => ({ message: 'Form is required' }),
   }),
   doseVariants: z.array(z.number()).min(1, {
-    message: "At least one dose must be selected",
+    message: 'At least one dose must be selected',
   }),
 });
 
@@ -47,38 +45,54 @@ type TFormValues = z.infer<typeof MedicineSchema>;
 
 const MedicineActionPage = () => {
   const navigate = useNavigate();
-  const { state: old } = useLocation();
-  const oldMedicine = old?.oldMedicine;
+  const [searchParams] = useSearchParams();
 
-  const [addMedicine, { isLoading: isAdding }] =
-    medicinesApi.useAddMedicineMutation();
-  const [updateMedicine, { isLoading: isUpdating }] =
-    medicinesApi.useUpdateMedicineMutation();
+  const id = searchParams.get('id') ?? undefined;
+
+  const { data: medicineById, isLoading: isLoadingById } = medicinesApi.useGetMedicineByIdQuery(
+    id ? { id } : skipToken
+  );
+
+  const initialMedicine = useMemo(() => {
+    if (medicineById) return medicineById;
+  }, [medicineById]);
+
+  const [addMedicine, { isLoading: isAdding }] = medicinesApi.useAddMedicineMutation();
+  const [updateMedicine, { isLoading: isUpdating }] = medicinesApi.useUpdateMedicineMutation();
 
   const [values, setValues] = useReducerState<TFormValues>({
-    name: oldMedicine?.name ?? "",
-    form: (oldMedicine?.form as TFormValue) ?? "pill",
-    doseVariants: oldMedicine?.doseVariants ?? ([] as any),
+    name: initialMedicine?.name ?? '',
+    form: (initialMedicine?.form as TFormValue) ?? 'pill',
+    doseVariants: initialMedicine?.doseVariants ?? ([] as number[]),
   });
 
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
+  const [customDoseInput, setCustomDoseInput] = useState<string>('');
 
-  const [customDoseInput, setCustomDoseInput] = useState<string>("");
+  useEffect(() => {
+    if (!initialMedicine) return;
+    setValues({
+      name: initialMedicine.name ?? '',
+      form: (initialMedicine.form as TFormValue) ?? 'pill',
+      doseVariants: initialMedicine.doseVariants ?? [],
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialMedicine?.id]);
 
   const getErrorForField = (field: keyof TFormValues) => {
     const err = errors.find((e) => e.path[0] === field);
-    return err ? err.message : "";
+    return err ? err.message : '';
   };
 
   const handleNameChange = (v: string) => {
     setValues({ name: v });
-    setErrors((prev) => prev.filter((e) => e.path[0] !== "name"));
+    setErrors((prev) => prev.filter((e) => e.path[0] !== 'name'));
   };
 
   const handleFormChange = (e: SelectChangeEvent<string>) => {
     const v = e.target.value as TFormValue;
     setValues((prev) => ({ ...prev, form: v }));
-    setErrors((prev) => prev.filter((e) => e.path[0] !== "form"));
+    setErrors((prev) => prev.filter((e) => e.path[0] !== 'form'));
   };
 
   const handleDoseToggle = (dose: number) => {
@@ -88,14 +102,14 @@ const MedicineActionPage = () => {
         ? values.doseVariants.filter((d) => d !== dose)
         : [...values.doseVariants, dose].sort((a, b) => a - b),
     });
-    setErrors((prev) => prev.filter((e) => e.path[0] !== "doseVariants"));
+    setErrors((prev) => prev.filter((e) => e.path[0] !== 'doseVariants'));
   };
 
   const handleRemoveDose = (dose: number) => {
     setValues({
       doseVariants: values.doseVariants.filter((d) => d !== dose),
     });
-    setErrors((prev) => prev.filter((e) => e.path[0] !== "doseVariants"));
+    setErrors((prev) => prev.filter((e) => e.path[0] !== 'doseVariants'));
   };
 
   const handleAddCustomDose = () => {
@@ -103,24 +117,24 @@ const MedicineActionPage = () => {
     if (!trimmed) return;
     const parsed = Number(trimmed);
     if (!Number.isFinite(parsed) || parsed <= 0) {
-      notifyError("Enter a valid positive number for dose");
+      notifyError('Enter a valid positive number for dose');
       return;
     }
 
     if (values.doseVariants.includes(parsed)) {
-      setCustomDoseInput("");
+      setCustomDoseInput('');
       return;
     }
 
     setValues({
       doseVariants: [...values.doseVariants, parsed].sort((a, b) => a - b),
     });
-    setCustomDoseInput("");
-    setErrors((prev) => prev.filter((e) => e.path[0] !== "doseVariants"));
+    setCustomDoseInput('');
+    setErrors((prev) => prev.filter((e) => e.path[0] !== 'doseVariants'));
   };
 
   const onCustomDoseKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       handleAddCustomDose();
     }
@@ -130,9 +144,9 @@ const MedicineActionPage = () => {
     try {
       const parsed = MedicineSchema.parse(values);
 
-      if (oldMedicine) {
+      if (initialMedicine) {
         const payload: TUpdateMedicinePayload = {
-          id: oldMedicine.id,
+          id: initialMedicine.id,
           name: parsed.name,
           form: parsed.form,
           doseVariants: parsed.doseVariants,
@@ -147,9 +161,7 @@ const MedicineActionPage = () => {
         await addMedicine(payload).unwrap();
       }
 
-      notifySuccess(
-        oldMedicine ? STRINGS.edited_successfully : STRINGS.added_successfully
-      );
+      notifySuccess(initialMedicine ? STRINGS.edited_successfully : STRINGS.added_successfully);
       navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
@@ -160,21 +172,19 @@ const MedicineActionPage = () => {
     }
   };
 
-  const isLoading = isAdding || isUpdating;
+  const isLoading = isAdding || isUpdating || isLoadingById;
 
   return (
     <Card>
-      <Typography sx={{ pb: 2 }}>
-        {oldMedicine ? STRINGS.edit_medicine : STRINGS.add_medicine}
-      </Typography>
+      <Typography sx={{ pb: 2 }}>{initialMedicine ? STRINGS.edit_medicine : STRINGS.add_medicine}</Typography>
       <Stack gap={2}>
         <TextField
           fullWidth
           label={STRINGS.name}
           value={values.name}
           onChange={(e) => handleNameChange(e.target.value)}
-          error={!!getErrorForField("name")}
-          helperText={getErrorForField("name")}
+          error={!!getErrorForField('name')}
+          helperText={getErrorForField('name')}
         />
 
         <Box>
@@ -182,23 +192,17 @@ const MedicineActionPage = () => {
             {STRINGS.med_form}
           </Typography>
 
-          <Select
-            fullWidth
-            value={values.form}
-            onChange={handleFormChange}
-            displayEmpty
-            sx={{ minWidth: 160 }}
-          >
+          <Select fullWidth value={values.form} onChange={handleFormChange} displayEmpty sx={{ minWidth: 160 }}>
             {ALLOWED_FORMS.map((f) => (
               <MenuItem key={f} value={f}>
-                <Typography sx={{ textTransform: "capitalize" }}>
-                  {getStringsLabel({ key: "med_form", val: f })}
+                <Typography sx={{ textTransform: 'capitalize' }}>
+                  {getStringsLabel({ key: 'med_form', val: f })}
                 </Typography>
               </MenuItem>
             ))}
           </Select>
           <Typography color="error" variant="caption">
-            {getErrorForField("form")}
+            {getErrorForField('form')}
           </Typography>
         </Box>
 
@@ -219,11 +223,7 @@ const MedicineActionPage = () => {
                   input: {
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Button
-                          size="small"
-                          variant="contained"
-                          onClick={handleAddCustomDose}
-                        >
+                        <Button size="small" variant="contained" onClick={handleAddCustomDose}>
                           {STRINGS.add}
                         </Button>
                       </InputAdornment>
@@ -239,11 +239,11 @@ const MedicineActionPage = () => {
                   <Chip
                     key={d}
                     label={`${d} mg`}
-                    color={selected ? "primary" : "default"}
+                    color={selected ? 'primary' : 'default'}
                     onClick={() => handleDoseToggle(d)}
                     clickable
                     sx={{
-                      cursor: "pointer",
+                      cursor: 'pointer',
                     }}
                   />
                 );
@@ -264,29 +264,16 @@ const MedicineActionPage = () => {
             </Stack>
           </Stack>
 
-          <Typography
-            color="error"
-            variant="caption"
-            sx={{ display: "block", mt: 1 }}
-          >
-            {getErrorForField("doseVariants")}
+          <Typography color="error" variant="caption" sx={{ display: 'block', mt: 1 }}>
+            {getErrorForField('doseVariants')}
           </Typography>
 
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: "block", mt: 1 }}
-          >
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
             {STRINGS.select_one_or_more_doses}
           </Typography>
         </Box>
       </Stack>
-      <ActionFab
-        icon={<Save />}
-        color="success"
-        onClick={handleSubmit}
-        disabled={isLoading}
-      />
+      <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}
     </Card>
   );

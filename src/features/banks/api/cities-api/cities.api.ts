@@ -13,7 +13,13 @@ export const citiesApi = rootApi.injectEndpoints({
       transformResponse: (res: ApiResponse<TPaginatedResponse<TCity>>) => res.data,
       providesTags: [{ type: 'Cities', id: 'LIST' }],
     }),
-
+    getCityById: builder.query<TCity, { id: string }>({
+      query: ({ id }) => ({
+        url: `/cities/${id}`,
+        method: 'GET',
+      }),
+      transformResponse: (res: ApiResponse<TCity>) => res.data,
+    }),
     addCity: builder.mutation<TCity, TAddCityPayload>({
       query: (data) => ({
         url: '/cities',

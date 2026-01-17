@@ -2,7 +2,6 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import FallbackUI from './components/errorBoundary/fallback-ui.component';
 import AppUiWrapper from './core/components/layout/app-ui-wrapper/app-ui-wrapper.component';
 import Layout from './core/components/layout/layout/layout.component';
-import EmployeeAccountForm from './features/accounts-forms/pages/employee-account-form.page';
 import RequireAuth from './features/auth/components/require-auth/require-auth.component';
 import Cities from './features/banks/pages/cities/cities.page';
 import WorkAreas from './features/banks/pages/work-areas/work-areas.page';
@@ -57,8 +56,6 @@ function App() {
             <Route path="/employees" element={<EmployeesPage />} />
 
             <Route path="/employees/action" element={<EmployeeActionPage />} />
-
-            <Route path="/employee/manage/:type" element={<EmployeeAccountForm />} />
 
             <Route path="/disclosures" element={<DisclosuresPage />} />
             <Route path="/adviser_disclosure_consultations" element={<AdviserDisclosureConsultationsPage />} />

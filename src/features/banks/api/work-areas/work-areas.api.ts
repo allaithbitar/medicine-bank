@@ -21,6 +21,14 @@ export const workAreasApi = rootApi.injectEndpoints({
       transformResponse: (res: ApiResponse<TPaginatedResponse<TArea>>) => res.data,
       providesTags: [{ type: 'Work-Areas' }],
     }),
+    getWorkAreaById: builder.query<TArea, { id: string }>({
+      query: ({ id }) => ({
+        url: `/areas/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Work-Area'],
+      transformResponse: (res: ApiResponse<TArea>) => res.data,
+    }),
     addWorkArea: builder.mutation<void, TAddWorkAreaPayload>({
       query: (data) => ({
         url: '/areas',
@@ -28,7 +36,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         body: data,
       }),
       transformResponse: () => {},
-      invalidatesTags: [{ type: 'Work-Areas' }],
+      invalidatesTags: [{ type: 'Work-Areas' }, 'Work-Area'],
     }),
     updateWorkArea: builder.mutation<void, TUpdateWorkAreaPayload>({
       query: (data) => ({
@@ -37,7 +45,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         body: data,
       }),
       transformResponse: () => {},
-      invalidatesTags: [{ type: 'Work-Areas' }],
+      invalidatesTags: [{ type: 'Work-Areas' }, 'Work-Area'],
     }),
   }),
 });

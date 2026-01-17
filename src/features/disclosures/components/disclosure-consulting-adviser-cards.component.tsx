@@ -15,7 +15,7 @@ const DisclosureConsultingAdviserCards = ({ disclosureId }: { disclosureId?: str
   const { id: currentUserId } = useUser();
   const navigate = useNavigate();
   const { data: response = { items: [] }, isFetching } = disclosuresApi.useGetDisclosureAdviserConsultationsQuery(
-    { disclosureId: disclosureId!, createdBy: currentUserId },
+    { disclosureId: disclosureId!, createdBy: currentUserId, consultationStatus: 'pending' },
     { skip: !disclosureId || !currentUserId }
   );
   const adviserConsultations = response.items ?? [];
@@ -25,9 +25,9 @@ const DisclosureConsultingAdviserCards = ({ disclosureId }: { disclosureId?: str
       const consultingNoteCreatorId = (adviserConsultation.createdBy as any)?.id ?? adviserConsultation.createdBy;
       const hasAccess = consultingNoteCreatorId === currentUserId;
       if (hasAccess) {
-        navigate(`/disclosures/${adviserConsultation.disclosureId}/consulting_adviser/action`, {
-          state: { oldConsultingNote: adviserConsultation },
-        });
+        navigate(
+          `/disclosures/${adviserConsultation.disclosureId}/consulting_adviser/action?id=${adviserConsultation.id}`
+        );
       } else {
         notifyInfo(STRINGS.no_access);
       }

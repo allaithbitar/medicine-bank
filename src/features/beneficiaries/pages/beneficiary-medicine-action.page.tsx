@@ -1,35 +1,27 @@
-import React, { useEffect } from "react";
-import { Box, Stack, TextField, Typography, Chip, Card } from "@mui/material";
-import { z } from "zod";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/core/components/common/toast/toast";
-import STRINGS from "@/core/constants/strings.constant";
-import useReducerState from "@/core/hooks/use-reducer.hook";
+import React, { useEffect } from 'react';
+import { Box, Stack, TextField, Typography, Chip, Card } from '@mui/material';
+import { z } from 'zod';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import STRINGS from '@/core/constants/strings.constant';
+import useReducerState from '@/core/hooks/use-reducer.hook';
 
-import {
-  DOSE_OPTIONS,
-  type TMedicine,
-} from "@/features/banks/types/medicines.types";
-import MedicinesAutocomplete from "@/features/banks/components/medicines/medicines-autocomplete/medicines-autocomplete.component";
-import type {
-  TAddBeneficiaryMedicinePayload,
-  TUpdateBeneficiaryMedicinePayload,
-} from "../types/beneficiary.types";
-import beneficiaryApi from "../api/beneficiary.api";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
-import { Save } from "@mui/icons-material";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import { DOSE_OPTIONS, type TMedicine } from '@/features/banks/types/medicines.types';
+import MedicinesAutocomplete from '@/features/banks/components/medicines/medicines-autocomplete/medicines-autocomplete.component';
+import type { TAddBeneficiaryMedicinePayload, TUpdateBeneficiaryMedicinePayload } from '../types/beneficiary.types';
+import beneficiaryApi from '../api/beneficiary.api';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
+import { Save } from '@mui/icons-material';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 const BeneficiaryMedicineSchema = z.object({
-  patientId: z.string().min(1, { message: "Patient is required" }),
-  medicineId: z.string().min(1, { message: "Medicine is required" }),
-  dosePerIntake: z.number().gt(0, { message: "Dose is required" }),
+  patientId: z.string().min(1, { message: 'Patient is required' }),
+  medicineId: z.string().min(1, { message: 'Medicine is required' }),
+  dosePerIntake: z.number().gt(0, { message: 'Dose is required' }),
   intakeFrequency: z
-    .number({ invalid_type_error: "Intake frequency must be a number" })
-    .min(0, { message: "Intake frequency must be >= 0" }),
+    .number({ invalid_type_error: 'Intake frequency must be a number' })
+    .min(0, { message: 'Intake frequency must be >= 0' }),
   note: z.string().optional().nullable(),
 });
 
@@ -37,25 +29,23 @@ type TFormValues = z.infer<typeof BeneficiaryMedicineSchema>;
 
 const BeneficiaryMedicineActionPage = () => {
   const navigate = useNavigate();
-  const { state: old } = useLocation();
-  const oldBeneficiaryMedicine = old?.oldBeneficiaryMedicine;
+  const [searchParams] = useSearchParams();
+  const medicineId = searchParams.get('id') ?? undefined;
   const { id: patientId } = useParams();
 
-  const [addPatientMedicine, { isLoading: isAdding }] =
-    beneficiaryApi.useAddBeneficiaryMedicineMutation();
-  const [updatePatientMedicine, { isLoading: isUpdating }] =
-    beneficiaryApi.useUpdateBeneficiaryMedicineMutation();
+  const { data: oldBeneficiaryMedicine, isLoading: isLoadingById } = beneficiaryApi.useGetBeneficiaryMedicineByIdQuery(
+    medicineId ? { id: medicineId } : skipToken
+  );
 
-  const [values, setValues] = useReducerState<
-    TFormValues & { med: TMedicine | null }
-  >({
-    patientId: oldBeneficiaryMedicine?.patientId ?? patientId ?? "",
-    medicineId: oldBeneficiaryMedicine?.medicineId ?? "",
+  const [addPatientMedicine, { isLoading: isAdding }] = beneficiaryApi.useAddBeneficiaryMedicineMutation();
+  const [updatePatientMedicine, { isLoading: isUpdating }] = beneficiaryApi.useUpdateBeneficiaryMedicineMutation();
+
+  const [values, setValues] = useReducerState<TFormValues & { med: TMedicine | null }>({
+    patientId: oldBeneficiaryMedicine?.patientId ?? patientId ?? '',
+    medicineId: oldBeneficiaryMedicine?.medicineId ?? '',
     dosePerIntake: oldBeneficiaryMedicine?.dosePerIntake ?? 500,
-    intakeFrequency: oldBeneficiaryMedicine?.intakeFrequency
-      ? Number(oldBeneficiaryMedicine.intakeFrequency)
-      : 1,
-    note: oldBeneficiaryMedicine?.note ?? "",
+    intakeFrequency: oldBeneficiaryMedicine?.intakeFrequency ? Number(oldBeneficiaryMedicine.intakeFrequency) : 1,
+    note: oldBeneficiaryMedicine?.note ?? '',
     med: null,
   });
 
@@ -75,13 +65,13 @@ const BeneficiaryMedicineActionPage = () => {
 
   const getErrorForField = (field: keyof TFormValues) => {
     const err = errors.find((e) => e.path[0] === field);
-    return err ? err.message : "";
+    return err ? err.message : '';
   };
 
   const handleMedicineChange = (medicine: TMedicine | null) => {
-    const medId = medicine?.id ?? "";
+    const medId = medicine?.id ?? '';
     setValues({ medicineId: medId, med: medicine });
-    setErrors((prev) => prev.filter((er) => er.path[0] !== "medicineId"));
+    setErrors((prev) => prev.filter((er) => er.path[0] !== 'medicineId'));
 
     if (medicine?.doseVariants?.length) {
       const curDose = values.dosePerIntake;
@@ -95,13 +85,13 @@ const BeneficiaryMedicineActionPage = () => {
 
   const handleDoseSelect = (dose: number) => {
     setValues({ dosePerIntake: dose });
-    setErrors((prev) => prev.filter((er) => er.path[0] !== "dosePerIntake"));
+    setErrors((prev) => prev.filter((er) => er.path[0] !== 'dosePerIntake'));
   };
 
   const handleFrequencyChange = (v: string) => {
     const num = isNaN(Number(v)) ? 0 : Number(v);
     setValues({ intakeFrequency: num });
-    setErrors((prev) => prev.filter((er) => er.path[0] !== "intakeFrequency"));
+    setErrors((prev) => prev.filter((er) => er.path[0] !== 'intakeFrequency'));
   };
 
   const handleNoteChange = (v: string) => setValues({ note: v });
@@ -121,7 +111,7 @@ const BeneficiaryMedicineActionPage = () => {
           medicineId: parsed.medicineId,
           dosePerIntake: parsed.dosePerIntake,
           intakeFrequency: String(parsed.intakeFrequency),
-          note: parsed.note ?? "",
+          note: parsed.note ?? '',
         };
         await updatePatientMedicine(payload).unwrap();
       } else {
@@ -130,15 +120,11 @@ const BeneficiaryMedicineActionPage = () => {
           medicineId: parsed.medicineId,
           dosePerIntake: parsed.dosePerIntake,
           intakeFrequency: String(parsed.intakeFrequency),
-          note: parsed.note ?? "",
+          note: parsed.note ?? '',
         };
         await addPatientMedicine(payload).unwrap();
       }
-      notifySuccess(
-        oldBeneficiaryMedicine
-          ? STRINGS.edited_successfully
-          : STRINGS.added_successfully
-      );
+      notifySuccess(oldBeneficiaryMedicine ? STRINGS.edited_successfully : STRINGS.added_successfully);
       navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
@@ -149,32 +135,30 @@ const BeneficiaryMedicineActionPage = () => {
     }
   };
 
-  const isLoading = isAdding || isUpdating;
+  const isLoading = isAdding || isUpdating || isLoadingById;
   const doseVariantsForSelected = values.med?.doseVariants ?? DOSE_OPTIONS;
 
   return (
     <Card sx={{ p: 2 }}>
       <Typography sx={{ pb: 2 }}>
-        {oldBeneficiaryMedicine
-          ? STRINGS.edit_beneficiary_medicine
-          : STRINGS.add_beneficiary_medicine}
+        {oldBeneficiaryMedicine ? STRINGS.edit_beneficiary_medicine : STRINGS.add_beneficiary_medicine}
       </Typography>
       <Stack gap={2}>
-        <Stack sx={{ flexDirection: "row", gap: 1, alignItems: "end" }}>
+        <Stack sx={{ flexDirection: 'row', gap: 1, alignItems: 'end' }}>
           <MedicinesAutocomplete
             defaultValueId={oldBeneficiaryMedicine?.medicineId}
             value={values.med}
             onChange={(m) => handleMedicineChange(m)}
-            errorText={getErrorForField("medicineId")}
+            errorText={getErrorForField('medicineId')}
           />
           <TextField
             fullWidth
             label={STRINGS.intake_frequency_per_day}
             value={values.intakeFrequency as unknown as string}
             onChange={(e) => handleFrequencyChange(e.target.value)}
-            error={!!getErrorForField("intakeFrequency")}
-            helperText={getErrorForField("intakeFrequency")}
-            inputProps={{ inputMode: "numeric", pattern: "[0-9]*", min: 0 }}
+            error={!!getErrorForField('intakeFrequency')}
+            helperText={getErrorForField('intakeFrequency')}
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 0 }}
           />
         </Stack>
         <Box>
@@ -189,47 +173,33 @@ const BeneficiaryMedicineActionPage = () => {
                 <Chip
                   key={d}
                   label={`${d} mg`}
-                  color={selected ? "primary" : "default"}
+                  color={selected ? 'primary' : 'default'}
                   onClick={() => handleDoseSelect(d)}
                   clickable
                 />
               );
             })}
 
-            {!doseVariantsForSelected.includes(values.dosePerIntake as any) &&
-            values.dosePerIntake > 0 ? (
-              <Chip
-                key={`custom-${values.dosePerIntake}`}
-                label={`${values.dosePerIntake} mg`}
-                color="secondary"
-              />
+            {!doseVariantsForSelected.includes(values.dosePerIntake as any) && values.dosePerIntake > 0 ? (
+              <Chip key={`custom-${values.dosePerIntake}`} label={`${values.dosePerIntake} mg`} color="secondary" />
             ) : null}
           </Stack>
 
-          <Typography
-            color="error"
-            variant="caption"
-            sx={{ display: "block", mt: 1 }}
-          >
-            {getErrorForField("dosePerIntake")}
+          <Typography color="error" variant="caption" sx={{ display: 'block', mt: 1 }}>
+            {getErrorForField('dosePerIntake')}
           </Typography>
         </Box>
 
         <TextField
           fullWidth
           label={STRINGS.note}
-          value={values.note ?? ""}
+          value={values.note ?? ''}
           onChange={(e) => handleNoteChange(e.target.value)}
           multiline
           minRows={2}
         />
       </Stack>
-      <ActionFab
-        icon={<Save />}
-        color="success"
-        onClick={handleSubmit}
-        disabled={isLoading}
-      />
+      <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}
     </Card>
   );

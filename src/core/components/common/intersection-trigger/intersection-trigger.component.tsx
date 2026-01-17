@@ -1,5 +1,5 @@
-import { useIntersectionObserver } from "@/core/hooks/use-intersection-observer.hook";
-import { useEffect } from "react";
+import { useIntersectionObserver } from '@/core/hooks/use-intersection-observer.hook';
+import { useEffect } from 'react';
 
 const IntersectionTrigger = ({ onIntersect }: { onIntersect?: () => void }) => {
   const { isIntersecting, ref } = useIntersectionObserver({

@@ -1,4 +1,4 @@
-import { rootApi } from "@/core/api/root.api";
+import { rootApi } from '@/core/api/root.api';
 import type {
   TAddBeneficiaryDto,
   TBenefieciary,
@@ -14,32 +14,27 @@ import type {
   TUpdateFamilyMemberPayload,
   TValidateNationalNumberPayload,
   TValidatePhoneNumbersPayload,
-} from "../types/beneficiary.types";
-import type {
-  ApiResponse,
-  TPaginatedResponse,
-} from "@/core/types/common.types";
+} from '../types/beneficiary.types';
+import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
 
 export const beneficiaryApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
     addBeneficiary: builder.mutation<void, TAddBeneficiaryDto>({
       query: (data) => ({
-        url: "patients",
-        method: "POST",
+        url: 'patients',
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["Beneficiaries"],
+      invalidatesTags: ['Beneficiaries'],
     }),
 
     updateBeneficiary: builder.mutation<void, TUpdateBeneficiaryDto>({
       query: (data) => ({
-        url: "patients",
-        method: "PUT",
+        url: 'patients',
+        method: 'PUT',
         body: data,
       }),
-      invalidatesTags: (_, __, args) => [
-        { type: "Beneficiaries", id: args.id },
-      ],
+      invalidatesTags: (_, __, args) => [{ type: 'Beneficiaries', id: args.id }],
     }),
     //
     // getBeneficiaries: builder.query<
@@ -56,27 +51,19 @@ export const beneficiaryApi = rootApi.injectEndpoints({
     //   ) => res.data,
     //   providesTags: ["Beneficiaries"],
     // }),
-    getBeneficiaries: builder.infiniteQuery<
-      TPaginatedResponse<TBenefieciary>,
-      TGetBeneficiariesDto,
-      number
-    >({
+    getBeneficiaries: builder.infiniteQuery<TPaginatedResponse<TBenefieciary>, TGetBeneficiariesDto, number>({
       query: ({ queryArg, pageParam }) => ({
-        url: "patients/search",
-        method: "POST",
+        url: 'patients/search',
+        method: 'POST',
         body: { ...queryArg, pageNumber: pageParam },
       }),
       infiniteQueryOptions: {
         initialPageParam: 0,
         getNextPageParam: (lastPage) =>
-          !lastPage.items.length || lastPage.items.length < lastPage.pageSize
-            ? undefined
-            : lastPage.pageNumber + 1,
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
       },
-      transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TBenefieciary>>,
-      ) => res.data,
-      providesTags: ["Disclosures"],
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TBenefieciary>>) => res.data,
+      providesTags: ['Disclosures'],
     }),
 
     getBeneficiary: builder.query<TBenefieciary, { id: string }>({
@@ -84,96 +71,86 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         url: `patients/${id}`,
       }),
       transformResponse: (res: ApiResponse<TBenefieciary>) => res.data,
-      providesTags: (_, __, args) => [{ type: "Beneficiaries", id: args.id }],
+      providesTags: (_, __, args) => [{ type: 'Beneficiaries', id: args.id }],
     }),
-    getBeneficiaryMedicines: builder.query<
-      TPaginatedResponse<TBeneficiaryMedicine>,
-      TGetBeneficiaryMedicinesParams
-    >({
+    getBeneficiaryMedicines: builder.query<TPaginatedResponse<TBeneficiaryMedicine>, TGetBeneficiaryMedicinesParams>({
       query: (params) => ({
-        url: "/medicines/patient",
-        method: "GET",
+        url: '/medicines/patient',
+        method: 'GET',
         params,
       }),
-      transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TBeneficiaryMedicine>>,
-      ) => res.data,
-      providesTags: [{ type: "Beneficiary_Medicines", id: "LIST" }],
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TBeneficiaryMedicine>>) => res.data,
+      providesTags: [{ type: 'Beneficiary_Medicines', id: 'LIST' }],
     }),
-    addBeneficiaryMedicine: builder.mutation<
-      TBeneficiaryMedicine,
-      TAddBeneficiaryMedicinePayload
-    >({
+    addBeneficiaryMedicine: builder.mutation<TBeneficiaryMedicine, TAddBeneficiaryMedicinePayload>({
       query: (body) => ({
-        url: "/medicines/patient",
-        method: "POST",
+        url: '/medicines/patient',
+        method: 'POST',
         body,
       }),
-      invalidatesTags: [{ type: "Beneficiary_Medicines", id: "LIST" }],
+      invalidatesTags: [{ type: 'Beneficiary_Medicines', id: 'LIST' }, 'Beneficiary_Medicine'],
     }),
-    updateBeneficiaryMedicine: builder.mutation<
-      void,
-      TUpdateBeneficiaryMedicinePayload
-    >({
+    updateBeneficiaryMedicine: builder.mutation<void, TUpdateBeneficiaryMedicinePayload>({
       query: (body) => ({
-        url: "/medicines/patient",
-        method: "PUT",
+        url: '/medicines/patient',
+        method: 'PUT',
         body,
       }),
       invalidatesTags: (_, __, arg) => [
-        { type: "Beneficiary_Medicines", id: "LIST" },
-        { type: "Beneficiary_Medicines", id: arg.id },
+        { type: 'Beneficiary_Medicines', id: 'LIST' },
+        { type: 'Beneficiary_Medicines', id: arg.id },
+        'Beneficiary_Medicine',
       ],
     }),
-    getFamilyMembers: builder.query<
-      TPaginatedResponse<TFamilyMember>,
-      TGetFamilyMembersParams | undefined
-    >({
+    getFamilyMembers: builder.query<TPaginatedResponse<TFamilyMember>, TGetFamilyMembersParams | undefined>({
       query: (params) => ({
-        url: "/family-members",
-        method: "GET",
+        url: '/family-members',
+        method: 'GET',
         params,
       }),
-      transformResponse: (
-        res: ApiResponse<TPaginatedResponse<TFamilyMember>>,
-      ) => res.data,
-      providesTags: [{ type: "family_Members", id: "LIST" }],
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TFamilyMember>>) => res.data,
+      providesTags: [{ type: 'family_Members', id: 'LIST' }],
     }),
     addFamilyMember: builder.mutation<TFamilyMember, TAddFamilyMemberPayload>({
       query: (data) => ({
-        url: "/family-members",
-        method: "POST",
+        url: '/family-members',
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: [{ type: "family_Members", id: "LIST" }],
+      invalidatesTags: [{ type: 'family_Members', id: 'LIST' }],
     }),
     updateFamilyMember: builder.mutation<void, TUpdateFamilyMemberPayload>({
       query: (data) => ({
         url: `/family-members`,
-        method: "PUT",
+        method: 'PUT',
         body: data,
       }),
       invalidatesTags: (_, __, arg) => [
-        { type: "family_Members", id: "LIST" },
-        { type: "family_Members", id: arg.id },
+        { type: 'family_Members', id: 'LIST' },
+        { type: 'family_Members', id: arg.id },
       ],
     }),
-    validateNationalNumber: builder.mutation<
-      TFamilyMember,
-      TValidateNationalNumberPayload
-    >({
+    validateNationalNumber: builder.mutation<TFamilyMember, TValidateNationalNumberPayload>({
       query: (data) => ({
-        url: "patients/validate/national-number",
-        method: "POST",
+        url: 'patients/validate/national-number',
+        method: 'POST',
         body: data,
       }),
     }),
     validatePhoneNumbers: builder.mutation<void, TValidatePhoneNumbersPayload>({
       query: (data) => ({
-        url: "patients/validate/phone-numbers",
-        method: "POST",
+        url: 'patients/validate/phone-numbers',
+        method: 'POST',
         body: data,
       }),
+    }),
+    getBeneficiaryMedicineById: builder.query<TBeneficiaryMedicine, { id: string }>({
+      query: ({ id }) => ({
+        url: `/medicines/patient/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Beneficiary_Medicine'],
+      transformResponse: (res: ApiResponse<TBeneficiaryMedicine>) => res.data,
     }),
   }),
 });

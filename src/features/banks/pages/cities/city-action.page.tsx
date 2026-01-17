@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, TextField, Typography } from '@mui/material';
 import { Save } from '@mui/icons-material';
 import z from 'zod';
@@ -11,11 +11,9 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import STRINGS from '@/core/constants/strings.constant';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 
-const CityActionPage: React.FC = () => {
+const CityActionPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const [searchParams] = useSearchParams();
   const id = searchParams.get('id') ?? undefined;
 
   const { data: { items: cities = [] } = { items: [] }, isLoading: isLoadingCities } = citiesApi.useGetCitiesQuery(

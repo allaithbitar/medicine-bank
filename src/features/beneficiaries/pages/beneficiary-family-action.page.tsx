@@ -1,77 +1,68 @@
-import React, { useEffect, useMemo } from "react";
-import {
-  Box,
-  Card,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { z } from "zod";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/core/components/common/toast/toast";
-import STRINGS from "@/core/constants/strings.constant";
-import useReducerState from "@/core/hooks/use-reducer.hook";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import React, { useEffect, useMemo } from 'react';
+import { Box, Card, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { z } from 'zod';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import STRINGS from '@/core/constants/strings.constant';
+import useReducerState from '@/core/hooks/use-reducer.hook';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-import { formatDateToISO, getStringsLabel } from "@/core/helpers/helpers";
-import { MobileDatePicker } from "@mui/x-date-pickers";
+import { formatDateToISO, getStringsLabel } from '@/core/helpers/helpers';
+import { MobileDatePicker } from '@mui/x-date-pickers';
 import type {
   TAddFamilyMemberPayload,
   TGender,
   TKinship,
   TUpdateFamilyMemberPayload,
-} from "../types/beneficiary.types";
-import beneficiaryApi from "../api/beneficiary.api";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
-import { Save } from "@mui/icons-material";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+} from '../types/beneficiary.types';
+import beneficiaryApi from '../api/beneficiary.api';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
+import { Save } from '@mui/icons-material';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 
 const FamilyMemberSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }).max(200),
-  birthDate: z.string().min(1, { message: "Birth date is required" }),
-  gender: z.enum(["male", "female"], {
-    errorMap: () => ({ message: "Gender is required" }),
+  name: z.string().min(1, { message: 'Name is required' }).max(200),
+  birthDate: z.string().min(1, { message: 'Birth date is required' }),
+  gender: z.enum(['male', 'female'], {
+    errorMap: () => ({ message: 'Gender is required' }),
   }),
-  kinshep: z.enum(
-    ["partner", "child", "parent", "brother", "grandparent", "grandchild"],
-    { errorMap: () => ({ message: "Kinshep is required" }) }
-  ),
+  kinshep: z.enum(['partner', 'child', 'parent', 'brother', 'grandparent', 'grandchild'], {
+    errorMap: () => ({ message: 'Kinshep is required' }),
+  }),
   jobOrSchool: z.string().optional().nullable(),
   residential: z.string().optional().nullable(),
   note: z.string().optional().nullable(),
-  patientId: z.string().min(1, { message: "Patient is required" }),
+  patientId: z.string().min(1, { message: 'Patient is required' }),
 });
 
 type TFormValues = z.infer<typeof FamilyMemberSchema> & {
   _birthDate?: Date | null;
 };
 
-const GENDERS: TGender[] = ["male", "female"];
-const KINSHEP: TKinship[] = [
-  "partner",
-  "child",
-  "parent",
-  "brother",
-  "grandparent",
-  "grandchild",
-];
+const GENDERS: TGender[] = ['male', 'female'];
+const KINSHEP: TKinship[] = ['partner', 'child', 'parent', 'brother', 'grandparent', 'grandchild'];
 
 const BeneficiaryFamilyActionPage = () => {
   const navigate = useNavigate();
-  const { state: old } = useLocation();
-  const oldFamilyMember = old?.oldMember;
+  const [searchParams] = useSearchParams();
+  const memberId = searchParams.get('id') ?? undefined;
   const { id: patientId } = useParams();
 
-  const [addFamilyMember, { isLoading: isAdding }] =
-    beneficiaryApi.useAddFamilyMemberMutation();
-  const [updateFamilyMember, { isLoading: isUpdating }] =
-    beneficiaryApi.useUpdateFamilyMemberMutation();
+  const { data: { items: patientMembers = [] } = { items: [] }, isLoading: isFetchingOldData } =
+    beneficiaryApi.useGetFamilyMembersQuery(
+      {
+        patientId,
+      },
+      { skip: !patientId || !memberId }
+    );
+  const oldFamilyMember = useMemo(() => {
+    if (!patientMembers) return undefined;
+    return patientMembers.find((pm) => pm.id === memberId);
+  }, [memberId, patientMembers]);
+
+  const [addFamilyMember, { isLoading: isAdding }] = beneficiaryApi.useAddFamilyMemberMutation();
+  const [updateFamilyMember, { isLoading: isUpdating }] = beneficiaryApi.useUpdateFamilyMemberMutation();
 
   const initBirthDate = useMemo(() => {
     if (!oldFamilyMember?.birthDate) return null;
@@ -81,15 +72,15 @@ const BeneficiaryFamilyActionPage = () => {
   }, [oldFamilyMember]);
 
   const [values, setValues] = useReducerState<TFormValues>({
-    name: oldFamilyMember?.name ?? "",
+    name: oldFamilyMember?.name ?? '',
     _birthDate: initBirthDate,
-    birthDate: oldFamilyMember?.birthDate ?? "",
-    gender: (oldFamilyMember?.gender as TGender) ?? "male",
-    kinshep: (oldFamilyMember?.kinshep as TKinship) ?? "partner",
-    jobOrSchool: oldFamilyMember?.jobOrSchool ?? "",
-    residential: oldFamilyMember?.residential ?? "",
-    note: oldFamilyMember?.note ?? "",
-    patientId: oldFamilyMember?.patientId ?? patientId ?? "",
+    birthDate: oldFamilyMember?.birthDate ?? '',
+    gender: (oldFamilyMember?.gender as TGender) ?? 'male',
+    kinshep: (oldFamilyMember?.kinshep as TKinship) ?? 'partner',
+    jobOrSchool: oldFamilyMember?.jobOrSchool ?? '',
+    residential: oldFamilyMember?.residential ?? '',
+    note: oldFamilyMember?.note ?? '',
+    patientId: oldFamilyMember?.patientId ?? patientId ?? '',
   });
 
   const [errors, setErrors] = React.useState<z.ZodIssue[]>([]);
@@ -106,7 +97,7 @@ const BeneficiaryFamilyActionPage = () => {
 
   const getErrorForField = (field: keyof TFormValues) => {
     const err = errors.find((e) => e.path[0] === field);
-    return err ? err.message : "";
+    return err ? err.message : '';
   };
 
   const handleSubmit = async () => {
@@ -129,11 +120,7 @@ const BeneficiaryFamilyActionPage = () => {
         await addFamilyMember(payload).unwrap();
       }
 
-      notifySuccess(
-        oldFamilyMember
-          ? STRINGS.edited_successfully
-          : STRINGS.added_successfully
-      );
+      notifySuccess(oldFamilyMember ? STRINGS.edited_successfully : STRINGS.added_successfully);
       navigate(-1);
     } catch (err: any) {
       if (err instanceof z.ZodError) {
@@ -144,15 +131,11 @@ const BeneficiaryFamilyActionPage = () => {
     }
   };
 
-  const isLoading = isAdding || isUpdating;
+  const isLoading = isAdding || isUpdating || isFetchingOldData;
 
   return (
     <Card>
-      <Typography sx={{ pb: 2 }}>
-        {oldFamilyMember
-          ? STRINGS.edit_family_member
-          : STRINGS.add_family_member}
-      </Typography>
+      <Typography sx={{ pb: 2 }}>{oldFamilyMember ? STRINGS.edit_family_member : STRINGS.add_family_member}</Typography>
       <Stack gap={2}>
         <TextField
           fullWidth
@@ -160,29 +143,29 @@ const BeneficiaryFamilyActionPage = () => {
           value={values.name}
           onChange={(e) => {
             setValues({ name: e.target.value });
-            setErrors((p) => p.filter((er) => er.path[0] !== "name"));
+            setErrors((p) => p.filter((er) => er.path[0] !== 'name'));
           }}
-          error={!!getErrorForField("name")}
-          helperText={getErrorForField("name")}
+          error={!!getErrorForField('name')}
+          helperText={getErrorForField('name')}
         />
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <MobileDatePicker
-            views={["year"]}
+            views={['year']}
             disableFuture
             label={STRINGS.birth_date}
             value={values._birthDate ?? null}
             onChange={(newDate) => {
               setValues({ _birthDate: newDate ?? null });
-              setErrors((p) => p.filter((er) => er.path[0] !== "birthDate"));
+              setErrors((p) => p.filter((er) => er.path[0] !== 'birthDate'));
             }}
           />
           <Typography color="error" variant="caption">
-            {getErrorForField("birthDate")}
+            {getErrorForField('birthDate')}
           </Typography>
         </LocalizationProvider>
-        <Stack sx={{ flexDirection: "row", gap: 2 }}>
-          <Box sx={{ width: "100%" }}>
+        <Stack sx={{ flexDirection: 'row', gap: 2 }}>
+          <Box sx={{ width: '100%' }}>
             <Typography variant="body2" sx={{ mb: 1 }}>
               {STRINGS.gender}
             </Typography>
@@ -191,7 +174,7 @@ const BeneficiaryFamilyActionPage = () => {
               value={values.gender}
               onChange={(e) => {
                 setValues({ gender: e.target.value as TGender });
-                setErrors((p) => p.filter((er) => er.path[0] !== "gender"));
+                setErrors((p) => p.filter((er) => er.path[0] !== 'gender'));
               }}
             >
               {GENDERS.map((g) => (
@@ -201,11 +184,11 @@ const BeneficiaryFamilyActionPage = () => {
               ))}
             </Select>
             <Typography color="error" variant="caption">
-              {getErrorForField("gender")}
+              {getErrorForField('gender')}
             </Typography>
           </Box>
 
-          <Box sx={{ width: "100%" }}>
+          <Box sx={{ width: '100%' }}>
             <Typography variant="body2" sx={{ mb: 1 }}>
               {STRINGS.kinship}
             </Typography>
@@ -214,19 +197,19 @@ const BeneficiaryFamilyActionPage = () => {
               value={values.kinshep}
               onChange={(e) => {
                 setValues({ kinshep: e.target.value as TKinship });
-                setErrors((p) => p.filter((er) => er.path[0] !== "kinshep"));
+                setErrors((p) => p.filter((er) => er.path[0] !== 'kinshep'));
               }}
             >
               {KINSHEP.map((k) => {
                 return (
                   <MenuItem key={k} value={k}>
-                    {getStringsLabel({ key: "kinship", val: k })}
+                    {getStringsLabel({ key: 'kinship', val: k })}
                   </MenuItem>
                 );
               })}
             </Select>
             <Typography color="error" variant="caption">
-              {getErrorForField("kinshep")}
+              {getErrorForField('kinshep')}
             </Typography>
           </Box>
         </Stack>
@@ -234,32 +217,27 @@ const BeneficiaryFamilyActionPage = () => {
         <TextField
           fullWidth
           label={STRINGS.job_or_school}
-          value={values.jobOrSchool ?? ""}
+          value={values.jobOrSchool ?? ''}
           onChange={(e) => setValues({ jobOrSchool: e.target.value })}
         />
 
         <TextField
           fullWidth
           label={STRINGS.residential}
-          value={values.residential ?? ""}
+          value={values.residential ?? ''}
           onChange={(e) => setValues({ residential: e.target.value })}
         />
 
         <TextField
           fullWidth
           label={STRINGS.note}
-          value={values.note ?? ""}
+          value={values.note ?? ''}
           onChange={(e) => setValues({ note: e.target.value })}
           multiline
           minRows={2}
         />
       </Stack>
-      <ActionFab
-        icon={<Save />}
-        color="success"
-        onClick={handleSubmit}
-        disabled={isLoading}
-      />
+      <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}
     </Card>
   );

@@ -1,26 +1,25 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useRef } from 'react';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
-import disclosuresApi from '../api/disclosures.api';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
-import type {
-  TDisclosure,
-  TDisclosureRating,
-  TUpdateDisclosureVisitAndRatingDto,
-  TVisit,
-} from '../types/disclosure.types';
+import type { TDisclosureRating, TUpdateDisclosureVisitAndRatingDto, TVisit } from '../types/disclosure.types';
 
 import { Stack } from '@mui/material';
 import DisclosureVisitAndRateActionForm, {
   type TDisclosureVisitAndRateFormHandlers,
 } from '../components/disclosure-visit-and-rate-action-form.component';
+import disclosuresApi from '../api/disclosures.api';
 
 const DisclosureVisitAndRatingActionPage = () => {
-  const { state } = useLocation();
-  const disclosure: TDisclosure = state;
+  const [searchParams] = useSearchParams();
+  const disclosureId = searchParams.get('id') ?? '';
+  const { data: disclosure, isLoading: isLoadingDisclosure } = disclosuresApi.useGetDisclosureQuery(
+    { id: disclosureId! },
+    { skip: !disclosureId }
+  );
   const visitAndRateRef = useRef<TDisclosureVisitAndRateFormHandlers | null>(null);
 
   const navigate = useNavigate();
@@ -30,7 +29,7 @@ const DisclosureVisitAndRatingActionPage = () => {
   const handleSave = async () => {
     const { isValid, result } = await visitAndRateRef.current!.handleSubmit();
 
-    if (!isValid || !disclosure.id) return;
+    if (!isValid || !disclosure?.id) return;
 
     try {
       const updateDto: TUpdateDisclosureVisitAndRatingDto = {
@@ -83,10 +82,10 @@ const DisclosureVisitAndRatingActionPage = () => {
       <DisclosureVisitAndRateActionForm
         ref={visitAndRateRef}
         disclosureVisitRateData={disclosureVisitRateData}
-        disclosureId={disclosure.id}
+        disclosureId={disclosureId}
       />
       <ActionFab color="success" icon={<Save />} disabled={isLoading} onClick={handleSave} />
-      {isLoading && <LoadingOverlay />}
+      {(isLoading || isLoadingDisclosure) && <LoadingOverlay />}
     </Stack>
   );
 };
