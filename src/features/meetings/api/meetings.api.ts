@@ -1,28 +1,24 @@
 import { rootApi } from '@/core/api/root.api';
-import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
+import type { ApiResponse, TPaginatedResponse, TPaginationDto } from '@/core/types/common.types';
 import type { TAddMeetingPayload, TMeeting } from '../types/meetings.types';
 
 export type TUpdateMeetingPayload = TAddMeetingPayload & { id: string };
 
 export const meetingsApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getMeetings: builder.query<TPaginatedResponse<TMeeting>, object>({
-      query: (params) => ({
+    getMeetings: builder.infiniteQuery<TPaginatedResponse<TMeeting>, TPaginationDto, number>({
+      query: ({ queryArg, pageParam }) => ({
         url: '/meetings',
         method: 'GET',
-        params,
+        params: { ...queryArg, pageNumber: pageParam },
       }),
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
+      },
       transformResponse: (res: ApiResponse<TPaginatedResponse<TMeeting>>) => res.data,
-      providesTags: (result) =>
-        result
-          ? [
-              { type: 'meetings', id: 'LIST' },
-              ...result.items.map((m) => ({
-                type: 'meetings' as const,
-                id: m.id,
-              })),
-            ]
-          : [{ type: 'meetings', id: 'LIST' }],
+      providesTags: () => [{ type: 'meetings', id: 'LIST' }],
     }),
     getMeetingsById: builder.query<TMeeting, { id: string }>({
       query: ({ id }) => ({

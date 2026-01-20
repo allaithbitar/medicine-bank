@@ -10,11 +10,14 @@ import BeneficiaryDisclosures from '../components/beneficiary-disclosures.compon
 // } from "../types/beneficiary.types";
 // import BeneficiaryFamilyMembers from "../components/beneficiary-family-members.component";
 import BeneficiaryCommonCard from '@/shared/components/beneficiary-common-card';
+import { useBeneficiaryLoader } from '../hooks/use-beneficiary-loader.hook';
+import ErrorCard from '@/core/components/common/error-card/error-card.component';
 
 const BeneficiaryPage = () => {
-  const { id } = useParams();
+  const { id = '' } = useParams();
 
-  const { data: beneficiary, isLoading } = beneficiaryApi.useGetBeneficiaryQuery({ id: id! }, { skip: !id });
+  const { data: beneficiary, isLoading, error } = useBeneficiaryLoader({ id });
+  console.log(beneficiary);
 
   // const handleOpenBeneficiaryMedicineActionPage = (
   //   bm?: TBeneficiaryMedicine
@@ -29,6 +32,8 @@ const BeneficiaryPage = () => {
   //     state: { oldMember },
   //   });
   // };
+
+  if (error) return <ErrorCard error={error} />;
 
   if (isLoading || !beneficiary) return <PageLoading />;
 

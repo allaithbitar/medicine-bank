@@ -17,11 +17,6 @@ export type TPaginatedResponse<T> = {
   pageSize: number;
 };
 
-export type TPayload = {
-  pageNumber?: number;
-  pageSize?: number;
-};
-
 export interface ApiErrorResponse {
   data: null;
   errorMessage: TErrorMessage;
@@ -43,7 +38,7 @@ export type TCreatedBy = { createdBy: TActioner | null };
 
 export type TUpdatedBy = { updatedBy: TActioner | null };
 
-export type TAutocompleteItem = Record<string, string> & {
+export type TAutocompleteItem = {
   id: string;
   name: string;
-};
+} & Record<string, string>;

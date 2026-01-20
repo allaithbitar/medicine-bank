@@ -3,7 +3,6 @@ import { MODAL_NAMES, type TOpenModalPayload } from './modal-types';
 import ConfirmModal from '../modals/confirm/confirm.modal';
 import { useSearchParams } from 'react-router-dom';
 import BeneficiariesFiltersModal from '@/features/beneficiaries/components/beneficiaries-filters.modal';
-import useDebouncedEffect from '@/core/hooks/use-debounced-effect.hook';
 import DisclosureFiltersModal from '@/features/disclosures/components/disclosure-filters.modal';
 
 const MODALS = {
@@ -77,12 +76,14 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
   //   },
   //   deps: [searchParams],
   // });
+  console.log({ openedModals });
 
   return (
     <ModalContext.Provider value={contextValue}>
       {children}
       {openedModals.map((m) => {
         const ModalComponent = MODALS[m.name];
+
         return <ModalComponent key={m.id} {...(m.props as any)} modalId={m.id} />;
       })}
     </ModalContext.Provider>

@@ -27,7 +27,7 @@ const DisclosurePage = () => {
   const { disclosureId } = useParams<{ disclosureId: string }>();
   const navigate = useNavigate();
 
-  const { data: disclosure, isLoading, error } = useDisclosureLoader({ id: disclosureId });
+  const { data: disclosure, isLoading, error } = useDisclosureLoader({ id: disclosureId ?? '' });
 
   const openEditExtra = useCallback(
     (section: 'appointment' | 'rating' | 'visit' | 'visit-rating') =>

@@ -2,9 +2,9 @@ import { useState, type ComponentProps } from 'react';
 import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomplete-input.component';
 import { getErrorMessage } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
-import autocompleteApi from '@/features/autocomplete/api/autocomplete.api';
 import useDebounce from '@/core/hooks/use-debounce.hook';
 import type { TAutocompleteItem } from '@/core/types/common.types';
+import { useAreasAutocompleteLoader } from '@/features/autocomplete/hooks/areas-autocomplete-loader.hook';
 
 type TAreasAutocompleteProps<T extends boolean> = Partial<
   ComponentProps<typeof FormAutocompleteInput<TAutocompleteItem, T>>
@@ -20,11 +20,11 @@ function AreasAutocomplete<T extends boolean>({ cityId, ...props }: TAreasAutoco
     isFetching,
     isLoading,
     error,
-  } = autocompleteApi.useAreasAutocompleteQuery({
+  } = useAreasAutocompleteLoader({
     cityId: cityId,
     query: debouncedQuery,
   });
-
+  console.log({ areas });
   return (
     <FormAutocompleteInput
       label={STRINGS.area}

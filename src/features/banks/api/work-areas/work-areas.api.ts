@@ -4,22 +4,30 @@ import type { TArea, TAddWorkAreaPayload, TUpdateWorkAreaPayload } from '../../t
 
 export const workAreasApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getWorkAreas: builder.query<
+    getWorkAreas: builder.infiniteQuery<
       TPaginatedResponse<TArea>,
       {
         cityId?: string;
         name?: string | null;
-        pageNumber?: number;
         pageSize?: number;
-      }
+      },
+      number
     >({
-      query: ({ cityId, ...params }) => ({
-        url: '/areas',
-        method: 'GET',
-        params: { cityId, ...params },
+      query: ({ queryArg, pageParam }) => ({
+        url: "/areas",
+        method: "GET",
+        params: { ...queryArg, pageNumber: pageParam },
       }),
-      transformResponse: (res: ApiResponse<TPaginatedResponse<TArea>>) => res.data,
-      providesTags: [{ type: 'Work-Areas' }],
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize
+            ? undefined
+            : lastPage.pageNumber + 1,
+      },
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TArea>>) =>
+        res.data,
+      providesTags: [{ type: "Work-Areas" }],
     }),
     getWorkAreaById: builder.query<TArea, { id: string }>({
       query: ({ id }) => ({
@@ -35,7 +43,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      transformResponse: () => {},
+      transformResponse: () => { },
       invalidatesTags: [{ type: 'Work-Areas' }, 'Work-Area'],
     }),
     updateWorkArea: builder.mutation<void, TUpdateWorkAreaPayload>({
@@ -44,7 +52,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      transformResponse: () => {},
+      transformResponse: () => { },
       invalidatesTags: [{ type: 'Work-Areas' }, 'Work-Area'],
     }),
   }),

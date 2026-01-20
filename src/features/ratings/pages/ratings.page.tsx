@@ -1,5 +1,4 @@
 import { Stack } from '@mui/material';
-import ratingsApi from '../api/ratings.api';
 import type { TRating } from '../types/rating.types';
 import STRINGS from '@/core/constants/strings.constant';
 import CustomAppBar from '@/core/components/common/custom-app-bar/custom-app-bar.component';
@@ -7,11 +6,12 @@ import RatingsList from '../components/ratings-list.component';
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import { Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useRatingsLoader } from '../hooks/ratings-loader.hook';
 
 const RatingsPage = () => {
   const navigate = useNavigate();
 
-  const { data: ratings = [], isLoading: isLoadingRatings } = ratingsApi.useGetRatingsQuery({});
+  const { data: ratings = [], isLoading: isLoadingRatings } = useRatingsLoader();
 
   const handleOpenRatingActionPage = (oldRating?: TRating) => {
     if (oldRating) {
