@@ -1,9 +1,10 @@
-import { IconButton, Stack } from '@mui/material';
+import { Button, IconButton, Stack } from '@mui/material';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { MdMenuOpen } from 'react-icons/md';
 import RecordVoiceOverOutlinedIcon from '@mui/icons-material/RecordVoiceOverOutlined';
 import { Link } from 'react-router-dom';
 import { Download } from '@mui/icons-material';
+import STRINGS from '@/core/constants/strings.constant';
 
 // BeforeInstallPromptEvent interface
 interface BeforeInstallPromptEvent extends Event {
@@ -81,17 +82,18 @@ function Navbar({
         <MdMenuOpen />
       </IconButton>
       <Stack sx={{ gap: 1, flexDirection: 'row', alignItems: 'center' }}>
+        {installEvent && !isInstalled && (
+          <Button startIcon={<Download />} onClick={handleInstallClick} title="Install App">
+            {STRINGS.install_application}
+          </Button>
+        )}
+
         <Link to={`/system-broadcast`} style={{ marginInlineStart: 'auto' }}>
           <IconButton color="primary">
             <RecordVoiceOverOutlinedIcon />
           </IconButton>
         </Link>
         {/* Install button - only shown when app is installable and not yet installed */}
-        {installEvent && !isInstalled && (
-          <IconButton color="info" onClick={handleInstallClick} title="Install App">
-            <Download />
-          </IconButton>
-        )}
         <img src={`/logo.jpeg`} style={{ width: 50, borderRadius: '8px' }} alt="bank-logo" />
       </Stack>
     </Stack>
