@@ -2,6 +2,7 @@ import { Button, CircularProgress } from '@mui/material';
 import { useState } from 'react';
 import offlineApi from '../api/offline.api';
 import { localDb } from '@/libs/sqlocal';
+import { createTables } from '@/libs/kysely';
 
 const SyncPage = () => {
   const [syncLocalData] = offlineApi.useLazySyncQuery();
@@ -9,7 +10,7 @@ const SyncPage = () => {
 
   const handleSync = async () => {
     const { data } = await syncLocalData({});
-    // await createTables();
+    await createTables();
     await localDb.deleteFrom('employees').execute();
     await localDb.insertInto('employees').values(data.employees).execute();
     await localDb.deleteFrom('areas_to_employees').execute();
