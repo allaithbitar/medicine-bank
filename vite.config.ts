@@ -30,12 +30,12 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      srcDir: "./src/",
-      filename: "sw.ts",
+      srcDir: './src/',
+      filename: 'sw.ts',
       manifest: {
-        name: 'medicine bank',
-        short_name: 'mid-bank',
-        description: 'My Awesome App description',
+        name: 'بنك الدواء الخيري',
+        short_name: 'بنك الدواء',
+        description: 'التطبيق الخاص بجمعية بنك الدواء الخيرية',
         start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
@@ -78,33 +78,33 @@ export default defineConfig({
           },
         ],
       },
-      strategies: "injectManifest",
-      injectRegister: "auto",
-      registerType: "autoUpdate",
+      strategies: 'injectManifest',
+      injectRegister: 'auto',
+      registerType: 'autoUpdate',
       pwaAssets: {
         disabled: false,
         config: true,
       },
-      includeAssets: ["**/*"],
+      includeAssets: ['**/*'],
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,wasm}'],
       },
       injectManifest: {
-        globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,wasm}'],
       },
       devOptions: {
         enabled: false,
-        navigateFallback: "index.html",
-        type: "module",
+        navigateFallback: 'index.html',
+        type: 'module',
       },
     }),
     tsconfigPaths(),
     {
-      name: "configure-response-headers",
+      name: 'configure-response-headers',
       configureServer: (server) => {
         server.middlewares.use((_req, res, next) => {
-          res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
-          res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+          res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+          res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
           next();
         });
       },
@@ -125,7 +125,7 @@ export default defineConfig({
     // },
   },
   optimizeDeps: {
-    exclude: ["sqlocal"],
+    exclude: ['sqlocal'],
   },
   worker: {
     format: 'es',
