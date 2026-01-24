@@ -2,7 +2,7 @@ import useIsOffline from "@/core/hooks/use-is-offline.hook";
 import type { TGetBeneficiariesDto } from "../types/beneficiary.types";
 import beneficiaryApi from "../api/beneficiary.api";
 
-// import { useLocalDisclosuresLoader } from "./local-disclosures-loader.hook";
+import { useLocalBeneficiariesLoader } from "./local-beneficiaries-loader.hook";
 
 export const useBeneficiariesLoader = (dto: TGetBeneficiariesDto = {}) => {
   const isOffline = useIsOffline();
@@ -12,45 +12,35 @@ export const useBeneficiariesLoader = (dto: TGetBeneficiariesDto = {}) => {
       skip: isOffline,
     });
 
-  // const {
-  //   items: offlineData,
-  //   totalCount,
-  //   ...offlineQueryResult
-  // } = useLocalDisclosuresLoader(dto);
+  const {
+    items: offlineData,
+    totalCount,
+    ...offlineQueryResult
+  } = useLocalBeneficiariesLoader(dto);
   // console.log({ offlineData, onlineData });
 
-  // return {
-  //   items: isOffline
-  //     ? offlineData
-  //     : (onlineData?.pages.map((p) => p.items).flat() ?? []),
-  //   totalCount: isOffline ? totalCount : (onlineData?.pages[0].totalCount ?? 0),
-  //   hasNextPage: isOffline
-  //     ? offlineQueryResult.hasNextPage
-  //     : onlineQueryResult.hasNextPage,
-  //   fetchNextPage: isOffline
-  //     ? offlineQueryResult.fetchNextPage
-  //     : onlineQueryResult.fetchNextPage,
-  //   isFetchingNextPage: isOffline
-  //     ? offlineQueryResult.isFetchingNextPage
-  //     : onlineQueryResult.isFetchingNextPage,
-  //   isFetching: isOffline
-  //     ? offlineQueryResult.isFetching
-  //     : onlineQueryResult.isFetching,
-  //
-  //   isLoading: isOffline
-  //     ? offlineQueryResult.isLoading
-  //     : onlineQueryResult.isLoading,
-  //
-  //   error: isOffline ? offlineQueryResult.error : onlineQueryResult.error,
-  // };
   return {
-    items: onlineData?.pages.map((p) => p.items).flat() ?? [],
-    totalCount: onlineData?.pages[0].totalCount ?? 0,
-    hasNextPage: onlineQueryResult.hasNextPage,
-    fetchNextPage: onlineQueryResult.fetchNextPage,
-    isFetchingNextPage: onlineQueryResult.isFetchingNextPage,
-    isFetching: onlineQueryResult.isFetching,
-    isLoading: onlineQueryResult.isLoading,
-    error: onlineQueryResult.error,
+    items: isOffline
+      ? offlineData
+      : (onlineData?.pages.map((p) => p.items).flat() ?? []),
+    totalCount: isOffline ? totalCount : (onlineData?.pages[0].totalCount ?? 0),
+    hasNextPage: isOffline
+      ? offlineQueryResult.hasNextPage
+      : onlineQueryResult.hasNextPage,
+    fetchNextPage: isOffline
+      ? offlineQueryResult.fetchNextPage
+      : onlineQueryResult.fetchNextPage,
+    isFetchingNextPage: isOffline
+      ? offlineQueryResult.isFetchingNextPage
+      : onlineQueryResult.isFetchingNextPage,
+    isFetching: isOffline
+      ? offlineQueryResult.isFetching
+      : onlineQueryResult.isFetching,
+
+    isLoading: isOffline
+      ? offlineQueryResult.isLoading
+      : onlineQueryResult.isLoading,
+
+    error: isOffline ? offlineQueryResult.error : onlineQueryResult.error,
   };
 };

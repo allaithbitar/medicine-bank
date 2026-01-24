@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, TextField, Typography } from '@mui/material';
 import { Save } from '@mui/icons-material';
@@ -16,17 +16,7 @@ const CityActionPage = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id') ?? undefined;
 
-  const { data: { items: cities = [] } = { items: [] }, isLoading: isLoadingCities } = citiesApi.useGetCitiesQuery(
-    {
-      pageSize: 1000,
-    },
-    { skip: !id }
-  );
-
-  const cachedCity = useMemo(
-    () => (id ? (cities.find((c) => String(c.id) === String(id)) as TCity | undefined) : undefined),
-    [cities, id]
-  );
+  const { data: cityData, isFetching: isLoadingCity } = citiesApi.useGetCityByIdQuery({ id: id! }, { skip: !id });
 
   const [updateCity, { isLoading: isUpdatingCity }] = citiesApi.useUpdateCityMutation();
   const [addCity, { isLoading: isAddingCity }] = citiesApi.useAddCityMutation();
@@ -64,13 +54,13 @@ const CityActionPage = () => {
     }
   };
 
-  const isBusy = isUpdatingCity || isAddingCity || isLoadingCities;
+  const isBusy = isUpdatingCity || isAddingCity || isLoadingCity;
 
   useEffect(() => {
-    if (cachedCity) {
-      setCityName(cachedCity.name);
+    if (cityData) {
+      setCityName(cityData.name);
     }
-  }, [cachedCity]);
+  }, [cityData]);
 
   return (
     <Card sx={{ p: 2 }}>

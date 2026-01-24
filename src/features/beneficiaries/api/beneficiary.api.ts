@@ -63,7 +63,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
           !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
       },
       transformResponse: (res: ApiResponse<TPaginatedResponse<TBenefieciary>>) => res.data,
-      providesTags: ['Disclosures'],
+      providesTags: ['Beneficiaries'],
     }),
 
     getBeneficiary: builder.query<TBenefieciary, { id: string }>({

@@ -1,32 +1,36 @@
 import { useCallback, useState } from 'react';
 import { Stack } from '@mui/material';
-import WorkAreasLists from '../../components/work-areas/work-area-lists/work-area-lists.component';
 import WorkAreasAppBar from '../../components/work-areas/work-area-hidder/work-area-hidder.components';
-import workAreasApi from '../../api/work-areas/work-areas.api';
 import type { TArea } from '../../types/work-areas.types';
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import { Add } from '@mui/icons-material';
 import STRINGS from '@/core/constants/strings.constant';
-import type { TCity } from '../../types/city.types';
 import { useNavigate } from 'react-router-dom';
+import { useAreasLoader } from '@/features/areas/hooks/areas-loader.hook';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
+import WorkAreaCardComponent from '../../components/work-areas/work-area-card/work-area-card.component';
+import ErrorCard from '@/core/components/common/error-card/error-card.component';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
+import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const WorkAreas = () => {
   const navigate = useNavigate();
 
-  const [selectedCity, setSelectedCity] = useState<TCity | null>(null);
-  const [query, setQuery] = useState<string | null>('');
+  const [selectedCity, setSelectedCity] = useState<TAutocompleteItem | null>(null);
+  const [queryData, setQueryData] = useState({
+    pageSize: DEFAULT_PAGE_SIZE,
+    pageNumber: DEFAULT_PAGE_NUMBER,
+    name: '',
+  });
 
-  const { data: { items: workAreas = [] } = { items: [] }, isLoading: isLoadingWorkAreas } =
-    workAreasApi.useGetWorkAreasQuery(
-      {
-        name: query,
-        cityId: selectedCity?.id,
-      },
-      { skip: !selectedCity?.id }
-    );
+  const { items, error, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } = useAreasLoader({
+    ...queryData,
+    cityId: selectedCity?.id ?? '',
+  });
 
-  const handleSearch = useCallback((query: string | null) => {
-    setQuery(query);
+  const handleSearch = useCallback((query: string) => {
+    setQueryData((prev) => ({ ...prev, name: query }));
   }, []);
 
   const handleOpenWorkAreaActionPage = (oldWorkArea?: TArea) => {
@@ -37,14 +41,24 @@ const WorkAreas = () => {
     }
   };
 
+  if (error) {
+    return <ErrorCard error={error} />;
+  }
+
   return (
-    <Stack gap={2} sx={{ height: '100%' }}>
+    <Stack gap={1} sx={{ height: '100%' }}>
       <WorkAreasAppBar handleSearch={handleSearch} selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
-      <WorkAreasLists
-        handleEditWorkArea={(wa) => handleOpenWorkAreaActionPage(wa)}
-        workAreas={workAreas}
-        isLoadingWorkAreas={isLoadingWorkAreas}
-      />
+      <VirtualizedList
+        items={items}
+        containerStyle={{ flex: 1 }}
+        virtualizationOptions={{
+          count: items.length,
+        }}
+        onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
+        isLoading={isFetchingNextPage}
+      >
+        {({ item: wa }) => <WorkAreaCardComponent workArea={wa} onEdit={() => handleOpenWorkAreaActionPage(wa)} />}
+      </VirtualizedList>
       <ActionsFab
         actions={[
           {
@@ -54,6 +68,7 @@ const WorkAreas = () => {
           },
         ]}
       />
+      {isLoading && <LoadingOverlay />}
     </Stack>
   );
 };

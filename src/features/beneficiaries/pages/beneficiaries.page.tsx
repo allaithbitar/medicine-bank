@@ -1,19 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import BeneficiaryCard from "../components/beneficiary-card.component";
-import { Add, Filter } from "@mui/icons-material";
-import STRINGS from "@/core/constants/strings.constant";
-import ActionsFab from "@/core/components/common/actions-fab/actions-fab.component";
-import { Stack } from "@mui/material";
-import {
-  DEFAULT_PAGE_NUMBER,
-  DEFAULT_PAGE_SIZE,
-} from "@/core/constants/properties.constant";
-import { useBeneficiariesLoader } from "../hooks/use-beneficiaries-loader.hook";
-import { useState } from "react";
-import type { TGetBeneficiariesDto } from "../types/beneficiary.types";
-import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import { useNavigate } from 'react-router-dom';
+import BeneficiaryCard from '../components/beneficiary-card.component';
+import { Add, Filter } from '@mui/icons-material';
+import STRINGS from '@/core/constants/strings.constant';
+import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
+import { Stack } from '@mui/material';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
+import { useBeneficiariesLoader } from '../hooks/use-beneficiaries-loader.hook';
+import { useState } from 'react';
+import type { TGetBeneficiariesDto } from '../types/beneficiary.types';
+import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
+import { useModal } from '@/core/components/common/modal/modal-provider.component';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import ErrorCard from '@/core/components/common/error-card/error-card.component';
 
 const BeneficiariesPage = () => {
   const [queryData, setQueryData] = useState<TGetBeneficiariesDto>({
@@ -23,6 +21,7 @@ const BeneficiariesPage = () => {
   const { openModal, closeModal } = useModal();
   const {
     items = [],
+    error,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
@@ -33,12 +32,14 @@ const BeneficiariesPage = () => {
 
   const navigate = useNavigate();
 
+  if (error) {
+    return <ErrorCard error={error} />;
+  }
+
   return (
-    <Stack gap={2} sx={{ height: "100%" }}>
+    <Stack gap={2} sx={{ height: '100%' }}>
       <VirtualizedList
-        onEndReach={
-          hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined
-        }
+        onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
         items={items}
         containerStyle={{ flex: 1 }}
@@ -47,13 +48,7 @@ const BeneficiariesPage = () => {
         }}
       >
         {({ item: b }) => {
-          return (
-            <BeneficiaryCard
-              beneficiary={b}
-              key={b.id}
-              onEnterClick={navigate}
-            />
-          );
+          return <BeneficiaryCard beneficiary={b} key={b.id} onEnterClick={navigate} />;
         }}
       </VirtualizedList>
       <ActionsFab
@@ -61,14 +56,14 @@ const BeneficiariesPage = () => {
           {
             icon: <Add />,
             label: STRINGS.add_beneficiary,
-            onClick: () => navigate("/beneficiaries/action"),
+            onClick: () => navigate('/beneficiaries/action'),
           },
           {
             icon: <Filter />,
             label: STRINGS.filter,
             onClick: () =>
               openModal({
-                name: "BENEFICIARIES_FILTERS_MODAL",
+                name: 'BENEFICIARIES_FILTERS_MODAL',
                 props: {
                   onSubmit: (values) => {
                     closeModal();

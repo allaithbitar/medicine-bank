@@ -10,7 +10,6 @@ import STRINGS from '@/core/constants/strings.constant';
 interface ICityCardProps {
   city: TCity;
   onEdit: () => void;
-  onDelete: () => void;
 }
 
 const CityCard = ({ city, onEdit }: ICityCardProps) => {

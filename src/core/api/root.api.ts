@@ -15,7 +15,7 @@ import { authActions } from '../slices/auth/auth.slice';
 console.log(import.meta.env);
 
 const protocol = import.meta.env.VITE_USE_HTTPS === 'true' ? 'https' : 'http';
-export const baseUrl = `${protocol}://192.168.2.101:${import.meta.env.VITE_API_PORT}`;
+export const baseUrl = `${protocol}://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,

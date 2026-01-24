@@ -34,7 +34,6 @@ const EmployeeActionPage = () => {
 
   const handleSave = async () => {
     const { isValid, result } = await ref.current!.handleSubmit();
-    console.log({ isValid, result });
 
     if (!isValid) return;
     try {

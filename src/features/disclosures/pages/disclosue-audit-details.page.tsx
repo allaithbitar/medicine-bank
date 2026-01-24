@@ -15,14 +15,14 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import disclosuresApi from '../api/disclosures.api';
 import { useLocation, useParams } from 'react-router-dom';
-import employeesApi from '@/features/employees/api/employees.api';
-import type { TEmployee } from '@/features/employees/types/employee.types';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import Nodata from '@/core/components/common/no-data/no-data.component';
 import type { TAuditDetailsRow } from '../types/disclosure.types';
 import { ACTION_COLOR_MAP, formatDateTime, getStringsLabel } from '@/core/helpers/helpers';
 import Header from '@/core/components/common/header/header';
 import STRINGS from '@/core/constants/strings.constant';
+import { useEmployeesAutocompleteLoader } from '@/features/autocomplete/hooks/employees-autocomplete-loader.hook';
+import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const RAW_COLUMNS = new Set([
   'is_custom_rating',
@@ -60,18 +60,18 @@ function AuditDetailsPage() {
   );
 
   const {
-    data: { items: employees = [] } = { items: [] },
+    data,
     isLoading: isEmployeesLoading,
     isFetching: isEmployeesFetching,
-  } = employeesApi.useGetEmployeesQuery({ pageSize: 1000 });
+  } = useEmployeesAutocompleteLoader({ pageSize: 1000 });
 
   const employeeMap = useMemo(() => {
-    const map = new Map<string, TEmployee>();
-    if (Array.isArray(employees)) {
-      for (const e of employees) map.set(e.id, e);
+    const map = new Map<string, TAutocompleteItem>();
+    for (const e of data?.items || []) {
+      map.set(e.id, e);
     }
     return map;
-  }, [employees]);
+  }, [data?.items]);
 
   const loading = isAuditLoading || isAuditFetching || isEmployeesLoading || isEmployeesFetching;
 

@@ -7,16 +7,16 @@ import { UpdateWorkAreaSchema, WorkAreaSchema } from '@/features/banks/schemas/w
 import STRINGS from '@/core/constants/strings.constant';
 import CitiesAutocomplete from '@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component';
 import useReducerState from '@/core/hooks/use-reducer.hook';
-import type { IOptions } from '@/core/types/common.types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import citiesApi from '../../api/cities-api/cities.api';
+import type { TAutocompleteItem } from '@/core/types/common.types';
 
 interface IAreaData {
-  selectedCity: IOptions | null;
+  selectedCity: TAutocompleteItem | null;
   workAreaName: string;
 }
 const initialAreaData: IAreaData = {
@@ -100,6 +100,7 @@ const WorkAreaActionPage = () => {
       <Typography sx={{ pb: 2 }}>{workAreaById ? STRINGS.edit_city : STRINGS.add_city}</Typography>
       <Stack gap={3}>
         <CitiesAutocomplete
+          multiple={false}
           disabled
           defaultValueId={workAreaById?.cityId}
           value={state.selectedCity}

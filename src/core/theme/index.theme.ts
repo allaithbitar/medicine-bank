@@ -15,6 +15,7 @@ const theme = createTheme({
   transitions: baseTheme.transitions,
   typography: {
     fontFamily: 'alexandria',
+    fontSize: 13,
   },
 
   components: {

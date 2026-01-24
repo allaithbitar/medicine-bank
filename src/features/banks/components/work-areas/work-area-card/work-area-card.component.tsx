@@ -6,17 +6,14 @@ import CustomIconButton from '@/core/components/common/custom-icon-button/custom
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
 import type { TArea } from '@/features/banks/types/work-areas.types';
-import { useCityName } from '@/features/banks/hooks/work-areas/use-city-name-from-id.hook';
 import STRINGS from '@/core/constants/strings.constant';
 
 interface IWorkAreaCardProps {
   workArea: TArea;
   onEdit: () => void;
-  onDelete: () => void;
 }
 
 const WorkAreaCard = ({ workArea, onEdit }: IWorkAreaCardProps) => {
-  const cityName = useCityName(workArea.cityId);
   const headerContent = (
     <Box
       sx={{
@@ -81,7 +78,7 @@ const WorkAreaCard = ({ workArea, onEdit }: IWorkAreaCardProps) => {
 
   const bodyContent = (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <DetailItemComponent icon={<LocationCityIcon fontSize="small" />} label={STRINGS.city} value={cityName} />
+      <DetailItemComponent icon={<LocationCityIcon fontSize="small" />} label={STRINGS.city} value={'TO BE ADDED'} />
       {/*    <DetailItemComponent
         icon={<UsersIcon fontSize="small" />}
         label="Employees"

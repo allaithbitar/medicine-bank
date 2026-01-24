@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Stack } from '@mui/material';
 import Add from '@mui/icons-material/Add';
-import priorityDegreesApi from '../api/priority-degrees.api';
 import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 import STRINGS from '@/core/constants/strings.constant';
 import SearchFilter from '@/core/components/common/search-filter/search-filter.component';
@@ -9,14 +8,16 @@ import ActionsFab from '@/core/components/common/actions-fab/actions-fab.compone
 import PriorityDegreesList from '../components/priority-degreesList.component';
 import type { TPriorityDegree } from '../types/priority-degree.types';
 import { useNavigate } from 'react-router-dom';
+import { usePriorityDegreesLoader } from '../hooks/priority-degrees-loader.hook';
 
 const PriorityDegreesPage = () => {
   const navigate = useNavigate();
 
   const [query, setQuery] = useState<string | null>('');
 
-  const { data: priorityDegrees = [], isLoading: isLoadingPriorityDegrees } =
-    priorityDegreesApi.useGetPriorityDegreesQuery({ name: query ?? undefined });
+  const { data: priorityDegrees = [], isLoading: isLoadingPriorityDegrees } = usePriorityDegreesLoader({
+    name: query ?? undefined,
+  });
 
   const handleOpenPriorityDegreeActionPage = useCallback(
     (oldPriorityDegree?: TPriorityDegree) => {
