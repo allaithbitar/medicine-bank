@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import beneficiaryApi from '../api/beneficiary.api';
 import { Card, Stack } from '@mui/material';
 import PageLoading from '@/core/components/common/page-loading/page-loading.component';
 import BeneficiaryDisclosures from '../components/beneficiary-disclosures.component';

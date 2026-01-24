@@ -1,10 +1,10 @@
 import { rootApi } from '@/core/api/root.api';
-import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
+import type { ApiResponse, TPaginatedResponse, TPaginationDto } from '@/core/types/common.types';
 import type { TAddCityPayload, TCity, TUpdateCityPayload } from '../../types/city.types';
 
 export const citiesApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCities: builder.infiniteQuery<TPaginatedResponse<TCity>, { name?: string | null }, number>({
+    getCities: builder.infiniteQuery<TPaginatedResponse<TCity>, { name?: string | null } & TPaginationDto, number>({
       query: ({ queryArg, pageParam }) => ({
         url: '/cities',
         method: 'GET',

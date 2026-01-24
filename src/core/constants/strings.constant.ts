@@ -286,6 +286,8 @@ const STRINGS = {
   quick_rate: 'تقييم سريع',
   select_rating_quickly: 'اختار تقييم سريع',
   rate_patient: 'تقييم هذا المريض',
+  disclosure_is_received_status: 'حالة استلام الكشف',
+  disclosure_appointment_status: 'حالة المراجعة',
 };
 
 export default STRINGS;

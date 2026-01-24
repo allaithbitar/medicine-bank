@@ -134,6 +134,7 @@ function BeneficiaryActionForm({
         let _gender: (TListItem & { label: string }) | null = null;
 
         const cities = await dispatch(citiesApi.endpoints.getCities.initiate({})).unwrap();
+        const allCities = cities.pages.flatMap((page) => page.items);
 
         if (beneficiaryData.area) {
           const areas = await dispatch(
@@ -142,9 +143,10 @@ function BeneficiaryActionForm({
               name: beneficiaryData.area.name,
             })
           ).unwrap();
-          _area = areas.items.find((a) => a.id === beneficiaryData.area.id) ?? null;
+          const allAreas = areas.pages.flatMap((page) => page.items);
+          _area = allAreas.find((a) => a.id === beneficiaryData.area.id) ?? null;
 
-          _city = cities.items.find((c) => c.id === beneficiaryData.area.cityId) ?? null;
+          _city = allCities.find((c) => c.id === beneficiaryData.area.cityId) ?? null;
         }
 
         if (beneficiaryData.gender) {
@@ -217,7 +219,7 @@ function BeneficiaryActionForm({
         required
         label={STRINGS.city}
         value={formState.city}
-        onChange={(v) => handleChange('city', v)}
+        onChange={(v: TCity | null) => handleChange('city', v)}
         errorText={formErrors.city?.[0].message ?? ''}
       />
       <AreasAutocomplete

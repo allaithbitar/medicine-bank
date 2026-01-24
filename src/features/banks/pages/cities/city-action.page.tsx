@@ -16,15 +16,12 @@ const CityActionPage = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id') ?? undefined;
 
-  const { data: { items: cities = [] } = { items: [] }, isLoading: isLoadingCities } = citiesApi.useGetCitiesQuery(
-    {
-      pageSize: 1000,
-    },
-    { skip: !id }
-  );
+  const { data, isLoading: isLoadingCities } = citiesApi.useGetCitiesInfiniteQuery({}, { skip: !id });
+
+  const cities = data?.pages.flatMap((page) => page.items) ?? [];
 
   const cachedCity = useMemo(
-    () => (id ? (cities.find((c) => String(c.id) === String(id)) as TCity | undefined) : undefined),
+    () => (id ? (cities.find((c: TCity) => String(c.id) === String(id)) as TCity | undefined) : undefined),
     [cities, id]
   );
 

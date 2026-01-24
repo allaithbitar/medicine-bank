@@ -4,20 +4,16 @@ import { notifyError } from '@/core/components/common/toast/toast';
 
 export const useCityName = (cityId: string) => {
   const [cityName, setCityName] = useState('');
-  const [getCities, { data: { items: cities = [] } = { items: [] }, isError, error }] = citiesApi({});
+  const { data, isError, error } = citiesApi.useGetCitiesInfiniteQuery({});
 
-  useEffect(() => {
-    if (cityId) {
-      getCities({ name: '' }, true);
-    } else {
-      setCityName('');
-    }
-  }, [cityId, getCities]);
+  const cities = data?.pages.flatMap((page) => page.items) ?? [];
 
   useEffect(() => {
     if (cities && cityId) {
-      const foundCity = cities.find((c) => c.id === cityId);
+      const foundCity = cities.find((c: any) => c.id === cityId);
       setCityName(foundCity?.name || '');
+    } else {
+      setCityName('');
     }
   }, [cities, cityId]);
 

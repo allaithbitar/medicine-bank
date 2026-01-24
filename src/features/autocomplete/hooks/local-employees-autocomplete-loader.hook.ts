@@ -16,7 +16,7 @@ export const useLocalEmployeesAutocompleteLoader = (dto: TAutocompleteDto & { ro
       }
 
       if (dto.role?.length) {
-        baseQuery = baseQuery.where('role', 'in', dto.role);
+        baseQuery = baseQuery.where('role', 'in', dto.role as ('manager' | 'supervisor' | 'scout')[]);
       }
 
       const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));

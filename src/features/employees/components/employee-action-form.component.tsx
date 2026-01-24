@@ -5,8 +5,6 @@ import EmployeeRoleAutocomplete from './employee-role-autocomplete.component';
 import { Stack } from '@mui/material';
 import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
 import STRINGS from '@/core/constants/strings.constant';
-import type { TArea } from '@/features/banks/types/work-areas.types';
-import type { TCity } from '@/features/banks/types/city.types';
 import CitiesAutocomplete from '@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component';
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
@@ -25,7 +23,7 @@ const createEmployeeFormSchema = (optionalPassword = false) => {
       name: z.string().min(5, { message: 'too short' }),
       password: z.string(),
       phone: z.string().min(10, { message: 'invalid' }),
-      city: z.custom<TCity | null>(),
+      city: z.custom<TAutocompleteItem | null>(),
       areas: z.custom<TAutocompleteItem[]>(),
     })
     .superRefine((state, ctx) => {
@@ -81,15 +79,16 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
     if (employeeData) {
       setIsLoading(true);
       (async () => {
-        let _city: TCity | null = null;
-        let _areas: TArea[] = [];
+        let _city: TAutocompleteItem | null = null;
+        let _areas: TAutocompleteItem[] = [];
 
         const cities = await dispatch(citiesApi.endpoints.getCities.initiate({})).unwrap();
+        const allCities = cities.pages.flatMap((page) => page.items);
 
         if (employeeData.areas) {
           _areas = employeeData.areas.map((a) => a.area);
 
-          _city = cities.items.find((c) => c.id === _areas[0]?.cityId) ?? null;
+          _city = allCities.find((c: any) => c.id === _areas[0]?.cityId) ?? null;
         }
 
         setFormState({
@@ -143,6 +142,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         errorText={formErrors.role?.[0].message}
       />
       <CitiesAutocomplete
+        multiple={false}
         value={formState.city}
         onChange={(v) => setValue({ city: v })}
         errorText={formErrors.city?.[0].message}

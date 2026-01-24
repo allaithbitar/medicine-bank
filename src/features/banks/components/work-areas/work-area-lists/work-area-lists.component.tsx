@@ -1,8 +1,6 @@
-import { useCallback } from "react";
 import { Business as BuildingOfficeIcon } from "@mui/icons-material";
 import WorkAreaCardComponent from "../work-area-card/work-area-card.component";
 import Nodata from "@/core/components/common/no-data/no-data.component";
-import { useModal } from "@/core/components/common/modal/modal-provider.component";
 import type { TArea } from "@/features/banks/types/work-areas.types";
 import VirtualizedList from "@/core/components/common/virtualized-list/virtualized-list.component";
 import STRINGS from "@/core/constants/strings.constant";
@@ -18,21 +16,6 @@ const WorkAreasLists = ({
   isLoadingWorkAreas,
   handleEditWorkArea,
 }: IWorkAreasLists) => {
-  const { openModal } = useModal();
-
-  const handleDeleteWorkAreaClick = useCallback((id: string) => {
-    openModal({
-      name: "CONFIRM_MODAL",
-      props: {
-        message: "Are you sure you want to delete this item?",
-        onConfirm: () => {
-          console.log("🚀 ~ handleDeleteWorkAreaClick ~ id:", id);
-        },
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <>
       {!isLoadingWorkAreas && workAreas.length === 0 && (
@@ -55,7 +38,6 @@ const WorkAreasLists = ({
             <WorkAreaCardComponent
               workArea={wa}
               onEdit={() => handleEditWorkArea(wa)}
-              onDelete={() => handleDeleteWorkAreaClick(wa.id)}
             />
           );
         }}

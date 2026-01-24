@@ -114,7 +114,7 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
         .select((eb) => eb.fn.count<number>('id').as('count'))
         .execute();
 
-      const items = (await query.execute()) as TDisclosure[];
+      const items = (await query.execute()) as unknown as TDisclosure[];
 
       return {
         items,

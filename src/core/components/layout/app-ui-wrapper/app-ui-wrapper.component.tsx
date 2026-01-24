@@ -8,14 +8,15 @@ const AppUiWrapper = () => {
   const [queryClient] = useState(
     () => new QueryClient({ defaultOptions: { queries: { retry: 1, networkMode: 'offlineFirst' } } })
   );
+
   return (
     <>
       <ThemeContextProvider>
-        <ModalProvider>
-          <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <ModalProvider>
             <Outlet />
-          </QueryClientProvider>
-        </ModalProvider>
+          </ModalProvider>
+        </QueryClientProvider>
       </ThemeContextProvider>
     </>
   );

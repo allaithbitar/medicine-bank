@@ -2,12 +2,12 @@ import useIsOffline from '@/core/hooks/use-is-offline.hook';
 import autocompleteApi, { type TAutocompleteDto } from '../api/autocomplete.api';
 import { useLocalAreasAutocompleteLoader } from './local-areas-autocomplete-loader.hook';
 
-export const useAreasAutocompleteLoader = (dto: TAutocompleteDto & { cityId?: string }) => {
+function useAreasAutocompleteLoader(dto: TAutocompleteDto & { cityId?: string }) {
   const isOffline = useIsOffline();
 
   const { data: offlineData, ...offlineQueryResult } = useLocalAreasAutocompleteLoader(dto);
 
-  return autocompleteApi.useAreasAutocompleteQuery(dto, {
+  const { data: onlineData, ...onlineQueryResult } = autocompleteApi.useAreasAutocompleteQuery(dto, {
     skip: isOffline,
   });
 
@@ -17,5 +17,6 @@ export const useAreasAutocompleteLoader = (dto: TAutocompleteDto & { cityId?: st
     isLoading: isOffline ? offlineQueryResult.isLoading : onlineQueryResult.isLoading,
     error: isOffline ? offlineQueryResult.error : onlineQueryResult.error,
   };
-};
+}
 
+export default useAreasAutocompleteLoader;

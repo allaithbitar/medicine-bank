@@ -229,7 +229,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
       />
 
       <FormSelectInput
-        label={'is_appointment_completed'}
+        label={STRINGS.disclosure_appointment_status}
         value={filters.isAppointmentCompleted}
         getOptionLabel={(option) => option.label}
         onChange={(value) => {
@@ -239,8 +239,8 @@ const DisclosureFilters = ({ ref }: TProps) => {
           }));
         }}
         options={[
-          { id: 'true', label: 'true' },
-          { id: 'false', label: 'false' },
+          { id: 'true', label: STRINGS.appointment_completed },
+          { id: 'false', label: STRINGS.appointment_not_completed },
         ]}
       />
 
@@ -256,7 +256,7 @@ const DisclosureFilters = ({ ref }: TProps) => {
       {/* /> */}
 
       <FormSelectInput
-        label={'is_received'}
+        label={STRINGS.disclosure_is_received_status}
         value={filters.isReceived}
         getOptionLabel={(option) => option.label}
         onChange={(value) => {
@@ -266,8 +266,8 @@ const DisclosureFilters = ({ ref }: TProps) => {
           }));
         }}
         options={[
-          { id: 'true', label: 'true' },
-          { id: 'false', label: 'false' },
+          { id: 'true', label: STRINGS.is_received },
+          { id: 'false', label: STRINGS.hasnt_been_received_yet },
         ]}
       />
     </Stack>

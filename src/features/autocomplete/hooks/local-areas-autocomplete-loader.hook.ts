@@ -6,25 +6,17 @@ import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/propert
 
 export const useLocalAreasAutocompleteLoader = (dto: TAutocompleteDto & { cityId?: string }) => {
   const isOffline = useIsOffline();
-  return useQuery({
+  const queryResult = useQuery({
     queryKey: ['LOCAL_AREAS_AUTOCOMPLETE', dto],
     queryFn: async () => {
       let baseQuery = localDb.selectFrom('areas');
-      // .select((col) => [
-      //   jsonObjectFrom(
-      //     col
-      //       .selectFrom('cities')
-      //       .select(['cities.id', 'cities.name'])
-      //       .whereRef('cities.id', '=', 'areas.cityId')
-      //   ).as('city'),
-      // ]);
 
       if (dto.query) {
         baseQuery = baseQuery.where('name', 'like', `%${dto.query}%`);
       }
 
       if (dto.cityId) {
-        baseQuery = baseQuery.where('cityId', '=', dto.cityId);
+        baseQuery = baseQuery.where('cityId', '=', `%${dto.cityId}%`);
       }
 
       const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));
@@ -50,4 +42,5 @@ export const useLocalAreasAutocompleteLoader = (dto: TAutocompleteDto & { cityId
     },
     enabled: isOffline,
   });
+  return queryResult;
 };

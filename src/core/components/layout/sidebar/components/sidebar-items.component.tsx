@@ -1,22 +1,18 @@
-import { List } from "@mui/material";
-import type { ReactElement } from "react";
-import HomeIcon from "@mui/icons-material/Home";
-import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
-import SideBarListItem from "./sidebar-list-item.component";
-import BadgeIcon from "@mui/icons-material/Badge";
-import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-import MeetingRoomOutlinedIcon from "@mui/icons-material/MeetingRoomOutlined";
-import SidebarExpandableItem from "./sidebar-expandable-list-item.component";
-import {
-  Business as BuildingOfficeIcon,
-  Sync,
-  ThumbsUpDown,
-} from "@mui/icons-material";
-import STRINGS from "@/core/constants/strings.constant";
-import CrisisAlertIcon from "@mui/icons-material/CrisisAlert";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import { List } from '@mui/material';
+import type { ReactElement } from 'react';
+import HomeIcon from '@mui/icons-material/Home';
+import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
+import SideBarListItem from './sidebar-list-item.component';
+import BadgeIcon from '@mui/icons-material/Badge';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
+import SidebarExpandableItem from './sidebar-expandable-list-item.component';
+import { Business as BuildingOfficeIcon, Sync, ThumbsUpDown } from '@mui/icons-material';
+import STRINGS from '@/core/constants/strings.constant';
+import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 type BaseItem = {
   label: string;
@@ -41,84 +37,84 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
     {
       label: STRINGS.home_page,
       icon: <HomeIcon />,
-      href: "/",
+      href: '/',
       permissions: [],
     },
     {
       label: STRINGS.disclosure_consulting,
-      href: "/adviser_disclosure_consultations",
+      href: '/adviser_disclosure_consultations',
       icon: <PsychologyAltIcon />,
       permissions: [],
     },
     {
       label: STRINGS.employees,
-      href: "/employees",
+      href: '/employees',
       icon: <BadgeIcon />,
       permissions: [],
     },
     {
       label: STRINGS.beneficiaries,
-      href: "/beneficiaries",
+      href: '/beneficiaries',
       icon: <SupervisedUserCircleIcon />,
       permissions: [],
     },
     {
       label: STRINGS.disclosures,
-      href: "/disclosures",
+      href: '/disclosures',
       icon: <SupervisedUserCircleIcon />,
       permissions: [],
     },
     {
       label: STRINGS.cities,
-      href: "/cities",
+      href: '/cities',
       icon: <BuildingOfficeIcon />,
       permissions: [],
     },
     {
       label: STRINGS.areas,
-      href: "/work-areas",
+      href: '/work-areas',
       icon: <EditLocationAltIcon />,
       permissions: [],
     },
     {
       label: STRINGS.ratings,
-      href: "/ratings",
+      href: '/ratings',
       icon: <ThumbsUpDown />,
       permissions: [],
     },
     {
       label: STRINGS.medicines,
-      href: "/medicines",
+      href: '/medicines',
       icon: <MedicalServicesIcon />,
       permissions: [],
     },
     {
       label: STRINGS.meetings,
-      href: "/meetings",
+      href: '/meetings',
       icon: <MeetingRoomOutlinedIcon />,
       permissions: [],
     },
     {
       label: STRINGS.priority_degrees,
-      href: "/priority-degrees",
+      href: '/priority-degrees',
       icon: <CrisisAlertIcon />,
       permissions: [],
     },
     {
       label: STRINGS.calendar,
-      href: "/calendar",
+      href: '/calendar',
       icon: <CalendarMonthIcon />,
       permissions: [],
     },
     {
       label: STRINGS.sync,
-      href: "/sync",
+      href: '/sync',
       icon: <Sync />,
       permissions: [],
     },
   ];
   return (
-    <List>
+    <List sx={{ height: '100%', overflow: 'auto' }}>
       {items
         .filter((p) => !p.isDisabled)
         // .filter((i) => checkPermission(i.permissions))
@@ -133,14 +129,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
               icon={i.icon}
             />
           ) : (
-            <SideBarListItem
-              onClick={onClick}
-              key={i.label}
-              icon={i.icon}
-              label={i.label}
-              level={1}
-              href={i.href}
-            />
+            <SideBarListItem onClick={onClick} key={i.label} icon={i.icon} label={i.label} level={1} href={i.href} />
           )
         )}
     </List>

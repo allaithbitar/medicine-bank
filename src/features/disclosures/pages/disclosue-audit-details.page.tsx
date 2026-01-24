@@ -60,10 +60,12 @@ function AuditDetailsPage() {
   );
 
   const {
-    data: { items: employees = [] } = { items: [] },
+    data,
     isLoading: isEmployeesLoading,
     isFetching: isEmployeesFetching,
-  } = employeesApi.useGetEmployeesQuery({ pageSize: 1000 });
+  } = employeesApi.useGetEmployeesInfiniteQuery({ pageSize: 1000 });
+
+  const employees = data?.pages.flatMap((page) => page.items) ?? [];
 
   const employeeMap = useMemo(() => {
     const map = new Map<string, TEmployee>();

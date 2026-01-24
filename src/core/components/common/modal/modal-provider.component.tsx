@@ -4,6 +4,7 @@ import ConfirmModal from '../modals/confirm/confirm.modal';
 import { useSearchParams } from 'react-router-dom';
 import BeneficiariesFiltersModal from '@/features/beneficiaries/components/beneficiaries-filters.modal';
 import DisclosureFiltersModal from '@/features/disclosures/components/disclosure-filters.modal';
+import ErrorBoundary from '@/components/errorBoundary/error-boundary.component';
 
 const MODALS = {
   [MODAL_NAMES.CONFIRM_MODAL]: ConfirmModal,
@@ -81,11 +82,13 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ModalContext.Provider value={contextValue}>
       {children}
-      {openedModals.map((m) => {
-        const ModalComponent = MODALS[m.name];
+      <ErrorBoundary>
+        {openedModals.map((m) => {
+          const ModalComponent = MODALS[m.name];
 
-        return <ModalComponent key={m.id} {...(m.props as any)} modalId={m.id} />;
-      })}
+          return <ModalComponent key={m.id} {...(m.props as any)} modalId={m.id} />;
+        })}
+      </ErrorBoundary>
     </ModalContext.Provider>
   );
 };

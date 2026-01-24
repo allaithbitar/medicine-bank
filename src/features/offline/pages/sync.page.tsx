@@ -1,12 +1,7 @@
-import { jsonObjectFrom, jsonArrayFrom } from 'kysely/helpers/sqlite';
 import { Button, CircularProgress } from '@mui/material';
-// import offlineApi from "../api/offline.api";
 import { useState } from 'react';
-// import { localDb } from "@/libs/sqlocal";
-import { createTables } from '@/libs/kysely';
 import offlineApi from '../api/offline.api';
 import { localDb } from '@/libs/sqlocal';
-import { ParseJSONResultsPlugin } from 'kysely';
 
 const SyncPage = () => {
   const [syncLocalData] = offlineApi.useLazySyncQuery();

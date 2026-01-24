@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Stack } from '@mui/material';
 import SearchFilter from '@/core/components/common/search-filter/search-filter.component';
-import CitiesList from '../../components/cities/cities-list/cities-list.component';
 import type { TCity } from '../../types/city.types';
 import CustomAppBar from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 import STRINGS from '@/core/constants/strings.constant';
