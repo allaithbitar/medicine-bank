@@ -3,6 +3,7 @@ import type { TBenefieciary, TGetBeneficiariesDto } from '../types/beneficiary.t
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/sqlite';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 
 export const useLocalBeneficiariesLoader = ({ pageSize, ...dto }: TGetBeneficiariesDto) => {
   const isOffline = useIsOffline();
@@ -70,8 +71,8 @@ export const useLocalBeneficiariesLoader = ({ pageSize, ...dto }: TGetBeneficiar
             col.selectFrom('areas').select(['areas.id', 'areas.name']).whereRef('areas.id', '=', 'patients.areaId')
           ).as('area'),
         ])
-        .limit(pageSize!)
-        .offset(pageSize! * pageParam)
+        .limit(pageSize || DEFAULT_PAGE_SIZE)
+        .offset(pageSize || DEFAULT_PAGE_SIZE * pageParam)
         .orderBy('createdAt', 'desc');
 
       let totalCount = 0;
@@ -102,4 +103,3 @@ export const useLocalBeneficiariesLoader = ({ pageSize, ...dto }: TGetBeneficiar
     ...restQueryResult,
   };
 };
-

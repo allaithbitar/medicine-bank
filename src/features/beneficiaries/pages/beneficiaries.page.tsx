@@ -4,7 +4,6 @@ import { Add, Filter } from '@mui/icons-material';
 import STRINGS from '@/core/constants/strings.constant';
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import { Stack } from '@mui/material';
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 import { useBeneficiariesLoader } from '../hooks/use-beneficiaries-loader.hook';
 import { useState } from 'react';
 import type { TGetBeneficiariesDto } from '../types/beneficiary.types';
@@ -14,10 +13,7 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
 
 const BeneficiariesPage = () => {
-  const [queryData, setQueryData] = useState<TGetBeneficiariesDto>({
-    pageSize: DEFAULT_PAGE_SIZE,
-    pageNumber: DEFAULT_PAGE_NUMBER,
-  });
+  const [queryData, setQueryData] = useState<TGetBeneficiariesDto>({});
   const { openModal, closeModal } = useModal();
   const {
     items = [],

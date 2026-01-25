@@ -4,13 +4,42 @@ import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/sqlite';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
 import type { TEmployee, TSearchEmployeesDto } from '../types/employee.types';
 import { ParseJSONResultsPlugin } from 'kysely';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 export const useLocalEmployeesLoader = ({ pageSize, ...dto }: TSearchEmployeesDto) => {
   const isOffline = useIsOffline();
   const { data, ...restQueryResult } = useInfiniteQuery({
     queryKey: ['LOCAL_EMPLOYEES', dto],
     queryFn: async ({ pageParam }) => {
-      let query = localDb
-        .selectFrom('employees')
+      let baseQuery = localDb.selectFrom('employees');
+
+      if (dto.role?.length) {
+        baseQuery = baseQuery.where('role', 'in', dto.role);
+      }
+
+      if (dto.pageNumber) {
+        baseQuery = baseQuery.where('phone', 'like', `%${dto.pageNumber}%`);
+      }
+
+      if (dto.query) {
+        baseQuery = baseQuery.where('name', 'like', `%${dto.query}%`);
+      }
+
+      if (dto.areaId) {
+        const eids = await localDb
+          .selectFrom('areas_to_employees')
+          .select('employeeId')
+          .where('areaId', '=', dto.areaId)
+          .execute();
+        baseQuery = baseQuery.where(
+          'id',
+          '=',
+          eids.map((eid) => eid.employeeId)
+        );
+      }
+
+      const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));
+
+      const query = baseQuery
         .selectAll()
         .select((ns) => [
           jsonArrayFrom(
@@ -30,101 +59,13 @@ export const useLocalEmployeesLoader = ({ pageSize, ...dto }: TSearchEmployeesDt
         ])
         .withPlugin(new ParseJSONResultsPlugin())
 
-        .limit(pageSize!)
-        .offset(pageSize! * pageParam)
+        .limit(pageSize || DEFAULT_PAGE_SIZE)
+        .offset(pageSize || DEFAULT_PAGE_SIZE * pageParam)
         .orderBy('createdAt', 'desc');
 
-      if (dto.role?.length) {
-        query = query.where('role', 'in', dto.role);
-      }
-
-      if (dto.pageNumber) {
-        query = query.where('phone', 'like', `%${dto.pageNumber}%`);
-      }
-
-      if (dto.query) {
-        query = query.where('name', 'like', `%${dto.query}%`);
-      }
-
-      if (dto.areaId) {
-        const eids = await localDb
-          .selectFrom('areas_to_employees')
-          .select('employeeId')
-          .where('areaId', '=', dto.areaId)
-          .execute();
-        query = query.where(
-          'id',
-          '=',
-          eids.map((eid) => eid.employeeId)
-        );
-      }
-
-      //
-      // if (dto.type?.length) {
-      //   query = query.where('type', 'in', dto.type);
-      // }
-      //
-      // if (dto.priorityIds?.length) {
-      //   query = query.where('priorityId', 'in', dto.priorityIds);
-      // }
-      //
-      // if (dto.scoutIds?.length) {
-      //   query = query.where('scoutId', 'in', dto.scoutIds);
-      // }
-      //
-      // if (dto.patientId) {
-      //   query = query.where('patientId', '=', dto.patientId);
-      // }
-      //
-      // if (dto.createdAtStart) {
-      //   query = query.where('createdAt', '>=', dto.createdAtStart);
-      // }
-      //
-      // if (dto.createdAtEnd) {
-      //   query = query.where('createdAt', '<=', dto.createdAtEnd);
-      // }
-      //
-      // if (dto.undelivered) {
-      //   query = query.where('scoutId', 'is', null);
-      // }
-      //
-      // if (dto.unvisited) {
-      //   query = query.where('visitResult', 'is', null);
-      // }
-      //
-      // if (dto.appointmentDate) {
-      //   query = query.where('appointmentDate', '=', dto.appointmentDate);
-      // }
-      //
-      // if (typeof dto.isAppointmentCompleted !== 'undefined') {
-      //   query = query.where('isAppointmentCompleted', '=', dto.isAppointmentCompleted);
-      // }
-      //
-      // if (dto.archiveNumber) {
-      //   query = query.where('archiveNumber', '=', dto.archiveNumber);
-      // }
-      //
-      // if (dto.isCustomRating) {
-      //   query = query.where('isCustomRating', '=', dto.isCustomRating);
-      // }
-      //
-      // if (dto.ratingIds?.length) {
-      //   query = query.where('ratingId', 'in', dto.ratingIds);
-      // }
-      //
-      // if (typeof dto.isReceived !== 'undefined') {
-      //   query = query.where('isReceived', 'in', dto.isReceived);
-      // }
-      //
-      // if (dto.visitResult?.length) {
-      //   const noramlizedVisitResult = dto.visitResult?.filter((v) => !!v);
-      //   query = query.where('visitResult', 'in', noramlizedVisitResult);
-      // }
-
-      const [{ count: totalCount }] = await localDb
-        .selectFrom('disclosures')
-        .select((eb) => eb.fn.count<number>('id').as('count'))
-        .execute();
+      let totalCount = 0;
+      const countResult = await countQuery.execute();
+      totalCount = countResult[0]?.count ?? 0;
 
       const items = (await query.execute()) as TEmployee[];
 
