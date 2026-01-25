@@ -24,10 +24,9 @@ const ReusableCard = ({ headerBackground, headerContent, bodyContent, footerCont
       {headerContent && (
         <Stack
           sx={{
-            height: 70,
             width: '100%',
             justifyContent: 'center',
-            px: 2,
+            p: 1,
             background:
               headerBackground ||
               `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
