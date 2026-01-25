@@ -3,13 +3,99 @@ import type { TDisclosure, TGetDisclosuresDto } from '../types/disclosure.types'
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { jsonObjectFrom } from 'kysely/helpers/sqlite';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresDto) => {
   const isOffline = useIsOffline();
   const { data, ...restQueryResult } = useInfiniteQuery({
     queryKey: ['LOCAL_DISCLOSURES', dto],
     queryFn: async ({ pageParam }) => {
-      let query = localDb
-        .selectFrom('disclosures')
+      let baseQuery = localDb.selectFrom('disclosures');
+
+      //
+      // let collection = localDb.disclosures.toCollection();
+      //
+      if (dto.status?.length) {
+        baseQuery = baseQuery.where('status', 'in', dto.status);
+      }
+
+      if (dto.type?.length) {
+        baseQuery = baseQuery.where('type', 'in', dto.type);
+      }
+
+      if (dto.priorityIds?.length) {
+        baseQuery = baseQuery.where('priorityId', 'in', dto.priorityIds);
+      }
+
+      if (dto.scoutIds?.length) {
+        baseQuery = baseQuery.where('scoutId', 'in', dto.scoutIds);
+      }
+
+      if (dto.patientId) {
+        baseQuery = baseQuery.where('patientId', '=', dto.patientId);
+      }
+
+      if (dto.createdAtStart) {
+        baseQuery = baseQuery.where('createdAt', '>=', dto.createdAtStart);
+      }
+
+      if (dto.createdAtEnd) {
+        baseQuery = baseQuery.where('createdAt', '<=', dto.createdAtEnd);
+      }
+
+      if (dto.undelivered) {
+        baseQuery = baseQuery.where('scoutId', 'is', null);
+      }
+
+      if (dto.unvisited) {
+        baseQuery = baseQuery.where('visitResult', 'is', null);
+      }
+
+      if (dto.appointmentDate) {
+        baseQuery = baseQuery.where('appointmentDate', '=', dto.appointmentDate);
+      }
+
+      if (typeof dto.isAppointmentCompleted !== 'undefined') {
+        baseQuery = baseQuery.where('isAppointmentCompleted', '=', dto.isAppointmentCompleted);
+      }
+
+      if (dto.archiveNumber) {
+        baseQuery = baseQuery.where('archiveNumber', '=', dto.archiveNumber);
+      }
+
+      if (dto.isCustomRating) {
+        baseQuery = baseQuery.where('isCustomRating', '=', dto.isCustomRating);
+      }
+
+      if (dto.ratingIds?.length) {
+        baseQuery = baseQuery.where('ratingId', 'in', dto.ratingIds);
+      }
+
+      if (typeof dto.isReceived !== 'undefined') {
+        baseQuery = baseQuery.where('isReceived', '=', dto.isReceived);
+      }
+
+      if (dto.visitResult?.length) {
+        const noramlizedVisitResult = dto.visitResult?.filter((v) => !!v);
+        baseQuery = baseQuery.where('visitResult', 'in', noramlizedVisitResult);
+      }
+
+      if (dto.areaIds?.length) {
+        const patientIds = await localDb
+          .selectFrom('patients')
+          .select('id')
+          .where('areaId', 'in', dto.areaIds)
+          .execute();
+
+        baseQuery = baseQuery.where(
+          'patientId',
+          'in',
+          patientIds.map((p) => p.id)
+        );
+      }
+
+      const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));
+
+      const query = baseQuery
         .selectAll()
         .select((col) => [
           jsonObjectFrom(
@@ -37,82 +123,15 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
               .whereRef('priority_degrees.id', '=', 'disclosures.priorityId')
           ).as('priority'),
         ])
-        .limit(pageSize!)
-        .offset(pageSize! * pageParam)
+        .limit(pageSize || DEFAULT_PAGE_SIZE)
+        .offset(pageSize || DEFAULT_PAGE_SIZE! * pageParam)
         .orderBy('createdAt', 'desc');
 
-      //
-      // let collection = localDb.disclosures.toCollection();
-      //
-      if (dto.status?.length) {
-        query = query.where('status', 'in', dto.status);
-      }
+      let totalCount = 0;
 
-      if (dto.type?.length) {
-        query = query.where('type', 'in', dto.type);
-      }
+      const countResult = await countQuery.execute();
 
-      if (dto.priorityIds?.length) {
-        query = query.where('priorityId', 'in', dto.priorityIds);
-      }
-
-      if (dto.scoutIds?.length) {
-        query = query.where('scoutId', 'in', dto.scoutIds);
-      }
-
-      if (dto.patientId) {
-        query = query.where('patientId', '=', dto.patientId);
-      }
-
-      if (dto.createdAtStart) {
-        query = query.where('createdAt', '>=', dto.createdAtStart);
-      }
-
-      if (dto.createdAtEnd) {
-        query = query.where('createdAt', '<=', dto.createdAtEnd);
-      }
-
-      if (dto.undelivered) {
-        query = query.where('scoutId', 'is', null);
-      }
-
-      if (dto.unvisited) {
-        query = query.where('visitResult', 'is', null);
-      }
-
-      if (dto.appointmentDate) {
-        query = query.where('appointmentDate', '=', dto.appointmentDate);
-      }
-
-      if (typeof dto.isAppointmentCompleted !== 'undefined') {
-        query = query.where('isAppointmentCompleted', '=', dto.isAppointmentCompleted);
-      }
-
-      if (dto.archiveNumber) {
-        query = query.where('archiveNumber', '=', dto.archiveNumber);
-      }
-
-      if (dto.isCustomRating) {
-        query = query.where('isCustomRating', '=', dto.isCustomRating);
-      }
-
-      if (dto.ratingIds?.length) {
-        query = query.where('ratingId', 'in', dto.ratingIds);
-      }
-
-      if (typeof dto.isReceived !== 'undefined') {
-        query = query.where('isReceived', 'in', dto.isReceived);
-      }
-
-      if (dto.visitResult?.length) {
-        const noramlizedVisitResult = dto.visitResult?.filter((v) => !!v);
-        query = query.where('visitResult', 'in', noramlizedVisitResult);
-      }
-
-      const [{ count: totalCount }] = await localDb
-        .selectFrom('disclosures')
-        .select((eb) => eb.fn.count<number>('id').as('count'))
-        .execute();
+      totalCount = countResult[0]?.count ?? 0;
 
       const items = (await query.execute()) as unknown as TDisclosure[];
 

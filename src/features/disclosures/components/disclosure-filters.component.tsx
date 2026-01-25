@@ -23,6 +23,7 @@ import FormSelectInput from '@/core/components/common/inputs/form-select-input.c
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import DisclosureVisitResultAutocomplete from './disclosure-visit-result-autocomplete.component';
 import { defaultDisclosureFilterValues } from '../helpers/disclosure.helpers';
+import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 
 export type TDisclosureFiltersForm = {
   type: { id: TDisclosureType; label: string }[];
@@ -38,6 +39,7 @@ export type TDisclosureFiltersForm = {
   isReceived: string;
   undelivered: boolean;
   unvisited: boolean;
+  areaIds: TAutocompleteItem[];
 } & Pick<TGetDisclosuresDto, 'createdAtStart' | 'createdAtEnd'>;
 
 export type TDisclosureFiltesHandlers = {
@@ -106,6 +108,13 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
         multiple
         value={filters.scouts}
         onChange={(employees) => setFilters((prev) => ({ ...prev, scouts: employees }))}
+      />
+
+      <AreasAutocomplete
+        label={STRINGS.areas}
+        multiple
+        value={filters.areaIds}
+        onChange={(areaIds) => setFilters((prev) => ({ ...prev, areaIds }))}
       />
 
       <PriorityDegreesAutocomplete

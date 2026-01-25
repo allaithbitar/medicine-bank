@@ -91,6 +91,7 @@ export type TGetDisclosuresDto = Partial<
     type: TDisclosureType[];
     undelivered: boolean;
     unvisited: boolean;
+    areaIds: string[];
   }
 >;
 

@@ -17,6 +17,7 @@ export const defaultDisclosureFilterValues = {
   appointmentDate: '',
   undelivered: false,
   unvisited: false,
+  areaIds: [],
 };
 
 export const parseStringBooleanValue = (value: 'true' | 'false' | string) => {
@@ -33,6 +34,7 @@ export const noramlizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
     status: values.status.map((s) => s.id),
     type: values.type.map((s) => s.id),
     visitResult: values.visitResult.map((s) => s.id),
+    areaIds: values.areaIds.map((a) => a.id),
   };
   if (values.beneficiary) {
     result.patientId = values.beneficiary.id;
