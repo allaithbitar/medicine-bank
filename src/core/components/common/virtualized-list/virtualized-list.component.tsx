@@ -1,10 +1,8 @@
-import {
-  useVirtualizer,
-  type VirtualizerOptions,
-} from "@tanstack/react-virtual";
-import { useRef, type HtmlHTMLAttributes, type ReactNode } from "react";
-import IntersectionTrigger from "../intersection-trigger/intersection-trigger.component";
-import { CircularProgress, Stack } from "@mui/material";
+import { useVirtualizer, type VirtualizerOptions } from '@tanstack/react-virtual';
+import { useRef, type HtmlHTMLAttributes, type ReactNode } from 'react';
+import IntersectionTrigger from '../intersection-trigger/intersection-trigger.component';
+import { Card, CircularProgress, Stack, Typography } from '@mui/material';
+import STRINGS from '@/core/constants/strings.constant';
 
 function VirtualizedList<T>({
   containerStyle,
@@ -14,14 +12,16 @@ function VirtualizedList<T>({
   onEndReach,
   isLoading,
   disabledLastItemIntersectionObserver,
+  totalCount,
 }: {
-  containerStyle?: HtmlHTMLAttributes<HTMLDivElement>["style"];
+  containerStyle?: HtmlHTMLAttributes<HTMLDivElement>['style'];
   virtualizationOptions: Partial<VirtualizerOptions<Element, Element>>;
   children: (props: { index: number; item: T; size: number }) => ReactNode;
   items: T[];
   onEndReach?: () => void;
   isLoading?: boolean;
   disabledLastItemIntersectionObserver?: boolean;
+  totalCount?: number;
 }) {
   const parentRef = useRef(null);
 
@@ -37,24 +37,31 @@ function VirtualizedList<T>({
   });
 
   return (
-    <div
-      ref={parentRef}
-      style={{
-        height: "500px",
-        overflow: "auto",
-        ...containerStyle,
-      }}
-    >
+    <Stack gap={1} sx={{ height: '100%' }}>
+      {!!totalCount && (
+        <Card sx={{ p: 1 }}>
+          <Stack direction="row" alignItems="center">
+            <Typography color="primary">
+              {totalCount} {STRINGS.result_count}
+            </Typography>
+          </Stack>
+        </Card>
+      )}
       <div
+        ref={parentRef}
         style={{
-          height: `${rowVirtualizer.getTotalSize()}px`,
-          width: "100%",
-          position: "relative",
+          overflow: 'auto',
+          ...containerStyle,
         }}
       >
-        {rowVirtualizer
-          .getVirtualItems()
-          ?.map(({ index, size, start, key }) => {
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}
+        >
+          {rowVirtualizer.getVirtualItems()?.map(({ index, size, start, key }) => {
             const item = items[index];
 
             return (
@@ -63,10 +70,10 @@ function VirtualizedList<T>({
                 ref={rowVirtualizer.measureElement}
                 data-index={index}
                 style={{
-                  position: "absolute",
+                  position: 'absolute',
                   top: 0,
                   left: 0,
-                  width: "100%",
+                  width: '100%',
                   height: `${size}px`,
                   transform: `translateY(${start}px)`,
                 }}
@@ -75,16 +82,17 @@ function VirtualizedList<T>({
               </div>
             );
           })}
+        </div>
+        {!isLoading && !disabledLastItemIntersectionObserver && !!items.length && (
+          <IntersectionTrigger onIntersect={onEndReach} />
+        )}
+        {isLoading && (
+          <Stack alignItems="center" my={4}>
+            <CircularProgress size={100} />
+          </Stack>
+        )}
       </div>
-      {!isLoading &&
-        !disabledLastItemIntersectionObserver &&
-        !!items.length && <IntersectionTrigger onIntersect={onEndReach} />}
-      {isLoading && (
-        <Stack alignItems="center" my={4}>
-          <CircularProgress size={100} />
-        </Stack>
-      )}
-    </div>
+    </Stack>
   );
 }
 

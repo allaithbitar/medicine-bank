@@ -1,10 +1,8 @@
 import { Stack } from '@mui/material';
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 import DisclosureCard from '../components/disclosure-card.component';
 import { Add, Filter } from '@mui/icons-material';
 import { useDisclosuresLoader } from '../hooks/disclosures-loader.hook';
-import { useState } from 'react';
-import type { TGetDisclosuresDto } from '../types/disclosure.types';
+import { useMemo } from 'react';
 import STRINGS from '@/core/constants/strings.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
@@ -12,20 +10,24 @@ import ErrorCard from '@/core/components/common/error-card/error-card.component'
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
-
-const defaultState = {
-  pageSize: DEFAULT_PAGE_SIZE,
-  pageNumber: DEFAULT_PAGE_NUMBER,
-};
+import type { TDisclosureFiltersForm } from '../components/disclosure-filters.component';
+import { defaultDisclosureFilterValues, noramlizeStateValuesToDto } from '../helpers/disclosure.helpers';
+import useStorage from '@/core/hooks/use-storage.hook';
 
 const DisclosuresPage = () => {
   const { openModal, closeModal } = useModal();
 
-  const [queryData, setQueryData] = useState<TGetDisclosuresDto>(defaultState);
+  const [filtersState, setFiltersState] = useStorage<TDisclosureFiltersForm>(
+    'disclosure-filters',
+    defaultDisclosureFilterValues
+  );
+
+  const queryData = useMemo(() => noramlizeStateValuesToDto(filtersState), [filtersState]);
 
   const navigate = useNavigate();
 
-  const { items, error, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } = useDisclosuresLoader(queryData);
+  const { items, totalCount, error, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    useDisclosuresLoader(queryData);
 
   if (error) {
     return <ErrorCard error={error} />;
@@ -34,6 +36,7 @@ const DisclosuresPage = () => {
   return (
     <Stack gap={2} sx={{ height: '100%' }}>
       <VirtualizedList
+        totalCount={totalCount}
         items={items}
         containerStyle={{ flex: 1 }}
         virtualizationOptions={{
@@ -60,8 +63,9 @@ const DisclosuresPage = () => {
                 props: {
                   onSubmit: (values) => {
                     closeModal();
-                    return setQueryData({ ...defaultState, ...values });
+                    return setFiltersState(values);
                   },
+                  value: filtersState,
                 },
               }),
           },

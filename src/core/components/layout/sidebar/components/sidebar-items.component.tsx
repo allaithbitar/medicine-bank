@@ -107,7 +107,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       permissions: [],
     },
     {
-      label: STRINGS.sync,
+      label: STRINGS.the_sync,
       href: '/sync',
       icon: <Sync />,
       permissions: [],

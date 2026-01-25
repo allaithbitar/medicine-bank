@@ -76,7 +76,8 @@ const STRINGS = {
   code: 'الرمز',
   visit_result: 'نتيجة الزيارة',
   visit_reason: 'السبب',
-  sync: 'المزامنة',
+  the_sync: 'المزامنة',
+  sync: 'مزامنة',
   from_date: 'من تاريخ',
   to_date: 'الى تاريخ',
   search: 'بحث',
@@ -289,6 +290,8 @@ const STRINGS = {
   disclosure_is_received_status: 'حالة استلام الكشف',
   disclosure_appointment_status: 'حالة المراجعة',
   install_application: 'تثبيت التطبيق',
+  synced_successfully: 'تمت المزامنة بنجاح',
+  result_count: 'نتيجة',
 };
 
 export default STRINGS;

@@ -1,36 +1,48 @@
-import { Button, CircularProgress } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { useState } from 'react';
 import offlineApi from '../api/offline.api';
 import { localDb } from '@/libs/sqlocal';
 import { createTables } from '@/libs/kysely';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import STRINGS from '@/core/constants/strings.constant';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import { getErrorMessage } from '@/core/helpers/helpers';
 
 const SyncPage = () => {
   const [syncLocalData] = offlineApi.useLazySyncQuery();
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSync = async () => {
-    const { data } = await syncLocalData({});
-    await createTables();
-    await localDb.deleteFrom('employees').execute();
-    await localDb.insertInto('employees').values(data.employees).execute();
-    await localDb.deleteFrom('areas_to_employees').execute();
-    await localDb.insertInto('areas_to_employees').values(data.areasToEmployees).execute();
-    await localDb.deleteFrom('patients').execute();
-    await localDb.insertInto('patients').values(data.patients).execute();
-    await localDb.deleteFrom('patients_phone_numbers').execute();
-    await localDb.insertInto('patients_phone_numbers').values(data.patientsPhoneNumbers).execute();
-    await localDb.deleteFrom('disclosures').execute();
-    await localDb.insertInto('disclosures').values(data.disclosures).execute();
-    await localDb.deleteFrom('audit_logs').execute();
-    await localDb.insertInto('audit_logs').values(data.auditLogs).execute();
-    await localDb.deleteFrom('cities').execute();
-    await localDb.insertInto('cities').values(data.cities).execute();
-    await localDb.deleteFrom('areas').execute();
-    await localDb.insertInto('areas').values(data.areas).execute();
-    await localDb.deleteFrom('priority_degrees').execute();
-    await localDb.insertInto('priority_degrees').values(data.priorityDegrees).execute();
-    await localDb.deleteFrom('ratings').execute();
-    await localDb.insertInto('ratings').values(data.ratings).execute();
+    try {
+      setIsLoading(true);
+      const { data } = await syncLocalData({});
+      await createTables();
+      await localDb.deleteFrom('employees').execute();
+      await localDb.insertInto('employees').values(data.employees).execute();
+      await localDb.deleteFrom('areas_to_employees').execute();
+      await localDb.insertInto('areas_to_employees').values(data.areasToEmployees).execute();
+      await localDb.deleteFrom('patients').execute();
+      await localDb.insertInto('patients').values(data.patients).execute();
+      await localDb.deleteFrom('patients_phone_numbers').execute();
+      await localDb.insertInto('patients_phone_numbers').values(data.patientsPhoneNumbers).execute();
+      await localDb.deleteFrom('disclosures').execute();
+      await localDb.insertInto('disclosures').values(data.disclosures).execute();
+      await localDb.deleteFrom('audit_logs').execute();
+      await localDb.insertInto('audit_logs').values(data.auditLogs).execute();
+      await localDb.deleteFrom('cities').execute();
+      await localDb.insertInto('cities').values(data.cities).execute();
+      await localDb.deleteFrom('areas').execute();
+      await localDb.insertInto('areas').values(data.areas).execute();
+      await localDb.deleteFrom('priority_degrees').execute();
+      await localDb.insertInto('priority_degrees').values(data.priorityDegrees).execute();
+      await localDb.deleteFrom('ratings').execute();
+      await localDb.insertInto('ratings').values(data.ratings).execute();
+      notifySuccess(STRINGS.synced_successfully);
+    } catch (error: any) {
+      notifyError(getErrorMessage(error));
+    } finally {
+      setIsLoading(false);
+    }
 
     // disclosures //
     // console.log(
@@ -174,9 +186,12 @@ const SyncPage = () => {
     // );
   };
   return (
-    <Button onClick={handleSync} startIcon={isLoading ? <CircularProgress /> : null}>
-      Sync
-    </Button>
+    <Stack sx={{ height: '100%', position: 'relative' }} justifyContent="center" alignItems="center">
+      {isLoading && <LoadingOverlay spinnerSize={100} />}
+      <Button disabled={isLoading} onClick={handleSync}>
+        {STRINGS.sync}
+      </Button>
+    </Stack>
   );
 };
 
