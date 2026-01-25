@@ -37,11 +37,11 @@ function VirtualizedList<T>({
   });
 
   return (
-    <Stack gap={1} sx={{ height: '100%' }}>
-      {!!totalCount && (
+    <Stack gap={1} sx={{ height: '100%', overflow: 'auto' }}>
+      {typeof totalCount !== 'undefined' && (
         <Card sx={{ p: 1 }}>
-          <Stack direction="row" alignItems="center">
-            <Typography color="primary">
+          <Stack direction="row" alignItems="center" justifyContent="center">
+            <Typography textAlign="center" fontSize={16} color="primary">
               {totalCount} {STRINGS.result_count}
             </Typography>
           </Stack>
