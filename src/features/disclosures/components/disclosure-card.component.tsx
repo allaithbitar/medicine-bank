@@ -10,8 +10,15 @@ import CardAvatar from '@/core/components/common/reusable-card/card-avatar.compo
 import { Link } from 'react-router-dom';
 import CustomBadge from './custom-badge.component';
 import FormattedVisitRatingResult from './formatted-visit-rating-result';
+import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
+import { useMemo } from 'react';
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
+  const { isLate, lateDaysCount } = useMemo(
+    () => getDisclosureLateDaysCount(disclosure.createdAt, disclosure.priority),
+    [disclosure.createdAt, disclosure.priority]
+  );
+
   const headerContent = (
     <CardAvatar
       name={disclosure.patient.name}
@@ -74,6 +81,15 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
               <Chip variant="outlined" label={isAppointmentCompletedChip} color="primary" />
             )}
             {isReceivedChip && <Chip variant="outlined" label={isReceivedChip} color="secondary" />}
+            {isLate && (
+              <Chip
+                color="error"
+                label={`${STRINGS.disclosure_is_late} ( ${lateDaysCount} ${STRINGS.day} )`}
+                sx={{
+                  zIndex: 1,
+                }}
+              />
+            )}
           </Stack>
 
           <Link to={`/disclosures/${disclosure.id}`}>

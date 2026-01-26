@@ -1,46 +1,19 @@
 import { Stack } from '@mui/material';
-
 import { useCallback, useImperativeHandle, useState, type Ref } from 'react';
-import type {
-  TDisclosureStatus,
-  TDisclosureType,
-  TDisclosureVisitResult,
-  TGetDisclosuresDto,
-} from '../types/disclosure.types';
 import DisclosureStatusAutocomplete from './disclosure-status-autocomplete';
 import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
 import STRINGS from '@/core/constants/strings.constant';
 import FieldSet from '@/core/components/common/fieldset/fieldset.component';
 import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
 import PriorityDegreesAutocomplete from '@/features/priority-degres/components/priority-degees-autocomplete.component';
-import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
-import type { TRating } from '@/features/ratings/types/rating.types';
 import RatingsAutocomplete from '@/features/ratings/components/ratings-autocomplete.component';
 import BeneficiariesAutocomplete from '@/features/beneficiaries/components/beneficiaries-autocomplete.component';
 import FormCheckbxInput from '@/core/components/common/inputs/form-checkbox-input.component';
 import DisclosureTypeAutocomplete from './disclosure-type-autocomplete.component';
 import FormSelectInput from '@/core/components/common/inputs/form-select-input.component';
-import type { TAutocompleteItem } from '@/core/types/common.types';
 import DisclosureVisitResultAutocomplete from './disclosure-visit-result-autocomplete.component';
-import { defaultDisclosureFilterValues } from '../helpers/disclosure.helpers';
+import { defaultDisclosureFilterValues, type TDisclosureFiltersForm } from '../helpers/disclosure.helpers';
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
-
-export type TDisclosureFiltersForm = {
-  type: { id: TDisclosureType; label: string }[];
-  status: { id: TDisclosureStatus; label: string }[];
-  scouts: TAutocompleteItem[];
-  priorityDegrees: TPriorityDegree[];
-  ratings: TRating[];
-  visitResult: { id: NonNullable<TDisclosureVisitResult>; label: string }[];
-  isCustomRating: boolean;
-  beneficiary: TAutocompleteItem | null;
-  appointmentDate: string;
-  isAppointmentCompleted: string;
-  isReceived: string;
-  undelivered: boolean;
-  unvisited: boolean;
-  areaIds: TAutocompleteItem[];
-} & Pick<TGetDisclosuresDto, 'createdAtStart' | 'createdAtEnd'>;
 
 export type TDisclosureFiltesHandlers = {
   getValues: () => TDisclosureFiltersForm;
@@ -193,6 +166,17 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
           { id: 'true', label: STRINGS.appointment_completed },
           { id: 'false', label: STRINGS.appointment_not_completed },
         ]}
+      />
+
+      <FormCheckbxInput
+        label={STRINGS.disclosure_is_late}
+        value={filters.isLate}
+        onChange={(value) => {
+          setFilters((prev) => ({
+            ...prev,
+            isLate: value,
+          }));
+        }}
       />
 
       {/* <FormCheckbxInput */}

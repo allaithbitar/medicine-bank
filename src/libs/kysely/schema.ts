@@ -124,6 +124,7 @@ export type TLocalDb = {
     id: string;
     name: string;
     color: string | null;
+    durationInDays: number | null;
   };
   ratings: {
     id: string;

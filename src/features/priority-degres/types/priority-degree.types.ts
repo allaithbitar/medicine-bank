@@ -2,9 +2,10 @@ export type TPriorityDegree = {
   id: string;
   name: string;
   color: string | null;
+  durationInDays: number | null;
 };
 
-export type TAddPriorityDegreeDto = Pick<TPriorityDegree, "name"> & {
+export type TAddPriorityDegreeDto = Pick<TPriorityDegree, 'name'> & {
   color?: string;
 };
 

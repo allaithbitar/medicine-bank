@@ -42,43 +42,43 @@ const theme = createTheme({
       },
     },
   },
-  custom: {
-    containerWidths: {
-      mobile: '100%',
-      card: 400,
-      cardSm: 450,
-      cardMd: 500,
-    },
-    commonBoxShadow: baseTheme.shadows[3],
-    commonHoverBoxShadow: baseTheme.shadows[6],
-  },
+  // custom: {
+  //   containerWidths: {
+  //     mobile: '100%',
+  //     card: 400,
+  //     cardSm: 450,
+  //     cardMd: 500,
+  //   },
+  //   commonBoxShadow: baseTheme.shadows[3],
+  //   commonHoverBoxShadow: baseTheme.shadows[6],
+  // },
 });
 
-declare module '@mui/material/styles' {
-  interface Theme {
-    custom: {
-      containerWidths: {
-        mobile: string;
-        card: number;
-        cardSm: number;
-        cardMd: number;
-      };
-      commonBoxShadow: string;
-      commonHoverBoxShadow: string;
-    };
-  }
-  interface ThemeOptions {
-    custom?: {
-      containerWidths?: {
-        mobile?: string;
-        card?: number;
-        cardSm?: number;
-        cardMd?: number;
-      };
-      commonBoxShadow?: string;
-      commonHoverBoxShadow?: string;
-    };
-  }
-}
+// declare module '@mui/material/styles' {
+//   interface Theme {
+//     custom: {
+//       containerWidths: {
+//         mobile: string;
+//         card: number;
+//         cardSm: number;
+//         cardMd: number;
+//       };
+//       commonBoxShadow: string;
+//       commonHoverBoxShadow: string;
+//     };
+//   }
+//   interface ThemeOptions {
+//     custom?: {
+//       containerWidths?: {
+//         mobile?: string;
+//         card?: number;
+//         cardSm?: number;
+//         cardMd?: number;
+//       };
+//       commonBoxShadow?: string;
+//       commonHoverBoxShadow?: string;
+//     };
+//   }
+// }
 
 export default theme;

@@ -10,8 +10,11 @@ import ErrorCard from '@/core/components/common/error-card/error-card.component'
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
-import type { TDisclosureFiltersForm } from '../components/disclosure-filters.component';
-import { defaultDisclosureFilterValues, noramlizeStateValuesToDto } from '../helpers/disclosure.helpers';
+import {
+  defaultDisclosureFilterValues,
+  noramlizeStateValuesToDto,
+  type TDisclosureFiltersForm,
+} from '../helpers/disclosure.helpers';
 import useStorage from '@/core/hooks/use-storage.hook';
 
 const DisclosuresPage = () => {

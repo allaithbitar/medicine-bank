@@ -1,4 +1,4 @@
-import type { TRating } from "@/features/ratings/types/rating.types";
+import type { TRating } from '@/features/ratings/types/rating.types';
 
 export type TGetSatisticsDto = {
   fromDate: string;
@@ -11,6 +11,7 @@ export type TSummaryReportResult = {
   completedVisitsCount: number;
   uncompletedVisitsCount: number;
   cantBeCompletedVisitsCount: number;
+  lateDisclosuresCount: number;
 };
 
 export type TDetailedReportResult = {

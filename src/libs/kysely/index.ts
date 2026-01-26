@@ -120,6 +120,7 @@ export async function createTables() {
     .addColumn('id', 'uuid', (col) => col.primaryKey())
     .addColumn('name', 'text', (col) => col.notNull())
     .addColumn('color', 'text')
+    .addColumn('durationInDays', 'integer')
     .execute();
 
   await localDb.schema

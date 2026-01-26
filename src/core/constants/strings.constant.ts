@@ -116,6 +116,7 @@ const STRINGS = {
   completed_visits: 'الزيارات المكتملة',
   not_completed_visits: 'الزيارات غير المكتملة',
   couldnt_be_completed_visits: 'الزيارات التي لم يمكن إكمالها',
+  late_disclosures: 'الكشوفات المتأخّرة',
   this_week: 'هذا الاسبوع',
   this_month: 'هذا الشهر',
   this_year: 'هذه السنة',
@@ -292,6 +293,8 @@ const STRINGS = {
   install_application: 'تثبيت التطبيق',
   synced_successfully: 'تمت المزامنة بنجاح',
   result_count: 'نتيجة',
+  disclosure_is_late: 'متأخّر',
+  day: 'يوم',
 };
 
 export default STRINGS;

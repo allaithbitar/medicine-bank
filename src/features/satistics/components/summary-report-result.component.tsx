@@ -1,7 +1,7 @@
-import { Card, Grid, Typography } from "@mui/material";
-import type { TSummaryReportResult } from "../types/satistics.types";
-import STRINGS from "@/core/constants/strings.constant";
-import { BarChart } from "@mui/x-charts/BarChart";
+import { Card, Grid, Typography } from '@mui/material';
+import type { TSummaryReportResult } from '../types/satistics.types';
+import STRINGS from '@/core/constants/strings.constant';
+import { BarChart } from '@mui/x-charts/BarChart';
 
 const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
   const dataCards = [
@@ -28,20 +28,29 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
       // bgcolor: indigo[50],
       // textColor: indigo[500],
     },
+    {
+      label: STRINGS.late_disclosures,
+      value: result.lateDisclosuresCount,
+      // bgcolor: indigo[50],
+      // textColor: indigo[500],
+    },
   ];
   return (
     <>
       <Grid container spacing={1}>
-        {dataCards.map((i) => (
-          <Grid size={6}>
-            <Card key={i.label} sx={{ textAlign: "center", p: 1, py: 2 }}>
-              <Typography variant="h4">{i.value}</Typography>
-              <Typography color="textSecondary" variant="body2">
-                {i.label}
-              </Typography>
-            </Card>
-          </Grid>
-        ))}
+        {dataCards.map((i, idx, arr) => {
+          const isLast = idx === arr.length - 1;
+          return (
+            <Grid size={isLast ? 12 : 6}>
+              <Card key={i.label} sx={{ textAlign: 'center', p: 1, py: 2 }}>
+                <Typography variant="h4">{i.value}</Typography>
+                <Typography color="textSecondary" variant="body2">
+                  {i.label}
+                </Typography>
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
 
       {result && (
@@ -51,31 +60,31 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
             yAxis={[{ disableLine: true }]}
             xAxis={[
               {
-                scaleType: "band",
-                data: [""],
-                label: "",
+                scaleType: 'band',
+                data: [''],
+                label: '',
               },
             ]}
             series={[
               {
                 data: [result.addedDisclosuresCount],
-                color: "#9BBFE0",
+                color: '#9BBFE0',
                 label: STRINGS.added_disclosures,
               },
               {
                 data: [result.completedVisitsCount],
-                color: "#C6D68F",
+                color: '#C6D68F',
                 label: STRINGS.completed_visits,
               },
               {
                 data: [result.uncompletedVisitsCount],
                 label: STRINGS.not_completed_visits,
-                color: "#FBE29F",
+                color: '#FBE29F',
               },
               {
                 data: [result.cantBeCompletedVisitsCount],
                 label: STRINGS.couldnt_be_completed_visits,
-                color: "#E8A09A",
+                color: '#E8A09A',
               },
             ]}
             height={400}

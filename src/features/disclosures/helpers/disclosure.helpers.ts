@@ -1,7 +1,33 @@
-import type { TDisclosureFiltersForm } from '../components/disclosure-filters.component';
-import type { TGetDisclosuresDto } from '../types/disclosure.types';
+import type { TAutocompleteItem } from '@/core/types/common.types';
+import type {
+  TDisclosureStatus,
+  TDisclosureType,
+  TDisclosureVisitResult,
+  TGetDisclosuresDto,
+} from '../types/disclosure.types';
+import type { TRating } from '@/features/ratings/types/rating.types';
+import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
+import { differenceInDays } from 'date-fns';
 
-export const defaultDisclosureFilterValues = {
+export type TDisclosureFiltersForm = {
+  type: { id: TDisclosureType; label: string }[];
+  status: { id: TDisclosureStatus; label: string }[];
+  scouts: TAutocompleteItem[];
+  priorityDegrees: TPriorityDegree[];
+  ratings: TRating[];
+  visitResult: { id: NonNullable<TDisclosureVisitResult>; label: string }[];
+  isCustomRating: boolean;
+  beneficiary: TAutocompleteItem | null;
+  appointmentDate: string;
+  isAppointmentCompleted: string;
+  isReceived: string;
+  undelivered: boolean;
+  unvisited: boolean;
+  areaIds: TAutocompleteItem[];
+  isLate: boolean;
+} & Pick<TGetDisclosuresDto, 'createdAtStart' | 'createdAtEnd'>;
+
+export const defaultDisclosureFilterValues: TDisclosureFiltersForm = {
   status: [],
   type: [],
   createdAtStart: '',
@@ -18,6 +44,7 @@ export const defaultDisclosureFilterValues = {
   undelivered: false,
   unvisited: false,
   areaIds: [],
+  isLate: false,
 };
 
 export const parseStringBooleanValue = (value: 'true' | 'false' | string) => {
@@ -60,6 +87,15 @@ export const noramlizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
   if (values.isCustomRating) result.isCustomRating = values.isCustomRating;
 
   if (values.unvisited) result.unvisited = values.unvisited;
+  if (values.isLate) result.isLate = values.isLate;
 
   return result;
+};
+
+export const getDisclosureLateDaysCount = (createdAt: string, priorityDegree: TPriorityDegree) => {
+  if (!priorityDegree.durationInDays) return { isLate: false, lateDaysCount: 0 };
+  const currentDate = new Date();
+  const diff = differenceInDays(currentDate, createdAt);
+  const lateDaysCount = priorityDegree.durationInDays - diff;
+  return { isLate: lateDaysCount < 0, lateDaysCount: Math.abs(lateDaysCount) };
 };

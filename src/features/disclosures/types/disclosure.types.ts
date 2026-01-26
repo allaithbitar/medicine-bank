@@ -92,6 +92,7 @@ export type TGetDisclosuresDto = Partial<
     undelivered: boolean;
     unvisited: boolean;
     areaIds: string[];
+    isLate: boolean;
   }
 >;
 

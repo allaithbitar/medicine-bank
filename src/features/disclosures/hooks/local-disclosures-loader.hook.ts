@@ -4,6 +4,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { jsonObjectFrom } from 'kysely/helpers/sqlite';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
 import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
+import { sql } from 'kysely';
 export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresDto) => {
   const isOffline = useIsOffline();
   const { data, ...restQueryResult } = useInfiniteQuery({
@@ -93,6 +94,30 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
         );
       }
 
+      if (dto.isLate) {
+        const priorityDegrees = await localDb
+          .selectFrom('priority_degrees')
+          .select(['id', 'durationInDays'])
+          .where('durationInDays', 'is not', null)
+          .execute();
+
+        if (priorityDegrees.length > 0) {
+          baseQuery = baseQuery.where((eb) =>
+            eb.or(
+              priorityDegrees.map((pd) =>
+                eb.and([
+                  eb(sql.raw('createdAt'), '<=', sql.raw(`datetime('now', '-${pd.durationInDays} days')`)),
+                  eb('priorityId', '=', pd.id),
+                  eb('status', '=', 'active'),
+                  eb('visitResult', 'is', null),
+                  eb.and([eb('ratingId', 'is', null), eb('customRating', 'is', null)]),
+                ])
+              )
+            )
+          );
+        }
+      }
+
       const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));
 
       const query = baseQuery
@@ -119,7 +144,12 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
           jsonObjectFrom(
             col
               .selectFrom('priority_degrees')
-              .select(['priority_degrees.id', 'priority_degrees.name', 'priority_degrees.color'])
+              .select([
+                'priority_degrees.id',
+                'priority_degrees.name',
+                'priority_degrees.color',
+                'priority_degrees.durationInDays',
+              ])
               .whereRef('priority_degrees.id', '=', 'disclosures.priorityId')
           ).as('priority'),
         ])
