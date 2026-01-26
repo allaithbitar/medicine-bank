@@ -14,10 +14,7 @@ import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
 import { useMemo } from 'react';
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
-  const { isLate, lateDaysCount } = useMemo(
-    () => getDisclosureLateDaysCount(disclosure.createdAt, disclosure.priority),
-    [disclosure.createdAt, disclosure.priority]
-  );
+  const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
 
   const headerContent = (
     <CardAvatar
@@ -78,11 +75,12 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" justifyContent="space-between" alignItems="center" gap={0.5}>
             {isAppointmentCompletedChip && (
-              <Chip variant="outlined" label={isAppointmentCompletedChip} color="primary" />
+              <Chip size="small" variant="outlined" label={isAppointmentCompletedChip} color="primary" />
             )}
-            {isReceivedChip && <Chip variant="outlined" label={isReceivedChip} color="secondary" />}
+            {isReceivedChip && <Chip size="small" variant="outlined" label={isReceivedChip} color="secondary" />}
             {isLate && (
               <Chip
+                size="small"
                 color="error"
                 label={`${STRINGS.disclosure_is_late} ( ${lateDaysCount} ${STRINGS.day} )`}
                 sx={{

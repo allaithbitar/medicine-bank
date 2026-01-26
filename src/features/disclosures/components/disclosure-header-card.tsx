@@ -11,10 +11,7 @@ import { useMemo } from 'react';
 import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
 
 const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
-  const { isLate, lateDaysCount } = useMemo(
-    () => getDisclosureLateDaysCount(disclosure.createdAt, disclosure.priority),
-    [disclosure.createdAt, disclosure.priority]
-  );
+  const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
   return (
     <>
       <Card>

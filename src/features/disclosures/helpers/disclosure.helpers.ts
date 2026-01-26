@@ -1,5 +1,6 @@
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import type {
+  TDisclosure,
   TDisclosureStatus,
   TDisclosureType,
   TDisclosureVisitResult,
@@ -92,10 +93,10 @@ export const noramlizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
   return result;
 };
 
-export const getDisclosureLateDaysCount = (createdAt: string, priorityDegree: TPriorityDegree) => {
-  if (!priorityDegree.durationInDays) return { isLate: false, lateDaysCount: 0 };
+export const getDisclosureLateDaysCount = (disclosure: TDisclosure) => {
+  if (!disclosure.priority.durationInDays || !!disclosure.visitResult) return { isLate: false, lateDaysCount: 0 };
   const currentDate = new Date();
-  const diff = differenceInDays(currentDate, createdAt);
-  const lateDaysCount = priorityDegree.durationInDays - diff;
+  const diff = differenceInDays(currentDate, disclosure.createdAt);
+  const lateDaysCount = disclosure.priority.durationInDays - diff;
   return { isLate: lateDaysCount < 0, lateDaysCount: Math.abs(lateDaysCount) };
 };
