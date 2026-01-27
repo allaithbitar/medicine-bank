@@ -1,13 +1,13 @@
 import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
 import { Stack, Autocomplete, TextField } from '@mui/material';
 import z from 'zod';
-import { type TDisclosure } from '../types/disclosure.types';
+import type { TDisclosureDetails } from '../types/disclosure.types';
 import STRINGS from '@/core/constants/strings.constant';
 import { useEffect, useImperativeHandle, type Ref } from 'react';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 import FieldSet from '@/core/components/common/fieldset/fieldset.component';
 
-const StatusSchema = z
+const OptionSchema = z
   .object({
     id: z.string(),
     label: z.string(),
@@ -16,16 +16,17 @@ const StatusSchema = z
 
 const createDisclosureDetailsSchema = () =>
   z.object({
-    job_or_school: z.string().optional(),
-    patient_or_surgeries: z.string().optional(),
+    jobOrSchool: z.string().optional(),
+    diseasesOrSurgeries: z.string().optional(),
     expenses: z.string().optional(),
-    home_condition_status: StatusSchema,
-    home_condition_note: z.string().optional(),
-    home_status: StatusSchema,
-    home_status_note: z.string().optional(),
+    houseCondition: OptionSchema,
+    houseConditionNote: z.string().optional(),
+    houseOwnership: OptionSchema,
+    houseOwnershipNote: z.string().optional(),
     electricity: z.string().optional(),
-    pons: z.string().optional(),
+    pros: z.string().optional(),
     cons: z.string().optional(),
+    other: z.string().optional(),
   });
 
 export type TDisclosureDetailsFormHandlers = {
@@ -34,55 +35,89 @@ export type TDisclosureDetailsFormHandlers = {
 
 type TProps = {
   ref: Ref<TDisclosureDetailsFormHandlers>;
-  disclosureData?: TDisclosure;
+  disclosureDetails?: TDisclosureDetails | null;
 };
-const HOME_CONDITION_OPTIONS = [
+
+const HOUSE_CONDITION_OPTIONS = [
   {
-    id: 'bad',
-    label: STRINGS.common_bad,
-  },
-  {
-    id: 'normal',
-    label: STRINGS.common_normal,
+    id: 'very_good',
+    label: STRINGS.house_condition_very_good,
   },
   {
     id: 'good',
-    label: STRINGS.common_good,
+    label: STRINGS.house_condition_good,
   },
   {
-    id: 'excellent',
-    label: STRINGS.common_excellent,
-  },
-];
-const HOME_STATUS_OPTIONS = [
-  {
-    id: 'ownership',
-    label: STRINGS.common_ownership,
+    id: 'medium',
+    label: STRINGS.house_condition_medium,
   },
   {
-    id: 'rent',
-    label: STRINGS.common_rent,
+    id: 'bad',
+    label: STRINGS.house_condition_bad,
   },
   {
-    id: 'loan',
-    label: STRINGS.common_loan,
+    id: 'very_bad',
+    label: STRINGS.house_condition_very_bad,
+  },
+  {
+    id: 'not_working',
+    label: STRINGS.house_condition_not_working,
   },
 ];
 
-const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
+const HOUSE_OWNERSHIP_OPTIONS = [
+  {
+    id: 'owned',
+    label: STRINGS.house_ownership_owned,
+  },
+  {
+    id: 'rent',
+    label: STRINGS.house_ownership_rent,
+  },
+  {
+    id: 'loan',
+    label: STRINGS.house_ownership_loan,
+  },
+  {
+    id: 'mortage',
+    label: STRINGS.house_ownership_mortage,
+  },
+];
+
+const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
   const { formState, setValue, handleSubmit, setFormState } = useForm({
     schema: createDisclosureDetailsSchema(),
     initalState: {
-      home_condition_status: HOME_CONDITION_OPTIONS[1],
-      home_status: HOME_STATUS_OPTIONS[1],
+      houseCondition: HOUSE_CONDITION_OPTIONS[2],
+      houseOwnership: HOUSE_OWNERSHIP_OPTIONS[0],
     },
   });
 
   useEffect(() => {
-    if (disclosureData?.details) {
-      setFormState(disclosureData?.details);
+    if (disclosureDetails) {
+      const mappedState: any = {
+        jobOrSchool: disclosureDetails.jobOrSchool,
+        diseasesOrSurgeries: disclosureDetails.diseasesOrSurgeries,
+        expenses: disclosureDetails.expenses,
+        electricity: disclosureDetails.electricity,
+        pros: disclosureDetails.pros,
+        cons: disclosureDetails.cons,
+        other: disclosureDetails.other,
+        houseConditionNote: disclosureDetails.houseConditionNote,
+        houseOwnershipNote: disclosureDetails.houseOwnershipNote,
+      };
+
+      if (disclosureDetails.houseCondition) {
+        mappedState.houseCondition = HOUSE_CONDITION_OPTIONS.find((opt) => opt.id === disclosureDetails.houseCondition);
+      }
+
+      if (disclosureDetails.houseOwnership) {
+        mappedState.houseOwnership = HOUSE_OWNERSHIP_OPTIONS.find((opt) => opt.id === disclosureDetails.houseOwnership);
+      }
+
+      setFormState(mappedState);
     }
-  }, [disclosureData?.details, setFormState]);
+  }, [disclosureDetails, setFormState]);
 
   useImperativeHandle(
     ref,
@@ -97,41 +132,42 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
   return (
     <Stack gap={2}>
       <FormTextAreaInput
-        label={STRINGS.patient_or_surgeries}
-        name="patient_or_surgeries"
-        value={formState.patient_or_surgeries}
-        onChange={(v) => setValue({ patient_or_surgeries: v })}
+        label={STRINGS.diseases_or_surgeries}
+        name="diseasesOrSurgeries"
+        value={formState.diseasesOrSurgeries}
+        onChange={(v) => setValue({ diseasesOrSurgeries: v })}
       />
 
       <FormTextAreaInput
         label={STRINGS.job_or_school}
-        name="job_or_school"
-        value={formState.job_or_school}
-        onChange={(v) => setValue({ job_or_school: v })}
+        name="jobOrSchool"
+        value={formState.jobOrSchool}
+        onChange={(v) => setValue({ jobOrSchool: v })}
       />
-      <FieldSet label={STRINGS.home_status}>
+
+      <FieldSet label={STRINGS.house_ownership}>
         <Stack sx={{ gap: 2 }}>
           <Autocomplete
-            options={HOME_STATUS_OPTIONS}
-            value={formState.home_status}
+            options={HOUSE_OWNERSHIP_OPTIONS}
+            value={formState.houseOwnership}
             onChange={(_, newValue) =>
               setValue({
-                home_status: newValue ?? HOME_STATUS_OPTIONS[1],
+                houseOwnership: newValue ?? HOUSE_OWNERSHIP_OPTIONS[0],
               })
             }
             getOptionLabel={(option) => (option ? option.label : '')}
             isOptionEqualToValue={(option, value) => option.id === value?.id}
             renderInput={(params) => (
-              <TextField {...params} label={STRINGS.home_status} variant="outlined" size="small" />
+              <TextField {...params} label={STRINGS.house_ownership} variant="outlined" size="small" />
             )}
             clearOnEscape
             freeSolo={false}
           />
           <FormTextAreaInput
-            placeholder={`${STRINGS.note} ${STRINGS.home_status_note}`}
-            name="home_status_note"
-            value={formState.home_status_note}
-            onChange={(v) => setValue({ home_status_note: v })}
+            placeholder={STRINGS.note}
+            name="houseOwnershipNote"
+            value={formState.houseOwnershipNote}
+            onChange={(v) => setValue({ houseOwnershipNote: v })}
           />
         </Stack>
       </FieldSet>
@@ -149,14 +185,15 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
         value={formState.expenses}
         onChange={(v) => setValue({ expenses: v })}
       />
+
       <FieldSet label={STRINGS.home_condition}>
         <Stack sx={{ gap: 2 }}>
           <Autocomplete
-            options={HOME_CONDITION_OPTIONS}
-            value={formState.home_condition_status}
+            options={HOUSE_CONDITION_OPTIONS}
+            value={formState.houseCondition}
             onChange={(_, newValue) =>
               setValue({
-                home_condition_status: newValue ?? HOME_CONDITION_OPTIONS[1],
+                houseCondition: newValue ?? HOUSE_CONDITION_OPTIONS[2],
               })
             }
             getOptionLabel={(option) => (option ? option.label : '')}
@@ -168,19 +205,19 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
             freeSolo={false}
           />
           <FormTextAreaInput
-            placeholder={`${STRINGS.note} ${STRINGS.home_condition}`}
-            name="home_condition_note"
-            value={formState.home_condition_note}
-            onChange={(v) => setValue({ home_condition_note: v })}
+            placeholder={STRINGS.note}
+            name="houseConditionNote"
+            value={formState.houseConditionNote}
+            onChange={(v) => setValue({ houseConditionNote: v })}
           />
         </Stack>
       </FieldSet>
 
       <FormTextAreaInput
         label={STRINGS.pons}
-        name="pons"
-        value={formState.pons}
-        onChange={(v) => setValue({ pons: v })}
+        name="pros"
+        value={formState.pros}
+        onChange={(v) => setValue({ pros: v })}
       />
 
       <FormTextAreaInput
@@ -188,6 +225,13 @@ const DisclosureDetailsActionForm = ({ ref, disclosureData }: TProps) => {
         name="cons"
         value={formState.cons}
         onChange={(v) => setValue({ cons: v })}
+      />
+
+      <FormTextAreaInput
+        label={STRINGS.other_details}
+        name="other"
+        value={formState.other}
+        onChange={(v) => setValue({ other: v })}
       />
     </Stack>
   );

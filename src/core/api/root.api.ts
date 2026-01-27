@@ -73,6 +73,7 @@ export const rootApi = createApi({
     'Employees',
     'Priority_Degrees',
     'Disclosures',
+    'Disclosure_Details',
     'Disclosure_Ratings',
     'Disclosure_Rating',
     'Disclosure_Visits',
@@ -103,6 +104,7 @@ export const rootApi = createApi({
     'Disclosure_Adviser_Consultations',
     'Disclosure_Adviser_Consultation',
     'Disclosure',
+    'notifications',
   ],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   endpoints: (_builder) => ({}),

@@ -3,6 +3,7 @@ import type { TAppointment } from '@/features/appointments/types/appointment.typ
 import type { TBenefieciary } from '@/features/beneficiaries/types/beneficiary.types';
 import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
 import type { TRating } from '@/features/ratings/types/rating.types';
+import type { THouseHoldAssetCondition, THouseOwnership } from '@/libs/kysely/schema';
 
 export const DisclosureType = {
   new: 'new',
@@ -39,14 +40,40 @@ export type TDisclosureScout =
     };
 
 export type TDisclosureDetails = {
-  electricity?: string;
-  expenses?: string;
-  home_condition?: string;
-  job_or_school?: string;
-  patient_or_surgeries?: string;
-  cons?: string;
-  pons?: string;
+  disclosureId: string;
+  diseasesOrSurgeries: string | null;
+  jobOrSchool: string | null;
+  electricity: string | null;
+  expenses: string | null;
+  houseOwnership: THouseOwnership | null;
+  houseOwnershipNote: string | null;
+  houseCondition: THouseHoldAssetCondition | null;
+  houseConditionNote: string | null;
+  pros: string | null;
+  cons: string | null;
+  other: string | null;
+  createdAt: string;
+  createdBy: TActioner | null;
+  updatedAt: string | null;
+  updatedBy: TActioner | null;
 };
+
+export type TAddDisclosureDetailsDto = {
+  disclosureId: string;
+  diseasesOrSurgeries?: string | null;
+  jobOrSchool?: string | null;
+  electricity?: string | null;
+  expenses?: string | null;
+  houseOwnership?: THouseOwnership | null;
+  houseOwnershipNote?: string | null;
+  houseCondition?: THouseHoldAssetCondition | null;
+  houseConditionNote?: string | null;
+  pros?: string | null;
+  cons?: string | null;
+  other?: string | null;
+};
+
+export type TUpdateDisclosureDetailsDto = TAddDisclosureDetailsDto;
 
 export type TDisclosure = {
   id: string;
@@ -59,13 +86,6 @@ export type TDisclosure = {
   patient: TBenefieciary;
   priority: TPriorityDegree;
   isReceived: boolean;
-  //
-  // ratingNote: string | null;
-  // rating: TRating | null;
-  // ratingId: string | null;
-  // customRating: string;
-  // isCustomRating: boolean;
-  details: TDisclosureDetails | null;
 } & TDisclosureScout &
   TCreatedBy &
   TUpdatedBy &

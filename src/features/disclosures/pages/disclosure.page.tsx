@@ -119,7 +119,7 @@ const DisclosurePage = () => {
             },
             {
               label: STRINGS.disclosures_details,
-              node: <DisclosureDetailsSection details={disclosure.details} {...tabProps} />,
+              node: <DisclosureDetailsSection {...tabProps} />,
             },
             {
               label: STRINGS.medicines,

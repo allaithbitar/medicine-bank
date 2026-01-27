@@ -2,6 +2,7 @@ import { rootApi } from '@/core/api/root.api';
 import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
 import type {
   TAddDisclosureAdviserConsultationPayload,
+  TAddDisclosureDetailsDto,
   TAddDisclosureDto,
   TAddDisclosureNotePayload,
   TAddDisclosureVisitDto,
@@ -10,6 +11,7 @@ import type {
   TDisclosure,
   TDisclosureAdviserConsultation,
   TAppointmentsResponse,
+  TDisclosureDetails,
   TDisclosureNote,
   TDisclosureRating,
   TDisclosureVisit,
@@ -19,6 +21,7 @@ import type {
   TGetDisclosureRatingsDto,
   TGetDisclosureVisitsDto,
   TGetDisclosuresDto,
+  TUpdateDisclosureDetailsDto,
   TUpdateDisclosureDto,
   TUpdateDisclosureNotePayload,
   TUpdateDisclosureVisitDto,
@@ -284,6 +287,40 @@ export const disclosuresApi = rootApi.injectEndpoints({
         params,
       }),
       transformResponse: (res: ApiResponse<TDisclosure[]>) => res.data,
+    }),
+
+    getDisclosureDetails: builder.query<TDisclosureDetails, { disclosureId: string }>({
+      query: ({ disclosureId }) => ({
+        url: '/disclosures/details',
+        method: 'GET',
+        params: { disclosureId },
+      }),
+      providesTags: (_, __, args) => [{ id: args.disclosureId, type: 'Disclosure_Details' }],
+      transformResponse: (res: ApiResponse<TDisclosureDetails>) => res.data,
+    }),
+
+    addDisclosureDetails: builder.mutation<void, TAddDisclosureDetailsDto>({
+      query: (payload) => ({
+        url: '/disclosures/details',
+        method: 'POST',
+        body: payload,
+      }),
+      invalidatesTags: (_, __, args) => [
+        { id: args.disclosureId, type: 'Disclosure_Details' },
+        { id: args.disclosureId, type: 'Disclosures' },
+      ],
+    }),
+
+    updateDisclosureDetails: builder.mutation<void, TUpdateDisclosureDetailsDto>({
+      query: (payload) => ({
+        url: '/disclosures/details',
+        method: 'PUT',
+        body: payload,
+      }),
+      invalidatesTags: (_, __, args) => [
+        { id: args.disclosureId, type: 'Disclosure_Details' },
+        { id: args.disclosureId, type: 'Disclosures' },
+      ],
     }),
   }),
 });

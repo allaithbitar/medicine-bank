@@ -295,6 +295,19 @@ const STRINGS = {
   result_count: 'نتيجة',
   disclosure_is_late: 'متأخّر',
   day: 'يوم',
+  house_ownership: 'وضع ملكية المسكن',
+  house_ownership_owned: 'ملك',
+  house_ownership_rent: 'إيجار',
+  house_ownership_loan: 'إعارة',
+  house_ownership_mortage: 'رهن',
+  house_condition_very_good: 'جيد جداً',
+  house_condition_good: 'جيد',
+  house_condition_medium: 'متوسط',
+  house_condition_bad: 'سيء',
+  house_condition_very_bad: 'سيء جداً',
+  house_condition_not_working: 'لا يعمل',
+  diseases_or_surgeries: 'الأمراض / العمليات',
+  other_details: 'أخرى',
 };
 
 export default STRINGS;

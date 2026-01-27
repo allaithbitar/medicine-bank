@@ -34,6 +34,7 @@ import type { TBroadcastAudience, TBroadcastType } from '@/features/system-broad
 // export type TGender = 'male' | 'female';
 // export type TKinshep = 'partner' | 'child' | 'parent' | 'brother' | 'grandparent' | 'grandchild';
 export type THouseHoldAssetCondition = 'very_good' | 'good' | 'medium' | 'bad' | 'very_bad' | 'not_working';
+export type THouseOwnership = 'owned' | 'rent' | 'loan' | 'mortage';
 // export type TMedicineForm = 'pill' | 'syrup' | 'injection' | 'capsule' | 'ointment';
 export type TNotificationType = 'consultation_requested' | 'consultation_completed';
 // export type TSystemBroadcastType = 'meeting' | 'custom';
@@ -171,8 +172,10 @@ export type TLocalDb = {
     jobOrSchool: string | null;
     electricity: string | null;
     expenses: string | null;
-    homeCondition: string | null;
-    homeConditionStatus: THouseHoldAssetCondition | null;
+    houseOwnership: THouseOwnership | null;
+    houseOwnershipNote: string | null;
+    houseCondition: THouseHoldAssetCondition | null;
+    houseConditionNote: string | null;
     pros: string | null;
     cons: string | null;
     other: string | null;
