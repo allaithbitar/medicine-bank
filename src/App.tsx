@@ -3,6 +3,7 @@ import FallbackUI from './components/errorBoundary/fallback-ui.component';
 import AppUiWrapper from './core/components/layout/app-ui-wrapper/app-ui-wrapper.component';
 import Layout from './core/components/layout/layout/layout.component';
 import RequireAuth from './features/auth/components/require-auth/require-auth.component';
+import ProtectedRoute from './core/components/common/protected-route/protected-route.component';
 import Cities from './features/banks/pages/cities/cities.page';
 import WorkAreas from './features/banks/pages/work-areas/work-areas.page';
 import Unauthorized from './pages/unauthorized.page';
@@ -51,61 +52,66 @@ function App() {
         <Route path="unauthorized" element={<Unauthorized />} />
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Layout />}>
-            <Route index path="/" element={<SatisticsPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route index path="/" element={<SatisticsPage />} />
 
-            <Route path="/employees" element={<EmployeesPage />} />
+              <Route path="/employees" element={<EmployeesPage />} />
 
-            <Route path="/employees/action" element={<EmployeeActionPage />} />
+              <Route path="/employees/action" element={<EmployeeActionPage />} />
 
-            <Route path="/disclosures" element={<DisclosuresPage />} />
-            <Route path="/adviser_disclosure_consultations" element={<AdviserDisclosureConsultationsPage />} />
+              <Route path="/disclosures" element={<DisclosuresPage />} />
+              <Route path="/adviser_disclosure_consultations" element={<AdviserDisclosureConsultationsPage />} />
 
-            <Route path="/disclosures/action" element={<DisclosureActionPage />} />
+              <Route path="/disclosures/action" element={<DisclosureActionPage />} />
 
-            <Route path="/disclosures/details/action" element={<DisclosureDetailsActionPage />} />
+              <Route path="/disclosures/details/action" element={<DisclosureDetailsActionPage />} />
 
-            <Route path="/disclosures/:disclosureId" element={<DisclosurePage />} />
+              <Route path="/disclosures/:disclosureId" element={<DisclosurePage />} />
 
-            <Route path="/disclosures/visit-rating/action" element={<DisclosureVisitAndRatingActionPage />} />
-            <Route path="/disclosures/appointment/action" element={<DisclosureAppointmentActionPage />} />
-            <Route path="/disclosures/:disclosureId/note/action" element={<DisclosureNoteActionPage />} />
-            <Route path="/disclosures/:disclosureId/consulting_adviser" element={<DisclosureConsultingAdviserPage />} />
-            <Route
-              path="/disclosures/:disclosureId/consulting_adviser/action"
-              element={<DisclosureConsultingAdviserActionPage />}
-            />
-            <Route path="/disclosures/:disclosureId/audit" element={<DisclosureAuditPage />} />
-            <Route path="/disclosures/:disclosureId/audit/details" element={<AuditDetailsActionPage />} />
+              <Route path="/disclosures/visit-rating/action" element={<DisclosureVisitAndRatingActionPage />} />
+              <Route path="/disclosures/appointment/action" element={<DisclosureAppointmentActionPage />} />
+              <Route path="/disclosures/:disclosureId/note/action" element={<DisclosureNoteActionPage />} />
+              <Route
+                path="/disclosures/:disclosureId/consulting_adviser"
+                element={<DisclosureConsultingAdviserPage />}
+              />
+              <Route
+                path="/disclosures/:disclosureId/consulting_adviser/action"
+                element={<DisclosureConsultingAdviserActionPage />}
+              />
+              <Route path="/disclosures/:disclosureId/audit" element={<DisclosureAuditPage />} />
+              <Route path="/disclosures/:disclosureId/audit/details" element={<AuditDetailsActionPage />} />
 
-            <Route path="/beneficiaries" element={<BeneficiariesPage />} />
-            <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
-            <Route path="/beneficiaries/:id/medicine/action" element={<BeneficiaryMedicineActionPage />} />
-            <Route path="/beneficiaries/:id/family/action" element={<BeneficiaryFamilyActionPage />} />
+              <Route path="/beneficiaries" element={<BeneficiariesPage />} />
+              <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
+              <Route path="/beneficiaries/:id/medicine/action" element={<BeneficiaryMedicineActionPage />} />
+              <Route path="/beneficiaries/:id/family/action" element={<BeneficiaryFamilyActionPage />} />
 
-            <Route path="/beneficiaries/action" element={<BeneficiaryActionPage />} />
-            <Route path="/work-areas" element={<WorkAreas />} />
-            <Route path="/work-areas/action" element={<WorkAreaActionPage />} />
+              <Route path="/beneficiaries/action" element={<BeneficiaryActionPage />} />
+              <Route path="/work-areas" element={<WorkAreas />} />
+              <Route path="/work-areas/action" element={<WorkAreaActionPage />} />
 
-            <Route path="/cities" element={<Cities />} />
-            <Route path="/cities/action" element={<CityActionPage />} />
+              <Route path="/cities" element={<Cities />} />
+              <Route path="/cities/action" element={<CityActionPage />} />
 
-            <Route path="/ratings" element={<RatingsPage />} />
-            <Route path="/ratings/action" element={<RatingActionPage />} />
+              <Route path="/ratings" element={<RatingsPage />} />
+              <Route path="/ratings/action" element={<RatingActionPage />} />
 
-            <Route path="/medicines" element={<MedicinesPage />} />
-            <Route path="/medicines/action" element={<MedicineActionPage />} />
+              <Route path="/medicines" element={<MedicinesPage />} />
+              <Route path="/medicines/action" element={<MedicineActionPage />} />
 
-            <Route path="/meetings" element={<MeetingsPage />} />
-            <Route path="/meetings/action" element={<MeetingActionPage />} />
+              <Route path="/meetings" element={<MeetingsPage />} />
+              <Route path="/meetings/action" element={<MeetingActionPage />} />
 
-            <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
-            <Route path="/priority-degrees/action" element={<PriorityDegreesActionPage />} />
+              <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
+              <Route path="/priority-degrees/action" element={<PriorityDegreesActionPage />} />
 
-            <Route path="/sync" element={<SyncPage />} />
-            <Route path="/calendar" element={<AppointmentsPage />} />
+              <Route path="/sync" element={<SyncPage />} />
+              <Route path="/calendar" element={<AppointmentsPage />} />
 
-            <Route path="/system-broadcast" element={<SystemBroadcastsPage />} />
-            <Route path="/system-broadcast/action" element={<SystemBroadcastActionPage />} />
+              <Route path="/system-broadcast" element={<SystemBroadcastsPage />} />
+              <Route path="/system-broadcast/action" element={<SystemBroadcastActionPage />} />
+            </Route>
           </Route>
         </Route>
 

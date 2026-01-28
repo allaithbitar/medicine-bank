@@ -13,12 +13,11 @@ import { Business as BuildingOfficeIcon, Sync, ThumbsUpDown } from '@mui/icons-m
 import STRINGS from '@/core/constants/strings.constant';
 import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import usePermissions from '@/core/hooks/use-permissions.hook';
 
 type BaseItem = {
   label: string;
   icon: ReactElement;
-  permissions: string[];
-  isDisabled?: boolean;
 };
 
 type LinkItem = BaseItem & {
@@ -33,91 +32,79 @@ type ParentItem = BaseItem & {
 export type IItem = LinkItem | ParentItem;
 
 function SideBarItems({ onClick }: { onClick: () => void }) {
+  const { hasRouteAccess } = usePermissions();
+
   const items: IItem[] = [
     {
       label: STRINGS.home_page,
       icon: <HomeIcon />,
       href: '/',
-      permissions: [],
     },
     {
       label: STRINGS.disclosure_consulting,
       href: '/adviser_disclosure_consultations',
       icon: <PsychologyAltIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.employees,
       href: '/employees',
       icon: <BadgeIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.beneficiaries,
       href: '/beneficiaries',
       icon: <SupervisedUserCircleIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.disclosures,
       href: '/disclosures',
       icon: <SupervisedUserCircleIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.cities,
       href: '/cities',
       icon: <BuildingOfficeIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.areas,
       href: '/work-areas',
       icon: <EditLocationAltIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.ratings,
       href: '/ratings',
       icon: <ThumbsUpDown />,
-      permissions: [],
     },
     {
       label: STRINGS.medicines,
       href: '/medicines',
       icon: <MedicalServicesIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.meetings,
       href: '/meetings',
       icon: <MeetingRoomOutlinedIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.priority_degrees,
       href: '/priority-degrees',
       icon: <CrisisAlertIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.calendar,
       href: '/calendar',
       icon: <CalendarMonthIcon />,
-      permissions: [],
     },
     {
       label: STRINGS.the_sync,
       href: '/sync',
       icon: <Sync />,
-      permissions: [],
     },
   ];
   return (
     <List sx={{ height: '100%', overflow: 'auto' }}>
       {items
-        .filter((p) => !p.isDisabled)
-        // .filter((i) => checkPermission(i.permissions))
+        .filter((i) => i.href && hasRouteAccess(i.href))
         .map((i) =>
           i.childrens ? (
             <SidebarExpandableItem
