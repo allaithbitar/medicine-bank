@@ -13,8 +13,8 @@ import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 
 const PriorityDegreeSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }).max(100),
-  color: z.string().min(1, { message: 'color is required' }),
+  name: z.string().min(1, { message: STRINGS.schema_required }).max(100),
+  color: z.string().min(1, { message: STRINGS.schema_required }),
 });
 
 type TFormValues = z.infer<typeof PriorityDegreeSchema>;

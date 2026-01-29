@@ -19,13 +19,13 @@ import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-in
 import FormNumberInput from '@/core/components/common/inputs/form-number-input.component';
 
 const FamilyMemberSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }).max(200),
-  birthDate: z.string().min(1, { message: 'Birth date is required' }),
+  name: z.string().min(1, { message: STRINGS.schema_required }).max(200),
+  birthDate: z.string().min(1, { message: STRINGS.schema_required }),
   gender: z.enum(['male', 'female'], {
-    errorMap: () => ({ message: 'Gender is required' }),
+    errorMap: () => ({ message: STRINGS.schema_required }),
   }),
   kinshep: z.enum(['partner', 'child', 'parent', 'brother', 'grandparent', 'grandchild'], {
-    errorMap: () => ({ message: 'Kinshep is required' }),
+    errorMap: () => ({ message: STRINGS.schema_required }),
   }),
   jobOrSchool: z.string(),
   residential: z.string(),

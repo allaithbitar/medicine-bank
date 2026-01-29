@@ -67,7 +67,7 @@ const DisclosureNoteActionPage = () => {
       setErrors([
         {
           code: 'custom',
-          message: 'Provide text (more than 10 chart) or audio',
+          message: STRINGS.schema_note_requirement,
           path: ['noteText'],
         },
       ]);

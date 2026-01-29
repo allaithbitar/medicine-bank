@@ -21,12 +21,12 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 
 const BroadcastSchema = z.object({
   type: z.enum(BROADCAST_TYPES, {
-    errorMap: () => ({ message: 'Type is required' }),
+    errorMap: () => ({ message: STRINGS.schema_required }),
   }),
-  title: z.string().min(1, { message: 'Title is required' }).max(500),
-  details: z.string().min(1, { message: 'details is required' }).max(500),
+  title: z.string().min(1, { message: STRINGS.schema_required }).max(500),
+  details: z.string().min(1, { message: STRINGS.schema_required }).max(500),
   audience: z.enum(BROADCAST_AUDIENCES as unknown as [string, ...string[]], {
-    errorMap: () => ({ message: 'Audience is required' }),
+    errorMap: () => ({ message: STRINGS.schema_required }),
   }),
 });
 

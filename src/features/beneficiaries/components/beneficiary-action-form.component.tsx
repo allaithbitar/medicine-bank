@@ -26,21 +26,21 @@ import FormDateInput from '@/core/components/common/inputs/form-date-input-compo
 import { addTimeZoneOffestToIsoDate } from '@/core/helpers/helpers';
 
 const PatientFormSchema = z.object({
-  name: z.string().min(5),
-  nationalNumber: z.string().length(11),
+  name: z.string().min(5, STRINGS.schema_name_too_short),
+  nationalNumber: z.string().length(11, STRINGS.schema_invalid_national_number),
   area: z.custom<TArea | null>((data) => !!data, {
-    message: 'Area is required',
+    message: STRINGS.schema_required,
   }),
   address: z.string(),
   about: z.string().nullable(),
   city: z.custom<TCity | null>((data) => !!data, {
-    message: 'City is required',
+    message: STRINGS.schema_required,
   }),
-  phoneNumbers: z.array(z.string().length(10)).min(1),
+  phoneNumbers: z.array(z.string().length(10, STRINGS.schema_phone_digits)).min(1),
   birthDate: z.string(),
   gender: z
     .custom<(TListItem & { label: string }) | null>((data) => !!data, {
-      message: 'Gender is required',
+      message: STRINGS.schema_required,
     })
     .nullable(),
   job: z.string().nullable(),

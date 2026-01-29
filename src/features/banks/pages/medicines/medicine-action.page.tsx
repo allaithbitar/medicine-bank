@@ -32,12 +32,12 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import { skipToken } from '@reduxjs/toolkit/query/react';
 
 const MedicineSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }).max(200),
+  name: z.string().min(1, { message: STRINGS.schema_required }).max(200),
   form: z.enum(ALLOWED_FORMS, {
-    errorMap: () => ({ message: 'Form is required' }),
+    errorMap: () => ({ message: STRINGS.schema_required }),
   }),
   doseVariants: z.array(z.number()).min(1, {
-    message: 'At least one dose must be selected',
+    message: STRINGS.schema_dose_required,
   }),
 });
 

@@ -15,8 +15,8 @@ import FormDateTimeInput from '@/core/components/common/inputs/form-date-time-in
 import { skipToken } from '@reduxjs/toolkit/query';
 
 const MeetingSchema = z.object({
-  note: z.string().min(1, { message: 'note is required' }),
-  date: z.string().min(1, { message: 'date is required' }),
+  note: z.string().min(1, { message: STRINGS.schema_required }),
+  date: z.string().min(1, { message: STRINGS.schema_required }),
   createdAt: z.string().optional().nullable(),
 });
 

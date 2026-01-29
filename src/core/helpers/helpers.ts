@@ -77,3 +77,5 @@ export const ACTION_COLOR_MAP: Record<string, string> = {
 
 export const getVoiceSrc = ({ baseUrl, filePath }: { baseUrl: string; filePath: string }) =>
   `${baseUrl}/public/audio/${filePath}`;
+
+export const sanitizePhoneForTel = (raw: string) => raw.replace(/[^\d+]/g, '');

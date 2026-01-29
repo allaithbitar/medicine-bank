@@ -24,7 +24,7 @@ const schema = z
     visitResult: z.custom<{
       id: NonNullable<TDisclosureVisitResult>;
       label: string;
-    } | null>((data) => !!data, { message: 'required' }),
+    } | null>((data) => !!data, { message: STRINGS.schema_required }),
 
     visitReason: z.string().optional(),
     visitNote: z.string().optional(),
@@ -41,7 +41,7 @@ const schema = z
         ctx.addIssue({
           code: 'custom',
           path: ['visitReason'],
-          message: 'required',
+          message: STRINGS.schema_required,
         });
       }
       return;
@@ -52,7 +52,7 @@ const schema = z
         ctx.addIssue({
           code: 'custom',
           path: ['customRating'],
-          message: 'required',
+          message: STRINGS.schema_required,
         });
       } else if (state.customRating.length < 5) {
         ctx.addIssue({
@@ -66,7 +66,7 @@ const schema = z
         ctx.addIssue({
           code: 'custom',
           path: ['rating'],
-          message: 'required',
+          message: STRINGS.schema_required,
         });
       }
     }

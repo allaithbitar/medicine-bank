@@ -1,13 +1,11 @@
-import { z } from "zod";
+import STRINGS from '@/core/constants/strings.constant';
+import { z } from 'zod';
 
 export const WorkAreaSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Work Area Name is required")
-    .max(100, "Name is too long"),
-  cityId: z.string().uuid("Invalid City ID format").min(1, "City is required"),
+  name: z.string().min(1, STRINGS.schema_required),
+  cityId: z.string().uuid(STRINGS.schema_invalid_id_format).min(1, STRINGS.schema_required),
 });
 
 export const UpdateWorkAreaSchema = WorkAreaSchema.extend({
-  id: z.string().uuid("Invalid Work Area ID format"),
+  id: z.string().uuid(STRINGS.schema_invalid_id_format),
 });

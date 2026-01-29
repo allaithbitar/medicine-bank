@@ -1,14 +1,12 @@
-import { z } from "zod";
+import STRINGS from '@/core/constants/strings.constant';
+import { z } from 'zod';
 
 export const RatingSchema = z.object({
-  name: z
-    .string()
-    .min(1, "rating Name is required")
-    .max(100, "Name is too long"),
-  code: z.string().min(1),
-  description: z.string().min(1, "rating description is required"),
+  name: z.string().min(1, STRINGS.schema_required),
+  code: z.string().min(1, STRINGS.schema_required),
+  description: z.string().min(1, STRINGS.schema_required),
 });
 
 export const UpdateRatingSchema = RatingSchema.extend({
-  id: z.string().uuid("Invalid rating Id format"),
+  id: z.string().uuid(STRINGS.schema_invalid_id_format),
 });

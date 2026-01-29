@@ -1,15 +1,16 @@
 import DetailItem from '@/core/components/common/detail-item/detail-item.component';
 import STRINGS from '@/core/constants/strings.constant';
-import { formatDateTime } from '@/core/helpers/helpers';
+import { formatDateTime, sanitizePhoneForTel } from '@/core/helpers/helpers';
 import type { TBenefieciary } from '@/features/beneficiaries/types/beneficiary.types';
 import Man4Icon from '@mui/icons-material/Man4';
 import { Person, Pin, Phone, LocationPin, EventAvailable, Info, Edit, History } from '@mui/icons-material';
-import { Stack, Button } from '@mui/material';
+import { Stack, Button, useTheme } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WorkIcon from '@mui/icons-material/Work';
 import disclosuresApi from '@/features/disclosures/api/disclosures.api';
 import FormattedVisitRatingResult from '@/features/disclosures/components/formatted-visit-rating-result';
+import { useCallback } from 'react';
 
 interface IBeneficiaryCommonCard {
   beneficiary: TBenefieciary;
@@ -21,12 +22,31 @@ function BeneficiaryCommonCard({ beneficiary, isDisclosurePage = false }: IBenef
     { patientId: beneficiary.id },
     { skip: !beneficiary.id || isDisclosurePage }
   );
+  const theme = useTheme();
+
+  const getPhoneValues = useCallback(() => {
+    if (!beneficiary?.phones?.length) {
+      return STRINGS.none;
+    }
+    return beneficiary.phones.map((p, i) => {
+      const tel = sanitizePhoneForTel(p.phone || '');
+      return (
+        <span key={i}>
+          <a href={`tel:${tel}`} style={{ color: theme.palette.secondary.main, textDecoration: 'none' }}>
+            {p.phone}
+          </a>
+          {i < beneficiary.phones.length - 1 && ' , '}
+        </span>
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [beneficiary.phones]);
 
   return (
     <Stack gap={2}>
       <DetailItem label={STRINGS.beneficiary} icon={<Person />} value={beneficiary.name} />
       <DetailItem label={STRINGS.national_number} icon={<Pin />} value={beneficiary.nationalNumber ?? STRINGS.none} />
-      <DetailItem label={STRINGS.phones} icon={<Phone />} value={beneficiary?.phones?.map((p) => p.phone).join(', ')} />
+      <DetailItem label={STRINGS.phones} icon={<Phone />} value={getPhoneValues()} />
       {
         <DetailItem
           icon={<CalendarTodayIcon />}

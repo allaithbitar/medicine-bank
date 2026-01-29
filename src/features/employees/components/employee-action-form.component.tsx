@@ -18,11 +18,11 @@ const createEmployeeFormSchema = (optionalPassword = false) => {
   return z
     .object({
       role: z.custom<{ id: TEmployeeRole; label: string } | null>((data) => !!data, {
-        message: 'Role is required',
+        message: STRINGS.schema_required,
       }),
-      name: z.string().min(5, { message: 'too short' }),
+      name: z.string().min(5, { message: STRINGS.schema_name_too_short }),
       password: z.string(),
-      phone: z.string().min(10, { message: 'invalid' }),
+      phone: z.string().min(10, { message: STRINGS.schema_invalid_phone_format }),
       city: z.custom<TAutocompleteItem | null>(),
       areas: z.custom<TAutocompleteItem[]>(),
     })
@@ -33,7 +33,7 @@ const createEmployeeFormSchema = (optionalPassword = false) => {
       ) {
         ctx.addIssue({
           code: 'custom',
-          message: 'Weaka password',
+          message: STRINGS.schema_weak_password,
           path: ['password'],
         });
       }

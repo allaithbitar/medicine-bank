@@ -93,7 +93,6 @@ export const checkRouteAccess = (routePath: string, userRole: TUserRole | undefi
     const regex = new RegExp(`^${pattern}$`);
     return regex.test(routePath);
   });
-  console.log('🚀 ~ checkRouteAccess ~ permission:', permission);
 
   if (!permission) return false;
 

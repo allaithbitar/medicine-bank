@@ -325,6 +325,23 @@ const STRINGS = {
   delete_read_notifications: 'حذف الاشعارات المقروءة',
   select_rating: 'اختر التقييم',
   kids_count: 'عدد الابناء',
+
+  schema_city_name_min: 'اسم المدينة يجب أن يكون على الأقل 3 أحرف',
+  schema_name_too_short: 'الاسم قصير جدًا',
+  schema_employee_name_short: 'اسم الموظف قصير جدًا',
+  schema_phone_digits: 'رقم الهاتف يجب أن يحتوي على 10 أرقام',
+  schema_invalid_phone_format: 'تنسيق رقم الهاتف غير صالح',
+  schema_password_min: 'كلمة المرور يجب أن تكون على الأقل 6 أحرف',
+  schema_weak_password: 'كلمة المرور ضعيفة جدًا',
+  schema_passwords_mismatch: 'كلمتا المرور غير متطابقتين',
+  schema_name_required: 'الاسم مطلوب',
+  schema_required: 'مطلوب',
+  schema_dose_required: 'يجب اختيار جرعة واحدة على الأقل',
+  schema_invalid_id_format: 'تنسيق رقم التعريف غير صالح',
+  schema_intake_freq_number: 'تكرار الجرعة يجب أن يكون رقمًا',
+  schema_intake_freq_min: 'تكرار الجرعة يجب أن يكون >= 0',
+  schema_invalid_national_number: 'الرقم الوطني 11 رقمًا',
+  schema_note_requirement: 'يرجى تقديم نص (أكثر من 10 أحرف) أو ملف صوتي',
 };
 
 export default STRINGS;

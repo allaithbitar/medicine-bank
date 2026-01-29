@@ -17,12 +17,12 @@ import { skipToken } from '@reduxjs/toolkit/query';
 import type { TMedicinesAutocompleteItem } from '@/features/autocomplete/types/autcomplete.types';
 
 const BeneficiaryMedicineSchema = z.object({
-  patientId: z.string().min(1, { message: 'Patient is required' }),
-  medicineId: z.string().min(1, { message: 'Medicine is required' }),
-  dosePerIntake: z.number().gt(0, { message: 'Dose is required' }),
+  patientId: z.string().min(1, { message: STRINGS.schema_required }),
+  medicineId: z.string().min(1, { message: STRINGS.schema_required }),
+  dosePerIntake: z.number().gt(0, { message: STRINGS.schema_required }),
   intakeFrequency: z
-    .number({ invalid_type_error: 'Intake frequency must be a number' })
-    .min(0, { message: 'Intake frequency must be >= 0' }),
+    .number({ invalid_type_error: STRINGS.schema_intake_freq_number })
+    .min(0, { message: STRINGS.schema_intake_freq_min }),
   note: z.string().optional().nullable(),
 });
 

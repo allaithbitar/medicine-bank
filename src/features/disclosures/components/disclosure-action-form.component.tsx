@@ -1,16 +1,16 @@
-import useForm, { type TFormSubmitResult } from "@/core/hooks/use-form.hook";
+import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
 
-import { Stack } from "@mui/material";
-import z from "zod";
-import { type TDisclosure } from "../types/disclosure.types";
-import STRINGS from "@/core/constants/strings.constant";
-import EmployeesAutocomplete from "@/features/employees/components/employees-autocomplete.component";
-import PriorityDegreesAutocomplete from "@/features/priority-degres/components/priority-degees-autocomplete.component";
-import type { TPriorityDegree } from "@/features/priority-degres/types/priority-degree.types";
-import { useEffect, useImperativeHandle, type Ref } from "react";
-import BeneficiariesAutocomplete from "@/features/beneficiaries/components/beneficiaries-autocomplete.component";
-import type { TAutocompleteItem } from "@/core/types/common.types";
-import FormTextAreaInput from "@/core/components/common/inputs/form-text-area-input.component";
+import { Stack } from '@mui/material';
+import z from 'zod';
+import { type TDisclosure } from '../types/disclosure.types';
+import STRINGS from '@/core/constants/strings.constant';
+import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
+import PriorityDegreesAutocomplete from '@/features/priority-degres/components/priority-degees-autocomplete.component';
+import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
+import { useEffect, useImperativeHandle, type Ref } from 'react';
+import BeneficiariesAutocomplete from '@/features/beneficiaries/components/beneficiaries-autocomplete.component';
+import type { TAutocompleteItem } from '@/core/types/common.types';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 
 const createDisclosureSchema = (beneficiaryAlreadyDefined = false) =>
   z
@@ -18,24 +18,22 @@ const createDisclosureSchema = (beneficiaryAlreadyDefined = false) =>
       employee: z.custom<TAutocompleteItem | null>(),
       beneficiary: z.custom<TAutocompleteItem | null>(),
       priorityDegree: z.custom<TPriorityDegree | null>((data) => !!data, {
-        message: "required",
+        message: STRINGS.schema_required,
       }),
       initialNote: z.string(),
     })
     .superRefine((state, ctx) => {
       if (!beneficiaryAlreadyDefined && !state.beneficiary) {
         ctx.addIssue({
-          code: "custom",
-          message: "required",
-          path: ["beneficiary"],
+          code: 'custom',
+          message: STRINGS.schema_required,
+          path: ['beneficiary'],
         });
       }
     });
 
 export type TDisclosureFormHandlers = {
-  handleSubmit: () => Promise<
-    TFormSubmitResult<z.infer<ReturnType<typeof createDisclosureSchema>>>
-  >;
+  handleSubmit: () => Promise<TFormSubmitResult<z.infer<ReturnType<typeof createDisclosureSchema>>>>;
 };
 
 type TProps = {
@@ -44,21 +42,16 @@ type TProps = {
   beneficiaryAlreadyDefined?: boolean;
 };
 
-const DisclosureActionForm = ({
-  ref,
-  disclosureData,
-  beneficiaryAlreadyDefined,
-}: TProps) => {
-  const { formState, formErrors, setValue, handleSubmit, setFormState } =
-    useForm({
-      schema: createDisclosureSchema(beneficiaryAlreadyDefined),
-      initalState: {
-        priorityDegree: null,
-        employee: null,
-        beneficiary: null,
-        initialNote: "",
-      },
-    });
+const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }: TProps) => {
+  const { formState, formErrors, setValue, handleSubmit, setFormState } = useForm({
+    schema: createDisclosureSchema(beneficiaryAlreadyDefined),
+    initalState: {
+      priorityDegree: null,
+      employee: null,
+      beneficiary: null,
+      initialNote: '',
+    },
+  });
 
   useImperativeHandle(
     ref,
@@ -67,7 +60,7 @@ const DisclosureActionForm = ({
         return handleSubmit();
       },
     }),
-    [handleSubmit],
+    [handleSubmit]
   );
 
   useEffect(() => {
@@ -86,7 +79,7 @@ const DisclosureActionForm = ({
             }
           : null,
         priorityDegree: disclosureData.priority,
-        initialNote: disclosureData.initialNote ?? "",
+        initialNote: disclosureData.initialNote ?? '',
       });
     }
   }, [disclosureData, setFormState]);
@@ -112,7 +105,7 @@ const DisclosureActionForm = ({
         />
       )}
       <EmployeesAutocomplete
-        roles={["scout"]}
+        roles={['scout']}
         label={STRINGS.disclosure_scout}
         multiple={false}
         value={formState.employee}
