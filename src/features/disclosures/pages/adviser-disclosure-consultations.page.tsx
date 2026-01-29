@@ -1,4 +1,7 @@
-import { Card, Stack } from '@mui/material';
+import { Card, Stack, Tabs, Tab, Button } from '@mui/material';
+import { useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import disclosuresApi from '../api/disclosures.api';
 import { ConsultingAdviserCard } from '../components/consulting-adviser-card.component';
 import STRINGS from '@/core/constants/strings.constant';
@@ -8,16 +11,22 @@ import ratingsApi from '@/features/ratings/api/ratings.api';
 import Header from '@/core/components/common/header/header';
 import Nodata from '@/core/components/common/no-data/no-data.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
-import { useCallback } from 'react';
 
 function AdviserDisclosureConsultationsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentTab = searchParams.get('tab') === 'pending' ? 'pending' : 'completed';
+  const navigate = useNavigate();
   const { closeModal, openModal } = useModal();
+
   const { data: response = { items: [] }, isFetching } = disclosuresApi.useGetDisclosureAdviserConsultationsQuery({
-    consultationStatus: 'pending',
+    consultationStatus: currentTab,
   });
   const adviserConsultations = response.items ?? [];
 
-  const { data: ratings = [], isFetching: isFetchingRatings } = ratingsApi.useGetRatingsQuery({});
+  const { data: ratings = [], isFetching: isFetchingRatings } = ratingsApi.useGetRatingsQuery(
+    {},
+    { skip: currentTab === 'completed' }
+  );
 
   const [completeConsultation, { isLoading: isCompleting }] = disclosuresApi.useCompleteConsultationMutation();
 
@@ -59,18 +68,53 @@ function AdviserDisclosureConsultationsPage() {
     <Card>
       <Stack gap={2} sx={{ position: 'relative' }}>
         <Header title={STRINGS.consulting_adviser} />
+        <Tabs
+          value={currentTab}
+          variant="fullWidth"
+          onChange={(_, v) =>
+            setSearchParams((prev) => ({ ...prev, tab: v }), {
+              replace: true,
+            })
+          }
+          slotProps={{
+            indicator: {
+              sx: {
+                height: '5%',
+                borderRadius: 10,
+              },
+            },
+          }}
+        >
+          <Tab value="pending" label={STRINGS.consulting_adviser_pending} />
+          <Tab value="completed" label={STRINGS.consulting_adviser_completed} />
+        </Tabs>
+
         {adviserConsultations.map((ac) => (
           <ConsultingAdviserCard
             key={ac.id}
             adviserConsultation={ac}
-            ratings={ratings}
-            handleSelectRating={(ratingId, adviserConsultationId, ratingName) =>
-              handleChipClicked({ ratingId, adviserConsultationId, ratingName })
+            ratings={currentTab === 'pending' ? ratings : undefined}
+            handleSelectRating={
+              currentTab === 'pending'
+                ? (ratingId, adviserConsultationId, ratingName) =>
+                    handleChipClicked({ ratingId, adviserConsultationId, ratingName })
+                : undefined
+            }
+            footerContent={
+              <Button
+                variant="outlined"
+                startIcon={<VisibilityIcon />}
+                onClick={() => navigate(`/consulting-adviser/${ac.id}`)}
+                fullWidth
+              >
+                {STRINGS.view_details}
+              </Button>
             }
           />
         ))}
+
         {!isFetching && !adviserConsultations.length && <Nodata />}
-        {isFetching && isFetchingRatings && isCompleting && <LoadingOverlay />}
+        {(isFetching || isFetchingRatings || isCompleting) && <LoadingOverlay />}
       </Stack>
     </Card>
   );

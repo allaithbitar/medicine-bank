@@ -36,7 +36,7 @@ import type { TBroadcastAudience, TBroadcastType } from '@/features/system-broad
 export type THouseHoldAssetCondition = 'very_good' | 'good' | 'medium' | 'bad' | 'very_bad' | 'not_working';
 export type THouseOwnership = 'owned' | 'rent' | 'loan' | 'mortage';
 // export type TMedicineForm = 'pill' | 'syrup' | 'injection' | 'capsule' | 'ointment';
-export type TNotificationType = 'consultation_requested' | 'consultation_completed';
+export type TNotificationType = 'consultation_requested' | 'consultation_completed' | 'disclosure_assigned';
 // export type TSystemBroadcastType = 'meeting' | 'custom';
 // export type TBroadcastAudience = 'all' | 'scouts' | 'supervisors';
 export type TAuditTable = 'disclosures' | 'disclosure_notes' | 'disclosure_consultations' | 'disclosure_details';

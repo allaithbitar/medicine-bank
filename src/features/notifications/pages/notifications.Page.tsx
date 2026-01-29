@@ -1,0 +1,105 @@
+import { Card, Stack, Button } from '@mui/material';
+import { useCallback } from 'react';
+import STRINGS from '@/core/constants/strings.constant';
+import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
+import Header from '@/core/components/common/header/header';
+import NotificationCard from '../components/notification-card';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
+import { useNotificationsLoader } from '../hooks/notifications-loader.hook';
+import useUser from '@/core/hooks/user-user.hook';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import Nodata from '@/core/components/common/no-data/no-data.component';
+import notificationsApi from '../api/notifications.api';
+import { useModal } from '@/core/components/common/modal/modal-provider.component';
+import { notifySuccess, notifyError } from '@/core/components/common/toast/toast';
+
+const NotificationsPage = () => {
+  const { id } = useUser();
+  const { items, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useNotificationsLoader({
+    pageSize: DEFAULT_PAGE_SIZE,
+    to: id,
+  });
+
+  const [markAllRead, { isLoading: isMarkingAll }] = notificationsApi.useMarkAllNotificationsReadMutation();
+  const [deleteRead, { isLoading: isDeleting }] = notificationsApi.useDeleteReadNotificationsMutation();
+
+  const { openModal } = useModal();
+
+  const handleMarkAllRead = useCallback(() => {
+    openModal({
+      name: 'CONFIRM_MODAL',
+      props: {
+        message: STRINGS.mark_all_read,
+        onConfirm: async () => {
+          try {
+            await markAllRead().unwrap();
+            notifySuccess(STRINGS.edited_successfully);
+          } catch (error) {
+            notifyError(error);
+          }
+        },
+      },
+    });
+  }, [openModal, markAllRead]);
+
+  const handleDeleteRead = useCallback(() => {
+    openModal({
+      name: 'CONFIRM_MODAL',
+      props: {
+        message: STRINGS.delete_read_notifications,
+        onConfirm: async () => {
+          try {
+            await deleteRead().unwrap();
+            notifySuccess(STRINGS.edited_successfully);
+          } catch (error) {
+            notifyError(error);
+          }
+        },
+      },
+    });
+  }, [openModal, deleteRead]);
+
+  return (
+    <Card>
+      <Stack gap={2}>
+        <Stack sx={{ mb: 1 }}>
+          <Header title={STRINGS.notifications} />
+          <Stack direction="row" sx={{ justifyContent: 'space-between' }} gap={1}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleMarkAllRead}
+              disabled={isMarkingAll || items.length === 0}
+            >
+              {STRINGS.mark_all_read}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              color="error"
+              onClick={handleDeleteRead}
+              disabled={isDeleting || items.length === 0}
+            >
+              {STRINGS.delete_read_notifications}
+            </Button>
+          </Stack>
+        </Stack>
+        {items.length === 0 && !isLoading && !isFetchingNextPage && <Nodata />}
+        <VirtualizedList
+          items={items}
+          containerStyle={{ flex: 1, height: '100px' }}
+          virtualizationOptions={{
+            count: items.length,
+          }}
+          onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
+          isLoading={isFetchingNextPage}
+        >
+          {({ item: notification }) => <NotificationCard notification={notification} />}
+        </VirtualizedList>
+        {isLoading && <LoadingOverlay />}
+      </Stack>
+    </Card>
+  );
+};
+
+export default NotificationsPage;

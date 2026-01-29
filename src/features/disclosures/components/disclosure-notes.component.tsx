@@ -14,6 +14,7 @@ import { notifyInfo } from '@/core/components/common/toast/toast';
 import disclosuresApi from '../api/disclosures.api';
 import type { TDisclosureNote } from '../types/disclosure.types';
 import { baseUrl } from '@/core/api/root.api';
+import { getVoiceSrc } from '@/core/helpers/helpers';
 
 const NoteCard = ({ note }: { note: TDisclosureNote }) => {
   const { id: currentUserId } = useUser();
@@ -29,7 +30,6 @@ const NoteCard = ({ note }: { note: TDisclosureNote }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserId, note]);
-  const VoiceSrc = `${baseUrl}/public/audio/${note.noteAudio}`;
 
   return (
     <ReusableCardComponent
@@ -50,9 +50,7 @@ const NoteCard = ({ note }: { note: TDisclosureNote }) => {
               label={''}
               value={
                 <Stack direction="row" alignItems="center">
-                  <audio controlsList="nodownload" controls src={VoiceSrc}>
-                    Your browser does not support the audio element.
-                  </audio>
+                  <audio controlsList="nodownload" controls src={getVoiceSrc({ baseUrl, filePath: note.noteAudio })} />
                 </Stack>
               }
             />

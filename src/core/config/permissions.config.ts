@@ -42,6 +42,10 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
     path: '/adviser_disclosure_consultations',
     allowedRoles: ['manager', 'supervisor'],
   },
+  {
+    path: '/consulting-adviser/:id',
+    allowedRoles: ['manager', 'supervisor'],
+  },
 
   { path: '/beneficiaries', allowedRoles: ['manager', 'supervisor', 'scout'] },
   { path: '/beneficiaries/:id', allowedRoles: ['manager', 'supervisor', 'scout'] },
@@ -89,6 +93,7 @@ export const checkRouteAccess = (routePath: string, userRole: TUserRole | undefi
     const regex = new RegExp(`^${pattern}$`);
     return regex.test(routePath);
   });
+  console.log('🚀 ~ checkRouteAccess ~ permission:', permission);
 
   if (!permission) return false;
 

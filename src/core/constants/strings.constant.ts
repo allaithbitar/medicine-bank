@@ -308,6 +308,22 @@ const STRINGS = {
   house_condition_not_working: 'لا يعمل',
   diseases_or_surgeries: 'الأمراض / العمليات',
   other_details: 'أخرى',
+  notifications: 'الاشعارات',
+  notification: 'إشعار',
+  notification_from: 'من',
+  notification_to: 'إلى',
+  notification_type: 'نوع الإشعار',
+  notification_message: 'الرسالة',
+  read_at: 'تم القراءة في',
+  unread: 'غير مقروء',
+  mark_as_read: 'وضع علامة كمقروء',
+  consultation_requested: 'طلب استشارة',
+  consultation_completed: 'اكتملت الاستشارة',
+  view_disclosure: 'عرض الكشف',
+  disclosure_assigned: 'تم تعيين الكشف',
+  mark_all_read: 'تحديد الكل كمقروء',
+  delete_read_notifications: 'حذف الاشعارات المقروءة',
+  select_rating: 'اختر التقييم',
 };
 
 export default STRINGS;

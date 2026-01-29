@@ -1,7 +1,7 @@
 import { baseUrl } from '@/core/api/root.api';
-import { formatDateTime, getStringsLabel } from '@/core/helpers/helpers';
+import { formatDateTime, getStringsLabel, getVoiceSrc } from '@/core/helpers/helpers';
 import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
-import { Typography, Stack, Chip } from '@mui/material';
+import { Typography, Stack, Chip, Divider } from '@mui/material';
 import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import { Comment } from '@mui/icons-material';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
@@ -24,19 +24,21 @@ export const ConsultingAdviserCard = ({
   ratings?: TRating[];
   footerContent?: ReactNode;
 }) => {
-  const VoiceSrc = `${baseUrl}/public/audio/${adviserConsultation.consultationAudio}`;
-
   return (
     <ReusableCardComponent
       headerBackground={`linear-gradient(to right, ${purple[800]}, ${purple[500]})`}
       headerContent={<Typography color="white">{STRINGS.note}</Typography>}
       bodyContent={
         <Stack gap={2}>
-          <DetailItem icon={<Comment />} label={STRINGS.details} value={adviserConsultation.consultationNote} />
+          <DetailItem
+            icon={<Comment />}
+            label={STRINGS.details}
+            value={adviserConsultation.consultationNote ?? STRINGS.none}
+          />
           <DetailItem
             icon={<Person />}
             label={STRINGS.created_By}
-            value={(adviserConsultation.createdBy as any)?.name ?? adviserConsultation.createdBy}
+            value={adviserConsultation.createdBy?.name ?? STRINGS.none}
           />
           <DetailItem
             icon={<PublishedWithChangesIcon />}
@@ -65,34 +67,40 @@ export const ConsultingAdviserCard = ({
               label={''}
               value={
                 <Stack direction="row" alignItems="center">
-                  <audio controlsList="nodownload" controls src={VoiceSrc}>
-                    Your browser does not support the audio element.
-                  </audio>
+                  <audio
+                    controlsList="nodownload"
+                    controls
+                    src={getVoiceSrc({ baseUrl, filePath: adviserConsultation.consultationAudio })}
+                  />
                 </Stack>
               }
             />
           ) : null}
+
+          {ratings && (
+            <>
+              <Divider />
+              <DetailItem
+                icon={<ThumbsUpDown />}
+                label={STRINGS.select_rating_quickly}
+                value={
+                  <Stack sx={{ flexDirection: 'row', gap: 1, flexWrap: 'wrap', pt: 1 }}>
+                    {ratings?.map((r) => (
+                      <Chip
+                        key={r.id}
+                        label={r.name}
+                        color="primary"
+                        onClick={() => handleSelectRating?.(r.id, adviserConsultation.id, r.name)}
+                      />
+                    ))}
+                  </Stack>
+                }
+              />
+            </>
+          )}
         </Stack>
       }
-      footerContent={
-        footerContent ? (
-          footerContent
-        ) : (
-          <Stack sx={{ gap: 1, paddingInlineStart: 2 }}>
-            <Typography variant="body2">{STRINGS.select_rating_quickly}</Typography>
-            <Stack sx={{ flexDirection: 'row', gap: 1, flexWrap: 'wrap' }}>
-              {ratings?.map((r) => (
-                <Chip
-                  key={r.id}
-                  label={r.name}
-                  color="primary"
-                  onClick={() => handleSelectRating?.(r.id, adviserConsultation.id, r.name)}
-                />
-              ))}
-            </Stack>
-          </Stack>
-        )
-      }
+      footerContent={footerContent}
     />
   );
 };

@@ -5,6 +5,7 @@ import RecordVoiceOverOutlinedIcon from '@mui/icons-material/RecordVoiceOverOutl
 import { Link } from 'react-router-dom';
 import { Download } from '@mui/icons-material';
 import STRINGS from '@/core/constants/strings.constant';
+import HeaderNotificationButton from '@/features/notifications/components/header-notification-button';
 
 // BeforeInstallPromptEvent interface
 interface BeforeInstallPromptEvent extends Event {
@@ -87,12 +88,18 @@ function Navbar({
             {STRINGS.install_application}
           </Button>
         )}
+        <Stack sx={{ alignItems: 'center', flexDirection: 'row' }}>
+          <Link to={`/system-broadcast`}>
+            <IconButton color="primary">
+              <RecordVoiceOverOutlinedIcon />
+            </IconButton>
+          </Link>
 
-        <Link to={`/system-broadcast`} style={{ marginInlineStart: 'auto' }}>
-          <IconButton color="primary">
-            <RecordVoiceOverOutlinedIcon />
-          </IconButton>
-        </Link>
+          <Link to={`/notifications`}>
+            <HeaderNotificationButton />
+          </Link>
+        </Stack>
+
         {/* Install button - only shown when app is installable and not yet installed */}
         <img src={`/logo.jpeg`} style={{ width: 50, borderRadius: '8px' }} alt="bank-logo" />
       </Stack>

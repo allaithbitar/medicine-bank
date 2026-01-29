@@ -40,9 +40,11 @@ import DisclosureAuditPage from './features/disclosures/pages/disclosure-audit.p
 import DisclosureConsultingAdviserPage from './features/disclosures/pages/disclosure-consulting-adviser.page';
 import DisclosureConsultingAdviserActionPage from './features/disclosures/pages/disclosure-consulting-adviser-action.page';
 import AdviserDisclosureConsultationsPage from './features/disclosures/pages/adviser-disclosure-consultations.page';
+import ConsultingAdviserDetailsPage from './features/disclosures/pages/consulting-adviser-details.page';
 import DisclosureDetailsActionPage from './features/disclosures/pages/disclosure-details-action.page';
 import DisclosureVisitAndRatingActionPage from './features/disclosures/pages/disclosure-visit-and-rating-action.page';
 import AuditDetailsActionPage from './features/disclosures/pages/disclosue-audit-details.page';
+import NotificationsPage from './features/notifications/pages/notifications.Page';
 
 function App() {
   const router = createBrowserRouter(
@@ -54,6 +56,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route element={<ProtectedRoute />}>
               <Route index path="/" element={<SatisticsPage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
 
               <Route path="/employees" element={<EmployeesPage />} />
 
@@ -61,6 +64,7 @@ function App() {
 
               <Route path="/disclosures" element={<DisclosuresPage />} />
               <Route path="/adviser_disclosure_consultations" element={<AdviserDisclosureConsultationsPage />} />
+              <Route path="/consulting-adviser/:id" element={<ConsultingAdviserDetailsPage />} />
 
               <Route path="/disclosures/action" element={<DisclosureActionPage />} />
 

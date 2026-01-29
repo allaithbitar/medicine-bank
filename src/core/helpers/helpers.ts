@@ -71,3 +71,6 @@ export const ACTION_COLOR_MAP: Record<string, string> = {
   DELETE: '#e53935',
   DEFAULT: '#90a4ae',
 };
+
+export const getVoiceSrc = ({ baseUrl, filePath }: { baseUrl: string; filePath: string }) =>
+  `${baseUrl}/public/audio/${filePath}`;
