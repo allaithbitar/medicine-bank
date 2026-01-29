@@ -41,7 +41,6 @@ const DisclosuresPage = () => {
       <VirtualizedList
         totalCount={totalCount}
         items={items}
-        containerStyle={{ flex: 1 }}
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
       >

@@ -42,7 +42,6 @@ const MedicinesPage = () => {
         totalCount={totalCount}
         isLoading={isFetchingNextPage}
         items={items}
-        containerStyle={{ flex: 1 }}
       >
         {({ item: med }) => {
           return <MedicineCard onEdit={handleOpenMedicineModal} medicine={med} />;

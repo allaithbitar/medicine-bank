@@ -37,10 +37,6 @@ const MeetingsPage = () => {
 
       <VirtualizedList
         items={items}
-        containerStyle={{ flex: 1 }}
-        virtualizationOptions={{
-          count: items.length,
-        }}
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
       >

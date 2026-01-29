@@ -74,12 +74,7 @@ const SystemBroadcastsPage = () => {
             {searchResp.length === 0 && !isLoading ? (
               <Nodata />
             ) : (
-              <VirtualizedList
-                isLoading={isLoading}
-                items={searchResp}
-                containerStyle={{ height: '100%' }}
-                virtualizationOptions={{ count: searchResp.length }}
-              >
+              <VirtualizedList isLoading={isLoading} items={searchResp} containerStyle={{ height: '100%' }}>
                 {({ item }) => (
                   <SystemBroadcastCard
                     broadcast={item as TSystemBroadcast}

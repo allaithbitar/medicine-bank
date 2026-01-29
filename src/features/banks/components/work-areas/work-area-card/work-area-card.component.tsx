@@ -99,11 +99,7 @@ const WorkAreaCard = ({ workArea, onEdit }: IWorkAreaCardProps) => {
     </Box>
   );
 
-  return (
-    <Box sx={{ py: 1 }}>
-      <ReusableCardComponent headerContent={headerContent} bodyContent={bodyContent} footerContent={null} />
-    </Box>
-  );
+  return <ReusableCardComponent headerContent={headerContent} bodyContent={bodyContent} footerContent={null} />;
 };
 
 export default memo(WorkAreaCard);

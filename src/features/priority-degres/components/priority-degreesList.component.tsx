@@ -36,12 +36,7 @@ function PriorityDegreesList({ onEdit, priorityDegrees, isLoadingPriorityDegrees
         <Nodata icon={CrisisAlertIcon} title={STRINGS.no_data_found} subTitle={STRINGS.add_to_see} />
       )}
 
-      <VirtualizedList
-        isLoading={isLoadingPriorityDegrees}
-        items={priorityDegrees}
-        containerStyle={{ flex: 1 }}
-        virtualizationOptions={{ count: priorityDegrees.length }}
-      >
+      <VirtualizedList isLoading={isLoadingPriorityDegrees} items={priorityDegrees}>
         {({ item }) => (
           <PriorityDegreeCard
             priorityDegree={item}

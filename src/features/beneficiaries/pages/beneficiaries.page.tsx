@@ -45,10 +45,6 @@ const BeneficiariesPage = () => {
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
         items={items}
-        containerStyle={{ flex: 1 }}
-        virtualizationOptions={{
-          count: items.length,
-        }}
       >
         {({ item: b }) => {
           return <BeneficiaryCard beneficiary={b} key={b.id} onEnterClick={navigate} />;

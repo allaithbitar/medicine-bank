@@ -67,7 +67,6 @@ const DisclosureNotesTab = ({
         totalCount={totalCount}
         isLoading={isFetchingNextPage}
         items={items}
-        containerStyle={{ flex: 1 }}
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
       >
         {({ item }) => {
