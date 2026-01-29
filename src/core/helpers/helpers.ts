@@ -79,3 +79,15 @@ export const getVoiceSrc = ({ baseUrl, filePath }: { baseUrl: string; filePath: 
   `${baseUrl}/public/audio/${filePath}`;
 
 export const sanitizePhoneForTel = (raw: string) => raw.replace(/[^\d+]/g, '');
+
+export const downloadAnyFile = (file: File) => {
+  const url = window.URL.createObjectURL(file);
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = file.name;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  a.remove();
+};

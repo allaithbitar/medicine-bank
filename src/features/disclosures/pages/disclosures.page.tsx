@@ -1,8 +1,9 @@
 import { Stack } from '@mui/material';
 import DisclosureCard from '../components/disclosure-card.component';
 import { Add, Filter } from '@mui/icons-material';
+import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
 import { useDisclosuresLoader } from '../hooks/disclosures-loader.hook';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import STRINGS from '@/core/constants/strings.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
@@ -16,6 +17,8 @@ import {
   type TDisclosureFiltersForm,
 } from '../helpers/disclosure.helpers';
 import useStorage from '@/core/hooks/use-storage.hook';
+import { useFileDownload } from '@/core/hooks/use-file-download.hook';
+import { notifySuccess } from '@/core/components/common/toast/toast';
 
 const DisclosuresPage = () => {
   const { openModal, closeModal } = useModal();
@@ -29,8 +32,34 @@ const DisclosuresPage = () => {
 
   const navigate = useNavigate();
 
+  const { download, isDownloading } = useFileDownload({
+    url: '/disclosures/export-excel',
+    method: 'PUT',
+    filename: `disclosures_${new Date().toISOString().split('T')[0]}.xlsx`,
+    onSuccess: () => {
+      notifySuccess(STRINGS.download_complete);
+      closeModal();
+    },
+    onError: () => {
+      notifySuccess(STRINGS.download_failed);
+    },
+  });
+
   const { items, totalCount, error, isFetching, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useDisclosuresLoader(queryData);
+
+  const handleExportDisclosures = useCallback(() => {
+    openModal({
+      name: 'CONFIRM_MODAL',
+      props: {
+        title: STRINGS.export_disclosures_confirmation,
+        message: STRINGS.export_disclosures_confirmation_description,
+        onConfirm: async () => {
+          await download(filtersState);
+        },
+      },
+    });
+  }, [download, filtersState, openModal]);
 
   if (error) {
     return <ErrorCard error={error} />;
@@ -67,6 +96,11 @@ const DisclosuresPage = () => {
                   value: filtersState,
                 },
               }),
+          },
+          {
+            label: STRINGS.export_disclosures,
+            icon: <SimCardDownloadIcon />,
+            onClick: isDownloading ? undefined : () => handleExportDisclosures(),
           },
         ]}
       />

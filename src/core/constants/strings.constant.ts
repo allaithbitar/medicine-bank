@@ -42,6 +42,7 @@ const STRINGS = {
   add_rating: 'إضافة تقييم',
   add_visit: 'إضافة زيارة',
   add_disclosure: 'إضافة كشف',
+  export_disclosures: 'تصدير الكشوفات',
   filter: 'فلترة',
   is_custom_rating: 'تقييم مخصص ؟',
   the_custom_rating: 'التقيم المخصص',
@@ -325,7 +326,8 @@ const STRINGS = {
   delete_read_notifications: 'حذف الاشعارات المقروءة',
   select_rating: 'اختر التقييم',
   kids_count: 'عدد الابناء',
-
+  export_disclosures_confirmation_description: 'قد يستغرق هذا بعض الوقت حسب عدد الكشوفات المصدرة',
+  export_disclosures_confirmation: 'الكشوف سيتم تصديرها إلى ملف إكسل حسب الفلترة الحالية',
   schema_city_name_min: 'اسم المدينة يجب أن يكون على الأقل 3 أحرف',
   schema_name_too_short: 'الاسم قصير جدًا',
   schema_employee_name_short: 'اسم الموظف قصير جدًا',
@@ -342,6 +344,9 @@ const STRINGS = {
   schema_intake_freq_min: 'تكرار الجرعة يجب أن يكون >= 0',
   schema_invalid_national_number: 'الرقم الوطني 11 رقمًا',
   schema_note_requirement: 'يرجى تقديم نص (أكثر من 10 أحرف) أو ملف صوتي',
+  downloading: 'جاري التنزيل...',
+  download_complete: 'تم التنزيل بنجاح',
+  download_failed: 'فشل التنزيل، يرجى المحاولة مرة أخرى',
 };
 
 export default STRINGS;
