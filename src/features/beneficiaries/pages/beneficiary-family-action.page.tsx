@@ -1,25 +1,22 @@
-import React, { useEffect, useMemo } from 'react';
-import { Box, Card, MenuItem, Select, Stack, TextField, Typography } from '@mui/material';
+import { useEffect } from 'react';
+import { Card, Stack } from '@mui/material';
 import { z } from 'zod';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
-import useReducerState from '@/core/hooks/use-reducer.hook';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-import { formatDateToISO, getStringsLabel } from '@/core/helpers/helpers';
-import { MobileDatePicker } from '@mui/x-date-pickers';
-import type {
-  TAddFamilyMemberPayload,
-  TGender,
-  TKinship,
-  TUpdateFamilyMemberPayload,
-} from '../types/beneficiary.types';
+import { getErrorMessage, getStringsLabel } from '@/core/helpers/helpers';
+import type { TAddFamilyMemberPayload, TGender, TKinship } from '../types/beneficiary.types';
 import beneficiaryApi from '../api/beneficiary.api';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import useForm from '@/core/hooks/use-form.hook';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
+import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
+import FormSelectInput from '@/core/components/common/inputs/form-select-input.component';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import FormNumberInput from '@/core/components/common/inputs/form-number-input.component';
 
 const FamilyMemberSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(200),
@@ -30,15 +27,12 @@ const FamilyMemberSchema = z.object({
   kinshep: z.enum(['partner', 'child', 'parent', 'brother', 'grandparent', 'grandchild'], {
     errorMap: () => ({ message: 'Kinshep is required' }),
   }),
-  jobOrSchool: z.string().optional().nullable(),
-  residential: z.string().optional().nullable(),
-  note: z.string().optional().nullable(),
-  patientId: z.string().min(1, { message: 'Patient is required' }),
+  jobOrSchool: z.string(),
+  residential: z.string(),
+  note: z.string().optional(),
+  nationalNumber: z.string(),
+  kidsCount: z.string(),
 });
-
-type TFormValues = z.infer<typeof FamilyMemberSchema> & {
-  _birthDate?: Date | null;
-};
 
 const GENDERS: TGender[] = ['male', 'female'];
 const KINSHEP: TKinship[] = ['partner', 'child', 'parent', 'brother', 'grandparent', 'grandchild'];
@@ -49,195 +43,158 @@ const BeneficiaryFamilyActionPage = () => {
   const memberId = searchParams.get('id') ?? undefined;
   const { id: patientId } = useParams();
 
-  const { data: { items: patientMembers = [] } = { items: [] }, isLoading: isFetchingOldData } =
-    beneficiaryApi.useGetFamilyMembersQuery(
-      {
-        patientId,
-      },
-      { skip: !patientId || !memberId }
-    );
-  const oldFamilyMember = useMemo(() => {
-    if (!patientMembers) return undefined;
-    return patientMembers.find((pm) => pm.id === memberId);
-  }, [memberId, patientMembers]);
-
+  const { data: familyMemberData, isLoading: isFetchingFamilyMemberData } = beneficiaryApi.useGetFamilyMemberByIdQuery(
+    {
+      id: memberId!,
+    },
+    { skip: !memberId }
+  );
   const [addFamilyMember, { isLoading: isAdding }] = beneficiaryApi.useAddFamilyMemberMutation();
   const [updateFamilyMember, { isLoading: isUpdating }] = beneficiaryApi.useUpdateFamilyMemberMutation();
 
-  const initBirthDate = useMemo(() => {
-    if (!oldFamilyMember?.birthDate) return null;
-    const d = new Date(oldFamilyMember.birthDate);
-    if (isNaN(d.getTime())) return null;
-    return d;
-  }, [oldFamilyMember]);
-
-  const [values, setValues] = useReducerState<TFormValues>({
-    name: oldFamilyMember?.name ?? '',
-    _birthDate: initBirthDate,
-    birthDate: oldFamilyMember?.birthDate ?? '',
-    gender: (oldFamilyMember?.gender as TGender) ?? 'male',
-    kinshep: (oldFamilyMember?.kinshep as TKinship) ?? 'partner',
-    jobOrSchool: oldFamilyMember?.jobOrSchool ?? '',
-    residential: oldFamilyMember?.residential ?? '',
-    note: oldFamilyMember?.note ?? '',
-    patientId: oldFamilyMember?.patientId ?? patientId ?? '',
+  const { formState, formErrors, setValue, handleSubmit } = useForm({
+    schema: FamilyMemberSchema,
+    initalState: {
+      birthDate: '',
+      gender: 'male',
+      kinshep: 'partner',
+      name: '',
+      jobOrSchool: '',
+      note: '',
+      residential: '',
+      kidsCount: '',
+      nationalNumber: '',
+    },
   });
 
-  const [errors, setErrors] = React.useState<z.ZodIssue[]>([]);
+  const handleSubmitForm = async () => {
+    const { isValid, result } = await handleSubmit();
+    if (!isValid) return;
+    const dto: TAddFamilyMemberPayload = {
+      birthDate: result.birthDate,
+      gender: result.gender,
+      kidsCount: isNaN(Number(result.kidsCount)) || result.kidsCount === '' ? null : Number(result.kidsCount),
+      kinshep: result.kinshep,
+      name: result.name,
+      nationalNumber: result.nationalNumber || null,
+      note: result.note || null,
+      patientId: patientId!,
+      residential: result.residential || null,
+      jobOrSchool: result.jobOrSchool || null,
+    };
 
-  useEffect(() => {
-    if (!values._birthDate && oldFamilyMember?.birthDate) {
-      const d = new Date(oldFamilyMember.birthDate);
-      if (!isNaN(d.getTime())) {
-        setValues({ _birthDate: d });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getErrorForField = (field: keyof TFormValues) => {
-    const err = errors.find((e) => e.path[0] === field);
-    return err ? err.message : '';
-  };
-
-  const handleSubmit = async () => {
     try {
-      const birthDateStr = formatDateToISO(values._birthDate);
-      const toValidate = { ...values, birthDate: birthDateStr };
-
-      const parsed = FamilyMemberSchema.parse(toValidate);
-
-      if (oldFamilyMember) {
-        const payload: TUpdateFamilyMemberPayload = {
-          id: oldFamilyMember.id,
-          ...parsed,
-        };
-        await updateFamilyMember(payload).unwrap();
+      if (memberId) {
+        await updateFamilyMember({ ...dto, id: memberId }).unwrap();
       } else {
-        const payload: TAddFamilyMemberPayload = {
-          ...parsed,
-        };
-        await addFamilyMember(payload).unwrap();
+        await addFamilyMember(dto).unwrap();
       }
 
-      notifySuccess(oldFamilyMember ? STRINGS.edited_successfully : STRINGS.added_successfully);
+      notifySuccess(memberId ? STRINGS.edited_successfully : STRINGS.added_successfully);
       navigate(-1);
     } catch (err: any) {
-      if (err instanceof z.ZodError) {
-        setErrors(err.errors);
-        return;
-      }
-      notifyError(err);
+      notifyError(getErrorMessage(err));
     }
   };
 
-  const isLoading = isAdding || isUpdating || isFetchingOldData;
+  useEffect(() => {
+    if (familyMemberData) {
+      setValue({
+        name: familyMemberData.name,
+        birthDate: familyMemberData.birthDate,
+        gender: familyMemberData.gender,
+        jobOrSchool: familyMemberData.jobOrSchool ?? '',
+        kinshep: familyMemberData.kinshep,
+        note: familyMemberData.note ?? '',
+        residential: familyMemberData.residential ?? '',
+      });
+    }
+  }, [familyMemberData, setValue]);
+
+  const isLoading = isAdding || isUpdating || isFetchingFamilyMemberData;
+  console.log({ formState });
 
   return (
     <Card>
-      <Typography sx={{ pb: 2 }}>{oldFamilyMember ? STRINGS.edit_family_member : STRINGS.add_family_member}</Typography>
       <Stack gap={2}>
-        <TextField
-          fullWidth
+        <FormTextFieldInput
+          required
           label={STRINGS.name}
-          value={values.name}
-          onChange={(e) => {
-            setValues({ name: e.target.value });
-            setErrors((p) => p.filter((er) => er.path[0] !== 'name'));
+          value={formState.name}
+          onChange={(v) => setValue({ name: v })}
+          errorText={formErrors.name?.[0].message}
+        />
+
+        <FormDateInput
+          format="yyyy"
+          views={['year']}
+          required
+          disableFuture
+          label={STRINGS.birth_date}
+          value={formState.birthDate}
+          onChange={(newDate) => {
+            setValue({ birthDate: newDate });
           }}
-          error={!!getErrorForField('name')}
-          helperText={getErrorForField('name')}
+          errorText={formErrors.birthDate?.[0].message}
+        />
+        <FormTextFieldInput
+          label={STRINGS.national_number}
+          value={formState.nationalNumber}
+          onChange={(v) => setValue({ nationalNumber: v })}
+          errorText={formErrors.nationalNumber?.[0].message}
         />
 
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <MobileDatePicker
-            views={['year']}
-            disableFuture
-            label={STRINGS.birth_date}
-            value={values._birthDate ?? null}
-            onChange={(newDate) => {
-              setValues({ _birthDate: newDate ?? null });
-              setErrors((p) => p.filter((er) => er.path[0] !== 'birthDate'));
-            }}
-          />
-          <Typography color="error" variant="caption">
-            {getErrorForField('birthDate')}
-          </Typography>
-        </LocalizationProvider>
         <Stack sx={{ flexDirection: 'row', gap: 2 }}>
-          <Box sx={{ width: '100%' }}>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              {STRINGS.gender}
-            </Typography>
-            <Select
-              fullWidth
-              value={values.gender}
-              onChange={(e) => {
-                setValues({ gender: e.target.value as TGender });
-                setErrors((p) => p.filter((er) => er.path[0] !== 'gender'));
-              }}
-            >
-              {GENDERS.map((g) => (
-                <MenuItem key={g} value={g}>
-                  {STRINGS[g]}
-                </MenuItem>
-              ))}
-            </Select>
-            <Typography color="error" variant="caption">
-              {getErrorForField('gender')}
-            </Typography>
-          </Box>
-
-          <Box sx={{ width: '100%' }}>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              {STRINGS.kinship}
-            </Typography>
-            <Select
-              fullWidth
-              value={values.kinshep}
-              onChange={(e) => {
-                setValues({ kinshep: e.target.value as TKinship });
-                setErrors((p) => p.filter((er) => er.path[0] !== 'kinshep'));
-              }}
-            >
-              {KINSHEP.map((k) => {
-                return (
-                  <MenuItem key={k} value={k}>
-                    {getStringsLabel({ key: 'kinship', val: k })}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-            <Typography color="error" variant="caption">
-              {getErrorForField('kinshep')}
-            </Typography>
-          </Box>
+          <FormSelectInput
+            value={formState.gender}
+            required
+            disableClearable
+            label={STRINGS.gender}
+            options={GENDERS.map((g) => ({ id: g, label: STRINGS[g] }))}
+            onChange={(v) => setValue({ gender: v as any })}
+            getOptionLabel={(option) => option.label}
+            errorText={formErrors.gender?.[0].message}
+          />
+          <FormSelectInput
+            value={formState.kinshep}
+            required
+            disableClearable
+            label={STRINGS.kinship}
+            options={KINSHEP.map((k) => ({ id: k, label: getStringsLabel({ key: 'kinship', val: k }) }))}
+            onChange={(v) => setValue({ kinshep: v as any })}
+            getOptionLabel={(option) => option.label}
+            errorText={formErrors.gender?.[0].message}
+          />
+          <FormNumberInput
+            value={formState.kidsCount}
+            required
+            label={STRINGS.kids_count}
+            onChange={(v) => setValue({ kidsCount: String(v) })}
+            errorText={formErrors.gender?.[0].message}
+          />
         </Stack>
-
-        <TextField
-          fullWidth
+        <FormTextFieldInput
           label={STRINGS.job_or_school}
-          value={values.jobOrSchool ?? ''}
-          onChange={(e) => setValues({ jobOrSchool: e.target.value })}
+          value={formState.jobOrSchool}
+          onChange={(v) => setValue({ jobOrSchool: v })}
+          errorText={formErrors.name?.[0].message}
         />
 
-        <TextField
-          fullWidth
+        <FormTextFieldInput
           label={STRINGS.residential}
-          value={values.residential ?? ''}
-          onChange={(e) => setValues({ residential: e.target.value })}
+          value={formState.residential}
+          onChange={(v) => setValue({ residential: v })}
+          errorText={formErrors.residential?.[0].message}
         />
 
-        <TextField
-          fullWidth
+        <FormTextAreaInput
           label={STRINGS.note}
-          value={values.note ?? ''}
-          onChange={(e) => setValues({ note: e.target.value })}
-          multiline
-          minRows={2}
+          value={formState.note}
+          onChange={(v) => setValue({ note: v })}
+          errorText={formErrors.note?.[0].message}
         />
       </Stack>
-      <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isLoading} />
+      <ActionFab icon={<Save />} color="success" onClick={handleSubmitForm} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}
     </Card>
   );

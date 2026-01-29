@@ -11,10 +11,8 @@ import { authActions } from '../slices/auth/auth.slice';
 
 // export const baseUrl = "http://10.200.237.148:5000";
 
-// Use HTTPS if enabled, otherwise fallback to HTTP
-console.log(import.meta.env);
-
 const protocol = import.meta.env.VITE_USE_HTTPS === 'true' ? 'https' : 'http';
+
 export const baseUrl = `${protocol}://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}`;
 
 const baseQuery = fetchBaseQuery({
@@ -89,11 +87,13 @@ export const rootApi = createApi({
     'Employees_Autocomplete',
     'Cities_Autocomplete',
     'Areas_Autocomplete',
+    'Medicines_Autocomplete',
     'Calendar_Appointments',
     'Disclosure_Appointment',
     'Disclosure_Appointments',
     'Date_Appointments',
-    'family_Members',
+    'Family_Members',
+    'Family_Member',
     'system_Broadcasts',
     'system_Broadcast',
     'meetings',

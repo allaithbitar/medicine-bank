@@ -1,10 +1,11 @@
 // src/theme/index.ts (or wherever you define your MUI theme)
-import { grey } from '@mui/material/colors';
+import { cyan, grey } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 
 const baseTheme = createTheme();
 
 const theme = createTheme({
+  palette: { primary: { main: cyan[800] } },
   direction: 'rtl',
   spacing: 8,
   shape: {

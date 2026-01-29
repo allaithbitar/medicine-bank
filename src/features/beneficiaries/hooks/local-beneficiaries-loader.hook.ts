@@ -89,7 +89,7 @@ export const useLocalBeneficiariesLoader = ({ pageSize, ...dto }: TGetBeneficiar
       };
     },
     getNextPageParam: (lastPage) => {
-      if (!lastPage.items.length || lastPage.pageSize! < lastPage.items.length) {
+      if (!lastPage.items.length || lastPage.pageSize! > lastPage.items.length) {
         return undefined;
       }
       return Number(lastPage.pageNumber ?? 0) + 1;

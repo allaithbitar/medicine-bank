@@ -67,11 +67,11 @@ export type TBeneficiaryMedicine = {
   note?: string | null;
 };
 
-export type TGetBeneficiaryMedicinesParams = {
-  patientId?: string;
+export type TGetBeneficiaryMedicinesDto = {
+  patientId: string;
   form?: TFormValue;
   name?: string;
-};
+} & TPaginationDto;
 
 export type TAddBeneficiaryMedicinePayload = {
   patientId: string;
@@ -99,15 +99,16 @@ export type TFamilyMember = {
   gender: TGender;
   kinshep: TKinship;
   jobOrSchool?: string | null;
-  note?: string | null;
+  note: string | null;
   patientId: string;
-  residential?: string | null;
+  residential: string | null;
+  nationalNumber: string | null;
+  kidsCount: number | null;
 };
 
-export type TGetFamilyMembersParams = {
-  patientId?: string;
-  name?: string | null;
-};
+export type TGetFamilyMembersDto = {
+  patientId: string;
+} & TPaginationDto;
 
 export type TAddFamilyMemberPayload = Omit<TFamilyMember, 'id'>;
 

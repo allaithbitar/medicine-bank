@@ -5,7 +5,7 @@ import { notifyError, notifySuccess } from '@/core/components/common/toast/toast
 import STRINGS from '@/core/constants/strings.constant';
 import useReducerState from '@/core/hooks/use-reducer.hook';
 
-import { DOSE_OPTIONS, type TMedicine } from '@/features/banks/types/medicines.types';
+import { DOSE_OPTIONS } from '@/features/banks/types/medicines.types';
 import MedicinesAutocomplete from '@/features/banks/components/medicines/medicines-autocomplete/medicines-autocomplete.component';
 import type { TAddBeneficiaryMedicinePayload, TUpdateBeneficiaryMedicinePayload } from '../types/beneficiary.types';
 import beneficiaryApi from '../api/beneficiary.api';
@@ -14,6 +14,7 @@ import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import { skipToken } from '@reduxjs/toolkit/query';
+import type { TMedicinesAutocompleteItem } from '@/features/autocomplete/types/autcomplete.types';
 
 const BeneficiaryMedicineSchema = z.object({
   patientId: z.string().min(1, { message: 'Patient is required' }),
@@ -40,7 +41,7 @@ const BeneficiaryMedicineActionPage = () => {
   const [addPatientMedicine, { isLoading: isAdding }] = beneficiaryApi.useAddBeneficiaryMedicineMutation();
   const [updatePatientMedicine, { isLoading: isUpdating }] = beneficiaryApi.useUpdateBeneficiaryMedicineMutation();
 
-  const [values, setValues] = useReducerState<TFormValues & { med: TMedicine | null }>({
+  const [values, setValues] = useReducerState<TFormValues & { med: TMedicinesAutocompleteItem | null }>({
     patientId: oldBeneficiaryMedicine?.patientId ?? patientId ?? '',
     medicineId: oldBeneficiaryMedicine?.medicineId ?? '',
     dosePerIntake: oldBeneficiaryMedicine?.dosePerIntake ?? 500,
@@ -57,7 +58,7 @@ const BeneficiaryMedicineActionPage = () => {
       if (!dv.includes(oldBeneficiaryMedicine.dosePerIntake)) {
         setValues({ dosePerIntake: dv[0] ?? 0 });
       } else {
-        setValues({ med: oldBeneficiaryMedicine.medicine as TMedicine });
+        setValues({ med: oldBeneficiaryMedicine.medicine });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,7 +69,7 @@ const BeneficiaryMedicineActionPage = () => {
     return err ? err.message : '';
   };
 
-  const handleMedicineChange = (medicine: TMedicine | null) => {
+  const handleMedicineChange = (medicine: TMedicinesAutocompleteItem | null) => {
     const medId = medicine?.id ?? '';
     setValues({ medicineId: medId, med: medicine });
     setErrors((prev) => prev.filter((er) => er.path[0] !== 'medicineId'));

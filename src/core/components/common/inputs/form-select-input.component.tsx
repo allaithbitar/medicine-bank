@@ -13,6 +13,7 @@ type Props<T extends TListItem> = Omit<ComponentProps<typeof Select<T>>, 'value'
     value?: string;
     getOptionLabel?: (option: T) => string;
     getOptionValue?: (option: T) => string | number;
+    disableClearable?: boolean;
   };
 
 function FormSelectInput<T extends TListItem>({
@@ -25,6 +26,7 @@ function FormSelectInput<T extends TListItem>({
   disabled,
   errorText,
   required,
+  disableClearable,
   ...props
 }: Props<T>) {
   return (
@@ -38,10 +40,11 @@ function FormSelectInput<T extends TListItem>({
     >
       <RequiredLabel required={required}>{label}</RequiredLabel>
       <Select value={value} {...(props as any)}>
-        <MenuItem value="" onClick={() => onChange?.('')}>
-          {STRINGS.none}
-        </MenuItem>
-
+        {!disableClearable && (
+          <MenuItem value="" onClick={() => onChange?.('')}>
+            {STRINGS.none}
+          </MenuItem>
+        )}
         {options?.map((o) => (
           <MenuItem value={o.id} onClick={() => onChange?.(o.id)}>
             {getOptionLabel?.(o)}

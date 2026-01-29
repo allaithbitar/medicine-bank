@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
 import {
   defaultDisclosureFilterValues,
-  noramlizeStateValuesToDto,
+  normalizeStateValuesToDto,
   type TDisclosureFiltersForm,
 } from '../helpers/disclosure.helpers';
 import useStorage from '@/core/hooks/use-storage.hook';
@@ -25,11 +25,11 @@ const DisclosuresPage = () => {
     defaultDisclosureFilterValues
   );
 
-  const queryData = useMemo(() => noramlizeStateValuesToDto(filtersState), [filtersState]);
+  const queryData = useMemo(() => normalizeStateValuesToDto(filtersState), [filtersState]);
 
   const navigate = useNavigate();
 
-  const { items, totalCount, error, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
+  const { items, totalCount, error, isFetching, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useDisclosuresLoader(queryData);
 
   if (error) {
@@ -37,14 +37,11 @@ const DisclosuresPage = () => {
   }
 
   return (
-    <Stack gap={2} sx={{ height: '100%' }}>
+    <Stack sx={{ height: '100%' }}>
       <VirtualizedList
         totalCount={totalCount}
         items={items}
         containerStyle={{ flex: 1 }}
-        virtualizationOptions={{
-          count: items.length,
-        }}
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
       >
@@ -74,7 +71,7 @@ const DisclosuresPage = () => {
           },
         ]}
       />
-      {isLoading && <LoadingOverlay />}
+      {isFetching && !isFetchingNextPage && <LoadingOverlay />}
     </Stack>
   );
 };

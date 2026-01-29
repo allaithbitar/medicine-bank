@@ -41,4 +41,4 @@ export type TUpdatedBy = { updatedBy: TActioner | null };
 export type TAutocompleteItem = {
   id: string;
   name: string;
-} & Record<string, string>;
+} & Record<string, any>;

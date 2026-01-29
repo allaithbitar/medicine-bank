@@ -33,7 +33,7 @@ const DisclosureNoteActionPage = () => {
   useEffect(() => {
     if (oldNote) {
       setVal({
-        noteText: oldNote.noteText,
+        noteText: oldNote.noteText || '',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -4,6 +4,7 @@ import type { TDisclosure } from '../types/disclosure.types';
 import STRINGS from '@/core/constants/strings.constant';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/sqlite';
 import { ParseJSONResultsPlugin } from 'kysely';
+import { withCreatedBy, withUpdatedBy } from '@/libs/kysely/helpers';
 export const useLocalDisclosureLoader = ({ id }: { id: string }) => {
   const isOffline = true;
   const queryResult = useQuery({
@@ -61,6 +62,8 @@ export const useLocalDisclosureLoader = ({ id }: { id: string }) => {
               ])
               .whereRef('patients.id', '=', 'disclosures.patientId')
           ).as('patient'),
+          withCreatedBy(col, 'createdBy'),
+          withUpdatedBy(col, 'updatedBy'),
         ])
 
         .where('id', '=', id)

@@ -1,7 +1,12 @@
 import { rootApi } from '@/core/api/root.api';
 import type { ApiResponse, TAutocompleteItem, TPaginatedResponse, TPaginationDto } from '@/core/types/common.types';
+import type { TMedicine } from '@/features/banks/types/medicines.types';
+import type { TMedicinesAutocompleteItem } from '../types/autcomplete.types';
 
-export type TAutocompleteDto = { query?: string; columns?: Record<string, boolean> } & TPaginationDto;
+export type TAutocompleteDto<T extends object = object> = {
+  query?: string;
+  columns?: Record<keyof T, boolean>;
+} & TPaginationDto;
 
 const autocompleteApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -42,6 +47,15 @@ const autocompleteApi = rootApi.injectEndpoints({
       }),
       transformResponse: (res: ApiResponse<TPaginatedResponse<TAutocompleteItem>>) => res.data,
       providesTags: ['Areas_Autocomplete'],
+    }),
+    medicinesAutocomplete: builder.query<TPaginatedResponse<TMedicinesAutocompleteItem>, TAutocompleteDto<TMedicine>>({
+      query: (data) => ({
+        url: 'autocomplete/medicines',
+        body: { ...data, columns: { doseVariants: true } },
+        method: 'POST',
+      }),
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TMedicinesAutocompleteItem>>) => res.data,
+      providesTags: ['Medicines_Autocomplete'],
     }),
   }),
 });

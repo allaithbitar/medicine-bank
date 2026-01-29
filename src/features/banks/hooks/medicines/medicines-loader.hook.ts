@@ -1,18 +1,16 @@
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
-import disclosuresApi from '../api/disclosures.api';
-import { type TGetDisclosuresDto } from '../types/disclosure.types';
-import { useLocalDisclosuresLoader } from './local-disclosures-loader.hook';
+import type { TGetMedicinesDto } from '../../types/medicines.types';
+import medicinesApi from '../../api/medicines-api/medicines-api';
+import { useLocalMedicinesLoader } from './local-medicines-loader.hook';
 
-// import { useLocalDisclosuresLoader } from "./local-disclosures-loader.hook";
-
-export const useDisclosuresLoader = (dto: TGetDisclosuresDto = {}) => {
+export const useMedicinesLoader = (dto: TGetMedicinesDto) => {
   const isOffline = useIsOffline();
 
-  const { data: onlineData, ...onlineQueryResult } = disclosuresApi.useGetDisclosuresInfiniteQuery(dto, {
+  const { data: onlineData, ...onlineQueryResult } = medicinesApi.useGetMedicinesInfiniteQuery(dto, {
     skip: isOffline,
   });
 
-  const { items: offlineData, totalCount, ...offlineQueryResult } = useLocalDisclosuresLoader(dto);
+  const { items: offlineData, totalCount, ...offlineQueryResult } = useLocalMedicinesLoader(dto);
 
   return {
     items: isOffline ? offlineData : (onlineData?.pages.map((p) => p.items).flat() ?? []),

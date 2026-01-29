@@ -4,10 +4,16 @@ import BeneficiariesFilters, { type TBeneficiariesFiltersHandlers } from './bene
 import { Button, Stack } from '@mui/material';
 import { Close, FilterAltOff, Search } from '@mui/icons-material';
 import STRINGS from '@/core/constants/strings.constant';
-import type { TGetBeneficiariesDto } from '../types/beneficiary.types';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
+import type { TBeneficiaryFiltersForm } from '../helpers/beneficiary.helpers';
 
-const BeneficiariesFiltersModal = ({ onSubmit }: { onSubmit: (values: Partial<TGetBeneficiariesDto>) => void }) => {
+const BeneficiariesFiltersModal = ({
+  onSubmit,
+  values,
+}: {
+  values?: TBeneficiaryFiltersForm;
+  onSubmit: (values: TBeneficiaryFiltersForm) => void;
+}) => {
   const { closeModal } = useModal();
 
   const ref = useRef<TBeneficiariesFiltersHandlers>(null);
@@ -15,22 +21,22 @@ const BeneficiariesFiltersModal = ({ onSubmit }: { onSubmit: (values: Partial<TG
   return (
     <ModalWrapper
       actionButtons={
-        <Stack direction="row" gap={2}>
-          <Button variant="outlined" startIcon={<Close />} onClick={() => closeModal()}>
+        <Stack direction="row" gap={2} width="100%">
+          <Button fullWidth variant="outlined" startIcon={<Close />} onClick={() => closeModal()}>
             {STRINGS.close}
           </Button>
 
-          <Button variant="outlined" startIcon={<FilterAltOff />} onClick={() => onSubmit(ref.current!.reset())}>
+          <Button fullWidth variant="outlined" startIcon={<FilterAltOff />} onClick={() => ref.current!.reset()}>
             {STRINGS.clear}
           </Button>
 
-          <Button startIcon={<Search />} onClick={() => onSubmit(ref.current!.getValues())}>
+          <Button fullWidth startIcon={<Search />} onClick={() => onSubmit(ref.current!.getValues())}>
             {STRINGS.search}
           </Button>
         </Stack>
       }
     >
-      <BeneficiariesFilters ref={ref} />
+      <BeneficiariesFilters values={values} ref={ref} />
     </ModalWrapper>
   );
 };

@@ -33,12 +33,15 @@ export const getErrorMessage = (
   return 'something_went_wrong';
 };
 
-export const formatDateTime = (date: string | Date, withTime = true) =>
+export const formatDateTime = (date: string | Date, withTime = true, overrideOptions?: Intl.DateTimeFormatOptions) =>
   Intl.DateTimeFormat('ar-SY', {
-    dateStyle: 'full',
-    ...(withTime && {
-      timeStyle: 'short',
+    ...(!overrideOptions && {
+      dateStyle: 'full',
+      ...(withTime && {
+        timeStyle: 'short',
+      }),
     }),
+    ...overrideOptions,
   }).format(typeof date === 'string' ? new Date(date) : date);
 
 export function isNullOrUndefined<T>(obj: T | undefined | null): obj is null | undefined {

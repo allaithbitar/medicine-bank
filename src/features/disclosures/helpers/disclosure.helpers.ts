@@ -54,7 +54,7 @@ export const parseStringBooleanValue = (value: 'true' | 'false' | string) => {
   return null;
 };
 
-export const noramlizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
+export const normalizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
   const result: Omit<TGetDisclosuresDto, 'pageSize' | 'pageNumber'> = {
     scoutIds: values.scouts.map((e) => e.id),
     priorityIds: values.priorityDegrees.map((pd) => pd.id),

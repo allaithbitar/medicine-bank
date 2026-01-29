@@ -5,11 +5,11 @@ import type {
   TGetBeneficiariesDto,
   TBeneficiaryMedicine,
   TUpdateBeneficiaryDto,
-  TGetBeneficiaryMedicinesParams,
+  TGetBeneficiaryMedicinesDto,
   TAddBeneficiaryMedicinePayload,
   TUpdateBeneficiaryMedicinePayload,
   TFamilyMember,
-  TGetFamilyMembersParams,
+  TGetFamilyMembersDto,
   TAddFamilyMemberPayload,
   TUpdateFamilyMemberPayload,
   TValidateNationalNumberPayload,
@@ -73,13 +73,22 @@ export const beneficiaryApi = rootApi.injectEndpoints({
       transformResponse: (res: ApiResponse<TBenefieciary>) => res.data,
       providesTags: (_, __, args) => [{ type: 'Beneficiaries', id: args.id }],
     }),
-    getBeneficiaryMedicines: builder.query<TPaginatedResponse<TBeneficiaryMedicine>, TGetBeneficiaryMedicinesParams>({
-      query: (params) => ({
+    getBeneficiaryMedicines: builder.infiniteQuery<
+      TPaginatedResponse<TBeneficiaryMedicine>,
+      TGetBeneficiaryMedicinesDto,
+      number
+    >({
+      query: ({ queryArg, pageParam }) => ({
         url: '/medicines/patient',
         method: 'GET',
-        params,
+        params: { ...queryArg, pageNumber: pageParam },
       }),
       transformResponse: (res: ApiResponse<TPaginatedResponse<TBeneficiaryMedicine>>) => res.data,
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
+      },
       providesTags: [{ type: 'Beneficiary_Medicines', id: 'LIST' }],
     }),
     addBeneficiaryMedicine: builder.mutation<TBeneficiaryMedicine, TAddBeneficiaryMedicinePayload>({
@@ -102,14 +111,24 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         'Beneficiary_Medicine',
       ],
     }),
-    getFamilyMembers: builder.query<TPaginatedResponse<TFamilyMember>, TGetFamilyMembersParams | undefined>({
-      query: (params) => ({
+    getFamilyMembers: builder.infiniteQuery<
+      TPaginatedResponse<TFamilyMember>,
+      TGetFamilyMembersDto | undefined,
+      number
+    >({
+      query: ({ queryArg, pageParam }) => ({
         url: '/family-members',
         method: 'GET',
-        params,
+        params: { ...queryArg, pageNumber: pageParam },
       }),
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
+      },
+
       transformResponse: (res: ApiResponse<TPaginatedResponse<TFamilyMember>>) => res.data,
-      providesTags: [{ type: 'family_Members', id: 'LIST' }],
+      providesTags: (_, __, args) => [{ type: 'Family_Members', id: args?.patientId }],
     }),
     addFamilyMember: builder.mutation<TFamilyMember, TAddFamilyMemberPayload>({
       query: (data) => ({
@@ -117,7 +136,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: [{ type: 'family_Members', id: 'LIST' }],
+      invalidatesTags: (_, __, args) => [{ type: 'Family_Members', id: args.patientId }],
     }),
     updateFamilyMember: builder.mutation<void, TUpdateFamilyMemberPayload>({
       query: (data) => ({
@@ -125,11 +144,12 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: (_, __, arg) => [
-        { type: 'family_Members', id: 'LIST' },
-        { type: 'family_Members', id: arg.id },
+      invalidatesTags: (_, __, args) => [
+        { type: 'Family_Members', id: args.patientId },
+        { type: 'Family_Member', id: args.id },
       ],
     }),
+
     validateNationalNumber: builder.mutation<TFamilyMember, TValidateNationalNumberPayload>({
       query: (data) => ({
         url: 'patients/validate/national-number',
@@ -151,6 +171,14 @@ export const beneficiaryApi = rootApi.injectEndpoints({
       }),
       providesTags: ['Beneficiary_Medicine'],
       transformResponse: (res: ApiResponse<TBeneficiaryMedicine>) => res.data,
+    }),
+    getFamilyMemberById: builder.query<TFamilyMember, { id: string }>({
+      query: ({ id }) => ({
+        url: `/family-members/${id}`,
+      }),
+
+      transformResponse: (res: ApiResponse<TFamilyMember>) => res.data,
+      providesTags: (_, __, args) => [{ type: 'Family_Member', id: args.id }],
     }),
   }),
 });

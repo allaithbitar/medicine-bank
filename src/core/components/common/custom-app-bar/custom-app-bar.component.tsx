@@ -51,7 +51,7 @@ const CustomAppBar = ({
             alignItems: "center",
             justifyContent: "space-between",
             flexWrap: "wrap",
-            gap: 2,
+            gap: 1,
           }}
         >
           <Box>

@@ -2,20 +2,25 @@ import { rootApi } from '@/core/api/root.api';
 import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
 import type {
   TAddMedicinePayload,
-  TGetMedicinesParams,
+  TGetMedicinesDto,
   TMedicine,
   TUpdateMedicinePayload,
 } from '../../types/medicines.types';
 
 export const medicinesApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    getMedicines: builder.query<TPaginatedResponse<TMedicine>, TGetMedicinesParams | undefined>({
-      query: (params) => ({
+    getMedicines: builder.infiniteQuery<TPaginatedResponse<TMedicine>, TGetMedicinesDto | undefined, number>({
+      query: ({ queryArg, pageParam }) => ({
         url: '/medicines',
         method: 'GET',
-        params,
+        params: { ...queryArg, pageNumber: pageParam },
       }),
       transformResponse: (res: ApiResponse<TPaginatedResponse<TMedicine>>) => res.data,
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
+      },
       providesTags: [{ type: 'Medicines', id: 'LIST' }],
     }),
     getMedicineById: builder.query<TMedicine, { id: string }>({
@@ -23,7 +28,7 @@ export const medicinesApi = rootApi.injectEndpoints({
         url: `/medicines/${id}`,
         method: 'GET',
       }),
-      providesTags: ['Medicine'],
+      providesTags: (_, __, args) => [{ type: 'Medicine', id: args.id }],
       transformResponse: (res: ApiResponse<TMedicine>) => res.data,
     }),
 

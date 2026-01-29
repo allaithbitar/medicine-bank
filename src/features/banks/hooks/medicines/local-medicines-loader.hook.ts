@@ -1,29 +1,41 @@
 import { localDb } from '@/libs/sqlocal';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
-import type { TPaginationDto } from '@/core/types/common.types';
-import type { TMeeting } from '../types/meetings.types';
+import type { TGetMedicinesDto } from '../../types/medicines.types';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 
-export const useLocalMeetingsLoader = (dto: TPaginationDto) => {
+export const useLocalMedicinesLoader = (dto: TGetMedicinesDto) => {
   const isOffline = useIsOffline();
   const { data, ...restQueryResult } = useInfiniteQuery({
-    queryKey: ['LOCAL_MEETINGS'],
+    queryKey: ['LOCAL_MEDICINES', dto],
     queryFn: async ({ pageParam }) => {
-      const baseQuery = localDb.selectFrom('meetings');
+      let baseQuery = localDb.selectFrom('medicines');
+      // .selectAll()
+      // .orderBy('name', 'asc')
+      // .limit(dto.pageSize!)
+      // .offset(dto.pageSize! * pageParam);
+
+      if (dto.name) {
+        baseQuery = baseQuery.where('name', 'like', `%${dto.name}%`);
+      }
+
+      if (dto.form) {
+        baseQuery = baseQuery.where('form', '=', dto.form);
+      }
 
       const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));
 
       const query = baseQuery
         .selectAll()
-        .orderBy('createdAt', 'desc')
-        .limit(dto.pageSize!)
-        .offset(dto.pageSize! * pageParam);
+        .limit(dto.pageSize || DEFAULT_PAGE_SIZE)
+        .offset(dto.pageSize || DEFAULT_PAGE_SIZE * pageParam)
+        .orderBy('name', 'asc');
 
       let totalCount = 0;
       const countResult = await countQuery.execute();
       totalCount = countResult[0]?.count ?? 0;
 
-      const items = (await query.execute()) as TMeeting[];
+      const items = await query.execute();
 
       return {
         items,

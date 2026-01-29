@@ -2,6 +2,7 @@ import { localDb } from '@/libs/sqlocal';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
 import type { TPaginationDto } from '@/core/types/common.types';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 
 export const useLocalCitiesLoader = (dto: { name?: string | null } & TPaginationDto) => {
   const isOffline = useIsOffline();
@@ -9,10 +10,6 @@ export const useLocalCitiesLoader = (dto: { name?: string | null } & TPagination
     queryKey: ['LOCAL_CITIES', dto],
     queryFn: async ({ pageParam }) => {
       let baseQuery = localDb.selectFrom('cities');
-      // .selectAll()
-      // .orderBy('name', 'asc')
-      // .limit(dto.pageSize!)
-      // .offset(dto.pageSize! * pageParam);
 
       if (dto.name) {
         baseQuery = baseQuery.where('name', 'like', `%${dto.name}%`);
@@ -22,8 +19,8 @@ export const useLocalCitiesLoader = (dto: { name?: string | null } & TPagination
 
       const query = baseQuery
         .selectAll()
-        .limit(dto.pageSize!)
-        .offset(dto.pageSize! * pageParam)
+        .limit(dto.pageSize || DEFAULT_PAGE_SIZE)
+        .offset(dto.pageSize || DEFAULT_PAGE_SIZE * pageParam)
         .orderBy('name', 'asc');
 
       let totalCount = 0;

@@ -1,18 +1,16 @@
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
+import type { TGetDisclosureNotesDto } from '../types/disclosure.types';
 import disclosuresApi from '../api/disclosures.api';
-import { type TGetDisclosuresDto } from '../types/disclosure.types';
-import { useLocalDisclosuresLoader } from './local-disclosures-loader.hook';
+import { useLocalDisclosureNotesLoader } from './local-disclosure-notes-loader.hook';
 
-// import { useLocalDisclosuresLoader } from "./local-disclosures-loader.hook";
-
-export const useDisclosuresLoader = (dto: TGetDisclosuresDto = {}) => {
+export const useDisclosureNotesLoader = (dto: TGetDisclosureNotesDto) => {
   const isOffline = useIsOffline();
 
-  const { data: onlineData, ...onlineQueryResult } = disclosuresApi.useGetDisclosuresInfiniteQuery(dto, {
+  const { data: onlineData, ...onlineQueryResult } = disclosuresApi.useGetDisclosureNotesInfiniteQuery(dto, {
     skip: isOffline,
   });
 
-  const { items: offlineData, totalCount, ...offlineQueryResult } = useLocalDisclosuresLoader(dto);
+  const { items: offlineData, totalCount, ...offlineQueryResult } = useLocalDisclosureNotesLoader(dto);
 
   return {
     items: isOffline ? offlineData : (onlineData?.pages.map((p) => p.items).flat() ?? []),

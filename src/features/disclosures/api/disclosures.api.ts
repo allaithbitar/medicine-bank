@@ -17,7 +17,7 @@ import type {
   TDisclosureVisit,
   TGetDisclosureAdviserConsultationParams,
   TGetDisclosureAppointmentsDto,
-  TGetDisclosureNotesParams,
+  TGetDisclosureNotesDto,
   TGetDisclosureRatingsDto,
   TGetDisclosureVisitsDto,
   TGetDisclosuresDto,
@@ -158,16 +158,20 @@ export const disclosuresApi = rootApi.injectEndpoints({
         { id: args.id, type: 'Disclosure_Visit' },
       ],
     }),
-    getDisclosureNotes: builder.query<TPaginatedResponse<TDisclosureNote>, TGetDisclosureNotesParams>({
-      query: (params) => ({
+    getDisclosureNotes: builder.infiniteQuery<TPaginatedResponse<TDisclosureNote>, TGetDisclosureNotesDto, number>({
+      query: ({ pageParam, queryArg }) => ({
         url: '/disclosures/notes',
         method: 'GET',
-        params,
+        params: { ...queryArg, pageNumber: pageParam },
       }),
 
-      providesTags: () => [{ type: 'Disclosure_Notes', id: 'LIST' }],
-
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
+      },
       transformResponse: (res: ApiResponse<TPaginatedResponse<TDisclosureNote>>) => res.data,
+      providesTags: () => [{ type: 'Disclosure_Notes', id: 'LIST' }],
     }),
     getDisclosureNoteById: builder.query<TDisclosureNote, string>({
       query: (id) => ({

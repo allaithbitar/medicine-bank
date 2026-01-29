@@ -4,11 +4,11 @@ import STRINGS from '@/core/constants/strings.constant';
 import Nodata from '@/core/components/common/no-data/no-data.component';
 import { Link } from 'react-router-dom';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import disclosuresApi from '../api/disclosures.api';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import { Home, Work, ElectricBolt, AttachMoney, MedicalServices, ThumbUp, ThumbDown, Info } from '@mui/icons-material';
 import { getStringsLabel } from '@/core/helpers/helpers';
+import { useDisclosureDetailsLoader } from '../hooks/disclosure-details-loader.hook';
 
 const DisclosureDetailsSection = ({
   disclosureId,
@@ -17,10 +17,7 @@ const DisclosureDetailsSection = ({
   disclosureId?: string;
   openEditDetails: () => void;
 }) => {
-  const { data: details, isFetching } = disclosuresApi.useGetDisclosureDetailsQuery(
-    { disclosureId: disclosureId! },
-    { skip: !disclosureId }
-  );
+  const { data: details, isFetching } = useDisclosureDetailsLoader(disclosureId!);
 
   if (isFetching) {
     return (
@@ -48,105 +45,107 @@ const DisclosureDetailsSection = ({
   }
 
   return (
-    <Card>
-      <Header title={STRINGS.disclosures_details} />
-      <Stack gap={2} sx={{ p: 2, pb: 6 }}>
-        {details.diseasesOrSurgeries && (
-          <DetailItemComponent
-            icon={<MedicalServices />}
-            iconColorPreset="red"
-            label={STRINGS.diseases_or_surgeries}
-            value={details.diseasesOrSurgeries}
-          />
-        )}
+    <Card sx={{ height: '100%', overflow: 'auto' }}>
+      <Stack gap={1}>
+        <Header title={STRINGS.disclosures_details} />
+        <Stack gap={2}>
+          {details.diseasesOrSurgeries && (
+            <DetailItemComponent
+              icon={<MedicalServices />}
+              iconColorPreset="red"
+              label={STRINGS.diseases_or_surgeries}
+              value={details.diseasesOrSurgeries}
+            />
+          )}
 
-        {details.jobOrSchool && (
-          <DetailItemComponent
-            icon={<Work />}
-            iconColorPreset="blue"
-            label={STRINGS.job_or_school}
-            value={details.jobOrSchool}
-          />
-        )}
+          {details.jobOrSchool && (
+            <DetailItemComponent
+              icon={<Work />}
+              iconColorPreset="blue"
+              label={STRINGS.job_or_school}
+              value={details.jobOrSchool}
+            />
+          )}
 
-        {details.houseOwnership && (
-          <DetailItemComponent
-            icon={<Home />}
-            iconColorPreset="green"
-            label={STRINGS.house_ownership}
-            value={
-              <Stack gap={0.5}>
-                <Typography variant="subtitle2">
-                  {getStringsLabel({ key: 'house_ownership', val: details.houseOwnership })}
-                </Typography>
-                {details.houseOwnershipNote && (
-                  <Typography variant="body2" color="text.secondary">
-                    {STRINGS.note}: {details.houseOwnershipNote}
+          {details.houseOwnership && (
+            <DetailItemComponent
+              icon={<Home />}
+              iconColorPreset="green"
+              label={STRINGS.house_ownership}
+              value={
+                <Stack gap={0.5}>
+                  <Typography variant="subtitle2">
+                    {getStringsLabel({ key: 'house_ownership', val: details.houseOwnership })}
                   </Typography>
-                )}
-              </Stack>
-            }
-          />
-        )}
+                  {details.houseOwnershipNote && (
+                    <Typography variant="body2" color="text.secondary">
+                      {STRINGS.note}: {details.houseOwnershipNote}
+                    </Typography>
+                  )}
+                </Stack>
+              }
+            />
+          )}
 
-        {details.electricity && (
-          <DetailItemComponent
-            icon={<ElectricBolt />}
-            iconColorPreset="deepPurple"
-            label={STRINGS.electricity}
-            value={details.electricity}
-          />
-        )}
+          {details.electricity && (
+            <DetailItemComponent
+              icon={<ElectricBolt />}
+              iconColorPreset="deepPurple"
+              label={STRINGS.electricity}
+              value={details.electricity}
+            />
+          )}
 
-        {details.expenses && (
-          <DetailItemComponent
-            icon={<AttachMoney />}
-            iconColorPreset="green"
-            label={STRINGS.expenses}
-            value={details.expenses}
-          />
-        )}
+          {details.expenses && (
+            <DetailItemComponent
+              icon={<AttachMoney />}
+              iconColorPreset="green"
+              label={STRINGS.expenses}
+              value={details.expenses}
+            />
+          )}
 
-        {details.houseCondition && (
-          <DetailItemComponent
-            icon={<Home />}
-            iconColorPreset="blue"
-            label={STRINGS.home_condition}
-            value={
-              <Stack gap={0.5}>
-                <Typography variant="subtitle2">
-                  {getStringsLabel({ key: 'house_condition', val: details.houseCondition })}
-                </Typography>
-                {details.houseConditionNote && (
-                  <Typography variant="body2" color="text.secondary">
-                    {STRINGS.note}: {details.houseConditionNote}
+          {details.houseCondition && (
+            <DetailItemComponent
+              icon={<Home />}
+              iconColorPreset="blue"
+              label={STRINGS.home_condition}
+              value={
+                <Stack gap={0.5}>
+                  <Typography variant="subtitle2">
+                    {getStringsLabel({ key: 'house_condition', val: details.houseCondition })}
                   </Typography>
-                )}
-              </Stack>
-            }
-          />
-        )}
+                  {details.houseConditionNote && (
+                    <Typography variant="body2" color="text.secondary">
+                      {STRINGS.note}: {details.houseConditionNote}
+                    </Typography>
+                  )}
+                </Stack>
+              }
+            />
+          )}
 
-        {details.pros && (
-          <DetailItemComponent icon={<ThumbUp />} iconColorPreset="green" label={STRINGS.pons} value={details.pros} />
-        )}
+          {details.pros && (
+            <DetailItemComponent icon={<ThumbUp />} iconColorPreset="green" label={STRINGS.pons} value={details.pros} />
+          )}
 
-        {details.cons && (
-          <DetailItemComponent icon={<ThumbDown />} iconColorPreset="red" label={STRINGS.cons} value={details.cons} />
-        )}
+          {details.cons && (
+            <DetailItemComponent icon={<ThumbDown />} iconColorPreset="red" label={STRINGS.cons} value={details.cons} />
+          )}
 
-        {details.other && (
-          <DetailItemComponent
-            icon={<Info />}
-            iconColorPreset="blue"
-            label={STRINGS.other_details}
-            value={details.other}
-          />
-        )}
+          {details.other && (
+            <DetailItemComponent
+              icon={<Info />}
+              iconColorPreset="blue"
+              label={STRINGS.other_details}
+              value={details.other}
+            />
+          )}
 
-        <Button fullWidth startIcon={<ListAltIcon />} onClick={openEditDetails} variant="outlined" sx={{ mt: 2 }}>
-          {STRINGS.edit} {STRINGS.disclosures_details}
-        </Button>
+          <Button fullWidth startIcon={<ListAltIcon />} onClick={openEditDetails} variant="outlined" sx={{ mt: 2 }}>
+            {STRINGS.edit} {STRINGS.disclosures_details}
+          </Button>
+        </Stack>
       </Stack>
     </Card>
   );

@@ -5,23 +5,29 @@ import STRINGS from '@/core/constants/strings.constant';
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import { Stack } from '@mui/material';
 import { useBeneficiariesLoader } from '../hooks/use-beneficiaries-loader.hook';
-import { useState } from 'react';
-import type { TGetBeneficiariesDto } from '../types/beneficiary.types';
+import { useMemo } from 'react';
 import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
+import useStorage from '@/core/hooks/use-storage.hook';
+import { defaultBeneficiaryFilterValues, normalizeStateValuesToDto } from '../helpers/beneficiary.helpers';
 
 const BeneficiariesPage = () => {
-  const [queryData, setQueryData] = useState<TGetBeneficiariesDto>({});
+  const [filters, setFilters] = useStorage('beneficiary-filtres', defaultBeneficiaryFilterValues);
+
   const { openModal, closeModal } = useModal();
+
+  const queryData = useMemo(() => normalizeStateValuesToDto(filters), [filters]);
+
   const {
     items = [],
+    totalCount,
     error,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-    isLoading,
+    isFetching,
   } = useBeneficiariesLoader(queryData);
 
   // const filtersRef = useRef<TBeneficiariesFiltersHandlers | null>(null);
@@ -35,6 +41,7 @@ const BeneficiariesPage = () => {
   return (
     <Stack gap={2} sx={{ height: '100%' }}>
       <VirtualizedList
+        totalCount={totalCount}
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
         items={items}
@@ -63,15 +70,16 @@ const BeneficiariesPage = () => {
                 props: {
                   onSubmit: (values) => {
                     closeModal();
-                    return setQueryData((prev) => ({ ...prev, ...values }));
+                    return setFilters(values);
                   },
+                  values: filters,
                 },
               }),
           },
         ]}
       />
 
-      {isLoading && <LoadingOverlay />}
+      {isFetching && !isFetchingNextPage && <LoadingOverlay />}
     </Stack>
   );
 };

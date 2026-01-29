@@ -1,6 +1,6 @@
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
 import disclosuresApi from '../api/disclosures.api';
-import { useLocalDisclosureLoader } from './local-disclosure.loader';
+import { useLocalDisclosureLoader } from './local-disclosure-loader.hook';
 // import { useLocalDisclosureLoader } from "./local-disclosure.loader";
 
 export const useDisclosureLoader = ({ id }: { id: string }) => {

@@ -198,14 +198,14 @@ export type TUpdateDisclosureVisitDto = TAddDisclosureVisitDto & { id: string };
 export type TDisclosureNote = {
   id: string;
   disclosureId: string;
-  noteText: string;
-  noteAudio: string;
-  type: string;
+  noteText: string | null;
+  noteAudio: string | null;
 } & TCreatedBy;
 
-export type TGetDisclosureNotesParams = {
+export type TGetDisclosureNotesDto = {
   disclosureId: string;
-};
+  query?: string;
+} & TPaginationDto;
 
 export type TAddDisclosureNotePayload = FormData;
 

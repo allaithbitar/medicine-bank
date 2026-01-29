@@ -16,27 +16,42 @@ const SyncPage = () => {
     try {
       setIsLoading(true);
       const { data } = await syncLocalData({});
+      try {
+        await localDb.schema.dropTable('employees').execute();
+        await localDb.schema.dropTable('areas_to_employees').execute();
+        await localDb.schema.dropTable('patient_medicines').execute();
+        await localDb.schema.dropTable('medicines').execute();
+        await localDb.schema.dropTable('patients').execute();
+        await localDb.schema.dropTable('patients_phone_numbers').execute();
+        await localDb.schema.dropTable('family_members').execute();
+        await localDb.schema.dropTable('audit_logs').execute();
+        await localDb.schema.dropTable('disclosure_notes').execute();
+        await localDb.schema.dropTable('disclosure_details').execute();
+        await localDb.schema.dropTable('disclosures').execute();
+        await localDb.schema.dropTable('cities').execute();
+        await localDb.schema.dropTable('areas').execute();
+        await localDb.schema.dropTable('priority_degrees').execute();
+        await localDb.schema.dropTable('ratings').execute();
+      } catch (error: any) {
+        console.warn('some deleted tables dont exist', error);
+      }
+
       await createTables();
-      await localDb.deleteFrom('employees').execute();
-      await localDb.insertInto('employees').values(data.employees).execute();
-      await localDb.deleteFrom('areas_to_employees').execute();
-      await localDb.insertInto('areas_to_employees').values(data.areasToEmployees).execute();
-      await localDb.deleteFrom('patients').execute();
-      await localDb.insertInto('patients').values(data.patients).execute();
-      await localDb.deleteFrom('patients_phone_numbers').execute();
-      await localDb.insertInto('patients_phone_numbers').values(data.patientsPhoneNumbers).execute();
-      await localDb.deleteFrom('disclosures').execute();
-      await localDb.insertInto('disclosures').values(data.disclosures).execute();
-      await localDb.deleteFrom('audit_logs').execute();
-      await localDb.insertInto('audit_logs').values(data.auditLogs).execute();
-      await localDb.deleteFrom('cities').execute();
       await localDb.insertInto('cities').values(data.cities).execute();
-      await localDb.deleteFrom('areas').execute();
       await localDb.insertInto('areas').values(data.areas).execute();
-      await localDb.deleteFrom('priority_degrees').execute();
       await localDb.insertInto('priority_degrees').values(data.priorityDegrees).execute();
-      await localDb.deleteFrom('ratings').execute();
       await localDb.insertInto('ratings').values(data.ratings).execute();
+      await localDb.insertInto('medicines').values(data.medicines).execute();
+      await localDb.insertInto('employees').values(data.employees).execute();
+      await localDb.insertInto('areas_to_employees').values(data.areasToEmployees).execute();
+      await localDb.insertInto('patients').values(data.patients).execute();
+      await localDb.insertInto('patients_phone_numbers').values(data.patientsPhoneNumbers).execute();
+      await localDb.insertInto('family_members').values(data.familyMembers).execute();
+      await localDb.insertInto('patient_medicines').values(data.patientMedicines).execute();
+      await localDb.insertInto('disclosures').values(data.disclosures).execute();
+      await localDb.insertInto('audit_logs').values(data.auditLogs).execute();
+      await localDb.insertInto('disclosure_notes').values(data.disclosureNotes).execute();
+      await localDb.insertInto('disclosure_details').values(data.disclosureDetails).execute();
       notifySuccess(STRINGS.synced_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));

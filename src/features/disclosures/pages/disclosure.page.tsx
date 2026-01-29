@@ -114,12 +114,13 @@ const DisclosurePage = () => {
           }
           tabs={[
             {
-              label: STRINGS.family_members,
-              node: <DisclosureFamilyMembersTab {...tabProps} />,
-            },
-            {
               label: STRINGS.disclosures_details,
               node: <DisclosureDetailsSection {...tabProps} />,
+            },
+
+            {
+              label: STRINGS.family_members,
+              node: <DisclosureFamilyMembersTab {...tabProps} />,
             },
             {
               label: STRINGS.medicines,

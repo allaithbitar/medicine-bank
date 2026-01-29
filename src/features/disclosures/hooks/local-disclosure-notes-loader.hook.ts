@@ -1,34 +1,40 @@
 import { localDb } from '@/libs/sqlocal';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
-import type { TPaginationDto } from '@/core/types/common.types';
-import type { TMeeting } from '../types/meetings.types';
+import type { TDisclosureNote, TGetDisclosureNotesDto } from '../types/disclosure.types';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
+import { withCreatedBy } from '@/libs/kysely/helpers';
 
-export const useLocalMeetingsLoader = (dto: TPaginationDto) => {
+export const useLocalDisclosureNotesLoader = (dto: TGetDisclosureNotesDto) => {
   const isOffline = useIsOffline();
   const { data, ...restQueryResult } = useInfiniteQuery({
-    queryKey: ['LOCAL_MEETINGS'],
+    queryKey: ['LOCAL_DISCLOSURE_NOTES', dto],
     queryFn: async ({ pageParam }) => {
-      const baseQuery = localDb.selectFrom('meetings');
+      let baseQuery = localDb.selectFrom('disclosure_notes').where('disclosureId', '=', dto.disclosureId);
+
+      if (dto.query) {
+        baseQuery = baseQuery.where('noteText', 'like', `%${dto.query}%`);
+      }
 
       const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));
 
       const query = baseQuery
         .selectAll()
-        .orderBy('createdAt', 'desc')
-        .limit(dto.pageSize!)
-        .offset(dto.pageSize! * pageParam);
+        .select((eb) => [withCreatedBy(eb, 'createdBy')])
+        .limit(dto.pageSize || DEFAULT_PAGE_SIZE)
+        .offset(dto.pageSize || DEFAULT_PAGE_SIZE * pageParam)
+        .orderBy('createdAt', 'desc');
 
       let totalCount = 0;
       const countResult = await countQuery.execute();
       totalCount = countResult[0]?.count ?? 0;
 
-      const items = (await query.execute()) as TMeeting[];
+      const items = (await query.execute()) as TDisclosureNote[];
 
       return {
         items,
         totalCount,
-        pageSize: dto.pageSize,
+        pageSize: dto.pageSize || DEFAULT_PAGE_SIZE,
         pageNumber: pageParam,
       };
     },

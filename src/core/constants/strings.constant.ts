@@ -155,7 +155,7 @@ const STRINGS = {
   female: 'انثى',
   kinship_partner: 'شريك/ة',
   kinship_child: 'ابن/ة',
-  kinship_parent: 'اهل',
+  kinship_parent: 'والد/ة',
   kinship_brother: 'اخ/ت',
   kinship_grandparent: 'جد/ة',
   kinship_grandchild: 'حفيد/ة',
@@ -324,6 +324,7 @@ const STRINGS = {
   mark_all_read: 'تحديد الكل كمقروء',
   delete_read_notifications: 'حذف الاشعارات المقروءة',
   select_rating: 'اختر التقييم',
+  kids_count: 'عدد الابناء',
 };
 
 export default STRINGS;

@@ -16,7 +16,6 @@ const BeneficiaryPage = () => {
   const { id = '' } = useParams();
 
   const { data: beneficiary, isLoading, error } = useBeneficiaryLoader({ id });
-  console.log(beneficiary);
 
   // const handleOpenBeneficiaryMedicineActionPage = (
   //   bm?: TBeneficiaryMedicine

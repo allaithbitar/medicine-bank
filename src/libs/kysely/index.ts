@@ -73,6 +73,7 @@ export async function createTables() {
     .addColumn('nationalNumber', 'text')
     .addColumn('kinshep', 'text')
     .addColumn('jobOrSchool', 'text')
+    .addColumn('residential', 'text')
     .addColumn('note', 'text')
     .addColumn('kidsCount', 'integer')
     .addColumn('patientId', 'uuid', (col) => col.notNull())
@@ -170,7 +171,13 @@ export async function createTables() {
     .addColumn('createdBy', 'uuid')
     .addColumn('updatedAt', 'datetime')
     .execute();
-
+  // houseOwnership: house_ownership_status("house_ownership"),
+  // houseOwnershipNote: text("house_ownership_note"),
+  // houseCondition: house_hold_asset_condition_enum("house_condition"),
+  // houseConditionNote: text("house_condition_note"),
+  // pros: text("pros"),
+  // cons: text("cons"),
+  // other: text("other"),
   await localDb.schema
     .createTable('disclosure_details')
     .ifNotExists()
@@ -179,8 +186,10 @@ export async function createTables() {
     .addColumn('jobOrSchool', 'text')
     .addColumn('electricity', 'text')
     .addColumn('expenses', 'text')
-    .addColumn('homeCondition', 'text')
-    .addColumn('homeConditionStatus', 'text')
+    .addColumn('houseOwnership', 'text')
+    .addColumn('houseOwnershipNote', 'text')
+    .addColumn('houseCondition', 'text')
+    .addColumn('houseConditionNote', 'text')
     .addColumn('pros', 'text')
     .addColumn('cons', 'text')
     .addColumn('other', 'text')

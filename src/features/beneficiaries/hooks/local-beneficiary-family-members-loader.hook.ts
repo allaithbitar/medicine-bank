@@ -1,34 +1,34 @@
 import { localDb } from '@/libs/sqlocal';
+import type { TFamilyMember, TGetFamilyMembersDto } from '../types/beneficiary.types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
-import type { TPaginationDto } from '@/core/types/common.types';
-import type { TMeeting } from '../types/meetings.types';
+import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 
-export const useLocalMeetingsLoader = (dto: TPaginationDto) => {
+export const useLocalBeneficiaryFamilyMembersLoader = (dto: TGetFamilyMembersDto) => {
   const isOffline = useIsOffline();
   const { data, ...restQueryResult } = useInfiniteQuery({
-    queryKey: ['LOCAL_MEETINGS'],
+    queryKey: ['LOCAL_BENEFICIARY_FAMILY_MEMBERS', dto],
     queryFn: async ({ pageParam }) => {
-      const baseQuery = localDb.selectFrom('meetings');
+      const baseQuery = localDb.selectFrom('family_members').where('patientId', '=', dto.patientId);
 
       const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));
 
       const query = baseQuery
         .selectAll()
-        .orderBy('createdAt', 'desc')
-        .limit(dto.pageSize!)
-        .offset(dto.pageSize! * pageParam);
+        .limit(dto.pageSize || DEFAULT_PAGE_SIZE)
+        .offset(dto.pageSize || DEFAULT_PAGE_SIZE * pageParam)
+        .orderBy('createdAt', 'desc');
 
       let totalCount = 0;
       const countResult = await countQuery.execute();
       totalCount = countResult[0]?.count ?? 0;
 
-      const items = (await query.execute()) as TMeeting[];
+      const items = (await query.execute()) as unknown as TFamilyMember[];
 
       return {
         items,
         totalCount,
-        pageSize: dto.pageSize,
+        pageSize: dto.pageSize || DEFAULT_PAGE_SIZE,
         pageNumber: pageParam,
       };
     },
