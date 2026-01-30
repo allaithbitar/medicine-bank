@@ -13,47 +13,55 @@ const SyncPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSync = async () => {
+    const dbTablesDic = {
+      employees: 'employees',
+      areas_to_employees: 'areasToEmployees',
+      patient_medicines: 'patientMedicines',
+      medicines: 'medicines',
+      patients: 'patients',
+      patients_phone_numbers: 'patientsPhoneNumbers',
+      family_members: 'familyMembers',
+      audit_logs: 'auditLogs',
+      disclosure_notes: 'disclosureNotes',
+      disclosure_details: 'disclosureDetails',
+      disclosures: 'disclosures',
+      cities: 'cities',
+      areas: 'areas',
+      priority_degrees: 'priorityDegrees',
+      ratings: 'ratings',
+    } as const;
+
     try {
       setIsLoading(true);
       const { data } = await syncLocalData({});
-      try {
-        await localDb.schema.dropTable('employees').execute();
-        await localDb.schema.dropTable('areas_to_employees').execute();
-        await localDb.schema.dropTable('patient_medicines').execute();
-        await localDb.schema.dropTable('medicines').execute();
-        await localDb.schema.dropTable('patients').execute();
-        await localDb.schema.dropTable('patients_phone_numbers').execute();
-        await localDb.schema.dropTable('family_members').execute();
-        await localDb.schema.dropTable('audit_logs').execute();
-        await localDb.schema.dropTable('disclosure_notes').execute();
-        await localDb.schema.dropTable('disclosure_details').execute();
-        await localDb.schema.dropTable('disclosures').execute();
-        await localDb.schema.dropTable('cities').execute();
-        await localDb.schema.dropTable('areas').execute();
-        await localDb.schema.dropTable('priority_degrees').execute();
-        await localDb.schema.dropTable('ratings').execute();
-      } catch (error: any) {
-        console.warn('some deleted tables dont exist', error);
+      for await (const key of Object.keys(dbTablesDic)) {
+        try {
+          await localDb.schema.dropTable(key).execute();
+        } catch (error) {
+          console.warn('some deleted tables dont exist', error);
+        }
       }
 
       await createTables();
-      await localDb.insertInto('cities').values(data.cities).execute();
-      await localDb.insertInto('areas').values(data.areas).execute();
-      await localDb.insertInto('priority_degrees').values(data.priorityDegrees).execute();
-      await localDb.insertInto('ratings').values(data.ratings).execute();
-      await localDb.insertInto('medicines').values(data.medicines).execute();
-      await localDb.insertInto('employees').values(data.employees).execute();
-      await localDb.insertInto('areas_to_employees').values(data.areasToEmployees).execute();
-      await localDb.insertInto('patients').values(data.patients).execute();
-      await localDb.insertInto('patients_phone_numbers').values(data.patientsPhoneNumbers).execute();
-      await localDb.insertInto('family_members').values(data.familyMembers).execute();
-      await localDb.insertInto('patient_medicines').values(data.patientMedicines).execute();
-      await localDb.insertInto('disclosures').values(data.disclosures).execute();
-      await localDb.insertInto('audit_logs').values(data.auditLogs).execute();
-      await localDb.insertInto('disclosure_notes').values(data.disclosureNotes).execute();
-      await localDb.insertInto('disclosure_details').values(data.disclosureDetails).execute();
+
+      for await (const key of Object.entries(dbTablesDic)) {
+        const [dbKey, objKey] = key;
+        if (data[objKey] && data[objKey].length) {
+          try {
+            await localDb
+              .insertInto(dbKey as any)
+              .values(data[objKey])
+              .execute();
+          } catch (error) {
+            console.warn('some inserted tables failed', error);
+          }
+        }
+      }
+
       notifySuccess(STRINGS.synced_successfully);
     } catch (error: any) {
+      console.log(error);
+
       notifyError(getErrorMessage(error));
     } finally {
       setIsLoading(false);
