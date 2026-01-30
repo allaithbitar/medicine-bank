@@ -57,11 +57,11 @@ const DisclosuresPage = () => {
         title: STRINGS.export_disclosures_confirmation,
         message: STRINGS.export_disclosures_confirmation_description,
         onConfirm: async () => {
-          await download(filtersState);
+          await download(queryData);
         },
       },
     });
-  }, [download, filtersState, openModal]);
+  }, [download, queryData, openModal]);
 
   if (error) {
     return <ErrorCard error={error} />;
