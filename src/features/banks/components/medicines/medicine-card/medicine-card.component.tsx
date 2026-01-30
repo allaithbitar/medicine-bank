@@ -10,12 +10,12 @@ import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import { getStringsLabel } from '@/core/helpers/helpers';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
-const MedicineCard = ({ medicine, onEdit }: { medicine: TMedicine; onEdit: (m: TMedicine) => void }) => {
+const MedicineCard = ({ medicine, onEdit }: { medicine: TMedicine; onEdit?: (m: TMedicine) => void }) => {
   const headerContent = (
     <CardAvatar
       name={medicine.name}
       icon={<MedicalServicesIcon />}
-      actions={[{ icon: <Edit />, onClick: () => onEdit(medicine) }]}
+      actions={onEdit ? [{ icon: <Edit />, onClick: () => onEdit(medicine) }] : undefined}
     />
   );
   return (

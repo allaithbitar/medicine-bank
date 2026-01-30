@@ -27,7 +27,11 @@ const DisclosureMedicinesTab = ({
           <Nodata
             icon={MedicalServices}
             title={STRINGS.no_medicines_found}
-            extra={<Button onClick={() => handleOpenBeneficiaryMedicineActionPage?.()}>{STRINGS.add}</Button>}
+            extra={
+              handleOpenBeneficiaryMedicineActionPage && (
+                <Button onClick={() => handleOpenBeneficiaryMedicineActionPage?.()}>{STRINGS.add}</Button>
+              )
+            }
           />
         }
         isLoading={isFetchingNextPage}
@@ -35,7 +39,16 @@ const DisclosureMedicinesTab = ({
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
       >
         {({ item }) => {
-          return <BeneficiaryMedicineCard item={item} onEdit={() => handleOpenBeneficiaryMedicineActionPage?.(item)} />;
+          return (
+            <BeneficiaryMedicineCard
+              item={item}
+              onEdit={
+                handleOpenBeneficiaryMedicineActionPage
+                  ? () => handleOpenBeneficiaryMedicineActionPage?.(item)
+                  : undefined
+              }
+            />
+          );
         }}
       </VirtualizedList>
 

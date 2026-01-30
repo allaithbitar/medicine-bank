@@ -13,7 +13,7 @@ const RatingsList = ({
 }: {
   ratings: TRating[];
   isLoadingRatings: boolean;
-  onEditRating: (rating: TRating) => void;
+  onEditRating?: (rating: TRating) => void;
 }) => {
   return (
     <>
@@ -24,11 +24,6 @@ const RatingsList = ({
       <VirtualizedList isLoading={isLoadingRatings} items={ratings}>
         {({ item: r }) => {
           return <RatingCard onEdit={onEditRating} rating={r} />;
-          //   return (
-          //     <Box sx={{ p: 10 }}>
-          //       <Box sx={{ p: 5, bgcolor: "red" }} />
-          //     </Box>
-          //   );
         }}
       </VirtualizedList>
     </>

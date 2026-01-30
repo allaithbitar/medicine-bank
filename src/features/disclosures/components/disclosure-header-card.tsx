@@ -9,14 +9,17 @@ import { Comment, DirectionsWalk, Edit, EventAvailable, History, Info, InfoOutli
 import { Link } from 'react-router-dom';
 import { useMemo } from 'react';
 import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
+import usePermissions from '@/core/hooks/use-permissions.hook';
 
 const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
+  const { canEdit, currentCanEdit } = usePermissions();
+  const canUserEditPatient = canEdit('/beneficiaries/action');
   return (
     <>
       <Card>
         <Header title={STRINGS.patient} />
-        <BeneficiaryCommonCard isDisclosurePage beneficiary={disclosure.patient} />
+        <BeneficiaryCommonCard canEditPatient={canUserEditPatient} isDisclosurePage beneficiary={disclosure.patient} />
       </Card>
       <Card>
         <Header title={STRINGS.disclosure} />
@@ -63,11 +66,13 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
             }
           />
           <DetailItem icon={<Comment />} label={STRINGS.initial_note} value={disclosure.initialNote || STRINGS.none} />
-          <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
-            <Button fullWidth startIcon={<Edit />}>
-              {STRINGS.edit} {STRINGS.disclosure}
-            </Button>
-          </Link>
+          {currentCanEdit && (
+            <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
+              <Button fullWidth startIcon={<Edit />}>
+                {STRINGS.edit} {STRINGS.disclosure}
+              </Button>
+            </Link>
+          )}
         </Stack>
       </Card>
     </>

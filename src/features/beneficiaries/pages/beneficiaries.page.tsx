@@ -12,9 +12,11 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
 import useStorage from '@/core/hooks/use-storage.hook';
 import { defaultBeneficiaryFilterValues, normalizeStateValuesToDto } from '../helpers/beneficiary.helpers';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const BeneficiariesPage = () => {
   const [filters, setFilters] = useStorage('beneficiary-filtres', defaultBeneficiaryFilterValues);
+  const { currentCanAdd } = usePermissions();
 
   const { openModal, closeModal } = useModal();
 
@@ -38,6 +40,32 @@ const BeneficiariesPage = () => {
     return <ErrorCard error={error} />;
   }
 
+  const actions = [];
+
+  if (currentCanAdd) {
+    actions.push({
+      icon: <Add />,
+      label: STRINGS.add_beneficiary,
+      onClick: () => navigate('/beneficiaries/action'),
+    });
+  }
+
+  actions.push({
+    icon: <Filter />,
+    label: STRINGS.filter,
+    onClick: () =>
+      openModal({
+        name: 'BENEFICIARIES_FILTERS_MODAL',
+        props: {
+          onSubmit: (values) => {
+            closeModal();
+            return setFilters(values);
+          },
+          values: filters,
+        },
+      }),
+  });
+
   return (
     <Stack gap={2} sx={{ height: '100%' }}>
       <VirtualizedList
@@ -50,30 +78,7 @@ const BeneficiariesPage = () => {
           return <BeneficiaryCard beneficiary={b} key={b.id} onEnterClick={navigate} />;
         }}
       </VirtualizedList>
-      <ActionsFab
-        actions={[
-          {
-            icon: <Add />,
-            label: STRINGS.add_beneficiary,
-            onClick: () => navigate('/beneficiaries/action'),
-          },
-          {
-            icon: <Filter />,
-            label: STRINGS.filter,
-            onClick: () =>
-              openModal({
-                name: 'BENEFICIARIES_FILTERS_MODAL',
-                props: {
-                  onSubmit: (values) => {
-                    closeModal();
-                    return setFilters(values);
-                  },
-                  values: filters,
-                },
-              }),
-          },
-        ]}
-      />
+      <ActionsFab actions={actions} />
 
       {isFetching && !isFetchingNextPage && <LoadingOverlay />}
     </Stack>

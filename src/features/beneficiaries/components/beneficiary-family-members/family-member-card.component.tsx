@@ -4,14 +4,14 @@ import ReusableCardComponent from '@/core/components/common/reusable-card/reusab
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import CustomIconButton from '@/core/components/common/custom-icon-button/custom-icon-button.component';
 import STRINGS from '@/core/constants/strings.constant';
-import { Edit, DeleteOutline, Home, Pin, ChildCare } from '@mui/icons-material';
+import { Edit, Home, Pin, ChildCare } from '@mui/icons-material';
 import PersonIcon from '@mui/icons-material/Person';
 import CakeIcon from '@mui/icons-material/Cake';
 import WorkIcon from '@mui/icons-material/Work';
 import type { TFamilyMember } from '../../types/beneficiary.types';
 import { formatDateTime, getStringsLabel } from '@/core/helpers/helpers';
 
-const FamilyMemberCard = ({ member, onEdit }: { member: TFamilyMember; onEdit: (m: TFamilyMember) => void }) => {
+const FamilyMemberCard = ({ member, onEdit }: { member: TFamilyMember; onEdit?: (m: TFamilyMember) => void }) => {
   const headerContent = (
     <Box
       sx={{
@@ -50,21 +50,23 @@ const FamilyMemberCard = ({ member, onEdit }: { member: TFamilyMember; onEdit: (
         </Box>
       </Box>
 
-      <Stack direction="row" gap={1} sx={{ color: 'white', flexShrink: 0, ml: 2 }}>
-        <Tooltip title={STRINGS.delete} arrow>
-          <span>
-            <CustomIconButton disabled size="small">
-              <DeleteOutline sx={{ color: 'white' }} />
-            </CustomIconButton>
-          </span>
-        </Tooltip>
+      {onEdit && (
+        <Stack direction="row" gap={1} sx={{ color: 'white', flexShrink: 0, ml: 2 }}>
+          {/* <Tooltip title={STRINGS.delete} arrow>
+            <span>
+              <CustomIconButton disabled size="small">
+                <DeleteOutline sx={{ color: 'white' }} />
+              </CustomIconButton>
+            </span>
+          </Tooltip> */}
 
-        <Tooltip title={STRINGS.edit} arrow>
-          <CustomIconButton onClick={() => onEdit(member)} size="small">
-            <Edit sx={{ color: 'white' }} />
-          </CustomIconButton>
-        </Tooltip>
-      </Stack>
+          <Tooltip title={STRINGS.edit} arrow>
+            <CustomIconButton onClick={() => onEdit(member)} size="small">
+              <Edit sx={{ color: 'white' }} />
+            </CustomIconButton>
+          </Tooltip>
+        </Stack>
+      )}
     </Box>
   );
 

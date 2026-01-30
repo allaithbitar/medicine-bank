@@ -32,7 +32,7 @@ type ParentItem = BaseItem & {
 export type IItem = LinkItem | ParentItem;
 
 function SideBarItems({ onClick }: { onClick: () => void }) {
-  const { hasRouteAccess } = usePermissions();
+  const { hasRouteAccess, currentUserRole } = usePermissions();
 
   const items: IItem[] = [
     {
@@ -46,7 +46,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       icon: <PsychologyAltIcon />,
     },
     {
-      label: STRINGS.employees,
+      label: currentUserRole === 'scout' ? STRINGS.employee : STRINGS.employees,
       href: '/employees',
       icon: <BadgeIcon />,
     },

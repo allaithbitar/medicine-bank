@@ -17,7 +17,7 @@ const BeneficiaryMedicineCard = ({
   onEdit,
 }: {
   item: TBeneficiaryMedicine;
-  onEdit: (bm: TBeneficiaryMedicine) => void;
+  onEdit?: (bm: TBeneficiaryMedicine) => void;
 }) => {
   const medicine = item.medicine;
   const dose = item.dosePerIntake;
@@ -26,7 +26,7 @@ const BeneficiaryMedicineCard = ({
       name={medicine.name}
       subLabel={getStringsLabel({ key: 'med_form', val: medicine?.form })}
       icon={<MedicalServicesIcon />}
-      actions={[{ icon: <Edit />, onClick: () => onEdit(item) }]}
+      actions={onEdit ? [{ icon: <Edit />, onClick: () => onEdit(item) }] : undefined}
     />
   );
   // const headerContent = (

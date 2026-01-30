@@ -8,6 +8,7 @@ import PageLoading from '@/core/components/common/page-loading/page-loading.comp
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
 import DisclosureHeaderCard from '../components/disclosure-header-card';
@@ -23,7 +24,9 @@ import type { TBeneficiaryMedicine, TFamilyMember } from '@/features/beneficiari
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabIndex = Number(searchParams.get('tab') ?? 0);
-
+  const { currentCanEdit, hasRouteAccess } = usePermissions();
+  const canSeeAudit = hasRouteAccess('/disclosures/:disclosureId/audit');
+  const canSeeConsultingAdviser = hasRouteAccess('/disclosures/:disclosureId/consulting_adviser');
   const { disclosureId } = useParams<{ disclosureId: string }>();
   const navigate = useNavigate();
 
@@ -74,10 +77,10 @@ const DisclosurePage = () => {
       disclosureId,
       disclosure,
       openEditExtra,
-      handleOpenBeneficiaryMedicineActionPage,
-      handleOpenFamilyMembersActionPage,
-      openNoteAction,
-      openEditDetails,
+      handleOpenBeneficiaryMedicineActionPage: currentCanEdit ? handleOpenBeneficiaryMedicineActionPage : undefined,
+      handleOpenFamilyMembersActionPage: currentCanEdit ? handleOpenFamilyMembersActionPage : undefined,
+      openNoteAction: currentCanEdit ? openNoteAction : undefined,
+      openEditDetails: currentCanEdit ? openEditDetails : undefined,
     }),
     [
       disclosureId,
@@ -87,6 +90,7 @@ const DisclosurePage = () => {
       handleOpenFamilyMembersActionPage,
       openNoteAction,
       openEditDetails,
+      currentCanEdit,
     ]
   );
   if (error) return <ErrorCard error={error} />;
@@ -136,31 +140,43 @@ const DisclosurePage = () => {
 
       <ActionsFab
         actions={[
-          {
-            icon: <Add />,
-            label: STRINGS.add_disclosure_note,
-            onClick: () => navigate(`/disclosures/${disclosureId}/note/action`),
-          },
-          {
-            icon: <Add />,
-            label: STRINGS.add_medicine,
-            onClick: () => handleOpenBeneficiaryMedicineActionPage(undefined),
-          },
-          {
-            icon: <Add />,
-            label: STRINGS.add_family_member,
-            onClick: () => handleOpenFamilyMembersActionPage(undefined),
-          },
-          {
-            icon: <DifferenceIcon />,
-            label: STRINGS.audit_log,
-            onClick: () => openAudit(),
-          },
-          {
-            icon: <PsychologyAltIcon />,
-            label: STRINGS.consulting_adviser,
-            onClick: () => navigate(`/disclosures/${disclosureId}/consulting_adviser`),
-          },
+          ...(currentCanEdit
+            ? [
+                {
+                  icon: <Add />,
+                  label: STRINGS.add_disclosure_note,
+                  onClick: () => navigate(`/disclosures/${disclosureId}/note/action`),
+                },
+                {
+                  icon: <Add />,
+                  label: STRINGS.add_medicine,
+                  onClick: () => handleOpenBeneficiaryMedicineActionPage(undefined),
+                },
+                {
+                  icon: <Add />,
+                  label: STRINGS.add_family_member,
+                  onClick: () => handleOpenFamilyMembersActionPage(undefined),
+                },
+              ]
+            : []),
+          ...(canSeeAudit
+            ? [
+                {
+                  icon: <DifferenceIcon />,
+                  label: STRINGS.audit_log,
+                  onClick: () => openAudit(),
+                },
+              ]
+            : []),
+          ...(canSeeConsultingAdviser
+            ? [
+                {
+                  icon: <PsychologyAltIcon />,
+                  label: STRINGS.consulting_adviser,
+                  onClick: () => navigate(`/disclosures/${disclosureId}/consulting_adviser`),
+                },
+              ]
+            : []),
         ]}
       />
     </>

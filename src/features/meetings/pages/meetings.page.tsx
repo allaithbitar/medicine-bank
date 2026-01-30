@@ -11,11 +11,13 @@ import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/propert
 import { useMeetingsLoader } from '../hooks/meetings-loader.hook';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const queryData = { pageSize: DEFAULT_PAGE_SIZE, pageNumber: DEFAULT_PAGE_NUMBER };
 
 const MeetingsPage = () => {
   const navigate = useNavigate();
+  const { currentCanAdd, currentCanEdit } = usePermissions();
 
   const { items, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, error } = useMeetingsLoader(queryData);
 
@@ -40,17 +42,19 @@ const MeetingsPage = () => {
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
       >
-        {({ item }) => <MeetingCard meeting={item} onEdit={(m) => openActionPage(m)} />}
+        {({ item }) => <MeetingCard meeting={item} onEdit={currentCanEdit ? (m) => openActionPage(m) : undefined} />}
       </VirtualizedList>
-      <ActionsFab
-        actions={[
-          {
-            label: STRINGS.add,
-            icon: <Add />,
-            onClick: () => openActionPage(),
-          },
-        ]}
-      />
+      {currentCanAdd && (
+        <ActionsFab
+          actions={[
+            {
+              label: STRINGS.add,
+              icon: <Add />,
+              onClick: () => openActionPage(),
+            },
+          ]}
+        />
+      )}
       {isLoading && <LoadingOverlay />}
     </Stack>
   );

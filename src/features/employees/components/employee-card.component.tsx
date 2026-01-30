@@ -1,25 +1,21 @@
-import { Button, Stack } from "@mui/material";
-import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
-import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
-import {
-  Edit,
-  LocationPin,
-  Phone,
-  PriorityHighOutlined,
-  Work,
-} from "@mui/icons-material";
-import { formatDateTime } from "@/core/helpers/helpers";
-import STRINGS from "@/core/constants/strings.constant";
-import { blue } from "@mui/material/colors";
-import type { TEmployee } from "../types/employee.types";
-import CardAvatar from "@/core/components/common/reusable-card/card-avatar.component";
-import { Link } from "react-router-dom";
+import { Button, Stack } from '@mui/material';
+import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
+import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
+import { Edit, LocationPin, Phone, PriorityHighOutlined, Work } from '@mui/icons-material';
+import { formatDateTime } from '@/core/helpers/helpers';
+import STRINGS from '@/core/constants/strings.constant';
+import { blue } from '@mui/material/colors';
+import type { TEmployee } from '../types/employee.types';
+import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
+import { Link } from 'react-router-dom';
 
 const EmployeeCard = ({
   employee,
+  canEdit,
   // onEditClick,
 }: {
   employee: TEmployee;
+  canEdit?: boolean;
   // onEditClick?: (id: string) => void;
 }) => {
   const headerContent = <CardAvatar name={employee.name} />;
@@ -33,19 +29,13 @@ const EmployeeCard = ({
         value={STRINGS[employee.role as keyof typeof STRINGS]}
       />
 
-      <DetailItemComponent
-        icon={<Phone />}
-        label={STRINGS.phones}
-        value={employee.phone}
-      />
+      <DetailItemComponent icon={<Phone />} label={STRINGS.phones} value={employee.phone} />
 
       <DetailItemComponent
         icon={<LocationPin />}
         label={STRINGS.area}
         iconColorPreset="deepPurple"
-        value={
-          employee.areas.map((a) => a.area.name).join(", ") || STRINGS.none
-        }
+        value={employee.areas.map((a) => a.area.name).join(', ') || STRINGS.none}
       />
 
       <DetailItemComponent
@@ -58,10 +48,7 @@ const EmployeeCard = ({
   );
 
   const footerContent = (
-    <Link
-      to={`/employees/action?employeeId=${employee.id}`}
-      style={{ marginInlineStart: "auto" }}
-    >
+    <Link to={`/employees/action?employeeId=${employee.id}`} style={{ marginInlineStart: 'auto' }}>
       <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
     </Link>
   );
@@ -71,7 +58,7 @@ const EmployeeCard = ({
       headerBackground={`linear-gradient(to right, ${blue[800]}, ${blue[500]})`}
       headerContent={headerContent}
       bodyContent={bodyContent}
-      footerContent={footerContent}
+      footerContent={canEdit ? footerContent : null}
     />
   );
 };

@@ -10,7 +10,7 @@ import CardAvatar from '@/core/components/common/reusable-card/card-avatar.compo
 
 interface IWorkAreaCardProps {
   workArea: TArea;
-  onEdit: () => void;
+  onEdit?: () => void;
 }
 
 const WorkAreaCard = ({ workArea, onEdit }: IWorkAreaCardProps) => {
@@ -18,7 +18,7 @@ const WorkAreaCard = ({ workArea, onEdit }: IWorkAreaCardProps) => {
     <CardAvatar
       icon={<BuildingOfficeIcon />}
       name={workArea.name}
-      actions={[{ icon: <PencilIcon />, onClick: onEdit }]}
+      actions={onEdit ? [{ icon: <PencilIcon />, onClick: onEdit }] : undefined}
     />
   );
   // const headerContent = (

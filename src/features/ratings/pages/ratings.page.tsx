@@ -7,9 +7,11 @@ import ActionsFab from '@/core/components/common/actions-fab/actions-fab.compone
 import { Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useRatingsLoader } from '../hooks/ratings-loader.hook';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const RatingsPage = () => {
   const navigate = useNavigate();
+  const { currentCanAdd, currentCanEdit } = usePermissions();
 
   const { data: ratings = [], isLoading: isLoadingRatings } = useRatingsLoader();
 
@@ -24,16 +26,22 @@ const RatingsPage = () => {
   return (
     <Stack gap={2} sx={{ height: '100%' }}>
       <CustomAppBar title={STRINGS.ratings_management} subtitle={STRINGS.add_manage_ratings} />
-      <RatingsList onEditRating={handleOpenRatingActionPage} isLoadingRatings={isLoadingRatings} ratings={ratings} />
-      <ActionsFab
-        actions={[
-          {
-            label: STRINGS.add,
-            icon: <Add />,
-            onClick: () => handleOpenRatingActionPage(),
-          },
-        ]}
+      <RatingsList 
+        onEditRating={currentCanEdit ? handleOpenRatingActionPage : undefined} 
+        isLoadingRatings={isLoadingRatings} 
+        ratings={ratings} 
       />
+      {currentCanAdd && (
+        <ActionsFab
+          actions={[
+            {
+              label: STRINGS.add,
+              icon: <Add />,
+              onClick: () => handleOpenRatingActionPage(),
+            },
+          ]}
+        />
+      )}
     </Stack>
   );
 };

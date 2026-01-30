@@ -5,8 +5,10 @@ import { Stack, Divider, Typography, Card, Button } from '@mui/material';
 import type { TDisclosure } from '../types/disclosure.types';
 import CustomBadge from './custom-badge.component';
 import { Link } from 'react-router-dom';
+import usePermissions from '@/core/hooks/use-permissions.hook';
 
 function DisclosureVisitAndRatingSection({ disclosure }: { disclosure: TDisclosure }) {
+  const { currentCanEdit } = usePermissions();
   return (
     <Card>
       <Stack gap={1.5} alignItems="start">
@@ -23,8 +25,8 @@ function DisclosureVisitAndRatingSection({ disclosure }: { disclosure: TDisclosu
                   disclosure.visitResult === 'completed'
                     ? 'success'
                     : disclosure.visitResult === 'not_completed'
-                    ? 'warning'
-                    : 'error'
+                      ? 'warning'
+                      : 'error'
                 }
               >
                 {STRINGS[disclosure.visitResult]}
@@ -96,11 +98,13 @@ function DisclosureVisitAndRatingSection({ disclosure }: { disclosure: TDisclosu
           )}
         </Stack>
         <Divider flexItem />
-        <Link style={{ width: '100%' }} to={`/disclosures/visit-rating/action?id=${disclosure.id}`}>
-          <Button fullWidth startIcon={<Edit />}>
-            {`${STRINGS.edit} ${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`}
-          </Button>
-        </Link>
+        {currentCanEdit && (
+          <Link style={{ width: '100%' }} to={`/disclosures/visit-rating/action?id=${disclosure.id}`}>
+            <Button fullWidth startIcon={<Edit />}>
+              {`${STRINGS.edit} ${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`}
+            </Button>
+          </Link>
+        )}
       </Stack>
     </Card>
   );

@@ -7,12 +7,16 @@ import CardAvatar from '@/core/components/common/reusable-card/card-avatar.compo
 
 interface ICityCardProps {
   city: TCity;
-  onEdit: () => void;
+  onEdit?: () => void;
 }
 
 const CityCard = ({ city, onEdit }: ICityCardProps) => {
   const headerContent = (
-    <CardAvatar name={city.name} icon={<BuildingOfficeIcon />} actions={[{ icon: <EditIcon />, onClick: onEdit }]} />
+    <CardAvatar
+      name={city.name}
+      icon={<BuildingOfficeIcon />}
+      actions={onEdit ? [{ icon: <EditIcon />, onClick: onEdit }] : undefined}
+    />
   );
 
   return (

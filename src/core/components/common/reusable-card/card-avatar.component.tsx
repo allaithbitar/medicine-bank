@@ -43,7 +43,11 @@ const CardAvatar = ({ name, subLabel, icon, actions, extras }: TCardAvatarProps)
           </Typography>
         )}
       </Stack>
-      {actions?.map((a) => <CustomIconButton onClick={a.onClick}>{a.icon}</CustomIconButton>)}
+      {actions?.map((a, i) => (
+        <CustomIconButton key={i} onClick={a.onClick}>
+          {a.icon}
+        </CustomIconButton>
+      ))}
       {extras}
     </Stack>
   );

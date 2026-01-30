@@ -11,9 +11,11 @@ import BeneficiaryDisclosures from '../components/beneficiary-disclosures.compon
 import BeneficiaryCommonCard from '@/shared/components/beneficiary-common-card';
 import { useBeneficiaryLoader } from '../hooks/use-beneficiary-loader.hook';
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
+import usePermissions from '@/core/hooks/use-permissions.hook';
 
 const BeneficiaryPage = () => {
   const { id = '' } = useParams();
+  const { currentCanEdit } = usePermissions();
 
   const { data: beneficiary, isLoading, error } = useBeneficiaryLoader({ id });
 
@@ -38,7 +40,7 @@ const BeneficiaryPage = () => {
   return (
     <Stack gap={1}>
       <Card>
-        <BeneficiaryCommonCard beneficiary={beneficiary} />
+        <BeneficiaryCommonCard canEditPatient={currentCanEdit} beneficiary={beneficiary} />
       </Card>
       <BeneficiaryDisclosures beneficiaryId={beneficiary.id} />
     </Stack>

@@ -59,19 +59,16 @@ function App() {
               <Route path="/notifications" element={<NotificationsPage />} />
 
               <Route path="/employees" element={<EmployeesPage />} />
-
               <Route path="/employees/action" element={<EmployeeActionPage />} />
 
-              <Route path="/disclosures" element={<DisclosuresPage />} />
               <Route path="/adviser_disclosure_consultations" element={<AdviserDisclosureConsultationsPage />} />
               <Route path="/consulting-adviser/:id" element={<ConsultingAdviserDetailsPage />} />
 
+              <Route path="/disclosures" element={<DisclosuresPage />} />
               <Route path="/disclosures/action" element={<DisclosureActionPage />} />
-
-              <Route path="/disclosures/details/action" element={<DisclosureDetailsActionPage />} />
-
               <Route path="/disclosures/:disclosureId" element={<DisclosurePage />} />
 
+              <Route path="/disclosures/details/action" element={<DisclosureDetailsActionPage />} />
               <Route path="/disclosures/visit-rating/action" element={<DisclosureVisitAndRatingActionPage />} />
               <Route path="/disclosures/appointment/action" element={<DisclosureAppointmentActionPage />} />
               <Route path="/disclosures/:disclosureId/note/action" element={<DisclosureNoteActionPage />} />
@@ -87,16 +84,16 @@ function App() {
               <Route path="/disclosures/:disclosureId/audit/details" element={<AuditDetailsActionPage />} />
 
               <Route path="/beneficiaries" element={<BeneficiariesPage />} />
+              <Route path="/beneficiaries/action" element={<BeneficiaryActionPage />} />
               <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
               <Route path="/beneficiaries/:id/medicine/action" element={<BeneficiaryMedicineActionPage />} />
               <Route path="/beneficiaries/:id/family/action" element={<BeneficiaryFamilyActionPage />} />
 
-              <Route path="/beneficiaries/action" element={<BeneficiaryActionPage />} />
-              <Route path="/work-areas" element={<WorkAreas />} />
-              <Route path="/work-areas/action" element={<WorkAreaActionPage />} />
-
               <Route path="/cities" element={<Cities />} />
               <Route path="/cities/action" element={<CityActionPage />} />
+
+              <Route path="/work-areas" element={<WorkAreas />} />
+              <Route path="/work-areas/action" element={<WorkAreaActionPage />} />
 
               <Route path="/ratings" element={<RatingsPage />} />
               <Route path="/ratings/action" element={<RatingActionPage />} />
@@ -104,17 +101,18 @@ function App() {
               <Route path="/medicines" element={<MedicinesPage />} />
               <Route path="/medicines/action" element={<MedicineActionPage />} />
 
-              <Route path="/meetings" element={<MeetingsPage />} />
-              <Route path="/meetings/action" element={<MeetingActionPage />} />
-
               <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
               <Route path="/priority-degrees/action" element={<PriorityDegreesActionPage />} />
 
-              <Route path="/sync" element={<SyncPage />} />
-              <Route path="/calendar" element={<AppointmentsPage />} />
+              <Route path="/meetings" element={<MeetingsPage />} />
+              <Route path="/meetings/action" element={<MeetingActionPage />} />
 
               <Route path="/system-broadcast" element={<SystemBroadcastsPage />} />
               <Route path="/system-broadcast/action" element={<SystemBroadcastActionPage />} />
+
+              <Route path="/calendar" element={<AppointmentsPage />} />
+
+              <Route path="/sync" element={<SyncPage />} />
             </Route>
           </Route>
         </Route>

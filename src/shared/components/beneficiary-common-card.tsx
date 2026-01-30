@@ -15,9 +15,14 @@ import { useCallback } from 'react';
 interface IBeneficiaryCommonCard {
   beneficiary: TBenefieciary;
   isDisclosurePage?: boolean;
+  canEditPatient?: boolean;
 }
 
-function BeneficiaryCommonCard({ beneficiary, isDisclosurePage = false }: IBeneficiaryCommonCard) {
+function BeneficiaryCommonCard({
+  beneficiary,
+  isDisclosurePage = false,
+  canEditPatient = false,
+}: IBeneficiaryCommonCard) {
   const { data: disclosure } = disclosuresApi.useGetLastDisclosureQuery(
     { patientId: beneficiary.id },
     { skip: !beneficiary.id || isDisclosurePage }
@@ -84,11 +89,13 @@ function BeneficiaryCommonCard({ beneficiary, isDisclosurePage = false }: IBenef
         label={STRINGS.patient_about}
         value={beneficiary.about ? beneficiary.about : STRINGS.none}
       />
-      <Link to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}>
-        <Button fullWidth startIcon={<Edit />}>
-          {STRINGS.edit} {STRINGS.patient}
-        </Button>
-      </Link>
+      {canEditPatient && (
+        <Link to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}>
+          <Button fullWidth startIcon={<Edit />}>
+            {STRINGS.edit} {STRINGS.patient}
+          </Button>
+        </Link>
+      )}
     </Stack>
   );
 }

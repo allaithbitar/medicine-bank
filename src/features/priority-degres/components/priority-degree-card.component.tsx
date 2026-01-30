@@ -6,11 +6,11 @@ import CardAvatar from '@/core/components/common/reusable-card/card-avatar.compo
 
 interface IProps {
   priorityDegree: TPriorityDegree;
-  onEdit: () => void;
+  onEdit?: () => void;
 }
 
 const PriorityDegreeCard = ({ priorityDegree, onEdit }: IProps) => {
-  const headerContent = <CardAvatar name={priorityDegree.name} actions={[{ icon: <EditIcon />, onClick: onEdit }]} />;
+  const headerContent = <CardAvatar name={priorityDegree.name} actions={onEdit ? [{ icon: <EditIcon />, onClick: onEdit }] : undefined} />;
 
   const headerBackground =
     priorityDegree.color && priorityDegree.color.trim() !== '' ? priorityDegree.color : indigo[300];

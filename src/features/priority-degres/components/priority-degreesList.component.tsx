@@ -6,7 +6,7 @@ import PriorityDegreeCard from './priority-degree-card.component';
 import type { TPriorityDegree } from '../types/priority-degree.types';
 
 interface IPriorityDegreesList {
-  onEdit: (d: TPriorityDegree) => void;
+  onEdit?: (d: TPriorityDegree) => void;
   priorityDegrees: TPriorityDegree[];
   isLoadingPriorityDegrees: boolean;
 }
@@ -40,7 +40,7 @@ function PriorityDegreesList({ onEdit, priorityDegrees, isLoadingPriorityDegrees
         {({ item }) => (
           <PriorityDegreeCard
             priorityDegree={item}
-            onEdit={() => onEdit(item)}
+            onEdit={onEdit ? () => onEdit(item) : undefined}
             // onDelete={() => handleDelete(item.name)}
           />
         )}

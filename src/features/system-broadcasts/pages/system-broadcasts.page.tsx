@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Stack, Tab, Tabs, ToggleButtonGroup, ToggleButton, Card } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
@@ -9,6 +9,7 @@ import { BROADCAST_TYPES, type TBroadcastAudience, type TSystemBroadcast } from 
 import SystemBroadcastCard from '../components/system-broadcast-card.component';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Nodata from '@/core/components/common/no-data/no-data.component';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const AUDIENCES = ['all', 'scouts', 'supervisors'] as const;
 
@@ -16,14 +17,34 @@ const SystemBroadcastsPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = Number(searchParams.get('tab') ?? 0);
+  const { currentCanAdd, currentCanEdit, currentShowFilters, currentUserRole } = usePermissions();
 
-  const [audienceFilter, setAudienceFilter] = useState<TBroadcastAudience>('all');
+  const [audienceFilter, setAudienceFilter] = useState<TBroadcastAudience>();
 
   const { data: { items: searchResp = [] } = { items: [] }, isFetching: isLoading } =
-    systemBroadcastsApi.useSearchSystemBroadcastsQuery({
-      type: BROADCAST_TYPES[currentTab],
-      audience: [audienceFilter],
-    });
+    systemBroadcastsApi.useSearchSystemBroadcastsQuery(
+      {
+        type: BROADCAST_TYPES[currentTab],
+        audience: [audienceFilter!],
+      },
+      { skip: !audienceFilter }
+    );
+
+  useEffect(() => {
+    switch (currentUserRole) {
+      case 'manager':
+        setAudienceFilter('all');
+        break;
+      case 'supervisor':
+        setAudienceFilter('supervisors');
+        break;
+      case 'scout':
+        setAudienceFilter('scouts');
+        break;
+      default:
+        setAudienceFilter('all');
+    }
+  }, [currentUserRole]);
 
   const handleOpenAction = (oldBroadcast?: TSystemBroadcast) => {
     if (oldBroadcast) {
@@ -62,13 +83,15 @@ const SystemBroadcastsPage = () => {
             <Tab label={STRINGS.custom} />
           </Tabs>
 
-          <ToggleButtonGroup value={audienceFilter} exclusive onChange={(_, v) => v && handleAudienceQuick(v)}>
-            {AUDIENCES.map((a) => (
-              <ToggleButton key={a} value={a}>
-                {STRINGS[`audience_${a}` as keyof typeof STRINGS] ?? a}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
+          {currentShowFilters && (
+            <ToggleButtonGroup value={audienceFilter} exclusive onChange={(_, v) => v && handleAudienceQuick(v)}>
+              {AUDIENCES.map((a) => (
+                <ToggleButton key={a} value={a}>
+                  {STRINGS[`audience_${a}` as keyof typeof STRINGS] ?? a}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          )}
 
           <Box sx={{ flex: 1 }}>
             {searchResp.length === 0 && !isLoading ? (
@@ -78,22 +101,24 @@ const SystemBroadcastsPage = () => {
                 {({ item }) => (
                   <SystemBroadcastCard
                     broadcast={item as TSystemBroadcast}
-                    onEdit={(b) => handleOpenAction(b as TSystemBroadcast)}
+                    onEdit={currentCanEdit ? (b) => handleOpenAction(b as TSystemBroadcast) : undefined}
                   />
                 )}
               </VirtualizedList>
             )}
           </Box>
 
-          <ActionsFab
-            actions={[
-              {
-                label: STRINGS.add,
-                icon: <Add />,
-                onClick: () => handleOpenAction(),
-              },
-            ]}
-          />
+          {currentCanAdd && (
+            <ActionsFab
+              actions={[
+                {
+                  label: STRINGS.add,
+                  icon: <Add />,
+                  onClick: () => handleOpenAction(),
+                },
+              ]}
+            />
+          )}
         </Stack>
       </Card>
     </Stack>

@@ -17,13 +17,13 @@ const SystemBroadcastCard = ({
   onEdit,
 }: {
   broadcast: TSystemBroadcast;
-  onEdit: (b: TSystemBroadcast) => void;
+  onEdit?: (b: TSystemBroadcast) => void;
 }) => {
   const headerContent = (
     <CardAvatar
-      name={broadcast.title}
+      name={broadcast.title ?? STRINGS.none}
       icon={<AnnouncementIcon />}
-      actions={[{ icon: <Edit />, onClick: () => onEdit(broadcast) }]}
+      actions={onEdit ? [{ icon: <Edit />, onClick: () => onEdit(broadcast) }] : undefined}
     />
   );
   return (
@@ -32,7 +32,11 @@ const SystemBroadcastCard = ({
       headerBackground={`linear-gradient(to right, ${indigo[400]}, ${deepPurple[400]})`}
       bodyContent={
         <Stack gap={2}>
-          <DetailItemComponent label={STRINGS.details} icon={<TextSnippetOutlinedIcon />} value={broadcast.details} />
+          <DetailItemComponent
+            label={STRINGS.details}
+            icon={<TextSnippetOutlinedIcon />}
+            value={broadcast.details ?? STRINGS.none}
+          />
           {broadcast.createdAt ? (
             <DetailItemComponent
               label={STRINGS.created_at}

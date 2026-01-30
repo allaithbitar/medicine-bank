@@ -15,7 +15,7 @@ const DisclosureDetailsSection = ({
   openEditDetails,
 }: {
   disclosureId?: string;
-  openEditDetails: () => void;
+  openEditDetails?: () => void;
 }) => {
   const { data: details, isFetching } = useDisclosureDetailsLoader(disclosureId!);
 
@@ -35,9 +35,11 @@ const DisclosureDetailsSection = ({
         <Nodata
           title={STRINGS.no_details}
           extra={
-            <Link to={`/disclosures/details/action?disclosureId=${disclosureId}`}>
-              <Button>{STRINGS.add}</Button>
-            </Link>
+            openEditDetails ? (
+              <Link to={`/disclosures/details/action?disclosureId=${disclosureId}`}>
+                <Button>{STRINGS.add}</Button>
+              </Link>
+            ) : null
           }
         />
       </Card>
@@ -142,9 +144,11 @@ const DisclosureDetailsSection = ({
             />
           )}
 
-          <Button fullWidth startIcon={<ListAltIcon />} onClick={openEditDetails} variant="outlined" sx={{ mt: 2 }}>
-            {STRINGS.edit} {STRINGS.disclosures_details}
-          </Button>
+          {openEditDetails && (
+            <Button fullWidth startIcon={<ListAltIcon />} onClick={openEditDetails} variant="outlined" sx={{ mt: 2 }}>
+              {STRINGS.edit} {STRINGS.disclosures_details}
+            </Button>
+          )}
         </Stack>
       </Stack>
     </Card>

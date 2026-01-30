@@ -10,12 +10,12 @@ import { memo } from 'react';
 import { Edit, RateReview } from '@mui/icons-material';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 
-const RatingCard = ({ rating, onEdit }: { rating: TRating; onEdit: (r: TRating) => void }) => {
+const RatingCard = ({ rating, onEdit }: { rating: TRating; onEdit?: (r: TRating) => void }) => {
   const headerContent = (
     <CardAvatar
       name={rating.name}
       icon={<RateReview />}
-      actions={[{ icon: <Edit />, onClick: () => onEdit(rating) }]}
+      actions={onEdit ? [{ icon: <Edit />, onClick: () => onEdit(rating) }] : undefined}
     />
   );
 

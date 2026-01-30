@@ -9,9 +9,11 @@ import PriorityDegreesList from '../components/priority-degreesList.component';
 import type { TPriorityDegree } from '../types/priority-degree.types';
 import { useNavigate } from 'react-router-dom';
 import { usePriorityDegreesLoader } from '../hooks/priority-degrees-loader.hook';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const PriorityDegreesPage = () => {
   const navigate = useNavigate();
+  const { currentCanAdd, currentCanEdit } = usePermissions();
 
   const [query, setQuery] = useState<string | null>('');
 
@@ -46,17 +48,19 @@ const PriorityDegreesPage = () => {
       <PriorityDegreesList
         isLoadingPriorityDegrees={isLoadingPriorityDegrees}
         priorityDegrees={priorityDegrees}
-        onEdit={handleOpenPriorityDegreeActionPage}
+        onEdit={currentCanEdit ? handleOpenPriorityDegreeActionPage : undefined}
       />
-      <ActionsFab
-        actions={[
-          {
-            label: STRINGS.add,
-            icon: <Add />,
-            onClick: () => handleOpenPriorityDegreeActionPage(),
-          },
-        ]}
-      />
+      {currentCanAdd && (
+        <ActionsFab
+          actions={[
+            {
+              label: STRINGS.add,
+              icon: <Add />,
+              onClick: () => handleOpenPriorityDegreeActionPage(),
+            },
+          ]}
+        />
+      )}
     </Stack>
   );
 };

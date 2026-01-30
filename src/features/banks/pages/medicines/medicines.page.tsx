@@ -11,10 +11,12 @@ import VirtualizedList from '@/core/components/common/virtualized-list/virtualiz
 import { useMedicinesLoader } from '../../hooks/medicines/medicines-loader.hook';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import MedicineCard from '../../components/medicines/medicine-card/medicine-card.component';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const MedicinesPage = () => {
   const [query, setQuery] = useState<string | null>('');
   const navigate = useNavigate();
+  const { currentCanAdd, currentCanEdit } = usePermissions();
 
   const { items, totalCount, isFetching, isFetchingNextPage } = useMedicinesLoader({ name: query });
 
@@ -44,19 +46,21 @@ const MedicinesPage = () => {
         items={items}
       >
         {({ item: med }) => {
-          return <MedicineCard onEdit={handleOpenMedicineModal} medicine={med} />;
+          return <MedicineCard onEdit={currentCanEdit ? handleOpenMedicineModal : undefined} medicine={med} />;
         }}
       </VirtualizedList>
 
-      <ActionsFab
-        actions={[
-          {
-            label: STRINGS.add,
-            icon: <Add />,
-            onClick: () => handleOpenMedicineModal(),
-          },
-        ]}
-      />
+      {currentCanAdd && (
+        <ActionsFab
+          actions={[
+            {
+              label: STRINGS.add,
+              icon: <Add />,
+              onClick: () => handleOpenMedicineModal(),
+            },
+          ]}
+        />
+      )}
 
       {isFetching && !isFetchingNextPage && <LoadingOverlay />}
     </Stack>

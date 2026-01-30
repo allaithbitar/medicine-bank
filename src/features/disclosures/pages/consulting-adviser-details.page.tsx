@@ -17,11 +17,13 @@ import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import { Comment } from '@mui/icons-material';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 function ConsultingAdviserDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { closeModal, openModal } = useModal();
+  const { currentCanRate } = usePermissions();
 
   const {
     data: consultation,
@@ -130,7 +132,7 @@ function ConsultingAdviserDetailsPage() {
           )}
         </Stack>
 
-        {isPending && ratings.length > 0 && (
+        {isPending && currentCanRate && ratings.length > 0 && (
           <>
             <Divider />
             <DetailItem

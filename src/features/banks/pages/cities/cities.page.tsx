@@ -12,9 +12,11 @@ import VirtualizedList from '@/core/components/common/virtualized-list/virtualiz
 import CityCard from '../../components/cities/city-card/city-card.component';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const CitiesPage = () => {
   const navigate = useNavigate();
+  const { currentCanAdd, currentCanEdit } = usePermissions();
 
   const [queryData, setQueryData] = useState({
     pageSize: DEFAULT_PAGE_SIZE,
@@ -49,17 +51,25 @@ const CitiesPage = () => {
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
       >
-        {({ item: city }) => <CityCard city={city} key={city.id} onEdit={() => handleOpenCityActionPage(city)} />}
+        {({ item: city }) => (
+          <CityCard
+            city={city}
+            key={city.id}
+            onEdit={currentCanEdit ? () => handleOpenCityActionPage(city) : undefined}
+          />
+        )}
       </VirtualizedList>
-      <ActionsFab
-        actions={[
-          {
-            label: STRINGS.add,
-            icon: <Add />,
-            onClick: () => handleOpenCityActionPage(),
-          },
-        ]}
-      />
+      {currentCanAdd && (
+        <ActionsFab
+          actions={[
+            {
+              label: STRINGS.add,
+              icon: <Add />,
+              onClick: () => handleOpenCityActionPage(),
+            },
+          ]}
+        />
+      )}
       {isLoading && <LoadingOverlay />}
     </Stack>
   );

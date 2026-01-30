@@ -33,7 +33,12 @@ const DisclosureFamilyMembersTab = ({
         items={items}
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
       >
-        {({ item }) => <FamilyMemberCard member={item} onEdit={() => handleOpenFamilyMembersActionPage?.(item)} />}
+        {({ item }) => (
+          <FamilyMemberCard
+            member={item}
+            onEdit={handleOpenFamilyMembersActionPage ? () => handleOpenFamilyMembersActionPage?.(item) : undefined}
+          />
+        )}
       </VirtualizedList>
 
       {isFetching && !isFetchingNextPage && <LoadingOverlay />}

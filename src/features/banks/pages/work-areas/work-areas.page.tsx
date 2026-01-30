@@ -13,9 +13,11 @@ import WorkAreaCardComponent from '../../components/work-areas/work-area-card/wo
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 import type { TAutocompleteItem } from '@/core/types/common.types';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const WorkAreas = () => {
   const navigate = useNavigate();
+  const { currentCanAdd, currentCanEdit } = usePermissions();
 
   const [selectedCity, setSelectedCity] = useState<TAutocompleteItem | null>(null);
   const [queryData, setQueryData] = useState({
@@ -53,17 +55,21 @@ const WorkAreas = () => {
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
       >
-        {({ item: wa }) => <WorkAreaCardComponent workArea={wa} onEdit={() => handleOpenWorkAreaActionPage(wa)} />}
+        {({ item: wa }) => (
+          <WorkAreaCardComponent workArea={wa} onEdit={currentCanEdit ? () => handleOpenWorkAreaActionPage(wa) : undefined} />
+        )}
       </VirtualizedList>
-      <ActionsFab
-        actions={[
-          {
-            label: STRINGS.add,
-            icon: <Add />,
-            onClick: () => handleOpenWorkAreaActionPage(),
-          },
-        ]}
-      />
+      {currentCanAdd && (
+        <ActionsFab
+          actions={[
+            {
+              label: STRINGS.add,
+              icon: <Add />,
+              onClick: () => handleOpenWorkAreaActionPage(),
+            },
+          ]}
+        />
+      )}
       {isLoading && <LoadingOverlay />}
     </Stack>
   );

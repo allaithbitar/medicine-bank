@@ -12,6 +12,8 @@ import type { TSearchEmployeesDto } from '../types/employee.types';
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
+import useUser from '@/core/hooks/user-user.hook';
 
 const defaultState = {
   pageSize: DEFAULT_PAGE_SIZE,
@@ -20,8 +22,13 @@ const defaultState = {
 
 const EmployeesPage = () => {
   const navigate = useNavigate();
+  const { name } = useUser();
+  const { currentCanAdd, currentCanEdit, currentUserRole } = usePermissions();
 
-  const [queryData] = useState<TSearchEmployeesDto>(defaultState);
+  const [queryData] = useState<TSearchEmployeesDto>({
+    ...defaultState,
+    ...(currentUserRole === 'scout' && { query: name }),
+  });
 
   const { items, error, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } = useEmployeesLoader(queryData);
 
@@ -36,17 +43,19 @@ const EmployeesPage = () => {
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
         isLoading={isFetchingNextPage}
       >
-        {({ item: e }) => <EmployeeCard employee={e} key={e.id} />}
+        {({ item: e }) => <EmployeeCard canEdit={currentCanEdit} employee={e} key={e.id} />}
       </VirtualizedList>
-      <ActionsFab
-        actions={[
-          {
-            label: STRINGS.add_employee,
-            icon: <Add />,
-            onClick: () => navigate('/employees/action'),
-          },
-        ]}
-      />
+      {currentCanAdd && (
+        <ActionsFab
+          actions={[
+            {
+              label: STRINGS.add_employee,
+              icon: <Add />,
+              onClick: () => navigate('/employees/action'),
+            },
+          ]}
+        />
+      )}
       {isLoading && <LoadingOverlay />}
     </Stack>
   );

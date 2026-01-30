@@ -11,12 +11,14 @@ import ratingsApi from '@/features/ratings/api/ratings.api';
 import Header from '@/core/components/common/header/header';
 import Nodata from '@/core/components/common/no-data/no-data.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 function AdviserDisclosureConsultationsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get('tab') === 'pending' ? 'pending' : 'completed';
   const navigate = useNavigate();
   const { closeModal, openModal } = useModal();
+  const { currentCanRate } = usePermissions();
 
   const { data: response = { items: [] }, isFetching } = disclosuresApi.useGetDisclosureAdviserConsultationsQuery({
     consultationStatus: currentTab,
@@ -93,9 +95,9 @@ function AdviserDisclosureConsultationsPage() {
           <ConsultingAdviserCard
             key={ac.id}
             adviserConsultation={ac}
-            ratings={currentTab === 'pending' ? ratings : undefined}
+            ratings={currentTab === 'pending' && currentCanRate ? ratings : undefined}
             handleSelectRating={
-              currentTab === 'pending'
+              currentTab === 'pending' && currentCanRate
                 ? (ratingId, adviserConsultationId, ratingName) =>
                     handleChipClicked({ ratingId, adviserConsultationId, ratingName })
                 : undefined

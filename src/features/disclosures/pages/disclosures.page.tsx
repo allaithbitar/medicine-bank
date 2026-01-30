@@ -19,9 +19,11 @@ import {
 import useStorage from '@/core/hooks/use-storage.hook';
 import { useFileDownload } from '@/core/hooks/use-file-download.hook';
 import { notifySuccess } from '@/core/components/common/toast/toast';
+import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 const DisclosuresPage = () => {
   const { openModal, closeModal } = useModal();
+  const { currentCanAdd, currentShowFilters } = usePermissions();
 
   const [filtersState, setFiltersState] = useStorage<TDisclosureFiltersForm>(
     'disclosure-filters',
@@ -65,6 +67,40 @@ const DisclosuresPage = () => {
     return <ErrorCard error={error} />;
   }
 
+  const actions = [];
+
+  if (currentCanAdd) {
+    actions.push({
+      label: STRINGS.add_disclosure,
+      icon: <Add />,
+      onClick: () => navigate('/disclosures/action'),
+    });
+  }
+
+  if (currentShowFilters) {
+    actions.push({
+      label: STRINGS.filter,
+      icon: <Filter />,
+      onClick: () =>
+        openModal({
+          name: 'DISCLOSURE_FILTERS_MODAL',
+          props: {
+            onSubmit: (values) => {
+              closeModal();
+              return setFiltersState(values);
+            },
+            value: filtersState,
+          },
+        }),
+    });
+  }
+
+  actions.push({
+    label: STRINGS.export_disclosures,
+    icon: <SimCardDownloadIcon />,
+    onClick: isDownloading ? undefined : () => handleExportDisclosures(),
+  });
+
   return (
     <Stack sx={{ height: '100%' }}>
       <VirtualizedList
@@ -75,35 +111,7 @@ const DisclosuresPage = () => {
       >
         {({ item: d }) => <DisclosureCard disclosure={d} key={d.id} />}
       </VirtualizedList>
-      <ActionsFab
-        actions={[
-          {
-            label: STRINGS.add_disclosure,
-            icon: <Add />,
-            onClick: () => navigate('/disclosures/action'),
-          },
-          {
-            label: STRINGS.filter,
-            icon: <Filter />,
-            onClick: () =>
-              openModal({
-                name: 'DISCLOSURE_FILTERS_MODAL',
-                props: {
-                  onSubmit: (values) => {
-                    closeModal();
-                    return setFiltersState(values);
-                  },
-                  value: filtersState,
-                },
-              }),
-          },
-          {
-            label: STRINGS.export_disclosures,
-            icon: <SimCardDownloadIcon />,
-            onClick: isDownloading ? undefined : () => handleExportDisclosures(),
-          },
-        ]}
-      />
+      <ActionsFab actions={actions} />
       {isFetching && !isFetchingNextPage && <LoadingOverlay />}
     </Stack>
   );
