@@ -43,6 +43,10 @@ export const usePermissions = () => {
     () => (routePath: string) => checkActionPermission(routePath, 'showFilters', currentUserRole),
     [currentUserRole]
   );
+  const canArchive = useMemo(
+    () => (routePath: string) => checkActionPermission(routePath, 'canArchive', currentUserRole),
+    [currentUserRole]
+  );
   const currentCanAdd = useMemo(
     () => checkActionPermission(location.pathname, 'canAdd', currentUserRole),
     [location.pathname, currentUserRole]
@@ -59,6 +63,10 @@ export const usePermissions = () => {
     () => checkActionPermission(location.pathname, 'showFilters', currentUserRole),
     [location.pathname, currentUserRole]
   );
+  const currentCanArchive = useMemo(
+    () => checkActionPermission(location.pathname, 'canArchive', currentUserRole),
+    [location.pathname, currentUserRole]
+  );
 
   return {
     hasRouteAccess,
@@ -70,10 +78,12 @@ export const usePermissions = () => {
     canEdit,
     canRate,
     showFilters,
+    canArchive,
     currentCanAdd,
     currentCanEdit,
     currentCanRate,
     currentShowFilters,
+    currentCanArchive,
   };
 };
 

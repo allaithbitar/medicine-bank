@@ -7,9 +7,10 @@ export type TRoutePermission = {
   canEdit?: TUserRole[];
   canRate?: TUserRole[];
   showFilters?: TUserRole[];
+  canArchive?: TUserRole[];
 };
 
-export type TActionType = 'canAdd' | 'canEdit' | 'canRate' | 'showFilters';
+export type TActionType = 'canAdd' | 'canEdit' | 'canRate' | 'showFilters' | 'canArchive';
 
 export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   { path: '/', allowedRoles: ['manager', 'supervisor', 'scout'] },
@@ -35,6 +36,7 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
     path: '/disclosures/:disclosureId',
     allowedRoles: ['manager', 'supervisor', 'scout'],
     canEdit: ['manager', 'scout'],
+    canArchive: ['manager', 'supervisor'],
   },
   {
     path: '/disclosures/details/action',

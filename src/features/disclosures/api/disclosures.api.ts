@@ -326,6 +326,30 @@ export const disclosuresApi = rootApi.injectEndpoints({
         { id: args.disclosureId, type: 'Disclosures' },
       ],
     }),
+
+    archiveDisclosure: builder.mutation<void, { id: string }>({
+      query: (body) => ({
+        url: '/disclosures/archive',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: (_, __, args) => [
+        { id: args.id, type: 'Disclosures' },
+        'Disclosures',
+      ],
+    }),
+
+    unarchiveDisclosure: builder.mutation<void, { id: string }>({
+      query: (body) => ({
+        url: '/disclosures/unarchive',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: (_, __, args) => [
+        { id: args.id, type: 'Disclosures' },
+        'Disclosures',
+      ],
+    }),
   }),
 });
 

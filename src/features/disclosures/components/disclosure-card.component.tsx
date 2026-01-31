@@ -66,6 +66,8 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const isAppointmentCompletedChip = disclosure.isAppointmentCompleted && STRINGS.appointment_completed;
 
   const isReceivedChip = disclosure.isReceived && STRINGS.is_received;
+  const isArchived = disclosure.status === 'archived';
+
   return (
     <ReusableCardComponent
       headerBackground={`linear-gradient(to right, ${purple[800]}, ${purple[500]})`}
@@ -88,6 +90,7 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
                 }}
               />
             )}
+            {isArchived && <Chip size="small" variant="outlined" label={STRINGS.archived} color="warning" />}
           </Stack>
 
           <Link to={`/disclosures/${disclosure.id}`}>

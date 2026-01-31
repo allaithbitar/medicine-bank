@@ -5,7 +5,16 @@ import Header from '@/core/components/common/header/header';
 import STRINGS from '@/core/constants/strings.constant';
 import { formatDateTime, isNullOrUndefined } from '@/core/helpers/helpers';
 import type { TDisclosure } from '../types/disclosure.types';
-import { Comment, DirectionsWalk, Edit, EventAvailable, History, Info, InfoOutline } from '@mui/icons-material';
+import {
+  Comment,
+  DirectionsWalk,
+  Edit,
+  EventAvailable,
+  History,
+  Info,
+  InfoOutline,
+  Archive,
+} from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useMemo } from 'react';
 import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
@@ -15,6 +24,8 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
   const { canEdit, currentCanEdit } = usePermissions();
   const canUserEditPatient = canEdit('/beneficiaries/action');
+  const isArchived = disclosure.status === 'archived';
+
   return (
     <>
       <Card>
@@ -24,6 +35,17 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
       <Card>
         <Header title={STRINGS.disclosure} />
         <Stack gap={2}>
+          {isArchived && (
+            <Chip
+              icon={<Archive />}
+              label={STRINGS.archived}
+              color="warning"
+              size="medium"
+              sx={{
+                alignSelf: 'flex-start',
+              }}
+            />
+          )}
           <DetailItem icon={<InfoOutline />} label={STRINGS.status} value={STRINGS[disclosure.status]} />
           <DetailItem
             icon={<DirectionsWalk />}
