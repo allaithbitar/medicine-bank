@@ -140,18 +140,22 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         onChange={(v) => setValue({ role: v })}
         errorText={formErrors.role?.[0].message}
       />
-      <CitiesAutocomplete
-        multiple={false}
-        value={formState.city}
-        onChange={(v) => setValue({ city: v })}
-        errorText={formErrors.city?.[0].message}
-      />
-      <AreasAutocomplete
-        multiple={true}
-        cityId={formState.city?.id}
-        value={formState.areas}
-        onChange={(v) => setValue({ areas: v })}
-      />
+      {formState.role?.id == 'scout' && (
+        <>
+          <CitiesAutocomplete
+            multiple={false}
+            value={formState.city}
+            onChange={(v) => setValue({ city: v })}
+            errorText={formErrors.city?.[0].message}
+          />
+          <AreasAutocomplete
+            multiple={true}
+            cityId={formState.city?.id}
+            value={formState.areas}
+            onChange={(v) => setValue({ areas: v })}
+          />
+        </>
+      )}
       {isLoading && <LoadingOverlay />}
     </Stack>
   );
