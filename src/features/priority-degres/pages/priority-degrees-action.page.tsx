@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Stack, TextField, MenuItem, Select, type SelectChangeEvent, Typography, Card } from '@mui/material';
+import { Box, Stack, MenuItem, Select, type SelectChangeEvent, Typography, Card } from '@mui/material';
 import { red, green, orange } from '@mui/material/colors';
 import * as z from 'zod';
 import type { TAddPriorityDegreeDto, TPriorityDegree, TUpdatePriorityDegreeDto } from '../types/priority-degree.types';
@@ -11,10 +11,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import FormNumberInput from '@/core/components/common/inputs/form-number-input.component';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
 
 const PriorityDegreeSchema = z.object({
   name: z.string().min(1, { message: STRINGS.schema_required }).max(100),
   color: z.string().min(1, { message: STRINGS.schema_required }),
+  durationInDays: z.number().int().positive().optional().or(z.literal(0)),
 });
 
 type TFormValues = z.infer<typeof PriorityDegreeSchema>;
@@ -63,6 +66,7 @@ const PriorityDegreesActionPage = () => {
   const [values, setValues] = useReducerState<TFormValues>({
     name: cachedPriorityDegree?.name ?? '',
     color: cachedPriorityDegree?.color ?? green[700],
+    durationInDays: cachedPriorityDegree?.durationInDays ?? undefined,
   });
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
@@ -81,6 +85,12 @@ const PriorityDegreesActionPage = () => {
     setValues({ color: v });
   };
 
+  const handleDurationChange = (val: string) => {
+    const num = val === '' ? undefined : Number(val);
+    setValues({ durationInDays: num });
+    setErrors((prev) => prev.filter((e) => e.path[0] !== 'durationInDays'));
+  };
+
   const handleSubmit = async () => {
     try {
       const parsed = PriorityDegreeSchema.parse(values);
@@ -89,12 +99,14 @@ const PriorityDegreesActionPage = () => {
           id: cachedPriorityDegree.id,
           name: parsed.name,
           color: parsed.color ?? undefined,
+          durationInDays: parsed.durationInDays,
         };
         await updatePriorityDegree(payload).unwrap();
       } else {
         const payload: TAddPriorityDegreeDto = {
           name: parsed.name,
           color: parsed.color ?? undefined,
+          durationInDays: parsed.durationInDays,
         };
         await addPriorityDegree(payload).unwrap();
       }
@@ -115,13 +127,18 @@ const PriorityDegreesActionPage = () => {
     <Card>
       <Typography sx={{ pb: 2 }}>{id ? STRINGS.edit_priority_degree : STRINGS.add_priority_degree}</Typography>
       <Stack gap={2}>
-        <TextField
-          fullWidth
+        <FormTextFieldInput
+          required
           label={STRINGS.name}
           value={values.name}
-          onChange={(e) => handleNameChange(e.target.value)}
-          error={!!getErrorForField('name')}
-          helperText={getErrorForField('name')}
+          onChange={(value) => handleNameChange(value)}
+          errorText={getErrorForField('name')}
+        />
+        <FormNumberInput
+          value={values.durationInDays}
+          label={STRINGS.duration_in_days}
+          onChange={(v) => handleDurationChange(`${v}`)}
+          errorText={getErrorForField('durationInDays')}
         />
 
         <Box>

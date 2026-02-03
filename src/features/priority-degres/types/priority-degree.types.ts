@@ -7,6 +7,7 @@ export type TPriorityDegree = {
 
 export type TAddPriorityDegreeDto = Pick<TPriorityDegree, 'name'> & {
   color?: string;
+  durationInDays?: number;
 };
 
 export type TUpdatePriorityDegreeDto = TAddPriorityDegreeDto & { id: string };

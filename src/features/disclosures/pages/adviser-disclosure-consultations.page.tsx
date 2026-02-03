@@ -69,7 +69,7 @@ function AdviserDisclosureConsultationsPage() {
   return (
     <Card>
       <Stack gap={2} sx={{ position: 'relative' }}>
-        <Header title={STRINGS.consulting_adviser} />
+        <Header title={STRINGS.disclosure_consulting} />
         <Tabs
           value={currentTab}
           variant="fullWidth"

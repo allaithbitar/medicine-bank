@@ -22,6 +22,7 @@ const CardAvatar = ({ name, subLabel, icon, actions, extras }: TCardAvatarProps)
       direction="row"
       sx={{
         alignItems: 'center',
+        paddingInlineStart: 1,
         width: '100%',
       }}
     >
