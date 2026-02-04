@@ -8,8 +8,6 @@ import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import useReducerState from '@/core/hooks/use-reducer.hook';
 import STRINGS from '@/core/constants/strings.constant';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import meetingsApi from '../api/meetings.api';
 import FormDateTimeInput from '@/core/components/common/inputs/form-date-time-input.componenet';
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -106,17 +104,15 @@ const MeetingActionPage = () => {
           errorText={getErrorForField('note')}
         />
 
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <FormDateTimeInput
-            label={STRINGS.date}
-            value={values.date}
-            onChange={(newDate) => {
-              setValues({ date: newDate });
-              setErrors((p) => p.filter((er) => er.path[0] !== 'date'));
-            }}
-            errorText={getErrorForField('date')}
-          />
-        </LocalizationProvider>
+        <FormDateTimeInput
+          label={STRINGS.date}
+          value={values.date}
+          onChange={(newDate) => {
+            setValues({ date: newDate });
+            setErrors((p) => p.filter((er) => er.path[0] !== 'date'));
+          }}
+          errorText={getErrorForField('date')}
+        />
       </Stack>
 
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />

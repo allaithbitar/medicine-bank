@@ -196,6 +196,7 @@ const STRINGS = {
   edit_meeting: 'تعديل اجتماع',
   add_meeting: 'اضافة اجتماع',
   date: 'التاريخ',
+  date_time: 'التاريخ والوقت',
   add_disclosure_note: 'اضافة ملاحظة',
   add_note: 'اضافة ملاحطة',
   edit_note: 'تعديل ملاحظة',
@@ -357,6 +358,17 @@ const STRINGS = {
   download_failed: 'فشل التنزيل، يرجى المحاولة مرة أخرى',
   system_broadcast: 'اخطارات النظام',
   statistics: 'الإحصائيات',
+  Calender_cancel: 'إلغاء',
+  calendar_clear: 'مسح',
+  calendar_ok: 'موافق',
+  calendar_today: 'اليوم',
+  calendar_open_picker: 'افتح المحدد',
+  calendar_choose_hour: 'اختر الساعة',
+  calendar_choose_min: 'اختر الدقيقة',
+  calendar_choose_Time: 'اختر الوقت',
+  calendar_next: 'التالي',
+  calendar_select_Text: 'اختر التاريخ',
+  calendar_select_date_time: 'اختر التاريخ والوقت',
 };
 
 export default STRINGS;
