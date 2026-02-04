@@ -44,11 +44,6 @@ const SearchFilter = ({
           ),
         },
       }}
-      sx={{
-        '& .MuiOutlinedInput-root': {
-          borderRadius: 1,
-        },
-      }}
     />
   );
 };

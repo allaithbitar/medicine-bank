@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import STRINGS from '@/core/constants/strings.constant';
-import { Stack, TextField, Card, Typography } from '@mui/material';
+import { Stack, Card } from '@mui/material';
 import useReducerState from '@/core/hooks/use-reducer.hook';
 import z from 'zod';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -10,6 +10,9 @@ import { RatingSchema, UpdateRatingSchema } from '../schemas/rating.schema';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import Header from '@/core/components/common/header/header';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 
 interface IRatingsData {
   name: string;
@@ -91,34 +94,29 @@ const RatingActionPage = () => {
 
   return (
     <Card>
-      <Typography sx={{ pb: 2 }}>{id ? STRINGS.edit_rating : STRINGS.add_rating}</Typography>
+      <Header title={id ? STRINGS.edit_rating : STRINGS.add_rating} />
       <Stack sx={{ flexDirection: 'column', gap: 1 }}>
-        <TextField
-          fullWidth
+        <FormTextFieldInput
           label={STRINGS.name}
           value={state.name}
-          onChange={(e) => handleFieldChange('name', e.target.value)}
+          onChange={(value) => handleFieldChange('name', value)}
           error={!!getErrorForField('name')}
-          helperText={getErrorForField('name')}
-          disabled={false}
+          errorText={getErrorForField('name')}
         />
-        <TextField
+        <FormTextAreaInput
           fullWidth
           label={STRINGS.description}
           value={state.description}
-          onChange={(e) => handleFieldChange('description', e.target.value)}
+          onChange={(value) => handleFieldChange('description', value)}
           error={!!getErrorForField('description')}
-          helperText={getErrorForField('description')}
-          disabled={false}
+          errorText={getErrorForField('description')}
         />
-        <TextField
-          fullWidth
+        <FormTextFieldInput
           label={STRINGS.code}
           value={state.code}
-          onChange={(e) => handleFieldChange('code', e.target.value)}
+          onChange={(value) => handleFieldChange('code', value)}
           error={!!getErrorForField('code')}
-          helperText={getErrorForField('code')}
-          disabled={false}
+          errorText={getErrorForField('code')}
         />
       </Stack>
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />

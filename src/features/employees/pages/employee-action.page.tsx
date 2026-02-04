@@ -11,6 +11,7 @@ import EmployeeActionForm from '../components/employee-action-form.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
+import Header from '@/core/components/common/header/header';
 
 const EmployeeActionPage = () => {
   const ref = useRef<TEmployeeFormHandlers | null>(null);
@@ -73,6 +74,7 @@ const EmployeeActionPage = () => {
 
   return (
     <Card>
+      <Header title={employeeId ? STRINGS.edit : STRINGS.add} />
       <EmployeeActionForm ref={ref} employeeData={employeeData} />
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}

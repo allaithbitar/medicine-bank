@@ -1,7 +1,7 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
-import { Card, Stack, TextField, Typography } from '@mui/material';
+import { Card, Stack, Typography } from '@mui/material';
 import STRINGS from '@/core/constants/strings.constant';
 import AudioPlayer, { type TAudioFile } from '../components/audio-player.component';
 import useReducerState from '@/core/hooks/use-reducer.hook';
@@ -11,6 +11,7 @@ import type { TDisclosureAdviserConsultation } from '../types/disclosure.types';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import disclosuresApi from '../api/disclosures.api';
 import { skipToken } from '@reduxjs/toolkit/query';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 
 const AdviserConsultationSchema = z.object({
   consultationNote: z.string().min(0),
@@ -43,6 +44,7 @@ const DisclosureConsultingAdviserActionPage = () => {
   }, [oldAdviserConsultation]);
 
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
+  console.log('🚀 ~ DisclosureConsultingAdviserActionPage ~ errors:', errors);
 
   const [audioFile, setAudioFile] = useState<TAudioFile>();
 
@@ -63,8 +65,8 @@ const DisclosureConsultingAdviserActionPage = () => {
       setErrors([
         {
           code: 'custom',
-          message: 'Provide text (more than 10 chart) or audio',
-          path: ['noteText'],
+          message: STRINGS.schema_note_requirement,
+          path: ['consultationNote'],
         },
       ]);
       return false;
@@ -112,21 +114,16 @@ const DisclosureConsultingAdviserActionPage = () => {
     <Card sx={{ p: 2 }}>
       <Typography sx={{ pb: 2 }}>{oldAdviserConsultation ? STRINGS.edit_note : STRINGS.add_note}</Typography>
       <Stack gap={2}>
-        <TextField
-          fullWidth
+        <FormTextAreaInput
           label={STRINGS.note}
           value={val.consultationNote}
-          onChange={(e) => handleFieldChange('consultationNote', e.target.value)}
+          onChange={(value) => handleFieldChange('consultationNote', value)}
           error={!!getErrorForField('consultationNote')}
-          helperText={getErrorForField('consultationNote')}
-          multiline
-          minRows={3}
+          errorText={getErrorForField('consultationNote')}
         />
-
         <AudioPlayer setAudioFile={setAudioFile} audioFile={audioFile} setErrors={setErrors} />
       </Stack>
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
-      {/* {isLoading && <LoadingOverlay />} */}
     </Card>
   );
 };

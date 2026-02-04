@@ -351,10 +351,12 @@ const STRINGS = {
   schema_intake_freq_number: 'تكرار الجرعة يجب أن يكون رقمًا',
   schema_intake_freq_min: 'تكرار الجرعة يجب أن يكون >= 0',
   schema_invalid_national_number: 'الرقم الوطني 11 رقمًا',
-  schema_note_requirement: 'يرجى تقديم نص (أكثر من 10 أحرف) أو ملف صوتي',
+  schema_note_requirement: 'يرجى ادخال نص (أكثر من 10 أحرف) أو ملف صوتي',
   downloading: 'جاري التنزيل...',
   download_complete: 'تم التنزيل بنجاح',
   download_failed: 'فشل التنزيل، يرجى المحاولة مرة أخرى',
+  system_broadcast: 'اخطارات النظام',
+  statistics: 'الإحصائيات',
 };
 
 export default STRINGS;

@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { TextField, Button, Container, Stack } from '@mui/material';
+import { Button, Container, Stack } from '@mui/material';
 import KeyIcon from '@mui/icons-material/Key';
 import PersonIcon from '@mui/icons-material/Person';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { notifyError } from '@/core/components/common/toast/toast';
 import { authActions } from '@/core/slices/auth/auth.slice';
 import STRINGS from '@/core/constants/strings.constant';
 import { useAppDispatch } from '@/core/store/root.store.types';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
 
 const LoginPage = () => {
   const location = useLocation();
@@ -27,8 +28,8 @@ const LoginPage = () => {
     if (id && token) navigate(from, { replace: true });
   }, [navigate, id, token, location?.state?.from]);
 
-  const handleChange = (e: any) => {
-    setCredentials((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (name: string, value: any) => {
+    setCredentials((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleLogin = async (event: FormEvent) => {
@@ -65,35 +66,27 @@ const LoginPage = () => {
 
         <form onSubmit={handleLogin} style={{ width: '100%' }}>
           <Stack gap={2}>
-            <TextField
+            <FormTextFieldInput
               name="phone"
               label={STRINGS.phone_number}
               fullWidth
               value={credentials.phone}
-              onChange={handleChange}
+              onChange={(v) => handleChange('phone', v)}
+              startAdornment={<PersonIcon />}
               required
               autoFocus
-              slotProps={{
-                input: {
-                  startAdornment: <PersonIcon />,
-                },
-              }}
               disabled={isLoading}
             />
-            <TextField
+            <FormTextFieldInput
               name="password"
               label={STRINGS.password}
               type="password"
               fullWidth
               value={credentials.password}
-              onChange={handleChange}
+              onChange={(v) => handleChange('password', v)}
               required
+              startAdornment={<KeyIcon />}
               disabled={isLoading}
-              slotProps={{
-                input: {
-                  startAdornment: <KeyIcon />,
-                },
-              }}
             />
             <Button
               type="submit"

@@ -10,6 +10,7 @@ import SystemBroadcastCard from '../components/system-broadcast-card.component';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Nodata from '@/core/components/common/no-data/no-data.component';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
+import Header from '@/core/components/common/header/header';
 
 const AUDIENCES = ['all', 'scouts', 'supervisors'] as const;
 
@@ -61,6 +62,7 @@ const SystemBroadcastsPage = () => {
   return (
     <Stack>
       <Card>
+        <Header title={STRINGS.system_broadcast} />
         <Stack gap={3}>
           <Tabs
             value={currentTab}

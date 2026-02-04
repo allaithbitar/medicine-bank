@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Stack, TextField, Typography, Chip, Card } from '@mui/material';
+import { Box, Stack, Typography, Chip, Card } from '@mui/material';
 import { z } from 'zod';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
@@ -15,6 +15,9 @@ import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import { skipToken } from '@reduxjs/toolkit/query';
 import type { TMedicinesAutocompleteItem } from '@/features/autocomplete/types/autcomplete.types';
+import Header from '@/core/components/common/header/header';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 
 const BeneficiaryMedicineSchema = z.object({
   patientId: z.string().min(1, { message: STRINGS.schema_required }),
@@ -141,9 +144,7 @@ const BeneficiaryMedicineActionPage = () => {
 
   return (
     <Card sx={{ p: 2 }}>
-      <Typography sx={{ pb: 2 }}>
-        {oldBeneficiaryMedicine ? STRINGS.edit_beneficiary_medicine : STRINGS.add_beneficiary_medicine}
-      </Typography>
+      <Header title={oldBeneficiaryMedicine ? STRINGS.edit_beneficiary_medicine : STRINGS.add_beneficiary_medicine} />
       <Stack gap={2}>
         <Stack sx={{ flexDirection: 'row', gap: 1, alignItems: 'end' }}>
           <MedicinesAutocomplete
@@ -152,13 +153,12 @@ const BeneficiaryMedicineActionPage = () => {
             onChange={(m) => handleMedicineChange(m)}
             errorText={getErrorForField('medicineId')}
           />
-          <TextField
-            fullWidth
+          <FormTextFieldInput
             label={STRINGS.intake_frequency_per_day}
             value={values.intakeFrequency as unknown as string}
-            onChange={(e) => handleFrequencyChange(e.target.value)}
+            onChange={handleFrequencyChange}
             error={!!getErrorForField('intakeFrequency')}
-            helperText={getErrorForField('intakeFrequency')}
+            errorText={getErrorForField('intakeFrequency')}
             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 0 }}
           />
         </Stack>
@@ -191,14 +191,7 @@ const BeneficiaryMedicineActionPage = () => {
           </Typography>
         </Box>
 
-        <TextField
-          fullWidth
-          label={STRINGS.note}
-          value={values.note ?? ''}
-          onChange={(e) => handleNoteChange(e.target.value)}
-          multiline
-          minRows={2}
-        />
+        <FormTextAreaInput label={STRINGS.note} value={values.note ?? ''} onChange={handleNoteChange} />
       </Stack>
       <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}

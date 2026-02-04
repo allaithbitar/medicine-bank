@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Stack, TextField, Typography, Box, Select, MenuItem } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Save } from '@mui/icons-material';
 import z from 'zod';
@@ -18,6 +18,11 @@ import {
 } from '../types/system-broadcasts.types';
 import systemBroadcastsApi from '../api/system-broadcasts.api';
 import { skipToken } from '@reduxjs/toolkit/query/react';
+import Header from '@/core/components/common/header/header';
+import FormSelectInput from '@/core/components/common/inputs/form-select-input.component';
+import { getStringsLabel } from '@/core/helpers/helpers';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 
 const BroadcastSchema = z.object({
   type: z.enum(BROADCAST_TYPES, {
@@ -109,66 +114,43 @@ const SystemBroadcastActionPage = () => {
   const isLoading = isAdding || isUpdating || isLoadingById;
 
   return (
-    <Card sx={{ p: 2 }}>
-      <Typography variant="h6" sx={{ pb: 2 }}>
-        {id ? STRINGS.edit : STRINGS.add}
-      </Typography>
-
-      <Stack gap={2}>
-        <Box>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            {STRINGS.type}
-          </Typography>
-          <Select fullWidth value={values.type} onChange={(e) => handleFieldChange('type', e.target.value as any)}>
-            {BROADCAST_TYPES.map((t) => (
-              <MenuItem key={t} value={t}>
-                {STRINGS[`broadcast_type_${t}` as keyof typeof STRINGS] ?? t}
-              </MenuItem>
-            ))}
-          </Select>
-          <Typography color="error" variant="caption">
-            {getErrorForField('type')}
-          </Typography>
-        </Box>
-
-        <TextField
-          fullWidth
+    <Card>
+      <Header title={id ? STRINGS.edit : STRINGS.add} />
+      <Stack spacing={2}>
+        <FormSelectInput
+          value={values.type}
+          required
+          disableClearable
+          label={STRINGS.type}
+          options={BROADCAST_TYPES.map((t) => ({ id: t, label: getStringsLabel({ key: 'broadcast_type', val: t }) }))}
+          onChange={(v) => handleFieldChange('type', v)}
+          getOptionLabel={(option) => option.label}
+          errorText={getErrorForField('type')}
+        />
+        <FormTextFieldInput
           label={STRINGS.title}
           value={values.title}
-          onChange={(e) => handleFieldChange('title', e.target.value)}
-          error={!!getErrorForField('title')}
-          helperText={getErrorForField('title')}
+          onChange={(val) => handleFieldChange('title', val)}
+          errorText={getErrorForField('title')}
+          required
+        />
+        <FormSelectInput
+          label={STRINGS.audience}
+          value={values.audience}
+          required
+          disableClearable
+          options={BROADCAST_AUDIENCES.map((a) => ({ id: a, label: getStringsLabel({ key: 'audience', val: a }) }))}
+          onChange={(v) => handleFieldChange('audience', v)}
+          getOptionLabel={(option) => option.label}
+          errorText={getErrorForField('audience')}
         />
 
-        <Box>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            {STRINGS.audience}
-          </Typography>
-          <Select
-            fullWidth
-            value={values.audience}
-            onChange={(e) => handleFieldChange('audience', e.target.value as any)}
-          >
-            {BROADCAST_AUDIENCES.map((a) => (
-              <MenuItem key={a} value={a}>
-                {STRINGS[`audience_${a}` as keyof typeof STRINGS] ?? a}
-              </MenuItem>
-            ))}
-          </Select>
-          <Typography color="error" variant="caption">
-            {getErrorForField('audience')}
-          </Typography>
-        </Box>
-
-        <TextField
-          fullWidth
+        <FormTextAreaInput
           label={STRINGS.details}
           value={values.details ?? ''}
-          onChange={(e) => handleFieldChange('details', e.target.value)}
-          multiline
-          minRows={3}
+          onChange={(value) => handleFieldChange('details', value)}
           error={!!getErrorForField('details')}
-          helperText={getErrorForField('details')}
+          errorText={getErrorForField('details')}
         />
       </Stack>
 

@@ -1,39 +1,34 @@
-import STRINGS from "@/core/constants/strings.constant";
-import { Card, Stack } from "@mui/material";
-import type { TAddBeneficiaryDto } from "../types/beneficiary.types";
-import { useRef } from "react";
-import beneficiaryApi from "../api/beneficiary.api";
-import {
-  notifyError,
-  notifySuccess,
-} from "@/core/components/common/toast/toast";
-import type { TBenefificaryFormHandlers } from "../components/beneficiary-action-form.component";
-import BeneficiaryActionForm from "../components/beneficiary-action-form.component";
-import ActionFab from "@/core/components/common/action-fab/acion-fab.component";
-import { Save } from "@mui/icons-material";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import LoadingOverlay from "@/core/components/common/loading-overlay/loading-overlay";
+import STRINGS from '@/core/constants/strings.constant';
+import { Card, Stack } from '@mui/material';
+import type { TAddBeneficiaryDto } from '../types/beneficiary.types';
+import { useRef } from 'react';
+import beneficiaryApi from '../api/beneficiary.api';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import type { TBenefificaryFormHandlers } from '../components/beneficiary-action-form.component';
+import BeneficiaryActionForm from '../components/beneficiary-action-form.component';
+import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
+import { Save } from '@mui/icons-material';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import Header from '@/core/components/common/header/header';
 
 const BeneficiaryActionPage = () => {
   const [searchParams] = useSearchParams();
 
-  const beneficiaryId = searchParams.get("beneficiaryId");
+  const beneficiaryId = searchParams.get('beneficiaryId');
 
   const ref = useRef<TBenefificaryFormHandlers | null>(null);
 
   const navigate = useNavigate();
 
-  const [addBeneficiary, { isLoading: isAdding }] =
-    beneficiaryApi.useAddBeneficiaryMutation();
+  const [addBeneficiary, { isLoading: isAdding }] = beneficiaryApi.useAddBeneficiaryMutation();
 
-  const [updateBeneficiary, { isLoading: isUpdating }] =
-    beneficiaryApi.useUpdateBeneficiaryMutation();
+  const [updateBeneficiary, { isLoading: isUpdating }] = beneficiaryApi.useUpdateBeneficiaryMutation();
 
-  const { data: beneficiaryData, isLoading: isGetting } =
-    beneficiaryApi.useGetBeneficiaryQuery(
-      { id: beneficiaryId ?? "" },
-      { skip: !beneficiaryId },
-    );
+  const { data: beneficiaryData, isLoading: isGetting } = beneficiaryApi.useGetBeneficiaryQuery(
+    { id: beneficiaryId ?? '' },
+    { skip: !beneficiaryId }
+  );
 
   const isLoading = isAdding || isUpdating || isGetting;
 
@@ -74,7 +69,7 @@ const BeneficiaryActionPage = () => {
         //       .toISOString()
         //       .split("T")[0]
         //   : "",
-        birthDate: (result.birthDate || "")?.split("T")[0] || null,
+        birthDate: (result.birthDate || '')?.split('T')[0] || null,
       };
 
       if (!beneficiaryId) {
@@ -106,7 +101,8 @@ const BeneficiaryActionPage = () => {
 
   return (
     <Card>
-      <Stack gap={2} sx={{ position: "relative" }}>
+      <Stack gap={2} sx={{ position: 'relative' }}>
+        <Header title={beneficiaryId ? STRINGS.edit : STRINGS.add} />
         <BeneficiaryActionForm ref={ref} beneficiaryData={beneficiaryData} />
         <ActionFab icon={<Save />} color="success" onClick={handleSave} />
       </Stack>

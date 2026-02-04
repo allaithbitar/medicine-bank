@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card, TextField, Typography } from '@mui/material';
+import { Card } from '@mui/material';
 import { Save } from '@mui/icons-material';
 import z from 'zod';
 import type { TCity } from '@/features/banks/types/city.types';
@@ -10,6 +10,8 @@ import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import STRINGS from '@/core/constants/strings.constant';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import Header from '@/core/components/common/header/header';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
 
 const CityActionPage = () => {
   const navigate = useNavigate();
@@ -63,16 +65,15 @@ const CityActionPage = () => {
   }, [cityData]);
 
   return (
-    <Card sx={{ p: 2 }}>
-      <Typography sx={{ pb: 2 }}>{id ? STRINGS.edit_city : STRINGS.add_city}</Typography>
-
-      <TextField
-        fullWidth
+    <Card>
+      <Header title={id ? STRINGS.edit_city : STRINGS.add_city} />
+      <FormTextFieldInput
+        required
         label={STRINGS.city_name}
         value={cityName}
-        onChange={(e) => handleCityNameChange(e.target.value)}
+        onChange={(val) => handleCityNameChange(val)}
         error={!!getErrorForField('name')}
-        helperText={getErrorForField('name')}
+        errorText={getErrorForField('name')}
       />
 
       <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isBusy} />

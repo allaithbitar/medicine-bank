@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
-import { Card, TextField, Typography, Stack } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
@@ -12,6 +12,8 @@ import useReducerState from '@/core/hooks/use-reducer.hook';
 import z from 'zod';
 import AudioPlayer, { type TAudioFile } from '../components/audio-player.component';
 import { skipToken } from '@reduxjs/toolkit/query';
+import Header from '@/core/components/common/header/header';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 
 const NoteSchema = z.object({
   noteText: z.string().min(0),
@@ -111,19 +113,15 @@ const DisclosureNoteActionPage = () => {
 
   return (
     <Card sx={{ p: 2 }}>
-      <Typography sx={{ pb: 2 }}>{oldNote ? STRINGS.edit_note : STRINGS.add_note}</Typography>
+      <Header title={oldNote ? STRINGS.edit_note : STRINGS.add_note} />
       <Stack gap={2}>
-        <TextField
-          fullWidth
+        <FormTextAreaInput
           label={STRINGS.note}
           value={val.noteText}
-          onChange={(e) => handleFieldChange('noteText', e.target.value)}
+          onChange={(value) => handleFieldChange('noteText', value)}
           error={!!getErrorForField('noteText')}
-          helperText={getErrorForField('noteText')}
-          multiline
-          minRows={3}
+          errorText={getErrorForField('noteText')}
         />
-
         <AudioPlayer setAudioFile={setAudioFile} audioFile={audioFile} setErrors={setErrors} />
       </Stack>
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />

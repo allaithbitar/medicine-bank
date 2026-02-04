@@ -17,6 +17,7 @@ import FormDateInput from '@/core/components/common/inputs/form-date-input-compo
 import FormSelectInput from '@/core/components/common/inputs/form-select-input.component';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 import FormNumberInput from '@/core/components/common/inputs/form-number-input.component';
+import Header from '@/core/components/common/header/header';
 
 const FamilyMemberSchema = z.object({
   name: z.string().min(1, { message: STRINGS.schema_required }).max(200),
@@ -116,6 +117,7 @@ const BeneficiaryFamilyActionPage = () => {
 
   return (
     <Card>
+      <Header title={memberId ? STRINGS.edit_family_member : STRINGS.add_family_member} />
       <Stack gap={2}>
         <FormTextFieldInput
           required

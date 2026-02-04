@@ -1,14 +1,14 @@
-import { Button, Divider, Stack, Typography } from "@mui/material";
-import { useState } from "react";
+import { Button, Divider, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
 
-import { Check, Visibility } from "@mui/icons-material";
-import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
-import CardAvatar from "@/core/components/common/reusable-card/card-avatar.component";
-import DetailItemComponent from "@/core/components/common/detail-item/detail-item.component";
-import STRINGS from "@/core/constants/strings.constant";
-import Calendar from "../components/calendar/calendar.component";
-import { Link } from "react-router-dom";
-import disclosuresApi from "@/features/disclosures/api/disclosures.api";
+import { Check, Visibility } from '@mui/icons-material';
+import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
+import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
+import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
+import STRINGS from '@/core/constants/strings.constant';
+import Calendar from '../components/calendar/calendar.component';
+import { Link } from 'react-router-dom';
+import disclosuresApi from '@/features/disclosures/api/disclosures.api';
 
 // const DAYS = {
 //   SUNDAY: 0,
@@ -31,17 +31,16 @@ import disclosuresApi from "@/features/disclosures/api/disclosures.api";
 // };
 //
 const AppointmentsPage = () => {
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState('');
 
-  const { data: selectedDateAppointments } =
-    disclosuresApi.useGetDateAppointmentsQuery(
-      {
-        date: selectedDate,
-      },
-      {
-        skip: !selectedDate,
-      },
-    );
+  const { data: selectedDateAppointments } = disclosuresApi.useGetDateAppointmentsQuery(
+    {
+      date: selectedDate,
+    },
+    {
+      skip: !selectedDate,
+    }
+  );
 
   return (
     <Stack gap={2}>
@@ -53,7 +52,7 @@ const AppointmentsPage = () => {
             <ReusableCardComponent
               key={a.id}
               headerContent={<CardAvatar name={a.patient.name} />}
-              cardSx={{ border: "unset" }}
+              cardSx={{ border: 'unset' }}
               bodyContent={
                 <Stack gap={1}>
                   {/* <DetailItemComponent
@@ -80,23 +79,15 @@ const AppointmentsPage = () => {
                     icon={<Check />}
                     label={STRINGS.status}
                     value={
-                      <Typography
-                        variant="subtitle2"
-                        color={a.isAppointmentCompleted ? "success" : "warning"}
-                      >
-                        {a.isAppointmentCompleted
-                          ? STRINGS.appointment_completed
-                          : STRINGS.appointment_not_completed}
+                      <Typography variant="subtitle2" color={a.isAppointmentCompleted ? 'success' : 'warning'}>
+                        {a.isAppointmentCompleted ? STRINGS.appointment_completed : STRINGS.appointment_not_completed}
                       </Typography>
                     }
                   />
                 </Stack>
               }
               footerContent={
-                <Link
-                  to={`/disclosures/${a!.id}`}
-                  style={{ marginInlineStart: "auto" }}
-                >
+                <Link to={`/disclosures/${a!.id}`} style={{ marginInlineStart: 'auto' }}>
                   <Button variant="outlined" startIcon={<Visibility />}>
                     {STRINGS.view}
                   </Button>

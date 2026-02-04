@@ -1,17 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Box,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-  Chip,
-  type SelectChangeEvent,
-  Card,
-  InputAdornment,
-  Button,
-} from '@mui/material';
+import { Box, Stack, Typography, Chip, Card, InputAdornment, Button } from '@mui/material';
 import { z } from 'zod';
 import {
   ALLOWED_FORMS,
@@ -30,6 +18,9 @@ import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import { skipToken } from '@reduxjs/toolkit/query/react';
+import Header from '@/core/components/common/header/header';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
+import FormSelectInput from '@/core/components/common/inputs/form-select-input.component';
 
 const MedicineSchema = z.object({
   name: z.string().min(1, { message: STRINGS.schema_required }).max(200),
@@ -89,8 +80,7 @@ const MedicineActionPage = () => {
     setErrors((prev) => prev.filter((e) => e.path[0] !== 'name'));
   };
 
-  const handleFormChange = (e: SelectChangeEvent<string>) => {
-    const v = e.target.value as TFormValue;
+  const handleFormChange = (v: TFormValue) => {
     setValues((prev) => ({ ...prev, form: v }));
     setErrors((prev) => prev.filter((e) => e.path[0] !== 'form'));
   };
@@ -176,35 +166,26 @@ const MedicineActionPage = () => {
 
   return (
     <Card>
-      <Typography sx={{ pb: 2 }}>{initialMedicine ? STRINGS.edit_medicine : STRINGS.add_medicine}</Typography>
+      <Header title={initialMedicine ? STRINGS.edit_medicine : STRINGS.add_medicine} />
       <Stack gap={2}>
-        <TextField
-          fullWidth
+        <FormTextFieldInput
+          required
           label={STRINGS.name}
           value={values.name}
-          onChange={(e) => handleNameChange(e.target.value)}
+          onChange={handleNameChange}
           error={!!getErrorForField('name')}
-          helperText={getErrorForField('name')}
+          errorText={getErrorForField('name')}
         />
-
-        <Box>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            {STRINGS.med_form}
-          </Typography>
-
-          <Select fullWidth value={values.form} onChange={handleFormChange} displayEmpty sx={{ minWidth: 160 }}>
-            {ALLOWED_FORMS.map((f) => (
-              <MenuItem key={f} value={f}>
-                <Typography sx={{ textTransform: 'capitalize' }}>
-                  {getStringsLabel({ key: 'med_form', val: f })}
-                </Typography>
-              </MenuItem>
-            ))}
-          </Select>
-          <Typography color="error" variant="caption">
-            {getErrorForField('form')}
-          </Typography>
-        </Box>
+        <FormSelectInput
+          label={STRINGS.med_form}
+          value={values.form}
+          required
+          disableClearable
+          options={ALLOWED_FORMS.map((f) => ({ id: f, label: getStringsLabel({ key: 'med_form', val: f }) }))}
+          onChange={(v) => handleFormChange(v as TFormValue)}
+          getOptionLabel={(option) => option.label}
+          errorText={getErrorForField('form')}
+        />
 
         <Box>
           <Typography variant="body2" sx={{ mb: 1 }}>
@@ -212,24 +193,20 @@ const MedicineActionPage = () => {
           </Typography>
           <Stack gap={2}>
             <Stack direction="row" gap={1} alignItems="center" sx={{ mt: 1 }}>
-              <TextField
+              <FormTextFieldInput
                 label={STRINGS.custom_dose}
                 value={customDoseInput}
-                onChange={(e) => setCustomDoseInput(e.target.value)}
+                onChange={(value) => setCustomDoseInput(value)}
                 onKeyDown={onCustomDoseKeyDown}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <Button size="small" variant="contained" onClick={handleAddCustomDose}>
+                      {STRINGS.add}
+                    </Button>
+                  </InputAdornment>
+                }
                 size="small"
                 type="number"
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button size="small" variant="contained" onClick={handleAddCustomDose}>
-                          {STRINGS.add}
-                        </Button>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
               />
             </Stack>
             <Stack direction="row" gap={1} flexWrap="wrap" alignItems="center">
@@ -248,7 +225,6 @@ const MedicineActionPage = () => {
                   />
                 );
               })}
-
               {values.doseVariants
                 .filter((d) => !DOSE_OPTIONS.includes(d as any))
                 .map((d) => (

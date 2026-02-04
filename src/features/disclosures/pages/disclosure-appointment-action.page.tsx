@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
-import { Stack, Typography } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import Calendar from '@/features/appointments/components/calendar/calendar.component';
 import { useEffect, useState } from 'react';
 import { notifyError, notifyInfo, notifySuccess } from '@/core/components/common/toast/toast';
@@ -10,6 +10,7 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import WarningNotice from '@/core/components/common/warning-notice/warning-notice.component';
 import disclosuresApi from '../api/disclosures.api';
 import { skipToken } from '@reduxjs/toolkit/query';
+import Header from '@/core/components/common/header/header';
 
 const DisclosureAppointmentActionPage = () => {
   const [searchParams] = useSearchParams();
@@ -53,15 +54,15 @@ const DisclosureAppointmentActionPage = () => {
   };
 
   return (
-    <Stack sx={{ gap: 2 }}>
-      <Typography sx={{ pt: 1, px: 1 }} variant="body1">
-        {disclosure?.appointmentDate ? STRINGS.edit_appointment_date : STRINGS.select_appointment_date}
-      </Typography>
-      <Calendar selectedDate={selectedDate} onClick={(d, c) => handleSelectDate({ d, c })} />
-      <WarningNotice title={STRINGS.warning} message={STRINGS.appointment_warning_message} variant="outlined" />
-      <ActionFab color="success" icon={<Save />} disabled={!selectedDate} onClick={handleSave} />
-      {(isLoading || isLoadingDisclosure) && <LoadingOverlay />}
-    </Stack>
+    <Card sx={{ p: 1 }}>
+      <Stack sx={{ gap: 2 }}>
+        <Header title={disclosure?.appointmentDate ? STRINGS.edit_appointment_date : STRINGS.select_appointment_date} />
+        <Calendar selectedDate={selectedDate} onClick={(d, c) => handleSelectDate({ d, c })} />
+        <WarningNotice title={STRINGS.warning} message={STRINGS.appointment_warning_message} variant="outlined" />
+        <ActionFab color="success" icon={<Save />} disabled={!selectedDate} onClick={handleSave} />
+        {(isLoading || isLoadingDisclosure) && <LoadingOverlay />}
+      </Stack>
+    </Card>
   );
 };
 

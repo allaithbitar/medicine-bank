@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { TextField, Stack, Card, Typography } from '@mui/material';
+import { Stack, Card } from '@mui/material';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import { z } from 'zod';
 import workAreasApi from '@/features/banks/api/work-areas/work-areas.api';
@@ -14,6 +14,8 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import citiesApi from '../../api/cities-api/cities.api';
 import type { TAutocompleteItem } from '@/core/types/common.types';
+import Header from '@/core/components/common/header/header';
+import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
 
 interface IAreaData {
   selectedCity: TAutocompleteItem | null;
@@ -97,7 +99,7 @@ const WorkAreaActionPage = () => {
 
   return (
     <Card>
-      <Typography sx={{ pb: 2 }}>{workAreaById ? STRINGS.edit_city : STRINGS.add_city}</Typography>
+      <Header title={workAreaById ? STRINGS.edit_work_area : STRINGS.add_work_area} />
       <Stack gap={3}>
         <CitiesAutocomplete
           multiple={false}
@@ -108,13 +110,12 @@ const WorkAreaActionPage = () => {
           errorText={getErrorForField('selectedCity')}
           helperText={getErrorForField('selectedCity')}
         />
-        <TextField
-          fullWidth
+        <FormTextFieldInput
           label={STRINGS.work_area_name}
           value={state.workAreaName}
-          onChange={(e) => handleWorkAreaNameChange(e.target.value)}
+          onChange={handleWorkAreaNameChange}
           error={!!getErrorForField('workAreaName')}
-          helperText={getErrorForField('workAreaName')}
+          errorText={getErrorForField('workAreaName')}
           disabled={isLoading}
         />
       </Stack>

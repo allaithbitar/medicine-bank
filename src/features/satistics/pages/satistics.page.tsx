@@ -25,6 +25,7 @@ import DetailedReportResult from '../components/detailed-report-result.component
 import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import type { TAutocompleteItem } from '@/core/types/common.types';
+import Header from '@/core/components/common/header/header';
 
 const SatisticsPage = () => {
   const [timePeriod, setTimePeriod] = useState<TListItem & { label: string }>({
@@ -128,6 +129,7 @@ const SatisticsPage = () => {
     <Stack gap={1}>
       <Card>
         <Stack gap={2}>
+          <Header title={STRINGS.statistics} />
           <Stack direction="row" gap={1}>
             <FormAutocompleteInput
               label={STRINGS.satistics_type}

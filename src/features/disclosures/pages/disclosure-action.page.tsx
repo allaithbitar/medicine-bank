@@ -9,6 +9,7 @@ import { notifyError, notifySuccess } from '@/core/components/common/toast/toast
 import STRINGS from '@/core/constants/strings.constant';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
+import Header from '@/core/components/common/header/header';
 
 const DisclosureActionPage = () => {
   const [searchParams] = useSearchParams();
@@ -73,6 +74,7 @@ const DisclosureActionPage = () => {
 
   return (
     <Card>
+      <Header title={disclosureId ? STRINGS.edit : STRINGS.add} />
       <DisclosureActionForm ref={ref} beneficiaryAlreadyDefined={!!beneficiaryId} disclosureData={disclosureData} />
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}

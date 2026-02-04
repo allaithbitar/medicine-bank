@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import DisclosureCard from '../components/disclosure-card.component';
 import { Add, Filter } from '@mui/icons-material';
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
@@ -20,6 +20,7 @@ import useStorage from '@/core/hooks/use-storage.hook';
 import { useFileDownload } from '@/core/hooks/use-file-download.hook';
 import { notifySuccess } from '@/core/components/common/toast/toast';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
+import Header from '@/core/components/common/header/header';
 
 const DisclosuresPage = () => {
   const { openModal, closeModal } = useModal();
@@ -103,16 +104,19 @@ const DisclosuresPage = () => {
 
   return (
     <Stack sx={{ height: '100%' }}>
-      <VirtualizedList
-        totalCount={totalCount}
-        items={items}
-        onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
-        isLoading={isFetchingNextPage}
-      >
-        {({ item: d }) => <DisclosureCard disclosure={d} key={d.id} />}
-      </VirtualizedList>
-      <ActionsFab actions={actions} />
-      {isFetching && !isFetchingNextPage && <LoadingOverlay />}
+      <Card sx={{ p: 1 }}>
+        <Header title={STRINGS.disclosures} />
+        <VirtualizedList
+          totalCount={totalCount}
+          items={items}
+          onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
+          isLoading={isFetchingNextPage}
+        >
+          {({ item: d }) => <DisclosureCard disclosure={d} key={d.id} />}
+        </VirtualizedList>
+        <ActionsFab actions={actions} />
+        {isFetching && !isFetchingNextPage && <LoadingOverlay />}
+      </Card>
     </Stack>
   );
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Stack, TextField, Typography } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Save } from '@mui/icons-material';
 import z from 'zod';
@@ -13,6 +13,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import meetingsApi from '../api/meetings.api';
 import FormDateTimeInput from '@/core/components/common/inputs/form-date-time-input.componenet';
 import { skipToken } from '@reduxjs/toolkit/query';
+import Header from '@/core/components/common/header/header';
+import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 
 const MeetingSchema = z.object({
   note: z.string().min(1, { message: STRINGS.schema_required }),
@@ -90,22 +92,18 @@ const MeetingActionPage = () => {
   const isLoading = isAdding || isUpdating || isLoadingById;
 
   return (
-    <Card sx={{ p: 2 }}>
-      <Typography variant="h6" sx={{ pb: 2 }}>
-        {oldMeeting ? STRINGS.edit_meeting : STRINGS.add_meeting}
-      </Typography>
-
+    <Card>
+      <Header title={oldMeeting ? STRINGS.edit_meeting : STRINGS.add_meeting} />
       <Stack gap={2}>
-        <TextField
-          fullWidth
+        <FormTextAreaInput
           label={STRINGS.note}
           value={values.note}
-          onChange={(e) => {
-            setValues({ note: e.target.value });
+          onChange={(value) => {
+            setValues({ note: value });
             setErrors((p) => p.filter((er) => er.path[0] !== 'note'));
           }}
           error={!!getErrorForField('note')}
-          helperText={getErrorForField('note')}
+          errorText={getErrorForField('note')}
         />
 
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -116,12 +114,8 @@ const MeetingActionPage = () => {
               setValues({ date: newDate });
               setErrors((p) => p.filter((er) => er.path[0] !== 'date'));
             }}
+            errorText={getErrorForField('date')}
           />
-          {!!getErrorForField('date') && (
-            <Typography variant="caption" color="error">
-              {getErrorForField('date')}
-            </Typography>
-          )}
         </LocalizationProvider>
       </Stack>
 
