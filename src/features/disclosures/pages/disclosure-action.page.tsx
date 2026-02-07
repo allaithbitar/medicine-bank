@@ -3,13 +3,14 @@ import DisclosureActionForm, { type TDisclosureFormHandlers } from '../component
 import { useRef } from 'react';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
-import disclosuresApi from '../api/disclosures.api';
 import type { TAddDisclosureDto } from '../types/disclosure.types';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import Header from '@/core/components/common/header/header';
+import useDisclosureMutation from '../hooks/disclosure-mutation.hook';
+import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
 
 const DisclosureActionPage = () => {
   const [searchParams] = useSearchParams();
@@ -20,14 +21,13 @@ const DisclosureActionPage = () => {
 
   const disclosureId = searchParams.get('disclosureId');
 
-  const { data: disclosureData, isFetching: isGetting } = disclosuresApi.useGetDisclosureQuery(
-    { id: disclosureId! },
-    { skip: !disclosureId }
-  );
+  const { data: disclosureData, isFetching: isGetting } = useDisclosureLoader({ id: disclosureId! });
 
-  const [addDisclosure, { isLoading: isAdding }] = disclosuresApi.useAddDisclosureMutation();
+  const [mutateDisclosure, { isLoading: isMutating }] = useDisclosureMutation();
 
-  const [updateDisclosure, { isLoading: isUpdating }] = disclosuresApi.useUpdateDisclosureMutation();
+  // const [addDisclosure, { isLoading: isAdding }] = disclosuresApi.useAddDisclosureMutation();
+  //
+  // const [updateDisclosure, { isLoading: isUpdating }] = disclosuresApi.useUpdateDisclosureMutation();
 
   const ref = useRef<TDisclosureFormHandlers | null>(null);
 
@@ -37,40 +37,38 @@ const DisclosureActionPage = () => {
 
     try {
       const addDto: TAddDisclosureDto = {
-        scoutId: result.employee?.id ?? null,
+        type: result.type!.id,
         patientId: beneficiaryId ?? result.beneficiary!.id,
         priorityId: result.priorityDegree!.id,
+        scoutId: result.employee?.id || null,
         initialNote: result.initialNote || null,
       };
 
       if (!disclosureId) {
-        const { error } = await addDisclosure(addDto);
-        console.log('1');
-
-        if (error) {
-          notifyError(error);
-        } else {
-          navigate('/disclosures');
-          notifySuccess(STRINGS.added_successfully);
-        }
+        await mutateDisclosure({ type: 'INSERT', dto: addDto });
+        notifySuccess(STRINGS.added_successfully);
+        navigate('/disclosures');
       } else {
-        const { error } = await updateDisclosure({
-          ...addDto,
-          id: disclosureId,
-        });
-
-        if (error) {
-          notifyError(error);
-        } else {
-          navigate(`/disclosures/${disclosureId}`);
-          notifySuccess(STRINGS.edited_successfully);
-        }
+        await mutateDisclosure({ type: 'UPDATE', dto: { ...addDto, id: disclosureId } });
+        notifySuccess(STRINGS.edited_successfully);
+        navigate(`/disclosures/${disclosureId}`);
+        // const { error } = await updateDisclosure({
+        //   ...addDto,
+        //   id: disclosureId,
+        // });
+        //
+        // if (error) {
+        //   notifyError(error);
+        // } else {
+        //   navigate(`/disclosures/${disclosureId}`);
+        // }
       }
+      navigate('/disclosures');
     } catch (error: any) {
       notifyError(error);
     }
   };
-  const isLoading = isAdding || isUpdating || isGetting;
+  const isLoading = isMutating || isGetting;
 
   return (
     <Card>

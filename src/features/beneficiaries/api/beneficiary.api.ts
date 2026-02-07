@@ -19,12 +19,13 @@ import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types'
 
 export const beneficiaryApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
-    addBeneficiary: builder.mutation<void, TAddBeneficiaryDto>({
+    addBeneficiary: builder.mutation<{ id: string }, TAddBeneficiaryDto>({
       query: (data) => ({
         url: 'patients',
         method: 'POST',
         body: data,
       }),
+      transformResponse: (res: ApiResponse<{ id: string }>) => res.data,
       invalidatesTags: ['Beneficiaries'],
     }),
 
@@ -98,6 +99,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         body,
       }),
       invalidatesTags: [{ type: 'Beneficiary_Medicines', id: 'LIST' }, 'Beneficiary_Medicine'],
+      transformResponse: (res: ApiResponse<TBeneficiaryMedicine>) => res.data,
     }),
     updateBeneficiaryMedicine: builder.mutation<void, TUpdateBeneficiaryMedicinePayload>({
       query: (body) => ({
@@ -137,6 +139,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         body: data,
       }),
       invalidatesTags: (_, __, args) => [{ type: 'Family_Members', id: args.patientId }],
+      transformResponse: (res: ApiResponse<TFamilyMember>) => res.data,
     }),
     updateFamilyMember: builder.mutation<void, TUpdateFamilyMemberPayload>({
       query: (data) => ({

@@ -56,7 +56,10 @@ const WorkAreas = () => {
         isLoading={isFetchingNextPage}
       >
         {({ item: wa }) => (
-          <WorkAreaCardComponent workArea={wa} onEdit={currentCanEdit ? () => handleOpenWorkAreaActionPage(wa) : undefined} />
+          <WorkAreaCardComponent
+            workArea={wa}
+            onEdit={currentCanEdit ? () => handleOpenWorkAreaActionPage(wa) : undefined}
+          />
         )}
       </VirtualizedList>
       {currentCanAdd && (

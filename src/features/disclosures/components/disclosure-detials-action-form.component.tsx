@@ -96,15 +96,15 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
   useEffect(() => {
     if (disclosureDetails) {
       const mappedState: any = {
-        jobOrSchool: disclosureDetails.jobOrSchool,
-        diseasesOrSurgeries: disclosureDetails.diseasesOrSurgeries,
-        expenses: disclosureDetails.expenses,
-        electricity: disclosureDetails.electricity,
-        pros: disclosureDetails.pros,
-        cons: disclosureDetails.cons,
-        other: disclosureDetails.other,
-        houseConditionNote: disclosureDetails.houseConditionNote,
-        houseOwnershipNote: disclosureDetails.houseOwnershipNote,
+        jobOrSchool: disclosureDetails.jobOrSchool || '',
+        diseasesOrSurgeries: disclosureDetails.diseasesOrSurgeries || '',
+        expenses: disclosureDetails.expenses || '',
+        electricity: disclosureDetails.electricity || '',
+        pros: disclosureDetails.pros || '',
+        cons: disclosureDetails.cons || '',
+        other: disclosureDetails.other || '',
+        houseConditionNote: disclosureDetails.houseConditionNote || '',
+        houseOwnershipNote: disclosureDetails.houseOwnershipNote || '',
       };
 
       if (disclosureDetails.houseCondition) {

@@ -7,6 +7,7 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import STRINGS from '@/core/constants/strings.constant';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import { getErrorMessage } from '@/core/helpers/helpers';
+import DisabledOnOffline from '@/core/components/common/disabled-on-offline/disabled-on-offline.component';
 
 const SyncPage = () => {
   const [syncLocalData] = offlineApi.useLazySyncQuery();
@@ -29,6 +30,7 @@ const SyncPage = () => {
       areas: 'areas',
       priority_degrees: 'priorityDegrees',
       ratings: 'ratings',
+      // updates: 'updates',
     } as const;
 
     try {
@@ -209,12 +211,14 @@ const SyncPage = () => {
     // );
   };
   return (
-    <Stack sx={{ height: '100%', position: 'relative' }} justifyContent="center" alignItems="center">
-      {isLoading && <LoadingOverlay spinnerSize={100} />}
-      <Button disabled={isLoading} onClick={handleSync}>
-        {STRINGS.sync}
-      </Button>
-    </Stack>
+    <DisabledOnOffline>
+      <Stack sx={{ height: '100%', position: 'relative' }} justifyContent="center" alignItems="center">
+        {isLoading && <LoadingOverlay spinnerSize={100} />}
+        <Button disabled={isLoading} onClick={handleSync}>
+          {STRINGS.sync}
+        </Button>
+      </Stack>
+    </DisabledOnOffline>
   );
 };
 

@@ -7,16 +7,16 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle, DateRange, Archive, Unarchive } from '@mui/icons-material';
 import { useCallback } from 'react';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
-import disclosuresApi from '../api/disclosures.api';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import useDisclosureMutation from '../hooks/disclosure-mutation.hook';
+import disclosuresApi from '../api/disclosures.api';
 
 export default function DisclosureProperties({ disclosure }: { disclosure: TDisclosure }) {
   const navigate = useNavigate();
   const { openModal } = useModal();
   const { currentCanArchive } = usePermissions();
-  const [updateDisclosure, { isLoading: isUpdating }] = disclosuresApi.useUpdateDisclosureMutation();
   const [archiveDisclosure, { isLoading: isArchiving }] = disclosuresApi.useArchiveDisclosureMutation();
   const [unarchiveDisclosure, { isLoading: isUnarchiving }] = disclosuresApi.useUnarchiveDisclosureMutation();
 
@@ -26,6 +26,8 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
   const isDisclosureAppointmentCompleted = disclosure.isAppointmentCompleted === true;
   const canArchive = hasVisit && hasRating && isDisclosureReceived && isDisclosureAppointmentCompleted;
   const isArchived = disclosure.status === 'archived';
+  // const [updateDisclosure, { isLoading: isUpdating }] = disclosuresApi.useUpdateDisclosureMutation();
+  const [mutateDisclosure, { isLoading: isUpdating }] = useDisclosureMutation();
 
   const handleCompleteAppointment = useCallback(() => {
     openModal({
@@ -33,7 +35,7 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
       props: {
         message: STRINGS.complete_appointment_confirmation,
         onConfirm: async () => {
-          await updateDisclosure({ isAppointmentCompleted: true, id: disclosure.id });
+          await mutateDisclosure({ type: 'UPDATE', dto: { isAppointmentCompleted: true, id: disclosure.id } });
         },
       },
     });
@@ -46,7 +48,7 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
       props: {
         message: STRINGS.receive_disclosure_confirmation,
         onConfirm: async () => {
-          await updateDisclosure({ isReceived: true, id: disclosure.id });
+          await mutateDisclosure({ type: 'UPDATE', dto: { isReceived: true, id: disclosure.id } });
         },
       },
     });

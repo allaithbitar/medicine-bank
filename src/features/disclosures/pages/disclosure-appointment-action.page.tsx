@@ -11,6 +11,7 @@ import WarningNotice from '@/core/components/common/warning-notice/warning-notic
 import disclosuresApi from '../api/disclosures.api';
 import { skipToken } from '@reduxjs/toolkit/query';
 import Header from '@/core/components/common/header/header';
+import useDisclosureMutation from '../hooks/disclosure-mutation.hook';
 
 const DisclosureAppointmentActionPage = () => {
   const [searchParams] = useSearchParams();
@@ -27,7 +28,9 @@ const DisclosureAppointmentActionPage = () => {
     }
   }, [disclosure]);
 
-  const [updateDisclosureAppointment, { isLoading }] = disclosuresApi.useUpdateDisclosureMutation();
+  // const [updateDisclosureAppointment, { isLoading }] = disclosuresApi.useUpdateDisclosureMutation();
+
+  const [mutateDisclosure, { isLoading }] = useDisclosureMutation();
 
   const handleSave = async () => {
     if (!disclosure?.id) return;
@@ -37,7 +40,7 @@ const DisclosureAppointmentActionPage = () => {
       isCompleted: false,
     };
     try {
-      await updateDisclosureAppointment(updateDto).unwrap();
+      await mutateDisclosure({ type: 'UPDATE', dto: updateDto });
       notifySuccess(STRINGS.edited_successfully);
 
       navigate(-1);

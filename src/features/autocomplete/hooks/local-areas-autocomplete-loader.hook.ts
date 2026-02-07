@@ -16,7 +16,7 @@ export const useLocalAreasAutocompleteLoader = (dto: TAutocompleteDto & { cityId
       }
 
       if (dto.cityId) {
-        baseQuery = baseQuery.where('cityId', '=', `%${dto.cityId}%`);
+        baseQuery = baseQuery.where('cityId', '=', dto.cityId);
       }
 
       const countQuery = baseQuery.select((eb) => eb.fn.count<number>('id').as('count'));

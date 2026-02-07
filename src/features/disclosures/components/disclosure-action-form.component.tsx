@@ -2,7 +2,7 @@ import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
 
 import { Stack } from '@mui/material';
 import z from 'zod';
-import { type TDisclosure } from '../types/disclosure.types';
+import { type TDisclosure, type TDisclosureType } from '../types/disclosure.types';
 import STRINGS from '@/core/constants/strings.constant';
 import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
 import PriorityDegreesAutocomplete from '@/features/priority-degres/components/priority-degees-autocomplete.component';
@@ -11,10 +11,14 @@ import { useEffect, useImperativeHandle, type Ref } from 'react';
 import BeneficiariesAutocomplete from '@/features/beneficiaries/components/beneficiaries-autocomplete.component';
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import DisclosureTypeAutocomplete from './disclosure-type-autocomplete.component';
 
 const createDisclosureSchema = (beneficiaryAlreadyDefined = false) =>
   z
     .object({
+      type: z.custom<{ id: TDisclosureType; label: string } | null>((data) => !!data, {
+        message: STRINGS.schema_required,
+      }),
       employee: z.custom<TAutocompleteItem | null>(),
       beneficiary: z.custom<TAutocompleteItem | null>(),
       priorityDegree: z.custom<TPriorityDegree | null>((data) => !!data, {
@@ -46,6 +50,7 @@ const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }
   const { formState, formErrors, setValue, handleSubmit, setFormState } = useForm({
     schema: createDisclosureSchema(beneficiaryAlreadyDefined),
     initalState: {
+      type: null as any,
       priorityDegree: null,
       employee: null,
       beneficiary: null,
@@ -66,6 +71,10 @@ const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }
   useEffect(() => {
     if (disclosureData) {
       setFormState({
+        type: {
+          id: disclosureData.type,
+          label: STRINGS[disclosureData.type],
+        },
         employee: disclosureData.scout
           ? {
               id: disclosureData.scout?.id,
@@ -86,6 +95,14 @@ const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }
 
   return (
     <Stack gap={2}>
+      <DisclosureTypeAutocomplete
+        required
+        multiple={false}
+        value={formState.type}
+        onChange={(type) => setValue({ type })}
+        errorText={formErrors.type?.[0].message}
+      />
+
       <PriorityDegreesAutocomplete
         required
         multiple={false}

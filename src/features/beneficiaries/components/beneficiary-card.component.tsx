@@ -1,4 +1,4 @@
-import { Button, Stack, useTheme } from '@mui/material';
+import { Button, Stack, Typography, useTheme } from '@mui/material';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
 import { LocationPin, Phone, Pin, PriorityHighOutlined, Visibility } from '@mui/icons-material';
@@ -37,7 +37,9 @@ const BeneficiaryCard = ({
       return (
         <span key={i}>
           <a href={`tel:${tel}`} style={{ color: theme.palette.secondary.main, textDecoration: 'none' }}>
-            {p.phone}
+            <Typography component="span" variant="subtitle2">
+              {p.phone}
+            </Typography>
           </a>
           {i < beneficiary.phones.length - 1 && ' , '}
         </span>

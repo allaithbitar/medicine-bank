@@ -11,7 +11,7 @@ export type TAddBeneficiaryDto = {
   about: string | null;
   birthDate: string | null;
   job: string | null;
-  gender: string | null;
+  gender: TGender | null;
 }>;
 
 export type TUpdateBeneficiaryDto = TAddBeneficiaryDto & { id: string };
@@ -46,14 +46,14 @@ export type TBeneficiaryArea =
 export type TBenefieciary = {
   id: string;
   name: string;
-  nationalNumber: string;
-  address: string;
-  about: string;
+  nationalNumber: string | null;
+  address: string | null;
+  about: string | null;
   createdAt: string;
   updatedAt: string;
   phones: TBeneficiaryPhone[];
-  birthDate: string;
-  job: string;
+  birthDate: string | null;
+  job: string | null;
   gender: 'male' | 'female' | null;
 } & TBeneficiaryArea;
 

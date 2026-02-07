@@ -45,6 +45,7 @@ import DisclosureDetailsActionPage from './features/disclosures/pages/disclosure
 import DisclosureVisitAndRatingActionPage from './features/disclosures/pages/disclosure-visit-and-rating-action.page';
 import AuditDetailsActionPage from './features/disclosures/pages/disclosue-audit-details.page';
 import NotificationsPage from './features/notifications/pages/notifications.Page';
+import OfflineUpdatesPage from './features/offline/pages/offline-updates.page';
 
 function App() {
   const router = createBrowserRouter(
@@ -106,6 +107,8 @@ function App() {
 
               <Route path="/meetings" element={<MeetingsPage />} />
               <Route path="/meetings/action" element={<MeetingActionPage />} />
+
+              <Route path="/offline-updates" element={<OfflineUpdatesPage />} />
 
               <Route path="/system-broadcast" element={<SystemBroadcastsPage />} />
               <Route path="/system-broadcast/action" element={<SystemBroadcastActionPage />} />

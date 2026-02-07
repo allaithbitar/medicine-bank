@@ -38,7 +38,7 @@ const CitiesPage = () => {
   }, []);
 
   return (
-    <Stack gap={2} sx={{ height: '100%' }}>
+    <Stack gap={1} sx={{ height: '100%' }}>
       <CustomAppBar
         title={STRINGS.city_management}
         subtitle={STRINGS.add_and_manage_cities}

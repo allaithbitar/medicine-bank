@@ -7,7 +7,10 @@ import AudioPlayer, { type TAudioFile } from '../components/audio-player.compone
 import useReducerState from '@/core/hooks/use-reducer.hook';
 import z from 'zod';
 import { useEffect, useState } from 'react';
-import type { TDisclosureAdviserConsultation } from '../types/disclosure.types';
+import type {
+  TAddDisclosureAdviserConsultationPayload,
+  TDisclosureAdviserConsultation,
+} from '../types/disclosure.types';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import disclosuresApi from '../api/disclosures.api';
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -79,23 +82,27 @@ const DisclosureConsultingAdviserActionPage = () => {
     try {
       AdviserConsultationSchema.parse(val);
       if (!validateAtLeastOne()) return;
-      const fd = new FormData();
-      fd.append('disclosureId', disclosureId);
-      if (val.consultationNote && val.consultationNote.trim().length > 0)
-        fd.append('consultationNote', val.consultationNote.trim());
-      if (audioFile?.audioBlob) {
-        fd.append('deleteAudioFile', 'false');
-        const name = audioFile.audioName ?? `audio-${Date.now()}.webm`;
-        fd.append('consultationAudioFile', audioFile.audioBlob, name);
-      } else {
-        fd.append('deleteAudioFile', 'true');
-      }
+      // const fd = new FormData();
+      // fd.append('disclosureId', disclosureId);
+      // if (val.consultationNote && val.consultationNote.trim().length > 0)
+      //   fd.append('consultationNote', val.consultationNote.trim());
+      // if (audioFile?.audioBlob) {
+      //   fd.append('deleteAudioFile', 'false');
+      //   const name = audioFile.audioName ?? `audio-${Date.now()}.webm`;
+      //   fd.append('consultationAudioFile', audioFile.audioBlob, name);
+      // } else {
+      //   fd.append('deleteAudioFile', 'true');
+      // }
+      const dto: TAddDisclosureAdviserConsultationPayload = {
+        disclosureId,
+        consultationAudioFile: audioFile?.audioBlob,
+        consultationNote: val.consultationNote,
+      };
       if (oldAdviserConsultation) {
-        fd.append('id', oldAdviserConsultation.id);
-        await updateDisclosureAdviserConsultation(fd).unwrap();
+        await updateDisclosureAdviserConsultation({ ...dto, id: oldAdviserConsultation.id }).unwrap();
         notifySuccess(STRINGS.edited_successfully);
       } else {
-        await addDisclosureAdviserConsultation(fd).unwrap();
+        await addDisclosureAdviserConsultation(dto).unwrap();
         notifySuccess(STRINGS.added_successfully);
       }
       navigate(-1);

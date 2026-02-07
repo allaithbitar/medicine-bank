@@ -4,11 +4,13 @@ import type { TBenefieciary } from '../types/beneficiary.types';
 import STRINGS from '@/core/constants/strings.constant';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/sqlite';
 import { ParseJSONResultsPlugin } from 'kysely';
+import useIsOffline from '@/core/hooks/use-is-offline.hook';
 
-export const useLocalBeneficiaryLoader = ({ id }: { id: string }) => {
-  const isOffline = true;
+export const useLocalBeneficiaryLoader = ({ id }: { id: string }, forceOffline = false) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const isOffline = forceOffline || useIsOffline();
   const queryResult = useQuery({
-    queryKey: ['LOCAL_BENEFICIARY', id],
+    queryKey: ['LOCAL_BENEFICIARY', id, forceOffline],
     queryFn: async () => {
       const res = (await localDb
         .selectFrom('patients')
@@ -23,7 +25,7 @@ export const useLocalBeneficiaryLoader = ({ id }: { id: string }) => {
           jsonObjectFrom(
             col
               .selectFrom('areas')
-              .select(['areas.id', 'areas.name'])
+              .select(['areas.id', 'areas.name', 'areas.cityId'])
               .whereRef('areas.id', '=', 'patients.areaId')
           ).as('area'),
         ])

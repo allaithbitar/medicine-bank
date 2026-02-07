@@ -32,7 +32,7 @@ const MedicineCard = ({ medicine, onEdit }: { medicine: TMedicine; onEdit?: (m: 
           <DetailItemComponent
             label={STRINGS.dose_variants}
             icon={<VaccinesIcon />}
-            value={medicine.doseVariants.map((dv) => `${dv}mg`).join(' , ')}
+            value={medicine.doseVariants.map((dv) => `${dv}mg`).join(' , ') || STRINGS.undefined}
           />
         </Stack>
       }

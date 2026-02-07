@@ -102,9 +102,8 @@ const BeneficiaryMedicineCard = ({
             icon={<MedicationLiquidIcon />}
             value={item.intakeFrequency}
           />
-          {item.note ? (
-            <DetailItemComponent label={STRINGS.note} icon={<MedicalServicesIcon />} value={item.note} />
-          ) : null}
+
+          <DetailItemComponent label={STRINGS.note} icon={<MedicalServicesIcon />} value={item.note || STRINGS.none} />
         </Stack>
       }
       footerContent={null}

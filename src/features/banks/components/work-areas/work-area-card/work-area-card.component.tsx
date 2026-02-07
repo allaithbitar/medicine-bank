@@ -1,22 +1,22 @@
 import { memo } from 'react';
-import { Box } from '@mui/material';
-import { Business as BuildingOfficeIcon, Edit as PencilIcon } from '@mui/icons-material';
+import { Stack } from '@mui/material';
+import { Groups, LocationPin, Edit as PencilIcon } from '@mui/icons-material';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
-import type { TArea } from '@/features/banks/types/work-areas.types';
+import type { TAreaWithData } from '@/features/banks/types/work-areas.types';
 import STRINGS from '@/core/constants/strings.constant';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 
 interface IWorkAreaCardProps {
-  workArea: TArea;
+  workArea: TAreaWithData;
   onEdit?: () => void;
 }
 
 const WorkAreaCard = ({ workArea, onEdit }: IWorkAreaCardProps) => {
   const headerContent = (
     <CardAvatar
-      icon={<BuildingOfficeIcon />}
+      icon={<LocationPin />}
       name={workArea.name}
       actions={onEdit ? [{ icon: <PencilIcon />, onClick: onEdit }] : undefined}
     />
@@ -84,8 +84,10 @@ const WorkAreaCard = ({ workArea, onEdit }: IWorkAreaCardProps) => {
   // );
 
   const bodyContent = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <DetailItemComponent icon={<LocationCityIcon fontSize="small" />} label={STRINGS.city} value={'TO BE ADDED'} />
+    <Stack gap={2}>
+      <DetailItemComponent icon={<LocationCityIcon />} label={STRINGS.city} value={workArea.city?.name} />
+      <DetailItemComponent icon={<Groups />} label={STRINGS.beneficiaries} value={workArea.patientsCount} />
+
       {/*    <DetailItemComponent
         icon={<UsersIcon fontSize="small" />}
         label="Employees"
@@ -96,7 +98,7 @@ const WorkAreaCard = ({ workArea, onEdit }: IWorkAreaCardProps) => {
         label="Created"
         value={new Date(workArea.createdDate).toLocaleDateString()}
       /> */}
-    </Box>
+    </Stack>
   );
 
   return <ReusableCardComponent headerContent={headerContent} bodyContent={bodyContent} footerContent={null} />;

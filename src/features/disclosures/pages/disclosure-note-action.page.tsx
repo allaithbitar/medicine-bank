@@ -6,14 +6,14 @@ import { Card, Stack } from '@mui/material';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
-import disclosuresApi from '../api/disclosures.api';
 import type { TDisclosureNote } from '../types/disclosure.types';
 import useReducerState from '@/core/hooks/use-reducer.hook';
 import z from 'zod';
 import AudioPlayer, { type TAudioFile } from '../components/audio-player.component';
-import { skipToken } from '@reduxjs/toolkit/query';
 import Header from '@/core/components/common/header/header';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import useDisclsoureNoteMutation from '../hooks/disclosure-notes-mutation.hook';
+import { useDisclosureNoteLoader } from '../hooks/disclosure-note-loader.hook';
 
 const NoteSchema = z.object({
   noteText: z.string().min(0),
@@ -26,7 +26,7 @@ const DisclosureNoteActionPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id') ?? undefined;
-  const { data: oldNote, isLoading: isLoadingById } = disclosuresApi.useGetDisclosureNoteByIdQuery(id ? id : skipToken);
+  const { data: oldNote, isLoading: isLoadingById } = useDisclosureNoteLoader(id);
 
   const [val, setVal] = useReducerState<TFormValues>({
     noteText: '',
@@ -43,12 +43,12 @@ const DisclosureNoteActionPage = () => {
 
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
 
-  const [addDisclosureNote, { isLoading: isAddingDisclosureNote }] = disclosuresApi.useAddDisclosureNoteMutation();
+  const [mutateDisclosureNote, { isLoading: isMutatingDisclosureNote }] = useDisclsoureNoteMutation();
 
-  const [updateDisclosureNote, { isLoading: isUpdateDisclosureNote }] =
-    disclosuresApi.useUpdateDisclosureNoteMutation();
-
-  const isLoading = isAddingDisclosureNote || isUpdateDisclosureNote;
+  // const [addDisclosureNote, { isLoading: isAddingDisclosureNote }] = disclosuresApi.useAddDisclosureNoteMutation();
+  //
+  // const [updateDisclosureNote, { isLoading: isUpdateDisclosureNote }] =
+  //   disclosuresApi.useUpdateDisclosureNoteMutation();
 
   const [audioFile, setAudioFile] = useState<TAudioFile>();
 
@@ -83,22 +83,36 @@ const DisclosureNoteActionPage = () => {
     try {
       NoteSchema.parse(val);
       if (!validateAtLeastOne()) return;
-      const fd = new FormData();
-      fd.append('disclosureId', disclosureId);
-      if (val.noteText && val.noteText.trim().length > 0) fd.append('noteText', val.noteText.trim());
-      if (audioFile?.audioBlob) {
-        fd.append('deleteAudioFile', 'false');
-        const name = audioFile.audioName ?? `audio-${Date.now()}.webm`;
-        fd.append('audioFile', audioFile.audioBlob, name);
-      } else {
-        fd.append('deleteAudioFile', 'true');
-      }
+      // const fd = new FormData();
+      // fd.append('disclosureId', disclosureId);
+      // if (val.noteText && val.noteText.trim().length > 0) fd.append('noteText', val.noteText.trim());
+      // if (audioFile?.audioBlob) {
+      //   fd.append('deleteAudioFile', 'false');
+      //   const name = audioFile.audioName ?? `audio-${Date.now()}.webm`;
+      //   fd.append('audioFile', audioFile.audioBlob, name);
+      // } else {
+      //   fd.append('deleteAudioFile', 'true');
+      // }
       if (oldNote) {
-        fd.append('id', oldNote.id);
-        await updateDisclosureNote(fd).unwrap();
+        await mutateDisclosureNote({
+          type: 'UPDATE',
+          dto: {
+            id: oldNote.id,
+            disclosureId,
+            noteAudio: audioFile?.audioBlob,
+            noteText: val.noteText,
+          },
+        });
         notifySuccess(STRINGS.edited_successfully);
       } else {
-        await addDisclosureNote(fd).unwrap();
+        await mutateDisclosureNote({
+          type: 'INSERT',
+          dto: {
+            disclosureId,
+            noteAudio: audioFile?.audioBlob,
+            noteText: val.noteText,
+          },
+        });
         notifySuccess(STRINGS.added_successfully);
       }
       navigate(-1);
@@ -124,8 +138,8 @@ const DisclosureNoteActionPage = () => {
         />
         <AudioPlayer setAudioFile={setAudioFile} audioFile={audioFile} setErrors={setErrors} />
       </Stack>
-      <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
-      {(isLoading || isLoadingById) && <LoadingOverlay />}
+      <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isMutatingDisclosureNote} />
+      {(isMutatingDisclosureNote || isLoadingById) && <LoadingOverlay />}
     </Card>
   );
 };

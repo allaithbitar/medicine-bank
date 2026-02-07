@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 const useIsOffline = () => {
   const [isOffline, setIsOffline] = useState(() => !window.navigator.onLine);
@@ -10,11 +10,11 @@ const useIsOffline = () => {
       setIsOffline(true);
     }
 
-    window.addEventListener("online", onOnlineHandler);
-    window.addEventListener("offline", onOfflineHandler);
+    window.addEventListener('online', onOnlineHandler);
+    window.addEventListener('offline', onOfflineHandler);
     return () => {
-      window.removeEventListener("online", onOnlineHandler);
-      window.removeEventListener("offline", onOfflineHandler);
+      window.removeEventListener('online', onOnlineHandler);
+      window.removeEventListener('offline', onOfflineHandler);
     };
   }, []);
   return isOffline;

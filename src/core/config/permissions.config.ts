@@ -165,6 +165,8 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   { path: '/system-broadcast/action', allowedRoles: ['manager'] },
 
   { path: '/sync', allowedRoles: ['manager', 'supervisor', 'scout'] },
+
+  { path: '/offline-updates', allowedRoles: ['manager', 'supervisor', 'scout'] },
 ];
 
 export const checkRouteAccess = (routePath: string, userRole: TUserRole | undefined) => {

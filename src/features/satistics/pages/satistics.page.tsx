@@ -26,6 +26,7 @@ import EmployeesAutocomplete from '@/features/employees/components/employees-aut
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import Header from '@/core/components/common/header/header';
+import DisabledOnOffline from '@/core/components/common/disabled-on-offline/disabled-on-offline.component';
 
 const SatisticsPage = () => {
   const [timePeriod, setTimePeriod] = useState<TListItem & { label: string }>({
@@ -126,58 +127,60 @@ const SatisticsPage = () => {
   }, []);
 
   return (
-    <Stack gap={1}>
-      <Card>
-        <Stack gap={2}>
-          <Header title={STRINGS.statistics} />
-          <Stack direction="row" gap={1}>
-            <FormAutocompleteInput
-              label={STRINGS.satistics_type}
-              options={[
-                { id: SATISTICS_TYPE.SUMMARY, label: STRINGS.summary },
-                { id: SATISTICS_TYPE.DETAILED, label: STRINGS.detailed },
-              ]}
-              value={satisticsType}
-              onChange={(v) => setSatisticsType(v)}
-            />
-            <FormAutocompleteInput
-              label={STRINGS.time_period}
-              disableClearable
-              options={[
-                { id: TIME_PERIOD_TYPE.THIS_WEEK, label: STRINGS.this_week },
-                { id: TIME_PERIOD_TYPE.THIS_MONTH, label: STRINGS.this_month },
-                { id: TIME_PERIOD_TYPE.THIS_YEAR, label: STRINGS.this_year },
-                { id: TIME_PERIOD_TYPE.CUSTOM, label: STRINGS.custom },
-              ]}
-              value={timePeriod}
-              onChange={(v) => setTimePeriod(v!)}
-            />
-          </Stack>
-          {timePeriod.id === TIME_PERIOD_TYPE.CUSTOM && (
-            <>
-              <FormDateInput
-                label={STRINGS.from_date}
-                value={customPeriod.fromDate}
-                onChange={(fromDate) => setCustomPeriod((prev) => ({ ...prev, fromDate }))}
+    <DisabledOnOffline>
+      <Stack gap={1}>
+        <Card>
+          <Stack gap={2}>
+            <Header title={STRINGS.statistics} />
+            <Stack direction="row" gap={1}>
+              <FormAutocompleteInput
+                label={STRINGS.satistics_type}
+                options={[
+                  { id: SATISTICS_TYPE.SUMMARY, label: STRINGS.summary },
+                  { id: SATISTICS_TYPE.DETAILED, label: STRINGS.detailed },
+                ]}
+                value={satisticsType}
+                onChange={(v) => setSatisticsType(v)}
               />
-              <FormDateInput
-                label={STRINGS.to_date}
-                value={customPeriod.toDate}
-                onChange={(toDate) => setCustomPeriod((prev) => ({ ...prev, toDate }))}
+              <FormAutocompleteInput
+                label={STRINGS.time_period}
+                disableClearable
+                options={[
+                  { id: TIME_PERIOD_TYPE.THIS_WEEK, label: STRINGS.this_week },
+                  { id: TIME_PERIOD_TYPE.THIS_MONTH, label: STRINGS.this_month },
+                  { id: TIME_PERIOD_TYPE.THIS_YEAR, label: STRINGS.this_year },
+                  { id: TIME_PERIOD_TYPE.CUSTOM, label: STRINGS.custom },
+                ]}
+                value={timePeriod}
+                onChange={(v) => setTimePeriod(v!)}
               />
-            </>
-          )}
-          {user.role === 'manager' && <EmployeesAutocomplete value={employee} onChange={setEmployee} />}
+            </Stack>
+            {timePeriod.id === TIME_PERIOD_TYPE.CUSTOM && (
+              <>
+                <FormDateInput
+                  label={STRINGS.from_date}
+                  value={customPeriod.fromDate}
+                  onChange={(fromDate) => setCustomPeriod((prev) => ({ ...prev, fromDate }))}
+                />
+                <FormDateInput
+                  label={STRINGS.to_date}
+                  value={customPeriod.toDate}
+                  onChange={(toDate) => setCustomPeriod((prev) => ({ ...prev, toDate }))}
+                />
+              </>
+            )}
+            {user.role === 'manager' && <EmployeesAutocomplete value={employee} onChange={setEmployee} />}
 
-          <Button disabled={disableGetButton} onClick={handleGetSatistics}>
-            {STRINGS.view}
-          </Button>
-        </Stack>
-      </Card>
-      {result && <SummaryReportResult result={result} />}
-      {detailedResult && <DetailedReportResult result={detailedResult} />}
-      {(isLoadingDetailedReport || isLoadingSummaryReport) && <LoadingOverlay />}
-    </Stack>
+            <Button disabled={disableGetButton} onClick={handleGetSatistics}>
+              {STRINGS.view}
+            </Button>
+          </Stack>
+        </Card>
+        {result && <SummaryReportResult result={result} />}
+        {detailedResult && <DetailedReportResult result={detailedResult} />}
+        {(isLoadingDetailedReport || isLoadingSummaryReport) && <LoadingOverlay />}
+      </Stack>
+    </DisabledOnOffline>
   );
 };
 

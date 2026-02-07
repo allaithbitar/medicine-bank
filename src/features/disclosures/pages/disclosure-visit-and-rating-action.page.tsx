@@ -11,23 +11,22 @@ import { Stack } from '@mui/material';
 import DisclosureVisitAndRateActionForm, {
   type TDisclosureVisitAndRateFormHandlers,
 } from '../components/disclosure-visit-and-rate-action-form.component';
-import disclosuresApi from '../api/disclosures.api';
+import useDisclosureMutation from '../hooks/disclosure-mutation.hook';
+import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
 
 const DisclosureVisitAndRatingActionPage = () => {
   const [searchParams] = useSearchParams();
   const disclosureId = searchParams.get('id') ?? '';
-  const { data: disclosure, isLoading: isLoadingDisclosure } = disclosuresApi.useGetDisclosureQuery(
-    { id: disclosureId! },
-    { skip: !disclosureId }
-  );
+  const { data: disclosure, isLoading: isLoadingDisclosure } = useDisclosureLoader({ id: disclosureId! });
   const visitAndRateRef = useRef<TDisclosureVisitAndRateFormHandlers | null>(null);
 
   const navigate = useNavigate();
 
-  const [updateDisclosureRating, { isLoading }] = disclosuresApi.useUpdateDisclosureMutation();
+  const [mutateDisclosure, { isLoading }] = useDisclosureMutation();
 
   const handleSave = async () => {
     const { isValid, result } = await visitAndRateRef.current!.handleSubmit();
+    console.log({ isValid, result, disclosure });
 
     if (!isValid || !disclosure?.id) return;
 
@@ -53,14 +52,10 @@ const DisclosureVisitAndRatingActionPage = () => {
         updateDto.customRating = null;
       }
 
-      const { error } = await updateDisclosureRating(updateDto);
+      mutateDisclosure({ type: 'UPDATE', dto: updateDto });
 
-      if (error) {
-        notifyError(error);
-      } else {
-        navigate(-1);
-        notifySuccess(STRINGS.edited_successfully);
-      }
+      notifySuccess(STRINGS.edited_successfully);
+      navigate(-1);
     } catch (error: any) {
       notifyError(error);
     }

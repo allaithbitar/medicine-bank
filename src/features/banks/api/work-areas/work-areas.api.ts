@@ -1,11 +1,11 @@
 import { rootApi } from '@/core/api/root.api';
 import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
-import type { TArea, TAddWorkAreaPayload, TUpdateWorkAreaPayload } from '../../types/work-areas.types';
+import type { TArea, TAddWorkAreaPayload, TUpdateWorkAreaPayload, TAreaWithData } from '../../types/work-areas.types';
 
 export const workAreasApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
     getWorkAreas: builder.infiniteQuery<
-      TPaginatedResponse<TArea>,
+      TPaginatedResponse<TAreaWithData>,
       {
         cityId?: string;
         name?: string | null;
@@ -14,20 +14,17 @@ export const workAreasApi = rootApi.injectEndpoints({
       number
     >({
       query: ({ queryArg, pageParam }) => ({
-        url: "/areas",
-        method: "GET",
+        url: '/areas',
+        method: 'GET',
         params: { ...queryArg, pageNumber: pageParam },
       }),
       infiniteQueryOptions: {
         initialPageParam: 0,
         getNextPageParam: (lastPage) =>
-          !lastPage.items.length || lastPage.items.length < lastPage.pageSize
-            ? undefined
-            : lastPage.pageNumber + 1,
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
       },
-      transformResponse: (res: ApiResponse<TPaginatedResponse<TArea>>) =>
-        res.data,
-      providesTags: [{ type: "Work-Areas" }],
+      transformResponse: (res: ApiResponse<TPaginatedResponse<TAreaWithData>>) => res.data,
+      providesTags: [{ type: 'Work-Areas' }],
     }),
     getWorkAreaById: builder.query<TArea, { id: string }>({
       query: ({ id }) => ({
@@ -43,7 +40,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         method: 'POST',
         body: data,
       }),
-      transformResponse: () => { },
+      transformResponse: () => {},
       invalidatesTags: [{ type: 'Work-Areas' }, 'Work-Area'],
     }),
     updateWorkArea: builder.mutation<void, TUpdateWorkAreaPayload>({
@@ -52,7 +49,7 @@ export const workAreasApi = rootApi.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      transformResponse: () => { },
+      transformResponse: () => {},
       invalidatesTags: [{ type: 'Work-Areas' }, 'Work-Area'],
     }),
   }),

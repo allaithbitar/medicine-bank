@@ -77,6 +77,7 @@ export type TUpdateDisclosureDetailsDto = TAddDisclosureDetailsDto;
 
 export type TDisclosure = {
   id: string;
+  type: TDisclosureType;
   status: TDisclosureStatus;
   initialNote: string | null;
   priorityId: string;
@@ -117,15 +118,15 @@ export type TGetDisclosuresDto = Partial<
 >;
 
 export type TAddDisclosureDto = {
+  type: TDisclosureType;
   status?: TDisclosureStatus;
   scoutId?: string | null;
   patientId: string;
   priorityId: string;
-  details?: object | null;
   initialNote?: string | null;
 };
 
-export type TUpdateDisclosureDto = Partial<Omit<TDisclosure, 'scout'>> & {
+export type TUpdateDisclosureDto = Partial<Omit<TDisclosure, 'scout' | 'createdBy' | 'updatedBy'>> & {
   id: string;
 };
 
@@ -207,9 +208,12 @@ export type TGetDisclosureNotesDto = {
   query?: string;
 } & TPaginationDto;
 
-export type TAddDisclosureNotePayload = FormData;
+export type TAddDisclosureNotePayload = Omit<TDisclosureNote, 'id' | 'createdBy' | 'noteAudio' | 'noteText'> & {
+  noteText?: string | null;
+  noteAudio?: Blob | string | null;
+};
 
-export type TUpdateDisclosureNotePayload = FormData;
+export type TUpdateDisclosureNotePayload = TAddDisclosureNotePayload & { id: string };
 
 export type TDisclosureAdviserConsultation = {
   id: string;
@@ -226,7 +230,16 @@ export type TDisclosureAdviserConsultation = {
   disclosure: TDisclosure;
 } & TCreatedBy;
 
-export type TAddDisclosureAdviserConsultationPayload = FormData;
+export type TAddDisclosureAdviserConsultationPayload = Pick<
+  TDisclosureAdviserConsultation,
+  'disclosureId' | 'consultationNote'
+> & {
+  consultationAudioFile: TAddDisclosureNotePayload['noteAudio'];
+};
+
+export type TUpdateDisclosureAdviserConsultationPayload = TAddDisclosureAdviserConsultationPayload & {
+  id: string;
+};
 
 export type TGetDisclosureAdviserConsultationParams = {
   disclosureId?: string;

@@ -66,8 +66,9 @@ export const ConsultingAdviserCard = ({
               icon={<VolumeDownIcon />}
               label={''}
               value={
-                <Stack direction="row" alignItems="center">
+                <Stack direction="row" alignItems="center" sx={{ width: '100%' }}>
                   <audio
+                    style={{ width: '100%' }}
                     controlsList="nodownload"
                     controls
                     src={getVoiceSrc({ baseUrl, filePath: adviserConsultation.consultationAudio })}

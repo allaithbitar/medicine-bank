@@ -5,10 +5,12 @@ import STRINGS from '@/core/constants/strings.constant';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/sqlite';
 import { ParseJSONResultsPlugin } from 'kysely';
 import { withCreatedBy, withUpdatedBy } from '@/libs/kysely/helpers';
-export const useLocalDisclosureLoader = ({ id }: { id: string }) => {
-  const isOffline = true;
+import useIsOffline from '@/core/hooks/use-is-offline.hook';
+export const useLocalDisclosureLoader = ({ id }: { id: string }, forceOffline = false) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const isOffline = forceOffline || useIsOffline();
   const queryResult = useQuery({
-    queryKey: ['LOCAL_DISCLOSURE', id],
+    queryKey: ['LOCAL_DISCLOSURE', id, forceOffline],
     queryFn: async () => {
       const res = (await localDb
         .selectFrom('disclosures')

@@ -4,7 +4,7 @@ import { formatDateTime, sanitizePhoneForTel } from '@/core/helpers/helpers';
 import type { TBenefieciary } from '@/features/beneficiaries/types/beneficiary.types';
 import Man4Icon from '@mui/icons-material/Man4';
 import { Person, Pin, Phone, LocationPin, EventAvailable, Info, Edit, History } from '@mui/icons-material';
-import { Stack, Button, useTheme } from '@mui/material';
+import { Stack, Button, useTheme, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WorkIcon from '@mui/icons-material/Work';
@@ -38,7 +38,9 @@ function BeneficiaryCommonCard({
       return (
         <span key={i}>
           <a href={`tel:${tel}`} style={{ color: theme.palette.secondary.main, textDecoration: 'none' }}>
-            {p.phone}
+            <Typography component="span" variant="subtitle2">
+              {p.phone}
+            </Typography>
           </a>
           {i < beneficiary.phones.length - 1 && ' , '}
         </span>
@@ -92,7 +94,7 @@ function BeneficiaryCommonCard({
       {canEditPatient && (
         <Link to={`/beneficiaries/action?beneficiaryId=${beneficiary.id}`}>
           <Button fullWidth startIcon={<Edit />}>
-            {STRINGS.edit} {STRINGS.patient}
+            {STRINGS.edit} {STRINGS.the_patient}
           </Button>
         </Link>
       )}

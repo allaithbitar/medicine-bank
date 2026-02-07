@@ -26,6 +26,7 @@ import type {
   TUpdateDisclosureNotePayload,
   TUpdateDisclosureVisitDto,
   TGetDateAppointmentsDto,
+  TUpdateDisclosureAdviserConsultationPayload,
 } from '../types/disclosure.types';
 
 export const disclosuresApi = rootApi.injectEndpoints({
@@ -45,12 +46,13 @@ export const disclosuresApi = rootApi.injectEndpoints({
       providesTags: ['Disclosures'],
     }),
 
-    addDisclosure: builder.mutation<void, TAddDisclosureDto>({
+    addDisclosure: builder.mutation<{ id: string }, TAddDisclosureDto>({
       query: (payload) => ({
         url: 'disclosures',
         method: 'POST',
         body: payload,
       }),
+      transformResponse: (res: ApiResponse<{ id: string }>) => res.data,
       invalidatesTags: ['Disclosures'],
     }),
 
@@ -183,19 +185,54 @@ export const disclosuresApi = rootApi.injectEndpoints({
     }),
 
     addDisclosureNote: builder.mutation<TDisclosureNote, TAddDisclosureNotePayload>({
-      query: (body) => ({
-        url: '/disclosures/notes',
-        method: 'POST',
-        body,
-      }),
+      query: ({ disclosureId, noteAudio, noteText }: TAddDisclosureNotePayload) => {
+        const formData = new FormData();
+        formData.append('disclosureId', disclosureId);
+        if (noteText && noteText.trim().length > 0) formData.append('noteText', noteText.trim());
+        if (noteAudio && noteAudio instanceof Blob) {
+          // fd.append('deleteAudioFile', 'false');
+          formData.append('audioFile', noteAudio, `audio-${Date.now()}.webm`);
+        }
+        // else {
+        //   fd.append('deleteAudioFile', 'true');
+        // }
+        // if (oldNote) {
+        //   fd.append('id', oldNote.id);
+        //   await updateDisclosureNote(fd).unwrap();
+        //   notifySuccess(STRINGS.edited_successfully);
+        // } else {
+        //   await addDisclosureNote(fd).unwrap();
+        //   notifySuccess(STRINGS.added_successfully);
+        // }
+        // navigate(-1);
+
+        return {
+          url: '/disclosures/notes',
+          method: 'POST',
+          body: formData,
+        };
+      },
       invalidatesTags: [{ type: 'Disclosure_Notes', id: 'LIST' }, 'Disclosure_Note'],
     }),
     updateDisclosureNote: builder.mutation<void, Omit<TUpdateDisclosureNotePayload, 'createdBy'>>({
-      query: (body) => ({
-        url: '/disclosures/notes',
-        method: 'PUT',
-        body,
-      }),
+      query: ({ id, disclosureId, noteAudio, noteText }) => {
+        const formData = new FormData();
+        formData.append('disclosureId', disclosureId);
+        formData.append('id', id);
+
+        if (noteText && noteText.trim().length > 0) formData.append('noteText', noteText.trim());
+
+        if (noteAudio && noteAudio instanceof Blob) {
+          formData.append('audioFile', noteAudio, `audio-${Date.now()}.webm`);
+          formData.append('deleteAudioFile', 'true');
+        }
+
+        return {
+          url: '/disclosures/notes',
+          method: 'PUT',
+          body: formData,
+        };
+      },
       invalidatesTags: (_, __, arg: any) => [
         { type: 'Disclosure_Notes', id: 'LIST' },
         { type: 'Disclosure_Notes', id: arg.id },
@@ -206,20 +243,42 @@ export const disclosuresApi = rootApi.injectEndpoints({
       TDisclosureAdviserConsultation,
       TAddDisclosureAdviserConsultationPayload
     >({
-      query: (body) => ({
-        url: '/disclosures/consultations',
-        method: 'POST',
-        body,
-      }),
+      query: ({ disclosureId, consultationNote, consultationAudioFile }) => {
+        const formData = new FormData();
+        formData.append('disclosureId', disclosureId);
+        if (consultationNote && consultationNote.trim().length > 0)
+          formData.append('consultationNote', consultationNote.trim());
+        if (consultationAudioFile && consultationAudioFile instanceof Blob) {
+          const name = `audio-${Date.now()}.webm`;
+          formData.append('consultationAudioFile', consultationAudioFile, name);
+        }
+        return {
+          url: '/disclosures/consultations',
+          method: 'POST',
+          body: formData,
+        };
+      },
       invalidatesTags: [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }, 'Disclosure_Adviser_Consultation'],
     }),
 
-    updateDisclosureAdviserConsultation: builder.mutation<void, TUpdateDisclosureNotePayload>({
-      query: (body) => ({
-        url: '/disclosures/consultations',
-        method: 'PUT',
-        body,
-      }),
+    updateDisclosureAdviserConsultation: builder.mutation<void, TUpdateDisclosureAdviserConsultationPayload>({
+      query: ({ id, disclosureId, consultationNote, consultationAudioFile }) => {
+        const formData = new FormData();
+        formData.append('disclosureId', disclosureId);
+        formData.append('id', id);
+        if (consultationNote && consultationNote.trim().length > 0)
+          formData.append('consultationNote', consultationNote.trim());
+        if (consultationAudioFile && consultationAudioFile instanceof Blob) {
+          const name = `audio-${Date.now()}.webm`;
+          formData.append('consultationAudioFile', consultationAudioFile, name);
+          formData.append('deleteAudioFile', 'true');
+        }
+        return {
+          url: '/disclosures/consultations',
+          method: 'PUT',
+          body: formData,
+        };
+      },
       invalidatesTags: (_, __, arg: any) => [
         { type: 'Disclosure_Adviser_Consultations', id: 'LIST' },
         { type: 'Disclosure_Adviser_Consultations', id: arg.id },
@@ -333,10 +392,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: (_, __, args) => [
-        { id: args.id, type: 'Disclosures' },
-        'Disclosures',
-      ],
+      invalidatesTags: (_, __, args) => [{ id: args.id, type: 'Disclosures' }, 'Disclosures'],
     }),
 
     unarchiveDisclosure: builder.mutation<void, { id: string }>({
@@ -345,10 +401,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: (_, __, args) => [
-        { id: args.id, type: 'Disclosures' },
-        'Disclosures',
-      ],
+      invalidatesTags: (_, __, args) => [{ id: args.id, type: 'Disclosures' }, 'Disclosures'],
     }),
   }),
 });

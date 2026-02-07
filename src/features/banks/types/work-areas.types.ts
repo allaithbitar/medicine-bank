@@ -1,5 +1,6 @@
-import type { IOptions } from "@/core/types/common.types";
-import type { AutocompleteProps } from "@mui/material";
+import type { IOptions } from '@/core/types/common.types';
+import type { AutocompleteProps } from '@mui/material';
+import type { TCity } from './city.types';
 
 export type TArea = {
   id: string;
@@ -26,3 +27,5 @@ export interface IOcrMappingAutoCompleteProps {
   helperText?: string;
   textFieldError?: boolean;
 }
+
+export type TAreaWithData = TArea & { city?: TCity; patientsCount?: number };

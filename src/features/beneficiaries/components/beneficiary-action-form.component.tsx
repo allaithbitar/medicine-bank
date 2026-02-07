@@ -6,7 +6,6 @@ import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
 import CitiesAutocomplete from '@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component';
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 import type { TCity } from '@/features/banks/types/city.types';
-import type { TArea } from '@/features/banks/types/work-areas.types';
 import { Add, DeleteOutlined } from '@mui/icons-material';
 import { Button, IconButton, Stack } from '@mui/material';
 import z from 'zod';
@@ -16,24 +15,23 @@ import type {
   // TUpdateBeneficiaryDto,
 } from '../types/beneficiary.types';
 import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
-import citiesApi from '@/features/banks/api/cities-api/cities.api';
 import { useAppDispatch } from '@/core/store/root.store.types';
-import workAreasApi from '@/features/banks/api/work-areas/work-areas.api';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomplete-input.component';
 import type { TListItem } from '@/core/types/input.type';
 import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
 import { addTimeZoneOffestToIsoDate } from '@/core/helpers/helpers';
+import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const PatientFormSchema = z.object({
   name: z.string().min(5, STRINGS.schema_name_too_short),
   nationalNumber: z.string().length(11, STRINGS.schema_invalid_national_number),
-  area: z.custom<TArea | null>((data) => !!data, {
+  area: z.custom<TAutocompleteItem | null>((data) => !!data, {
     message: STRINGS.schema_required,
   }),
   address: z.string(),
   about: z.string().nullable(),
-  city: z.custom<TCity | null>((data) => !!data, {
+  city: z.custom<TAutocompleteItem | null>((data) => !!data, {
     message: STRINGS.schema_required,
   }),
   phoneNumbers: z.array(z.string().length(10, STRINGS.schema_phone_digits)).min(1),
@@ -88,7 +86,6 @@ function BeneficiaryActionForm({
   const handleChange = (key: keyof typeof formState, value: any) => {
     setFormState((prev) => ({ ...prev, [key]: value }));
   };
-  console.log(formErrors);
 
   // const handleSave = async () => {
   //   const { isValid, result } = await handleSubmit();
@@ -129,24 +126,21 @@ function BeneficiaryActionForm({
     if (beneficiaryData) {
       setIsLoading(true);
       (async () => {
-        let _city: TCity | null = null;
-        let _area: TArea | null = null;
+        let _city: TAutocompleteItem | null = null;
+        let _area: TAutocompleteItem | null = null;
         let _gender: (TListItem & { label: string }) | null = null;
 
-        const cities = await dispatch(citiesApi.endpoints.getCities.initiate({})).unwrap();
-        const allCities = cities.pages.flatMap((page) => page.items);
-
         if (beneficiaryData.area) {
-          const areas = await dispatch(
-            workAreasApi.endpoints.getWorkAreas.initiate({
-              cityId: beneficiaryData.area?.cityId,
-              name: beneficiaryData.area.name,
-            })
-          ).unwrap();
-          const allAreas = areas.pages.flatMap((page) => page.items);
-          _area = allAreas.find((a) => a.id === beneficiaryData.area.id) ?? null;
+          // const areas = await dispatch(
+          //   workAreasApi.endpoints.getWorkAreas.initiate({
+          //     cityId: beneficiaryData.area?.cityId,
+          //     name: beneficiaryData.area.name,
+          //   })
+          // ).unwrap();
+          // const allAreas = areas.pages.flatMap((page) => page.items);
+          _area = { id: beneficiaryData.area.id, name: beneficiaryData.area.name };
 
-          _city = allCities.find((c) => c.id === beneficiaryData.area.cityId) ?? null;
+          _city = { id: beneficiaryData.area.cityId, name: '' };
         }
 
         if (beneficiaryData.gender) {
@@ -159,10 +153,10 @@ function BeneficiaryActionForm({
         setFormState({
           name: beneficiaryData.name,
           about: beneficiaryData.about,
-          address: beneficiaryData.address,
+          address: beneficiaryData.address || '',
           area: _area,
           city: _city,
-          nationalNumber: beneficiaryData.nationalNumber,
+          nationalNumber: beneficiaryData.nationalNumber || '',
           phoneNumbers: beneficiaryData.phones.map((p) => p.phone),
           birthDate: beneficiaryData.birthDate ?? '',
           job: beneficiaryData.job,
@@ -280,12 +274,12 @@ function BeneficiaryActionForm({
         </Stack>
       </FieldSet>
 
-      {/* <FormTextFieldInput
+      <FormTextFieldInput
         label={STRINGS.job_or_school}
-        name="address"
-        value={formState.job ?? ""}
-        onChange={(v) => handleChange("job", v)}
-      /> */}
+        name="job"
+        value={formState.job ?? ''}
+        onChange={(v) => handleChange('job', v)}
+      />
 
       <FormTextFieldInput
         label={STRINGS.patient_address}

@@ -85,13 +85,14 @@ export type TLocalDb = {
   family_members: {
     id: string;
     name: string;
-    birthDate: string | null;
-    gender: TGender | null;
+    birthDate: string;
+    gender: TGender;
+    kinshep: TKinship;
     nationalNumber: string | null;
-    kinshep: TKinship | null;
     jobOrSchool: string | null;
     note: string | null;
     kidsCount: number | null;
+    residential: string | null;
     patientId: string;
     createdAt: string;
     updatedAt: string | null;
@@ -141,17 +142,17 @@ export type TLocalDb = {
     patientId: string;
     scoutId: string | null;
     initialNote: string | null;
-    isReceived: boolean;
+    isReceived: boolean | null;
     archiveNumber: number | null;
     visitResult: TDisclosureVisitResult | null;
     visitReason: string | null;
     visitNote: string | null;
     ratingId: string | null;
-    isCustomRating: boolean;
+    isCustomRating: boolean | null;
     customRating: string | null;
     ratingNote: string | null;
     appointmentDate: string | null;
-    isAppointmentCompleted: boolean;
+    isAppointmentCompleted: boolean | null;
     createdAt: string;
     updatedAt: string | null;
     createdBy: string | null;
@@ -229,5 +230,28 @@ export type TLocalDb = {
     recordId: string | null;
     createdAt: string;
     createdBy: string | null;
+  };
+  updates: {
+    id: string;
+    table:
+      | 'disclosures'
+      | 'patients'
+      | 'family_members'
+      | 'patient_medicines'
+      | 'disclosure_details'
+      | 'disclosure_notes';
+    recordId: string;
+    status: 'pending' | 'success' | 'failed';
+    operation: 'INSERT' | 'UPDATE';
+    payload: object;
+    serverRecordId: string | null; // New server ID after successful sync
+    parentId: string | null;
+    createdAt: string;
+  };
+  id_mappings: {
+    localId: string;
+    serverId: string;
+    table: string;
+    createdAt: string;
   };
 };

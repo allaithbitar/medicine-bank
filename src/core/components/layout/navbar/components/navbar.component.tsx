@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Download } from '@mui/icons-material';
 import STRINGS from '@/core/constants/strings.constant';
 import HeaderNotificationButton from '@/features/notifications/components/header-notification-button';
+import PendingUpdatesButton from '@/features/offline/components/pending-updates-button.component';
 
 // BeforeInstallPromptEvent interface
 interface BeforeInstallPromptEvent extends Event {
@@ -24,7 +25,6 @@ function Navbar({
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   // State to track if the app is installed
   const [isInstalled, setIsInstalled] = useState(false);
-  console.log({ installEvent, isInstalled });
 
   useEffect(() => {
     // Handler for the beforeinstallprompt event
@@ -88,7 +88,8 @@ function Navbar({
             {STRINGS.install_application}
           </Button>
         )}
-        <Stack sx={{ alignItems: 'center', flexDirection: 'row' }}>
+        <Stack direction="row" gap={1}>
+          <PendingUpdatesButton />
           <Link to={`/system-broadcast`}>
             <IconButton color="primary">
               <RecordVoiceOverOutlinedIcon />

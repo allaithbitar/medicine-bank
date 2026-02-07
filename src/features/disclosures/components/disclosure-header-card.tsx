@@ -29,11 +29,11 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   return (
     <>
       <Card>
-        <Header title={STRINGS.patient} />
+        <Header title={STRINGS.the_patient} />
         <BeneficiaryCommonCard canEditPatient={canUserEditPatient} isDisclosurePage beneficiary={disclosure.patient} />
       </Card>
       <Card>
-        <Header title={STRINGS.disclosure} />
+        <Header title={STRINGS.the_disclosure} />
         <Stack gap={2}>
           {isArchived && (
             <Chip
@@ -91,7 +91,7 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
           {currentCanEdit && (
             <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
               <Button fullWidth startIcon={<Edit />}>
-                {STRINGS.edit} {STRINGS.disclosure}
+                {STRINGS.edit} {STRINGS.the_disclosure}
               </Button>
             </Link>
           )}

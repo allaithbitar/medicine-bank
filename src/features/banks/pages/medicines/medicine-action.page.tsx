@@ -27,9 +27,7 @@ const MedicineSchema = z.object({
   form: z.enum(ALLOWED_FORMS, {
     errorMap: () => ({ message: STRINGS.schema_required }),
   }),
-  doseVariants: z.array(z.number()).min(1, {
-    message: STRINGS.schema_dose_required,
-  }),
+  doseVariants: z.array(z.number()),
 });
 
 type TFormValues = z.infer<typeof MedicineSchema>;

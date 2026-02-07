@@ -2,7 +2,6 @@ import STRINGS from '@/core/constants/strings.constant';
 import { Card, Stack } from '@mui/material';
 import type { TAddBeneficiaryDto } from '../types/beneficiary.types';
 import { useRef } from 'react';
-import beneficiaryApi from '../api/beneficiary.api';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import type { TBenefificaryFormHandlers } from '../components/beneficiary-action-form.component';
 import BeneficiaryActionForm from '../components/beneficiary-action-form.component';
@@ -11,6 +10,8 @@ import { Save } from '@mui/icons-material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import Header from '@/core/components/common/header/header';
+import useBeneficiaryMutation from '../hooks/beneficiary-mutation.hook';
+import { useBeneficiaryLoader } from '../hooks/use-beneficiary-loader.hook';
 
 const BeneficiaryActionPage = () => {
   const [searchParams] = useSearchParams();
@@ -21,16 +22,17 @@ const BeneficiaryActionPage = () => {
 
   const navigate = useNavigate();
 
-  const [addBeneficiary, { isLoading: isAdding }] = beneficiaryApi.useAddBeneficiaryMutation();
+  const [mutateBeneficiary, { isLoading: isMutating }] = useBeneficiaryMutation();
 
-  const [updateBeneficiary, { isLoading: isUpdating }] = beneficiaryApi.useUpdateBeneficiaryMutation();
+  // const [addBeneficiary, { isLoading: isAdding }] =
+  //   beneficiaryApi.useAddBeneficiaryMutation();
+  //
+  // const [updateBeneficiary, { isLoading: isUpdating }] =
+  //   beneficiaryApi.useUpdateBeneficiaryMutation();
 
-  const { data: beneficiaryData, isLoading: isGetting } = beneficiaryApi.useGetBeneficiaryQuery(
-    { id: beneficiaryId ?? '' },
-    { skip: !beneficiaryId }
-  );
+  const { data: beneficiaryData, isLoading: isGetting } = useBeneficiaryLoader({ id: beneficiaryId ?? '' });
 
-  const isLoading = isAdding || isUpdating || isGetting;
+  const isLoading = isMutating || isGetting;
 
   // const [validateNationalNumber] =
   //   beneficiaryApi.useValidateNationalNumberMutation();
@@ -62,7 +64,7 @@ const BeneficiaryActionPage = () => {
         about: result.about || null,
         address: result.address || null,
         phoneNumbers: result.phoneNumbers,
-        gender: result.gender?.id || null,
+        gender: (result.gender?.id as any) || null,
         job: result.job || null,
         // birthDate: result.birthDate
         //   ? addTimeZoneOffestToIsoDate(result.birthDate)
@@ -73,27 +75,26 @@ const BeneficiaryActionPage = () => {
       };
 
       if (!beneficiaryId) {
-        const { error } = await addBeneficiary(addDto);
+        await mutateBeneficiary({ type: 'INSERT', dto: addDto });
 
-        if (error) {
-          notifyError(error);
-        } else {
-          navigate(-1);
-          notifySuccess(STRINGS.added_successfully);
-        }
+        // if (error) {
+        //   notifyError(error);
+        // } else {
+        //   navigate(-1);
+        notifySuccess(STRINGS.added_successfully);
+        // }
       } else {
-        const { error } = await updateBeneficiary({
-          ...addDto,
-          id: beneficiaryId,
+        await mutateBeneficiary({
+          type: 'UPDATE',
+          dto: {
+            ...addDto,
+            id: beneficiaryId,
+          },
         });
 
-        if (error) {
-          notifyError(error);
-        } else {
-          navigate(-1);
-          notifySuccess(STRINGS.edited_successfully);
-        }
+        notifySuccess(STRINGS.edited_successfully);
       }
+      navigate(-1);
     } catch (error: any) {
       notifyError(error);
     }

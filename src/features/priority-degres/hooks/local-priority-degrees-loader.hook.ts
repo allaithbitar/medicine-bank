@@ -1,9 +1,10 @@
 import { localDb } from '@/libs/sqlocal';
 import { useQuery } from '@tanstack/react-query';
 import type { TGetPriorityDegreesDto } from '../types/priority-degree.types';
+import useIsOffline from '@/core/hooks/use-is-offline.hook';
 
 export const useLocalPriorityDegreesLoader = (dto: TGetPriorityDegreesDto) => {
-  const isOffline = true;
+  const isOffline = useIsOffline();
   const queryResult = useQuery({
     queryKey: ['LOCAL_PRIORITY_DEGREES', dto],
     queryFn: async () => {
@@ -20,4 +21,3 @@ export const useLocalPriorityDegreesLoader = (dto: TGetPriorityDegreesDto) => {
   });
   return queryResult;
 };
-

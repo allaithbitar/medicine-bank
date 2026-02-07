@@ -11,3 +11,8 @@ export type TUpdateCityPayload = {
   id: string;
   name: string;
 };
+
+export type TCityWithData = TCity & {
+  areasCount?: number;
+  employeesCount?: number;
+};

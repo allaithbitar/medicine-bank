@@ -6,7 +6,6 @@ import STRINGS from '@/core/constants/strings.constant';
 
 import { getErrorMessage, getStringsLabel } from '@/core/helpers/helpers';
 import type { TAddFamilyMemberPayload, TGender, TKinship } from '../types/beneficiary.types';
-import beneficiaryApi from '../api/beneficiary.api';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
@@ -18,6 +17,8 @@ import FormSelectInput from '@/core/components/common/inputs/form-select-input.c
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 import FormNumberInput from '@/core/components/common/inputs/form-number-input.component';
 import Header from '@/core/components/common/header/header';
+import useFamilyMembersMutation from '../hooks/family-members-mutation.hook';
+import { useBeneficiaryFamilyMemberLoader } from '../hooks/beneficiary-family-member-loader.hook';
 
 const FamilyMemberSchema = z.object({
   name: z.string().min(1, { message: STRINGS.schema_required }).max(200),
@@ -44,14 +45,11 @@ const BeneficiaryFamilyActionPage = () => {
   const memberId = searchParams.get('id') ?? undefined;
   const { id: patientId } = useParams();
 
-  const { data: familyMemberData, isLoading: isFetchingFamilyMemberData } = beneficiaryApi.useGetFamilyMemberByIdQuery(
-    {
-      id: memberId!,
-    },
-    { skip: !memberId }
-  );
-  const [addFamilyMember, { isLoading: isAdding }] = beneficiaryApi.useAddFamilyMemberMutation();
-  const [updateFamilyMember, { isLoading: isUpdating }] = beneficiaryApi.useUpdateFamilyMemberMutation();
+  const { data: familyMemberData, isLoading: isFetchingFamilyMemberData } = useBeneficiaryFamilyMemberLoader(memberId);
+
+  const [mutateFamilyMembers, { isLoading: isMutatingFamilyMember }] = useFamilyMembersMutation();
+  // const [addFamilyMember, { isLoading: isAdding }] = beneficiaryApi.useAddFamilyMemberMutation();
+  // const [updateFamilyMember, { isLoading: isUpdating }] = beneficiaryApi.useUpdateFamilyMemberMutation();
 
   const { formState, formErrors, setValue, handleSubmit } = useForm({
     schema: FamilyMemberSchema,
@@ -86,9 +84,9 @@ const BeneficiaryFamilyActionPage = () => {
 
     try {
       if (memberId) {
-        await updateFamilyMember({ ...dto, id: memberId }).unwrap();
+        await mutateFamilyMembers({ type: 'UPDATE', dto: { ...dto, id: memberId } });
       } else {
-        await addFamilyMember(dto).unwrap();
+        await mutateFamilyMembers({ type: 'INSERT', dto });
       }
 
       notifySuccess(memberId ? STRINGS.edited_successfully : STRINGS.added_successfully);
@@ -108,12 +106,12 @@ const BeneficiaryFamilyActionPage = () => {
         kinshep: familyMemberData.kinshep,
         note: familyMemberData.note ?? '',
         residential: familyMemberData.residential ?? '',
+        kidsCount: familyMemberData.kidsCount ? String(familyMemberData.kidsCount) : '',
       });
     }
   }, [familyMemberData, setValue]);
 
-  const isLoading = isAdding || isUpdating || isFetchingFamilyMemberData;
-  console.log({ formState });
+  const isLoading = isMutatingFamilyMember || isFetchingFamilyMemberData;
 
   return (
     <Card>

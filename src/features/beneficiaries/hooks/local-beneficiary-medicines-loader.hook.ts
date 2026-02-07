@@ -36,7 +36,7 @@ export const useLocalBeneficiaryMedicinesLoader = (dto: TGetBeneficiaryMedicines
           jsonObjectFrom(
             col
               .selectFrom('medicines')
-              .select(['medicines.id', 'medicines.name', 'medicines.form'])
+              .select(['medicines.id', 'medicines.name', 'medicines.form', 'medicines.doseVariants'])
               .whereRef('medicines.id', '=', 'patient_medicines.medicineId')
           ).as('medicine'),
         ])
@@ -48,7 +48,7 @@ export const useLocalBeneficiaryMedicinesLoader = (dto: TGetBeneficiaryMedicines
       const countResult = await countQuery.execute();
       totalCount = countResult[0]?.count ?? 0;
 
-      const items = (await query.execute()) as unknown as TBeneficiaryMedicine[];
+      const items = (await query.execute()) as TBeneficiaryMedicine[];
 
       return {
         items,

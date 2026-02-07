@@ -109,7 +109,7 @@ function AdviserDisclosureConsultationsPage() {
                 onClick={() => navigate(`/consulting-adviser/${ac.id}`)}
                 fullWidth
               >
-                {STRINGS.view_details}
+                {STRINGS.view}
               </Button>
             }
           />

@@ -8,19 +8,18 @@ import useReducerState from '@/core/hooks/use-reducer.hook';
 import { DOSE_OPTIONS } from '@/features/banks/types/medicines.types';
 import MedicinesAutocomplete from '@/features/banks/components/medicines/medicines-autocomplete/medicines-autocomplete.component';
 import type { TAddBeneficiaryMedicinePayload, TUpdateBeneficiaryMedicinePayload } from '../types/beneficiary.types';
-import beneficiaryApi from '../api/beneficiary.api';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
-import { skipToken } from '@reduxjs/toolkit/query';
 import type { TMedicinesAutocompleteItem } from '@/features/autocomplete/types/autcomplete.types';
 import Header from '@/core/components/common/header/header';
 import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import useBeneficiaryMedicineMutation from '../hooks/beneficiary-medicines-mutation.hook';
+import { useBeneficiaryMedicineLoader } from '../hooks/beneficiary-medicine-loader.hook';
 
 const BeneficiaryMedicineSchema = z.object({
-  patientId: z.string().min(1, { message: STRINGS.schema_required }),
   medicineId: z.string().min(1, { message: STRINGS.schema_required }),
   dosePerIntake: z.number().gt(0, { message: STRINGS.schema_required }),
   intakeFrequency: z
@@ -37,35 +36,40 @@ const BeneficiaryMedicineActionPage = () => {
   const medicineId = searchParams.get('id') ?? undefined;
   const { id: patientId } = useParams();
 
-  const { data: oldBeneficiaryMedicine, isLoading: isLoadingById } = beneficiaryApi.useGetBeneficiaryMedicineByIdQuery(
-    medicineId ? { id: medicineId } : skipToken
-  );
+  const { data: oldBeneficiaryMedicine, isLoading: isLoadingById } = useBeneficiaryMedicineLoader(medicineId);
+  const [mutateBeneficiaryMedicine, { isLoading: isMutatingBeneficiaryMedicine }] = useBeneficiaryMedicineMutation();
 
-  const [addPatientMedicine, { isLoading: isAdding }] = beneficiaryApi.useAddBeneficiaryMedicineMutation();
-  const [updatePatientMedicine, { isLoading: isUpdating }] = beneficiaryApi.useUpdateBeneficiaryMedicineMutation();
+  // const [addPatientMedicine, { isLoading: isAdding }] = beneficiaryApi.useAddBeneficiaryMedicineMutation();
+  // const [updatePatientMedicine, { isLoading: isUpdating }] = beneficiaryApi.useUpdateBeneficiaryMedicineMutation();
 
   const [values, setValues] = useReducerState<TFormValues & { med: TMedicinesAutocompleteItem | null }>({
-    patientId: oldBeneficiaryMedicine?.patientId ?? patientId ?? '',
-    medicineId: oldBeneficiaryMedicine?.medicineId ?? '',
-    dosePerIntake: oldBeneficiaryMedicine?.dosePerIntake ?? 500,
-    intakeFrequency: oldBeneficiaryMedicine?.intakeFrequency ? Number(oldBeneficiaryMedicine.intakeFrequency) : 1,
-    note: oldBeneficiaryMedicine?.note ?? '',
+    medicineId: '',
+    dosePerIntake: 500,
+    intakeFrequency: 1,
+    note: '',
     med: null,
   });
 
   const [errors, setErrors] = React.useState<z.ZodIssue[]>([]);
 
   useEffect(() => {
-    if (oldBeneficiaryMedicine?.medicine?.doseVariants) {
-      const dv = oldBeneficiaryMedicine.medicine.doseVariants;
-      if (!dv.includes(oldBeneficiaryMedicine.dosePerIntake)) {
-        setValues({ dosePerIntake: dv[0] ?? 0 });
-      } else {
-        setValues({ med: oldBeneficiaryMedicine.medicine });
+    if (oldBeneficiaryMedicine) {
+      setValues({
+        medicineId: oldBeneficiaryMedicine?.medicineId ?? '',
+        intakeFrequency: oldBeneficiaryMedicine?.intakeFrequency ? Number(oldBeneficiaryMedicine.intakeFrequency) : 1,
+        note: oldBeneficiaryMedicine?.note ?? '',
+      });
+      if (oldBeneficiaryMedicine?.medicine?.doseVariants) {
+        const dv = oldBeneficiaryMedicine.medicine.doseVariants;
+        if (!dv.includes(oldBeneficiaryMedicine.dosePerIntake)) {
+          setValues({ dosePerIntake: dv[0] ?? 0 });
+        } else {
+          setValues({ med: oldBeneficiaryMedicine.medicine });
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [oldBeneficiaryMedicine]);
 
   const getErrorForField = (field: keyof TFormValues) => {
     const err = errors.find((e) => e.path[0] === field);
@@ -111,26 +115,28 @@ const BeneficiaryMedicineActionPage = () => {
       if (oldBeneficiaryMedicine) {
         const payload: TUpdateBeneficiaryMedicinePayload = {
           id: oldBeneficiaryMedicine.id,
-          patientId: parsed.patientId,
+          patientId: patientId!,
           medicineId: parsed.medicineId,
           dosePerIntake: parsed.dosePerIntake,
           intakeFrequency: String(parsed.intakeFrequency),
           note: parsed.note ?? '',
         };
-        await updatePatientMedicine(payload).unwrap();
+        await mutateBeneficiaryMedicine({ type: 'UPDATE', dto: payload });
       } else {
         const payload: TAddBeneficiaryMedicinePayload = {
-          patientId: parsed.patientId,
+          patientId: patientId!,
           medicineId: parsed.medicineId,
           dosePerIntake: parsed.dosePerIntake,
           intakeFrequency: String(parsed.intakeFrequency),
           note: parsed.note ?? '',
         };
-        await addPatientMedicine(payload).unwrap();
+        await mutateBeneficiaryMedicine({ type: 'INSERT', dto: payload });
       }
       notifySuccess(oldBeneficiaryMedicine ? STRINGS.edited_successfully : STRINGS.added_successfully);
       navigate(-1);
     } catch (err: any) {
+      console.log(err);
+
       if (err instanceof z.ZodError) {
         setErrors(err.errors);
         return;
@@ -139,7 +145,7 @@ const BeneficiaryMedicineActionPage = () => {
     }
   };
 
-  const isLoading = isAdding || isUpdating || isLoadingById;
+  const isLoading = isMutatingBeneficiaryMedicine || isLoadingById;
   const doseVariantsForSelected = values.med?.doseVariants ?? DOSE_OPTIONS;
 
   return (

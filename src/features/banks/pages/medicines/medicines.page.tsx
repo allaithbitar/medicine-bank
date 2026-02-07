@@ -18,7 +18,9 @@ const MedicinesPage = () => {
   const navigate = useNavigate();
   const { currentCanAdd, currentCanEdit } = usePermissions();
 
-  const { items, totalCount, isFetching, isFetchingNextPage } = useMedicinesLoader({ name: query });
+  const { items, totalCount, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } = useMedicinesLoader({
+    name: query,
+  });
 
   const handleOpenMedicineModal = (oldMedicine?: TMedicine) => {
     if (oldMedicine) {
@@ -44,6 +46,7 @@ const MedicinesPage = () => {
         totalCount={totalCount}
         isLoading={isFetchingNextPage}
         items={items}
+        onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
       >
         {({ item: med }) => {
           return <MedicineCard onEdit={currentCanEdit ? handleOpenMedicineModal : undefined} medicine={med} />;

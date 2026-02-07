@@ -1,9 +1,10 @@
 import { localDb } from '@/libs/sqlocal';
 import { useQuery } from '@tanstack/react-query';
 import type { TGetRatingsDto } from '../types/rating.types';
+import useIsOffline from '@/core/hooks/use-is-offline.hook';
 
 export const useLocalRatingsLoader = (dto?: TGetRatingsDto) => {
-  const isOffline = true;
+  const isOffline = useIsOffline();
   const queryResult = useQuery({
     queryKey: ['LOCAL_RATINGS', dto],
     queryFn: async () => {
