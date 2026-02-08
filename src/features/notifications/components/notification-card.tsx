@@ -1,14 +1,13 @@
 import { memo, useCallback } from 'react';
-import { Avatar, Badge, Box, Card, Chip, Stack, Typography } from '@mui/material';
+import { Avatar, Badge, Box, Card, Chip, Divider, Stack, Typography } from '@mui/material';
 import { green, orange, blue } from '@mui/material/colors';
-import { NotificationsActive, NotificationsNone, Person, CheckCircle, Info } from '@mui/icons-material';
+import { NotificationsActive, NotificationsNone } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import notificationsApi from '@/features/notifications/api/notifications.api';
 import type { TNotification } from '../types/notifications.type';
 import { notifyError } from '@/core/components/common/toast/toast';
-import { formatDateTime } from '@/core/helpers/helpers';
+import { formatDateFromNow } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
-import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 
 const NotificationCard = ({ notification }: { notification: TNotification }) => {
@@ -61,128 +60,94 @@ const NotificationCard = ({ notification }: { notification: TNotification }) => 
       sx={{
         borderLeft: `5px solid ${typeConfig.borderColor}`,
         cursor: 'pointer',
-        opacity: isRead ? 0.85 : 1,
+        opacity: isRead ? 0.8 : 1,
         bgcolor: isRead ? 'background.paper' : typeConfig.bgColor,
       }}
       onClick={handleCardClick}
     >
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={2}
-        sx={{
-          pb: 1,
-          borderBottom: 1,
-          borderColor: 'divider',
-          bgcolor: isRead ? 'transparent' : `${typeConfig.color}08`,
-        }}
-      >
-        <Box sx={{ position: 'relative' }}>
-          <Avatar
-            sx={{
-              bgcolor: typeConfig.color,
-            }}
-          >
-            <Badge
-              color="error"
-              variant="dot"
-              invisible={isRead}
-              sx={{
-                '& .MuiBadge-badge': {
-                  position: 'absolute',
-                  top: 5,
-                  right: 5,
-                },
-              }}
-            >
-              {isRead ? (
-                <NotificationsNone sx={{ fontSize: 28, color: 'white' }} />
-              ) : (
-                <NotificationsActive sx={{ fontSize: 28, color: 'white' }} />
-              )}
-            </Badge>
-          </Avatar>
-        </Box>
-
-        <Stack flexGrow={1}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography
-              variant="subtitle1"
-              fontWeight={isRead ? 'normal' : 'bold'}
-              sx={{ color: isRead ? 'text.secondary' : 'text.primary' }}
-            >
-              {STRINGS.notification_from}:{' '}
-              <Typography component="span" fontWeight="bold" color="primary.main">
-                {notification.fromEmployee.name}
-              </Typography>
-            </Typography>
-            {!isRead && (
-              <Chip
-                label={STRINGS.unread}
-                size="small"
-                color="error"
-                variant="outlined"
-                sx={{ height: 20, fontSize: '0.7rem' }}
-              />
-            )}
-          </Stack>
-          <Typography variant="caption" color="text.secondary">
-            {STRINGS.notification_to}: {notification.toEmployee.name}
-          </Typography>
-        </Stack>
-      </Stack>
-
-      <Stack spacing={1} sx={{ py: 1 }}>
-        <DetailItemComponent
-          icon={<Info />}
-          iconColorPreset="blue"
-          label={STRINGS.notification_type}
-          value={
-            <Chip
-              label={typeConfig.label}
-              size="small"
+      <Stack gap={2}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          gap={2}
+          sx={{
+            bgcolor: isRead ? 'transparent' : `${typeConfig.color}08`,
+          }}
+        >
+          <Box sx={{ position: 'relative' }}>
+            <Avatar
               sx={{
                 bgcolor: typeConfig.color,
-                color: 'white',
-                fontWeight: 'bold',
               }}
-            />
-          }
-        />
-
-        {notification.text && (
-          <DetailItemComponent
-            icon={<Person />}
-            iconColorPreset="deepPurple"
-            label={STRINGS.notification_message}
-            value={
-              <Typography
-                variant="body2"
+            >
+              <Badge
+                color="error"
+                variant="dot"
+                invisible={isRead}
                 sx={{
-                  fontWeight: isRead ? 'normal' : 'medium',
-                  color: isRead ? 'text.secondary' : 'text.primary',
+                  '& .MuiBadge-badge': {
+                    position: 'absolute',
+                    top: 5,
+                    right: 5,
+                  },
                 }}
               >
-                {notification.text}
-              </Typography>
-            }
-          />
-        )}
+                {isRead ? (
+                  <NotificationsNone sx={{ fontSize: 28, color: 'white' }} />
+                ) : (
+                  <NotificationsActive sx={{ fontSize: 28, color: 'white' }} />
+                )}
+              </Badge>
+            </Avatar>
+          </Box>
 
-        {isRead && notification.readAt && (
-          <DetailItemComponent
-            icon={<CheckCircle />}
-            iconColorPreset="green"
-            label={STRINGS.read_at}
-            value={
-              <Typography variant="body2" color="text.secondary">
-                {formatDateTime(notification.readAt)}
+          <Stack flexGrow={1}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1}>
+              <Typography
+                variant="subtitle1"
+                fontWeight={isRead ? 'normal' : 'bold'}
+                sx={{ color: isRead ? 'text.secondary' : 'text.primary' }}
+              >
+                {STRINGS.notification_from}:{' '}
+                <Typography component="span" fontWeight="bold" color="primary.main">
+                  {notification.fromEmployee.name}
+                </Typography>
               </Typography>
-            }
-          />
-        )}
+              <Chip
+                label={typeConfig.label}
+                size="small"
+                sx={{
+                  bgcolor: typeConfig.color,
+                  color: 'white',
+                }}
+              />
+            </Stack>
+            <Typography variant="caption" color="text.secondary">
+              {STRINGS.notification_to}: {notification.toEmployee.name}
+            </Typography>
+          </Stack>
+        </Stack>
+        <Divider />
+        <Stack gap={1}>
+          {notification.text && (
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: isRead ? 'normal' : 'medium',
+                color: isRead ? 'text.secondary' : 'text.primary',
+              }}
+            >
+              {notification.text}
+            </Typography>
+          )}
+
+          {notification.createAt && (
+            <Typography alignSelf="end" variant="caption">
+              {formatDateFromNow(notification.createAt)}/
+            </Typography>
+          )}
+        </Stack>
       </Stack>
-
       {isLoading && <LoadingOverlay />}
     </Card>
   );

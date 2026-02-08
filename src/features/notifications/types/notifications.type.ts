@@ -12,6 +12,7 @@ export type TNotification = {
   text: string | null;
   recordId: string | null;
   readAt: string | null;
+  createAt: string;
 };
 
 export type TNotificationsPayload = {

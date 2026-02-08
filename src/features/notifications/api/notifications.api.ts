@@ -13,8 +13,8 @@ export const notificationsApi = rootApi.injectEndpoints({
         url: '/notifications/search',
         method: 'POST',
         body: {
-          pageSize: pageParam,
           ...queryArg,
+          pageNumber: pageParam,
         },
       }),
       infiniteQueryOptions: {
