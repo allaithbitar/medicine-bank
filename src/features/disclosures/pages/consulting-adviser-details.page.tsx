@@ -1,6 +1,6 @@
 import { Card, Stack, Chip, Divider } from '@mui/material';
-import { useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/query';
 import disclosuresApi from '../api/disclosures.api';
 import STRINGS from '@/core/constants/strings.constant';
@@ -20,6 +20,7 @@ import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
 
 function ConsultingAdviserDetailsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { closeModal, openModal } = useModal();
@@ -72,6 +73,20 @@ function ConsultingAdviserDetailsPage() {
     },
     [handleSelectRating, openModal]
   );
+
+  useEffect(() => {
+    if (searchParams.get('redirectToDisclosure') && consultation?.disclosureId) {
+      setSearchParams(
+        (prev) => {
+          prev.delete('redirectToDisclosure');
+          return prev;
+        },
+        { replace: true }
+      );
+      navigate(`/disclosures/${consultation?.disclosureId}`, { replace: true });
+    }
+  }, [consultation?.disclosureId, navigate, searchParams, setSearchParams]);
+
   if (!consultation) {
     return null;
   }

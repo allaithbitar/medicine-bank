@@ -28,7 +28,9 @@ const NotificationCard = ({ notification }: { notification: TNotification }) => 
       if (notification.type === 'disclosure_assigned') {
         navigate(`/disclosures/${notification.recordId}`);
       } else if (notification.type === 'consultation_requested' || notification.type === 'consultation_completed') {
-        navigate(`/consulting-adviser/${notification.recordId}`);
+        navigate(
+          `/consulting-adviser/${notification.recordId}${notification.type === 'consultation_completed' ? '?redirectToDisclosure=1' : ''}`
+        );
       }
     }
   }, [isRead, isLoading, markRead, notification, navigate]);
