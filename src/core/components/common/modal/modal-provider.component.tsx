@@ -6,6 +6,7 @@ import BeneficiariesFiltersModal from '@/features/beneficiaries/components/benef
 // import useDebouncedEffect from '@/core/hooks/use-debounced-effect.hook';
 import DisclosureFiltersModal from '@/features/disclosures/components/disclosure-filters.modal';
 import ErrorBoundary from '@/components/errorBoundary/error-boundary.component';
+import useDebouncedEffect from '@/core/hooks/use-debounced-effect.hook';
 
 const MODALS = {
   [MODAL_NAMES.CONFIRM_MODAL]: ConfirmModal,
@@ -62,23 +63,24 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     [modalState, searchParams]
   );
 
-  // useDebouncedEffect({
-  //   func: () => {
-  //     const modalIdToDelete = searchParams
-  //       .getAll('modal')
-  //       .slice()
-  //       .filter((mid) => !modalState.some((m) => m.id.toString() === mid));
-  //     setSearchParams((prev) => {
-  //       modalIdToDelete.forEach((mid) => {
-  //         prev.delete('modal', mid);
-  //       });
-
-  //       return prev;
-  //     });
-  //   },
-  //   deps: [searchParams],
-  // });
-  console.log({ openedModals });
+  useDebouncedEffect({
+    func: () => {
+      const modalIdToDelete = searchParams
+        .getAll('modal')
+        .slice()
+        .filter((mid) => !modalState.some((m) => m.id.toString() === mid));
+      setSearchParams(
+        (prev) => {
+          modalIdToDelete.forEach((mid) => {
+            prev.delete('modal', mid);
+          });
+          return prev;
+        },
+        { replace: true }
+      );
+    },
+    deps: [searchParams],
+  });
 
   return (
     <ModalContext.Provider value={contextValue}>
