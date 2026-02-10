@@ -1,5 +1,4 @@
 import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
-import type { TEmployeeRole } from '@/features/accounts-forms/types/employee.types';
 import z from 'zod';
 import EmployeeRoleAutocomplete from './employee-role-autocomplete.component';
 import { Stack } from '@mui/material';
@@ -11,7 +10,7 @@ import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
 import citiesApi from '@/features/banks/api/cities-api/cities.api';
 import { useAppDispatch } from '@/core/store/root.store.types';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
-import type { TEmployee } from '../types/employee.types';
+import type { TEmployee, TEmployeeRole } from '../types/employee.types';
 import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const createEmployeeFormSchema = (optionalPassword = false) => {

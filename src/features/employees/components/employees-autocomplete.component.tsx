@@ -2,11 +2,10 @@ import { useState, type ComponentProps } from 'react';
 import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomplete-input.component';
 import { getErrorMessage } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
-import { EmployeeRole } from '../types/employee.types';
-import type { TEmployeeRole } from '@/features/accounts-forms/types/employee.types';
 import useDebounce from '@/core/hooks/use-debounce.hook';
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import { useEmployeesAutocompleteLoader } from '@/features/autocomplete/hooks/employees-autocomplete-loader.hook';
+import { EmployeeRole, type TEmployeeRole } from '../types/employee.types';
 
 type TEmployeesAutocomplete<T extends boolean> = Partial<
   ComponentProps<typeof FormAutocompleteInput<TAutocompleteItem, T>>
