@@ -389,6 +389,7 @@ const STRINGS = {
   out_of: 'من',
   patients_count: 'عدد المستفيدين',
   disabled_on_offline: 'لا يمكن استخدام هذه الصفحة بدون انترنت',
+  accountant: 'محاسب',
 };
 
 export default STRINGS;

@@ -1,9 +1,10 @@
-import type { TArea } from "../../banks/types/work-areas.types";
+import type { TArea } from '../../banks/types/work-areas.types';
 
 export const EmployeeRole = {
-  manager: "manager",
-  supervisor: "supervisor",
-  scout: "scout",
+  manager: 'manager',
+  supervisor: 'supervisor',
+  scout: 'scout',
+  accountant: 'accountant',
 } as const;
 
 export type TEmployeeRole = keyof typeof EmployeeRole;
