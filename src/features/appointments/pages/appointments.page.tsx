@@ -9,6 +9,7 @@ import STRINGS from '@/core/constants/strings.constant';
 import Calendar from '../components/calendar/calendar.component';
 import { Link } from 'react-router-dom';
 import disclosuresApi from '@/features/disclosures/api/disclosures.api';
+import useUser from '@/core/hooks/user-user.hook';
 
 // const DAYS = {
 //   SUNDAY: 0,
@@ -32,10 +33,12 @@ import disclosuresApi from '@/features/disclosures/api/disclosures.api';
 //
 const AppointmentsPage = () => {
   const [selectedDate, setSelectedDate] = useState('');
-
+  const { role, id } = useUser();
+  const isScout = role === 'scout';
   const { data: selectedDateAppointments } = disclosuresApi.useGetDateAppointmentsQuery(
     {
       date: selectedDate,
+      scoutId: isScout ? id : undefined,
     },
     {
       skip: !selectedDate,

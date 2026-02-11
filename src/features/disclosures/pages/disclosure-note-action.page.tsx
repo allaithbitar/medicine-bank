@@ -99,7 +99,7 @@ const DisclosureNoteActionPage = () => {
           dto: {
             id: oldNote.id,
             disclosureId,
-            noteAudio: audioFile?.audioBlob,
+            noteAudio: audioFile?.audioBlob || null,
             noteText: val.noteText,
           },
         });
@@ -109,7 +109,7 @@ const DisclosureNoteActionPage = () => {
           type: 'INSERT',
           dto: {
             disclosureId,
-            noteAudio: audioFile?.audioBlob,
+            noteAudio: audioFile?.audioBlob || null,
             noteText: val.noteText,
           },
         });

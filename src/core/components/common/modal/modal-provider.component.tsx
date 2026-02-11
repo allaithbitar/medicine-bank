@@ -5,6 +5,8 @@ import { useSearchParams } from 'react-router-dom';
 import BeneficiariesFiltersModal from '@/features/beneficiaries/components/beneficiaries-filters.modal';
 // import useDebouncedEffect from '@/core/hooks/use-debounced-effect.hook';
 import DisclosureFiltersModal from '@/features/disclosures/components/disclosure-filters.modal';
+import ChangePasswordModal from '@/features/auth/components/change-password.modal';
+import MoveDisclosuresModal from '@/features/disclosures/components/move-disclosures.modal';
 import ErrorBoundary from '@/components/errorBoundary/error-boundary.component';
 import useDebouncedEffect from '@/core/hooks/use-debounced-effect.hook';
 
@@ -12,6 +14,8 @@ const MODALS = {
   [MODAL_NAMES.CONFIRM_MODAL]: ConfirmModal,
   [MODAL_NAMES.BENEFICIARIES_FILTERS_MODAL]: BeneficiariesFiltersModal,
   [MODAL_NAMES.DISCLOSURE_FILTERS_MODAL]: DisclosureFiltersModal,
+  [MODAL_NAMES.CHANGE_PASSWORD_MODAL]: ChangePasswordModal,
+  [MODAL_NAMES.MOVE_DISCLOSURES_MODAL]: MoveDisclosuresModal,
 } as const;
 
 const ModalContext = createContext<{

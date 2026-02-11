@@ -17,6 +17,7 @@ const DisclosureFamilyMembersTab = ({
 }) => {
   const { items, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, totalCount } =
     useBeneficiaryFamilyMembersLoader({ patientId: disclosure?.patientId ?? '' });
+  const isArchived = disclosure?.status === 'archived';
 
   return (
     <Stack sx={{ position: 'relative', height: '100%', overflow: 'auto' }}>
@@ -26,7 +27,11 @@ const DisclosureFamilyMembersTab = ({
           <Nodata
             icon={Diversity3}
             title={STRINGS.no_family_members}
-            extra={<Button onClick={() => handleOpenFamilyMembersActionPage?.()}>{STRINGS.add}</Button>}
+            extra={
+              <Button disabled={isArchived} onClick={() => handleOpenFamilyMembersActionPage?.()}>
+                {STRINGS.add}
+              </Button>
+            }
           />
         }
         isLoading={isFetchingNextPage}
@@ -36,7 +41,11 @@ const DisclosureFamilyMembersTab = ({
         {({ item }) => (
           <FamilyMemberCard
             member={item}
-            onEdit={handleOpenFamilyMembersActionPage ? () => handleOpenFamilyMembersActionPage?.(item) : undefined}
+            onEdit={
+              handleOpenFamilyMembersActionPage && !isArchived
+                ? () => handleOpenFamilyMembersActionPage?.(item)
+                : undefined
+            }
           />
         )}
       </VirtualizedList>

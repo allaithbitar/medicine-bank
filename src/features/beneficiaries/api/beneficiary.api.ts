@@ -14,6 +14,8 @@ import type {
   TUpdateFamilyMemberPayload,
   TValidateNationalNumberPayload,
   TValidatePhoneNumbersPayload,
+  TValidationNationalErrorResponse,
+  TValidationPhoneNumberErrorResponse,
 } from '../types/beneficiary.types';
 import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
 
@@ -153,19 +155,21 @@ export const beneficiaryApi = rootApi.injectEndpoints({
       ],
     }),
 
-    validateNationalNumber: builder.mutation<TFamilyMember, TValidateNationalNumberPayload>({
+    validateNationalNumber: builder.mutation<TValidationNationalErrorResponse | null, TValidateNationalNumberPayload>({
       query: (data) => ({
         url: 'patients/validate/national-number',
         method: 'POST',
         body: data,
       }),
+      transformResponse: (res: ApiResponse<TValidationNationalErrorResponse | null>) => res.data,
     }),
-    validatePhoneNumbers: builder.mutation<void, TValidatePhoneNumbersPayload>({
+    validatePhoneNumbers: builder.mutation<TValidationPhoneNumberErrorResponse | null, TValidatePhoneNumbersPayload>({
       query: (data) => ({
         url: 'patients/validate/phone-numbers',
         method: 'POST',
         body: data,
       }),
+      transformResponse: (res: ApiResponse<TValidationPhoneNumberErrorResponse | null>) => res.data,
     }),
     getBeneficiaryMedicineById: builder.query<TBeneficiaryMedicine, { id: string }>({
       query: ({ id }) => ({

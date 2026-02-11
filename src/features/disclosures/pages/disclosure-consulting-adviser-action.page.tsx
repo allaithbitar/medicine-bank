@@ -1,7 +1,7 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
 import { Save } from '@mui/icons-material';
-import { Card, Stack, Typography } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import STRINGS from '@/core/constants/strings.constant';
 import AudioPlayer, { type TAudioFile } from '../components/audio-player.component';
 import useReducerState from '@/core/hooks/use-reducer.hook';
@@ -15,6 +15,7 @@ import { notifyError, notifySuccess } from '@/core/components/common/toast/toast
 import disclosuresApi from '../api/disclosures.api';
 import { skipToken } from '@reduxjs/toolkit/query';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
+import Header from '@/core/components/common/header/header';
 
 const AdviserConsultationSchema = z.object({
   consultationNote: z.string().min(0),
@@ -47,7 +48,6 @@ const DisclosureConsultingAdviserActionPage = () => {
   }, [oldAdviserConsultation]);
 
   const [errors, setErrors] = useState<z.ZodIssue[]>([]);
-  console.log('🚀 ~ DisclosureConsultingAdviserActionPage ~ errors:', errors);
 
   const [audioFile, setAudioFile] = useState<TAudioFile>();
 
@@ -95,7 +95,7 @@ const DisclosureConsultingAdviserActionPage = () => {
       // }
       const dto: TAddDisclosureAdviserConsultationPayload = {
         disclosureId,
-        consultationAudioFile: audioFile?.audioBlob,
+        consultationAudioFile: audioFile?.audioBlob || null,
         consultationNote: val.consultationNote,
       };
       if (oldAdviserConsultation) {
@@ -118,8 +118,8 @@ const DisclosureConsultingAdviserActionPage = () => {
   const isLoading = isAdding || isUpdating || isLoadingById;
 
   return (
-    <Card sx={{ p: 2 }}>
-      <Typography sx={{ pb: 2 }}>{oldAdviserConsultation ? STRINGS.edit_note : STRINGS.add_note}</Typography>
+    <Card>
+      <Header title={oldAdviserConsultation ? STRINGS.edit_note : STRINGS.add_note} />
       <Stack gap={2}>
         <FormTextAreaInput
           label={STRINGS.note}

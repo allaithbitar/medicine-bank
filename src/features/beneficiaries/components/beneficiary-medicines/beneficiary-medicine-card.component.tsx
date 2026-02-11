@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { teal, orange } from '@mui/material/colors';
+// import { teal, orange } from '@mui/material/colors';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
@@ -93,16 +93,15 @@ const BeneficiaryMedicineCard = ({
   return (
     <ReusableCardComponent
       headerContent={headerContent}
-      headerBackground={`linear-gradient(to right, ${teal[400]}, ${orange[400]})`}
+      // headerBackground={`linear-gradient(to right, ${teal[400]}, ${orange[400]})`}
       bodyContent={
         <Stack gap={2}>
-          <DetailItemComponent label={STRINGS.dose} icon={<VaccinesIcon />} value={`${dose}mg`} />
+          <DetailItemComponent label={STRINGS.dose} icon={<VaccinesIcon />} value={dose || STRINGS.none} />
           <DetailItemComponent
-            label={STRINGS.intake_frequency_per_day}
+            label={STRINGS.intake_frequency}
             icon={<MedicationLiquidIcon />}
-            value={item.intakeFrequency}
+            value={item.intakeFrequency || STRINGS.none}
           />
-
           <DetailItemComponent label={STRINGS.note} icon={<MedicalServicesIcon />} value={item.note || STRINGS.none} />
         </Stack>
       }

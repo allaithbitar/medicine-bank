@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Stack, Tab, Tabs, ToggleButtonGroup, ToggleButton, Card } from '@mui/material';
+import { Box, Stack, Tab, Tabs, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
@@ -10,7 +10,7 @@ import SystemBroadcastCard from '../components/system-broadcast-card.component';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Nodata from '@/core/components/common/no-data/no-data.component';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
-import Header from '@/core/components/common/header/header';
+import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 
 const AUDIENCES = ['all', 'scouts', 'supervisors'] as const;
 
@@ -60,10 +60,10 @@ const SystemBroadcastsPage = () => {
   };
 
   return (
-    <Stack>
-      <Card>
-        <Header title={STRINGS.system_broadcast} />
-        <Stack gap={3}>
+    <Stack gap={1}>
+      <CustomAppBarComponent
+        title={STRINGS.system_broadcast}
+        children={
           <Tabs
             value={currentTab}
             variant="fullWidth"
@@ -84,45 +84,46 @@ const SystemBroadcastsPage = () => {
             <Tab label={STRINGS.meetings} />
             <Tab label={STRINGS.custom} />
           </Tabs>
+        }
+      />
+      <Stack gap={1}>
+        {currentShowFilters && (
+          <ToggleButtonGroup value={audienceFilter} exclusive onChange={(_, v) => v && handleAudienceQuick(v)}>
+            {AUDIENCES.map((a) => (
+              <ToggleButton key={a} value={a}>
+                {STRINGS[`audience_${a}` as keyof typeof STRINGS] ?? a}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        )}
 
-          {currentShowFilters && (
-            <ToggleButtonGroup value={audienceFilter} exclusive onChange={(_, v) => v && handleAudienceQuick(v)}>
-              {AUDIENCES.map((a) => (
-                <ToggleButton key={a} value={a}>
-                  {STRINGS[`audience_${a}` as keyof typeof STRINGS] ?? a}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
+        <Box sx={{ flex: 1 }}>
+          {searchResp.length === 0 && !isLoading ? (
+            <Nodata />
+          ) : (
+            <VirtualizedList isLoading={isLoading} items={searchResp} containerStyle={{ height: '100%' }}>
+              {({ item }) => (
+                <SystemBroadcastCard
+                  broadcast={item as TSystemBroadcast}
+                  onEdit={currentCanEdit ? (b) => handleOpenAction(b as TSystemBroadcast) : undefined}
+                />
+              )}
+            </VirtualizedList>
           )}
+        </Box>
 
-          <Box sx={{ flex: 1 }}>
-            {searchResp.length === 0 && !isLoading ? (
-              <Nodata />
-            ) : (
-              <VirtualizedList isLoading={isLoading} items={searchResp} containerStyle={{ height: '100%' }}>
-                {({ item }) => (
-                  <SystemBroadcastCard
-                    broadcast={item as TSystemBroadcast}
-                    onEdit={currentCanEdit ? (b) => handleOpenAction(b as TSystemBroadcast) : undefined}
-                  />
-                )}
-              </VirtualizedList>
-            )}
-          </Box>
-
-          {currentCanAdd && (
-            <ActionsFab
-              actions={[
-                {
-                  label: STRINGS.add,
-                  icon: <Add />,
-                  onClick: () => handleOpenAction(),
-                },
-              ]}
-            />
-          )}
-        </Stack>
-      </Card>
+        {currentCanAdd && (
+          <ActionsFab
+            actions={[
+              {
+                label: STRINGS.add,
+                icon: <Add />,
+                onClick: () => handleOpenAction(),
+              },
+            ]}
+          />
+        )}
+      </Stack>
     </Stack>
   );
 };

@@ -8,9 +8,20 @@ export type TRoutePermission = {
   canRate?: TUserRole[];
   showFilters?: TUserRole[];
   canArchive?: TUserRole[];
+  canCompleteAppointment?: TUserRole[];
+  canReceiveDisclosure?: TUserRole[];
+  canEditDisclosure?: TUserRole[];
 };
 
-export type TActionType = 'canAdd' | 'canEdit' | 'canRate' | 'showFilters' | 'canArchive';
+export type TActionType =
+  | 'canAdd'
+  | 'canEdit'
+  | 'canRate'
+  | 'showFilters'
+  | 'canArchive'
+  | 'canCompleteAppointment'
+  | 'canReceiveDisclosure'
+  | 'canEditDisclosure';
 
 export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   { path: '/', allowedRoles: ['manager', 'supervisor', 'scout'] },
@@ -27,17 +38,21 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   {
     path: '/disclosures',
     allowedRoles: ['manager', 'supervisor', 'scout'],
-    canAdd: ['manager', 'supervisor', 'scout'],
+    canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'scout'],
     showFilters: ['manager', 'supervisor', 'scout'],
   },
-  { path: '/disclosures/action', allowedRoles: ['manager', 'supervisor', 'scout'] },
+  { path: '/disclosures/action', allowedRoles: ['manager', 'supervisor'] },
   {
     path: '/disclosures/:disclosureId',
     allowedRoles: ['manager', 'supervisor', 'scout'],
     canEdit: ['manager', 'scout'],
+    canEditDisclosure: ['manager', 'supervisor'],
     canArchive: ['manager', 'supervisor'],
+    canCompleteAppointment: ['manager', 'supervisor'],
+    canReceiveDisclosure: ['manager', 'supervisor'],
   },
+
   {
     path: '/disclosures/details/action',
     allowedRoles: ['manager', 'supervisor', 'scout'],

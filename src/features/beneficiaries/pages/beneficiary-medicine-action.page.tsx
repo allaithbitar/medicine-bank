@@ -21,10 +21,8 @@ import { useBeneficiaryMedicineLoader } from '../hooks/beneficiary-medicine-load
 
 const BeneficiaryMedicineSchema = z.object({
   medicineId: z.string().min(1, { message: STRINGS.schema_required }),
-  dosePerIntake: z.number().gt(0, { message: STRINGS.schema_required }),
-  intakeFrequency: z
-    .number({ invalid_type_error: STRINGS.schema_intake_freq_number })
-    .min(0, { message: STRINGS.schema_intake_freq_min }),
+  dosePerIntake: z.number().optional(),
+  intakeFrequency: z.string().nullable(),
   note: z.string().optional().nullable(),
 });
 
@@ -44,8 +42,8 @@ const BeneficiaryMedicineActionPage = () => {
 
   const [values, setValues] = useReducerState<TFormValues & { med: TMedicinesAutocompleteItem | null }>({
     medicineId: '',
-    dosePerIntake: 500,
-    intakeFrequency: 1,
+    dosePerIntake: undefined,
+    intakeFrequency: '',
     note: '',
     med: null,
   });
@@ -56,7 +54,7 @@ const BeneficiaryMedicineActionPage = () => {
     if (oldBeneficiaryMedicine) {
       setValues({
         medicineId: oldBeneficiaryMedicine?.medicineId ?? '',
-        intakeFrequency: oldBeneficiaryMedicine?.intakeFrequency ? Number(oldBeneficiaryMedicine.intakeFrequency) : 1,
+        intakeFrequency: oldBeneficiaryMedicine?.intakeFrequency ? oldBeneficiaryMedicine.intakeFrequency : '',
         note: oldBeneficiaryMedicine?.note ?? '',
       });
       if (oldBeneficiaryMedicine?.medicine?.doseVariants) {
@@ -83,7 +81,7 @@ const BeneficiaryMedicineActionPage = () => {
 
     if (medicine?.doseVariants?.length) {
       const curDose = values.dosePerIntake;
-      if (!medicine.doseVariants.includes(curDose)) {
+      if (curDose && !medicine.doseVariants.includes(curDose)) {
         setValues({ dosePerIntake: medicine.doseVariants[0] });
       }
     } else {
@@ -92,13 +90,16 @@ const BeneficiaryMedicineActionPage = () => {
   };
 
   const handleDoseSelect = (dose: number) => {
+    if (dose === values.dosePerIntake) {
+      setValues({ dosePerIntake: undefined });
+      return;
+    }
     setValues({ dosePerIntake: dose });
     setErrors((prev) => prev.filter((er) => er.path[0] !== 'dosePerIntake'));
   };
 
   const handleFrequencyChange = (v: string) => {
-    const num = isNaN(Number(v)) ? 0 : Number(v);
-    setValues({ intakeFrequency: num });
+    setValues({ intakeFrequency: v });
     setErrors((prev) => prev.filter((er) => er.path[0] !== 'intakeFrequency'));
   };
 
@@ -108,7 +109,7 @@ const BeneficiaryMedicineActionPage = () => {
     try {
       const toValidate = {
         ...values,
-        intakeFrequency: Number(values.intakeFrequency),
+        intakeFrequency: values.intakeFrequency,
       };
       const parsed = BeneficiaryMedicineSchema.parse(toValidate);
 
@@ -119,7 +120,7 @@ const BeneficiaryMedicineActionPage = () => {
           medicineId: parsed.medicineId,
           dosePerIntake: parsed.dosePerIntake,
           intakeFrequency: String(parsed.intakeFrequency),
-          note: parsed.note ?? '',
+          note: parsed.note || null,
         };
         await mutateBeneficiaryMedicine({ type: 'UPDATE', dto: payload });
       } else {
@@ -128,7 +129,7 @@ const BeneficiaryMedicineActionPage = () => {
           medicineId: parsed.medicineId,
           dosePerIntake: parsed.dosePerIntake,
           intakeFrequency: String(parsed.intakeFrequency),
-          note: parsed.note ?? '',
+          note: parsed.note || null,
         };
         await mutateBeneficiaryMedicine({ type: 'INSERT', dto: payload });
       }
@@ -152,22 +153,19 @@ const BeneficiaryMedicineActionPage = () => {
     <Card sx={{ p: 2 }}>
       <Header title={oldBeneficiaryMedicine ? STRINGS.edit_beneficiary_medicine : STRINGS.add_beneficiary_medicine} />
       <Stack gap={2}>
-        <Stack sx={{ flexDirection: 'row', gap: 1, alignItems: 'end' }}>
-          <MedicinesAutocomplete
-            defaultValueId={oldBeneficiaryMedicine?.medicineId}
-            value={values.med}
-            onChange={(m) => handleMedicineChange(m)}
-            errorText={getErrorForField('medicineId')}
-          />
-          <FormTextFieldInput
-            label={STRINGS.intake_frequency_per_day}
-            value={values.intakeFrequency as unknown as string}
-            onChange={handleFrequencyChange}
-            error={!!getErrorForField('intakeFrequency')}
-            errorText={getErrorForField('intakeFrequency')}
-            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 0 }}
-          />
-        </Stack>
+        <MedicinesAutocomplete
+          defaultValueId={oldBeneficiaryMedicine?.medicineId}
+          value={values.med}
+          onChange={(m) => handleMedicineChange(m)}
+          errorText={getErrorForField('medicineId')}
+        />
+        <FormTextFieldInput
+          label={STRINGS.intake_frequency}
+          value={values.intakeFrequency as unknown as string}
+          onChange={handleFrequencyChange}
+          error={!!getErrorForField('intakeFrequency')}
+          errorText={getErrorForField('intakeFrequency')}
+        />
         <Box>
           <Typography variant="body2" sx={{ mb: 1 }}>
             {STRINGS.dose_per_intake}
@@ -187,7 +185,7 @@ const BeneficiaryMedicineActionPage = () => {
               );
             })}
 
-            {!doseVariantsForSelected.includes(values.dosePerIntake as any) && values.dosePerIntake > 0 ? (
+            {!doseVariantsForSelected.includes(values.dosePerIntake as any) && (values.dosePerIntake || 0) > 0 ? (
               <Chip key={`custom-${values.dosePerIntake}`} label={`${values.dosePerIntake} mg`} color="secondary" />
             ) : null}
           </Stack>

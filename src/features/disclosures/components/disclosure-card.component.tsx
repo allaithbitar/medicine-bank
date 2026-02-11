@@ -5,7 +5,7 @@ import ReusableCardComponent from '@/core/components/common/reusable-card/reusab
 import { InfoOutline, Person, PriorityHighOutlined, Visibility } from '@mui/icons-material';
 import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
-import { purple } from '@mui/material/colors';
+// import { purple } from '@mui/material/colors';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 import { Link } from 'react-router-dom';
 import CustomBadge from './custom-badge.component';
@@ -66,20 +66,19 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const isAppointmentCompletedChip = disclosure.isAppointmentCompleted && STRINGS.appointment_completed;
 
   const isReceivedChip = disclosure.isReceived && STRINGS.is_received;
-  const isArchived = disclosure.status === 'archived';
 
   return (
     <ReusableCardComponent
-      headerBackground={`linear-gradient(to right, ${purple[800]}, ${purple[500]})`}
+      // headerBackground={`linear-gradient(to right, ${purple[800]}, ${purple[500]})`}
       headerContent={headerContent}
       bodyContent={bodyContent}
       footerContent={
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" justifyContent="space-between" alignItems="center" gap={0.5}>
+            {isReceivedChip && <Chip size="small" variant="outlined" label={isReceivedChip} color="secondary" />}
             {isAppointmentCompletedChip && (
               <Chip size="small" variant="outlined" label={isAppointmentCompletedChip} color="primary" />
             )}
-            {isReceivedChip && <Chip size="small" variant="outlined" label={isReceivedChip} color="secondary" />}
             {isLate && (
               <Chip
                 size="small"
@@ -90,7 +89,6 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
                 }}
               />
             )}
-            {isArchived && <Chip size="small" variant="outlined" label={STRINGS.archived} color="warning" />}
           </Stack>
 
           <Link to={`/disclosures/${disclosure.id}`}>

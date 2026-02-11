@@ -1,29 +1,28 @@
-import { type ComponentProps } from "react";
-import FormAutocompleteInput from "@/core/components/common/inputs/form-autocomplete-input.component";
-import STRINGS from "@/core/constants/strings.constant";
-import {
-  DisclosureStatus,
-  type TDisclosureStatus,
-} from "../types/disclosure.types";
+import { type ComponentProps } from 'react';
+import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomplete-input.component';
+import STRINGS from '@/core/constants/strings.constant';
+import { DisclosureStatus, type TDisclosureStatus } from '../types/disclosure.types';
+import usePermissions from '@/core/hooks/use-permissions.hook';
 
 type TStatusAutocompleteProps<T extends boolean> = Partial<
-  ComponentProps<
-    typeof FormAutocompleteInput<{ id: TDisclosureStatus; label: string }, T>
-  >
+  ComponentProps<typeof FormAutocompleteInput<{ id: TDisclosureStatus; label: string }, T>>
 >;
 
-function DisclosureStatusAutocomplete<T extends boolean>({
-  ...props
-}: TStatusAutocompleteProps<T>) {
+function DisclosureStatusAutocomplete<T extends boolean>({ ...props }: TStatusAutocompleteProps<T>) {
+  const { isScoutRole } = usePermissions();
   const options = [
     {
       label: STRINGS.active,
       id: DisclosureStatus.active,
     },
-    {
-      label: STRINGS.suspended,
-      id: DisclosureStatus.suspended,
-    },
+    ...(!isScoutRole
+      ? [
+          {
+            label: STRINGS.suspended,
+            id: DisclosureStatus.suspended,
+          },
+        ]
+      : []),
     {
       label: STRINGS.archived,
       id: DisclosureStatus.archived,

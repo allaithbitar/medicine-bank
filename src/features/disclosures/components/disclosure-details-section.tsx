@@ -2,22 +2,31 @@ import { Stack, Typography, Button, Card } from '@mui/material';
 import Header from '@/core/components/common/header/header';
 import STRINGS from '@/core/constants/strings.constant';
 import Nodata from '@/core/components/common/no-data/no-data.component';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import { Home, Work, ElectricBolt, AttachMoney, MedicalServices, ThumbUp, ThumbDown, Info } from '@mui/icons-material';
 import { getStringsLabel } from '@/core/helpers/helpers';
 import { useDisclosureDetailsLoader } from '../hooks/disclosure-details-loader.hook';
+import type { TDisclosure } from '../types/disclosure.types';
 
 const DisclosureDetailsSection = ({
   disclosureId,
   openEditDetails,
+  disclosure,
 }: {
   disclosureId?: string;
   openEditDetails?: () => void;
+  disclosure?: TDisclosure;
 }) => {
   const { data: details, isFetching } = useDisclosureDetailsLoader(disclosureId!);
+  const isArchived = disclosure?.status === 'archived';
+  const navigate = useNavigate();
+
+  const handleOpenDisclosureDetails = () => {
+    navigate('/disclosures/details/action?disclosureId=${disclosureId}');
+  };
 
   if (isFetching) {
     return (
@@ -36,9 +45,9 @@ const DisclosureDetailsSection = ({
           title={STRINGS.no_details}
           extra={
             openEditDetails ? (
-              <Link to={`/disclosures/details/action?disclosureId=${disclosureId}`}>
-                <Button>{STRINGS.add}</Button>
-              </Link>
+              <Button disabled={isArchived} onClick={handleOpenDisclosureDetails}>
+                {STRINGS.add}
+              </Button>
             ) : null
           }
         />
@@ -145,7 +154,14 @@ const DisclosureDetailsSection = ({
           )}
 
           {openEditDetails && (
-            <Button fullWidth startIcon={<ListAltIcon />} onClick={openEditDetails} variant="outlined" sx={{ mt: 2 }}>
+            <Button
+              fullWidth
+              disabled={isArchived}
+              startIcon={<ListAltIcon />}
+              onClick={openEditDetails}
+              variant="outlined"
+              sx={{ mt: 2 }}
+            >
               {STRINGS.edit} {STRINGS.disclosures_details}
             </Button>
           )}

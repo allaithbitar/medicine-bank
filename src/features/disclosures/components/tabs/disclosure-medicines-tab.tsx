@@ -19,6 +19,8 @@ const DisclosureMedicinesTab = ({
     useBeneficiaryMedicinesLoader({
       patientId: disclosure?.patientId ?? '',
     });
+  const isArchived = disclosure?.status === 'archived';
+
   return (
     <Stack sx={{ position: 'relative', height: '100%', overflow: 'auto' }}>
       <VirtualizedList
@@ -29,7 +31,9 @@ const DisclosureMedicinesTab = ({
             title={STRINGS.no_medicines_found}
             extra={
               handleOpenBeneficiaryMedicineActionPage && (
-                <Button onClick={() => handleOpenBeneficiaryMedicineActionPage?.()}>{STRINGS.add}</Button>
+                <Button disabled={isArchived} onClick={() => handleOpenBeneficiaryMedicineActionPage?.()}>
+                  {STRINGS.add}
+                </Button>
               )
             }
           />
@@ -43,7 +47,7 @@ const DisclosureMedicinesTab = ({
             <BeneficiaryMedicineCard
               item={item}
               onEdit={
-                handleOpenBeneficiaryMedicineActionPage
+                handleOpenBeneficiaryMedicineActionPage && !isArchived
                   ? () => handleOpenBeneficiaryMedicineActionPage?.(item)
                   : undefined
               }

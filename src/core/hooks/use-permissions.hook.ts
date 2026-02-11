@@ -12,6 +12,9 @@ export const usePermissions = () => {
   const user = useUser();
   const location = useLocation();
   const currentUserRole = user.role;
+  const isManagerRole = user.role === 'manager';
+  const isScoutRole = user.role === 'scout';
+  const isSupervisorRole = user.role === 'supervisor';
 
   const hasRouteAccess = useMemo(
     () => (routePath: string) => checkRouteAccess(routePath, currentUserRole),
@@ -55,6 +58,10 @@ export const usePermissions = () => {
     () => checkActionPermission(location.pathname, 'canEdit', currentUserRole),
     [location.pathname, currentUserRole]
   );
+  const currentCanEditDisclosure = useMemo(
+    () => checkActionPermission(location.pathname, 'canEditDisclosure', currentUserRole),
+    [location.pathname, currentUserRole]
+  );
   const currentCanRate = useMemo(
     () => checkActionPermission(location.pathname, 'canRate', currentUserRole),
     [location.pathname, currentUserRole]
@@ -65,6 +72,14 @@ export const usePermissions = () => {
   );
   const currentCanArchive = useMemo(
     () => checkActionPermission(location.pathname, 'canArchive', currentUserRole),
+    [location.pathname, currentUserRole]
+  );
+  const currentCanCompleteAppointment = useMemo(
+    () => checkActionPermission(location.pathname, 'canCompleteAppointment', currentUserRole),
+    [location.pathname, currentUserRole]
+  );
+  const currentCanReceiveDisclosure = useMemo(
+    () => checkActionPermission(location.pathname, 'canReceiveDisclosure', currentUserRole),
     [location.pathname, currentUserRole]
   );
 
@@ -84,6 +99,12 @@ export const usePermissions = () => {
     currentCanRate,
     currentShowFilters,
     currentCanArchive,
+    isSupervisorRole,
+    isManagerRole,
+    isScoutRole,
+    currentCanReceiveDisclosure,
+    currentCanCompleteAppointment,
+    currentCanEditDisclosure,
   };
 };
 

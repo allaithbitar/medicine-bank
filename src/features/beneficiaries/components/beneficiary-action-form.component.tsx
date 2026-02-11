@@ -6,14 +6,10 @@ import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
 import CitiesAutocomplete from '@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component';
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 import type { TCity } from '@/features/banks/types/city.types';
-import { Add, DeleteOutlined } from '@mui/icons-material';
-import { Button, IconButton, Stack } from '@mui/material';
+import { Add, DeleteOutlined, ExpandMore } from '@mui/icons-material';
+import { Button, IconButton, Stack, Collapse, Box, Typography } from '@mui/material';
 import z from 'zod';
-import type {
-  // TAddBeneficiaryDto,
-  TBenefieciary,
-  // TUpdateBeneficiaryDto,
-} from '../types/beneficiary.types';
+import type { TBenefieciary } from '../types/beneficiary.types';
 import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
 import { useAppDispatch } from '@/core/store/root.store.types';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
@@ -25,7 +21,7 @@ import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const PatientFormSchema = z.object({
   name: z.string().min(5, STRINGS.schema_name_too_short),
-  nationalNumber: z.string().length(11, STRINGS.schema_invalid_national_number),
+  nationalNumber: z.string().optional(),
   area: z.custom<TAutocompleteItem | null>((data) => !!data, {
     message: STRINGS.schema_required,
   }),
@@ -34,7 +30,7 @@ const PatientFormSchema = z.object({
   city: z.custom<TAutocompleteItem | null>((data) => !!data, {
     message: STRINGS.schema_required,
   }),
-  phoneNumbers: z.array(z.string().length(10, STRINGS.schema_phone_digits)).min(1),
+  phoneNumbers: z.array(z.string().length(10, STRINGS.schema_phone_digits)).min(1, STRINGS.schema_at_least_one_phone),
   birthDate: z.string(),
   gender: z
     .custom<(TListItem & { label: string }) | null>((data) => !!data, {
@@ -50,23 +46,22 @@ export type TBenefificaryFormHandlers = {
 
 type TProps = {
   ref: Ref<TBenefificaryFormHandlers>;
+  validationErrors?: {
+    nationalNumber?: string;
+    phoneNumbers?: string;
+  };
 } & (
   | {
       beneficiaryData: TBenefieciary;
-      // onSuccessSubmit: (dto: TUpdateBeneficiaryDto) => void;
     }
   | {
       beneficiaryData?: never;
-      // onSuccessSubmit: (dto: TAddBeneficiaryDto) => void;
     }
 );
 
-function BeneficiaryActionForm({
-  beneficiaryData,
-  // onSuccessSubmit,
-  ref,
-}: TProps) {
+function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [showOptionalFields, setShowOptionalFields] = useState(false);
   const { formState, formErrors, handleSubmit, setFormState } = useForm({
     schema: PatientFormSchema,
     initalState: {
@@ -76,7 +71,7 @@ function BeneficiaryActionForm({
       address: '',
       about: '',
       city: null,
-      phoneNumbers: ['123'],
+      phoneNumbers: [''],
       birthDate: '',
       gender: null,
       job: '',
@@ -187,28 +182,6 @@ function BeneficiaryActionForm({
         onChange={(v) => handleChange('name', v)}
         errorText={formErrors.name?.[0].message ?? ''}
       />
-      <FormTextFieldInput
-        required
-        label={STRINGS.national_number}
-        name="nationalNumber"
-        value={formState.nationalNumber}
-        onChange={(v) => handleChange('nationalNumber', v)}
-        errorText={formErrors.nationalNumber?.[0].message ?? ''}
-      />
-      <FormAutocompleteInput<{ id: string; label: string }>
-        value={formState.gender}
-        label={STRINGS.gender}
-        options={[
-          { id: 'male', label: STRINGS.male },
-          { id: 'female', label: STRINGS.female },
-        ]}
-        onChange={(v) => handleChange('gender', v)}
-      />
-      <FormDateInput
-        label={STRINGS.birth_date}
-        value={formState.birthDate ?? ''}
-        onChange={(v) => handleChange('birthDate', v ? addTimeZoneOffestToIsoDate(v).toISOString() : '')}
-      />
       <CitiesAutocomplete
         required
         label={STRINGS.city}
@@ -228,7 +201,7 @@ function BeneficiaryActionForm({
       <FieldSet label={STRINGS.phone_numbers}>
         <Stack gap={2}>
           {formState.phoneNumbers.map((pn, index) => (
-            <Stack direction="row" gap={1} alignItems="center">
+            <Stack key={index} direction="row" gap={1} alignItems="center">
               <FormTextFieldInput
                 label={`${STRINGS.phone_number} ${index + 1}`}
                 value={pn}
@@ -240,9 +213,10 @@ function BeneficiaryActionForm({
                     phoneNumbers: clone,
                   }));
                 }}
-                errorText={formErrors.phoneNumbers?.[index]?.message ?? ''}
+                errorText={formErrors.phoneNumbers?.[index]?.message || validationErrors?.phoneNumbers}
                 endAdornment={
                   <IconButton
+                    disabled={formState.phoneNumbers.length === 1}
                     color="error"
                     onClick={() => {
                       const clone = structuredClone(formState.phoneNumbers);
@@ -273,29 +247,67 @@ function BeneficiaryActionForm({
           </Button>
         </Stack>
       </FieldSet>
+      <Box>
+        <Button
+          onClick={() => setShowOptionalFields(!showOptionalFields)}
+          endIcon={
+            <ExpandMore
+              sx={{
+                transform: showOptionalFields ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: '0.3s',
+              }}
+            />
+          }
+          sx={{ mb: 1 }}
+        >
+          <Typography>{showOptionalFields ? STRINGS.show_less : STRINGS.show_more}</Typography>
+          <Typography sx={{ mx: 1 }}>({STRINGS.additional_information})</Typography>
+        </Button>
+        <Collapse in={showOptionalFields}>
+          <Stack gap={2}>
+            <FormTextFieldInput
+              label={STRINGS.national_number}
+              name="nationalNumber"
+              value={formState.nationalNumber}
+              onChange={(v) => handleChange('nationalNumber', v)}
+              errorText={validationErrors?.nationalNumber || formErrors.nationalNumber?.[0].message || ''}
+            />
+            <FormAutocompleteInput<{ id: string; label: string }>
+              value={formState.gender}
+              label={STRINGS.gender}
+              options={[
+                { id: 'male', label: STRINGS.male },
+                { id: 'female', label: STRINGS.female },
+              ]}
+              onChange={(v) => handleChange('gender', v)}
+            />
+            <FormDateInput
+              label={STRINGS.birth_date}
+              value={formState.birthDate ?? ''}
+              onChange={(v) => handleChange('birthDate', v ? addTimeZoneOffestToIsoDate(v).toISOString() : '')}
+            />
+            <FormTextFieldInput
+              label={STRINGS.job_or_school}
+              name="job"
+              value={formState.job ?? ''}
+              onChange={(v) => handleChange('job', v)}
+            />
+            <FormTextFieldInput
+              label={STRINGS.patient_address}
+              name="address"
+              value={formState.address}
+              onChange={(v) => handleChange('address', v)}
+            />
+            <FormTextAreaInput
+              label={STRINGS.patient_about}
+              name="about"
+              value={formState.about ?? ''}
+              onChange={(v) => handleChange('about', v)}
+            />
+          </Stack>
+        </Collapse>
+      </Box>
 
-      <FormTextFieldInput
-        label={STRINGS.job_or_school}
-        name="job"
-        value={formState.job ?? ''}
-        onChange={(v) => handleChange('job', v)}
-      />
-
-      <FormTextFieldInput
-        label={STRINGS.patient_address}
-        name="address"
-        value={formState.address}
-        onChange={(v) => handleChange('address', v)}
-      />
-      <FormTextAreaInput
-        label={STRINGS.patient_about}
-        name="about"
-        value={formState.about ?? ''}
-        onChange={(v) => handleChange('about', v)}
-      />
-      {/*  <Button onClick={() => handleSave()}>
-        {beneficiaryData ? STRINGS.save : STRINGS.add}
-      </Button> */}
       {isLoading && <LoadingOverlay />}
     </Stack>
   );

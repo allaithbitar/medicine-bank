@@ -282,13 +282,20 @@ export type TGetDisclosureAppointmentsDto = {
   fromDate: string;
   toDate: string;
   uncompletedOnly?: boolean;
-  employeeId?: string;
+  scoutId?: string;
 };
 
 export type TGetDateAppointmentsDto = TPaginationDto & {
   date: string;
   uncompletedOnly?: boolean;
-  employeeId?: string;
+  scoutId?: string;
 };
 
 export type TAppointmentsResponse = Record<string, { id: string; isAppointmentCompleted: boolean }[]>;
+
+export type TMoveDisclosuresDto = {
+  fromScoutId: string;
+  toScoutId: string;
+  areaIds?: string[];
+};
+

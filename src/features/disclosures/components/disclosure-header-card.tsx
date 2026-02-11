@@ -22,7 +22,7 @@ import usePermissions from '@/core/hooks/use-permissions.hook';
 
 const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
-  const { canEdit, currentCanEdit } = usePermissions();
+  const { canEdit, currentCanEditDisclosure } = usePermissions();
   const canUserEditPatient = canEdit('/beneficiaries/action');
   const isArchived = disclosure.status === 'archived';
 
@@ -88,7 +88,7 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
             }
           />
           <DetailItem icon={<Comment />} label={STRINGS.initial_note} value={disclosure.initialNote || STRINGS.none} />
-          {currentCanEdit && (
+          {currentCanEditDisclosure && !isArchived && (
             <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
               <Button fullWidth startIcon={<Edit />}>
                 {STRINGS.edit} {STRINGS.the_disclosure}

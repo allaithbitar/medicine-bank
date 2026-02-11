@@ -9,6 +9,7 @@ import type {
 import type { TRating } from '@/features/ratings/types/rating.types';
 import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
 import { differenceInDays } from 'date-fns';
+import STRINGS from '@/core/constants/strings.constant';
 
 export type TDisclosureFiltersForm = {
   type: { id: TDisclosureType; label: string }[];
@@ -29,7 +30,7 @@ export type TDisclosureFiltersForm = {
 } & Pick<TGetDisclosuresDto, 'createdAtStart' | 'createdAtEnd'>;
 
 export const defaultDisclosureFilterValues: TDisclosureFiltersForm = {
-  status: [],
+  status: [{ id: 'active', label: STRINGS.active }],
   type: [],
   createdAtStart: '',
   createdAtEnd: '',

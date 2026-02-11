@@ -924,7 +924,7 @@ const BeneficiaryMedicineOfflineUpdate = ({ id }: { id: string }) => {
     if (!localBeneficiaryMedicineData) return null;
     let result = compareObjects(localBeneficiaryMedicineData, onlineBeneficiaryMedicineData || {}, {
       medicine: STRINGS.the_medicine,
-      intakeFrequency: STRINGS.intake_frequency_per_day,
+      intakeFrequency: STRINGS.intake_frequency,
       dosePerIntake: STRINGS.dose_per_intake,
       note: STRINGS.note,
     }).filter((v) => v.hasConflict);

@@ -1,7 +1,7 @@
 import { Button, Stack, Typography } from '@mui/material';
 import type { TVisit } from '../types/disclosure.types';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
-import { deepPurple } from '@mui/material/colors';
+// import { deepPurple } from '@mui/material/colors';
 import STRINGS from '@/core/constants/strings.constant';
 // import { formatDateTime } from "@/core/helpers/helpers";
 import DetailItem from '@/core/components/common/detail-item/detail-item.component';
@@ -24,7 +24,7 @@ const VisitCard = ({ visit }: { visit: TVisit }) => {
   return (
     <ReusableCardComponent
       headerContent={<Typography color="white">{visit.visitResult && STRINGS[visit.visitResult]}</Typography>}
-      headerBackground={`linear-gradient(to right, ${deepPurple[800]}, ${deepPurple[500]})`}
+      // headerBackground={`linear-gradient(to right, ${deepPurple[800]}, ${deepPurple[500]})`}
       bodyContent={
         <Stack gap={2}>
           {visit.visitResult !== 'completed' && (

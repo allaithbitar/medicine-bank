@@ -1,11 +1,11 @@
-import { Button, Stack, Typography } from "@mui/material";
-import DetailItem from "@/core/components/common/detail-item/detail-item.component";
-import STRINGS from "@/core/constants/strings.constant";
-import { Comment, Edit } from "@mui/icons-material";
-import ReusableCardComponent from "@/core/components/common/reusable-card/reusable-card.component";
-import { blueGrey, indigo } from "@mui/material/colors";
-import { Link, useLocation } from "react-router-dom";
-import type { TRating } from "@/features/ratings/types/rating.types";
+import { Button, Stack, Typography } from '@mui/material';
+import DetailItem from '@/core/components/common/detail-item/detail-item.component';
+import STRINGS from '@/core/constants/strings.constant';
+import { Comment, Edit } from '@mui/icons-material';
+import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
+// import { blueGrey, indigo } from "@mui/material/colors";
+import { Link, useLocation } from 'react-router-dom';
+import type { TRating } from '@/features/ratings/types/rating.types';
 
 const RatingCard = ({
   rating,
@@ -17,14 +17,14 @@ const RatingCard = ({
   isCustom: boolean;
 }) => {
   const { pathname } = useLocation();
-  const disclosureId = pathname.split("/").pop() || "";
+  const disclosureId = pathname.split('/').pop() || '';
   return (
     <ReusableCardComponent
-      headerBackground={
-        isCustom
-          ? `linear-gradient(to right, ${blueGrey[800]}, ${blueGrey[500]})`
-          : `linear-gradient(to right, ${indigo[800]}, ${indigo[500]})`
-      }
+      // headerBackground={
+      //   isCustom
+      //     ? `linear-gradient(to right, ${blueGrey[800]}, ${blueGrey[500]})`
+      //     : `linear-gradient(to right, ${indigo[800]}, ${indigo[500]})`
+      // }
       headerContent={
         isCustom ? (
           <Typography color="white">{STRINGS.custom_rating}</Typography>
@@ -58,18 +58,11 @@ const RatingCard = ({
                 : `${formatDateTime(rating.updatedAt)} ${STRINGS.by} ${rating.updatedBy?.name}`
             }
           /> */}
-          <DetailItem
-            icon={<Comment />}
-            label={STRINGS.note}
-            value={rating?.name || STRINGS.none}
-          />
+          <DetailItem icon={<Comment />} label={STRINGS.note} value={rating?.name || STRINGS.none} />
         </Stack>
       }
       footerContent={
-        <Link
-          style={{ alignSelf: "end" }}
-          to={`/disclosures/${disclosureId}/rating/action`}
-        >
+        <Link style={{ alignSelf: 'end' }} to={`/disclosures/${disclosureId}/rating/action`}>
           <Button startIcon={<Edit />}>{STRINGS.edit}</Button>
         </Link>
       }
@@ -94,14 +87,10 @@ const DisclosureRatings = ({
   //   );
 
   return (
-    <Stack gap={2} sx={{ position: "relative" }}>
+    <Stack gap={2} sx={{ position: 'relative' }}>
       {/* {ratings.map((r) => ( */}
       rate
-      <RatingCard
-        rating={rating}
-        customRating={customRating}
-        isCustom={isCustom}
-      />
+      <RatingCard rating={rating} customRating={customRating} isCustom={isCustom} />
       {/* ))} */}
       {/* {!isFetching && !ratings.length && <Nodata />} */}
       {/* {isFetching && <LoadingOverlay />} */}

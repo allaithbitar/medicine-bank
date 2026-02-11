@@ -27,6 +27,7 @@ import type {
   TUpdateDisclosureVisitDto,
   TGetDateAppointmentsDto,
   TUpdateDisclosureAdviserConsultationPayload,
+  TMoveDisclosuresDto,
 } from '../types/disclosure.types';
 
 export const disclosuresApi = rootApi.injectEndpoints({
@@ -402,6 +403,15 @@ export const disclosuresApi = rootApi.injectEndpoints({
         body,
       }),
       invalidatesTags: (_, __, args) => [{ id: args.id, type: 'Disclosures' }, 'Disclosures'],
+    }),
+
+    moveDisclosures: builder.mutation<void, TMoveDisclosuresDto>({
+      query: (payload) => ({
+        url: '/disclosures/move',
+        method: 'POST',
+        body: payload,
+      }),
+      invalidatesTags: ['Disclosures'],
     }),
   }),
 });

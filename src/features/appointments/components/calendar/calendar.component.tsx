@@ -6,6 +6,7 @@ import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomp
 import useScreenSize from '@/core/hooks/use-screen-size.hook';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import disclosuresApi from '@/features/disclosures/api/disclosures.api';
+import useUser from '@/core/hooks/user-user.hook';
 
 const CalendarItem = ({
   dayName,
@@ -93,21 +94,24 @@ const Calendar = ({
   );
 
   const months = useMemo(() => {
-    const date = new Date();
+    const dtf = new Intl.DateTimeFormat('ar-SY', { month: 'short' });
     return Array.from({ length: 12 }).map((_, idx) => {
-      date.setMonth(idx);
+      const d = new Date(2020, idx, 1);
       return {
         id: idx.toString(),
-        label: format(date, 'M - MMM', { locale: ar }),
+        label: `${idx + 1} - ${dtf.format(d)}`,
       };
     });
   }, []);
 
   const selectedMonth = useMemo(() => months.find((m) => m.id === String(state.month)), [months, state.month]);
+  const { role, id } = useUser();
+  const isScout = role === 'scout';
 
   const { data: calendarAppointments } = disclosuresApi.useGetAppointmentsQuery({
     fromDate: `${state.year}-${state.month + 1}-${1}`,
     toDate: `${state.year}-${state.month + 1}-${selectedMonthDaysCount}`,
+    scoutId: isScout ? id : undefined,
   });
 
   const { isTablet } = useScreenSize();

@@ -10,6 +10,7 @@ import type { TPriorityDegree } from '../types/priority-degree.types';
 import { useNavigate } from 'react-router-dom';
 import { usePriorityDegreesLoader } from '../hooks/priority-degrees-loader.hook';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
+import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 
 const PriorityDegreesPage = () => {
   const navigate = useNavigate();
@@ -61,6 +62,7 @@ const PriorityDegreesPage = () => {
           ]}
         />
       )}
+      {isLoadingPriorityDegrees && <LoadingOverlay />}
     </Stack>
   );
 };

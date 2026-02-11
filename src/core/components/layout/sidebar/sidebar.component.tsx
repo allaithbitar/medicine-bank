@@ -4,6 +4,8 @@ import SideBarItems from './components/sidebar-items.component';
 import { authActions } from '@/core/slices/auth/auth.slice';
 import STRINGS from '@/core/constants/strings.constant';
 import { useAppDispatch } from '@/core/store/root.store.types';
+import { useModal } from '@/core/components/common/modal/modal-provider.component';
+import { MODAL_NAMES } from '@/core/components/common/modal/modal-types';
 
 const drawerWidth = 300;
 
@@ -15,6 +17,7 @@ function Sidebar({
   setOpenSidebar: Dispatch<SetStateAction<boolean>>;
 }) {
   const dispatch = useAppDispatch();
+  const { openModal } = useModal();
   return (
     <Drawer
       onClose={() => setOpenSidebar(false)}
@@ -60,9 +63,26 @@ function Sidebar({
           </IconButton> */}
         </Stack>
         <SideBarItems onClick={() => setOpenSidebar(false)} />
-        <Button sx={{ mt: 'auto' }} onClick={() => dispatch(authActions.logoutUser())}>
-          {STRINGS.logout}
-        </Button>
+        <Stack sx={{ flexDirection: 'row', gap: 1, flex: 1 }}>
+          <Button
+            fullWidth
+            onClick={() => {
+              dispatch(authActions.logoutUser());
+              sessionStorage.clear();
+            }}
+          >
+            {STRINGS.logout}
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => {
+              openModal({ name: MODAL_NAMES.CHANGE_PASSWORD_MODAL });
+              setOpenSidebar(false);
+            }}
+          >
+            {STRINGS.change_password}
+          </Button>
+        </Stack>
       </Stack>
     </Drawer>
   );

@@ -4,7 +4,7 @@ import STRINGS from '@/core/constants/strings.constant';
 import type { TMedicine } from '@/features/banks/types/medicines.types';
 import { Edit } from '@mui/icons-material';
 import { Stack } from '@mui/material';
-import { teal, orange } from '@mui/material/colors';
+// import { teal, orange } from '@mui/material/colors';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import MedicationLiquidIcon from '@mui/icons-material/MedicationLiquid';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
@@ -21,7 +21,7 @@ const MedicineCard = ({ medicine, onEdit }: { medicine: TMedicine; onEdit?: (m: 
   return (
     <ReusableCardComponent
       headerContent={headerContent}
-      headerBackground={`linear-gradient(to right, ${teal[400]}, ${orange[400]})`}
+      // headerBackground={`linear-gradient(to right, ${teal[400]}, ${orange[400]})`}
       bodyContent={
         <Stack gap={2}>
           <DetailItemComponent

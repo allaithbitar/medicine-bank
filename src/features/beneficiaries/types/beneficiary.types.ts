@@ -76,7 +76,7 @@ export type TGetBeneficiaryMedicinesDto = {
 export type TAddBeneficiaryMedicinePayload = {
   patientId: string;
   medicineId: string;
-  dosePerIntake: number;
+  dosePerIntake?: number | null;
   intakeFrequency: string;
   note?: string | null;
 };
@@ -116,8 +116,20 @@ export type TUpdateFamilyMemberPayload = TFamilyMember;
 
 export type TValidateNationalNumberPayload = {
   nationalNumber: string;
+  patientId?: string;
 };
 
 export type TValidatePhoneNumbersPayload = {
   phoneNumbers: string[];
+  patientId?: string;
+};
+
+export type TValidationNationalErrorResponse = {
+  existing: TBenefieciary;
+};
+
+export type TValidationPhoneNumberErrorResponse = {
+  existing: {
+    patient: TBenefieciary;
+  };
 };

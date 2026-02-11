@@ -34,9 +34,8 @@ const MeetingsPage = () => {
   }
 
   return (
-    <Stack gap={2} sx={{ height: '100%' }}>
+    <Stack gap={1} sx={{ height: '100%' }}>
       <CustomAppBar title={STRINGS.meetings_management} subtitle={STRINGS.add_manage_meetings} />
-
       <VirtualizedList
         items={items}
         onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}

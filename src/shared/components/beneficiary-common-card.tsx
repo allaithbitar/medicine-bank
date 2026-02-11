@@ -71,7 +71,11 @@ function BeneficiaryCommonCard({
       <DetailItem
         icon={<LocationPin />}
         label={STRINGS.patient_address}
-        value={`${beneficiary.area?.name ?? ''}  - ${beneficiary.address}`}
+        value={
+          beneficiary.address
+            ? `${beneficiary.area?.name ?? ''}  - ${beneficiary.address || ''}`
+            : (beneficiary.area?.name ?? '')
+        }
       />
       <DetailItem
         icon={<Man4Icon />}
@@ -82,9 +86,13 @@ function BeneficiaryCommonCard({
       <DetailItem
         icon={<EventAvailable />}
         label={STRINGS.Patient_created_at}
-        value={formatDateTime(beneficiary.createdAt)}
+        value={beneficiary.createdAt ? formatDateTime(beneficiary.createdAt) : STRINGS.undefined}
       />
-      <DetailItem icon={<History />} label={STRINGS.patient_updated_at} value={formatDateTime(beneficiary.updatedAt)} />
+      <DetailItem
+        icon={<History />}
+        label={STRINGS.patient_updated_at}
+        value={beneficiary.updatedAt ? formatDateTime(beneficiary.updatedAt) : STRINGS.undefined}
+      />
       {disclosure && !isDisclosurePage && <FormattedVisitRatingResult disclosure={disclosure} />}
       <DetailItem
         icon={<Info />}

@@ -1,6 +1,6 @@
 import STRINGS from '@/core/constants/strings.constant';
 import { Stack } from '@mui/material';
-import { red, orange } from '@mui/material/colors';
+// import { red, orange } from '@mui/material/colors';
 import type { TRating } from '../types/rating.types';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
@@ -22,7 +22,7 @@ const RatingCard = ({ rating, onEdit }: { rating: TRating; onEdit?: (r: TRating)
   return (
     <ReusableCardComponent
       headerContent={headerContent}
-      headerBackground={`linear-gradient(to right, ${red[400]}, ${orange[400]})`}
+      // headerBackground={`linear-gradient(to right, ${red[400]}, ${orange[400]})`}
       bodyContent={
         <Stack gap={2}>
           <DetailItemComponent label={STRINGS.code} icon={<CodeIcon />} value={rating.code} />

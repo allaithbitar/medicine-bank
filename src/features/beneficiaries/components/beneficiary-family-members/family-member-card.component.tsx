@@ -1,5 +1,5 @@
 import { Box, Avatar, Stack, Tooltip, Typography } from '@mui/material';
-import { cyan } from '@mui/material/colors';
+// import { cyan } from '@mui/material/colors';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import CustomIconButton from '@/core/components/common/custom-icon-button/custom-icon-button.component';
@@ -73,7 +73,7 @@ const FamilyMemberCard = ({ member, onEdit }: { member: TFamilyMember; onEdit?: 
   return (
     <ReusableCardComponent
       headerContent={headerContent}
-      headerBackground={cyan[700]}
+      // headerBackground={cyan[700]}
       bodyContent={
         <Stack gap={2}>
           <DetailItemComponent

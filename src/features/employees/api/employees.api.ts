@@ -1,7 +1,7 @@
 import { rootApi } from '@/core/api/root.api';
 
 import type { TAddEmployeeDto, TEmployee, TSearchEmployeesDto, TUpdateEmployeeDto } from '../types/employee.types';
-import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
+import type { ApiResponse, TAutocompleteItem, TPaginatedResponse } from '@/core/types/common.types';
 
 export const employeesApi = rootApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -53,6 +53,14 @@ export const employeesApi = rootApi.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ['Employees'],
+    }),
+
+    getPatientScoutRecommendations: builder.query<TAutocompleteItem[], { patientId: string }>({
+      query: ({ patientId }) => ({
+        url: `employees/patient-scouts-recommendations?patientId=${patientId}`,
+      }),
+      transformResponse: (res: ApiResponse<TAutocompleteItem[]>) => res.data,
+      providesTags: ['Employees'],
     }),
   }),
 });

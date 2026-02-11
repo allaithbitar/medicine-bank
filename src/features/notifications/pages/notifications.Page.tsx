@@ -2,7 +2,6 @@ import { Card, Stack, Button } from '@mui/material';
 import { useCallback } from 'react';
 import STRINGS from '@/core/constants/strings.constant';
 import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
-import Header from '@/core/components/common/header/header';
 import NotificationCard from '../components/notification-card';
 import { useNotificationsLoader } from '../hooks/notifications-loader.hook';
 import useUser from '@/core/hooks/user-user.hook';
@@ -10,6 +9,7 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import notificationsApi from '../api/notifications.api';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
 import { notifySuccess, notifyError } from '@/core/components/common/toast/toast';
+import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 
 const NotificationsPage = () => {
   const { id } = useUser();
@@ -59,7 +59,7 @@ const NotificationsPage = () => {
   return (
     <Stack gap={1} sx={{ height: '100%', position: 'relative' }}>
       <Card sx={{ flexShrink: 0 }}>
-        <Header title={STRINGS.notifications} />
+        <CustomAppBarComponent title={STRINGS.notifications} />
         <Stack direction="row" gap={1}>
           <Button
             fullWidth

@@ -1,19 +1,12 @@
-import STRINGS from "@/core/constants/strings.constant";
-import { Box, Typography, Stack, Button, IconButton } from "@mui/material";
-import MicIcon from "@mui/icons-material/Mic";
-import StopIcon from "@mui/icons-material/Stop";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
-import { notifyError } from "@/core/components/common/toast/toast";
-import { MAX_AUDIO_SIZE_BYTES } from "@/core/constants/properties.constant";
-import type z from "zod";
+import STRINGS from '@/core/constants/strings.constant';
+import { Box, Typography, Stack, Button } from '@mui/material';
+import MicIcon from '@mui/icons-material/Mic';
+import StopIcon from '@mui/icons-material/Stop';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import React, { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { notifyError } from '@/core/components/common/toast/toast';
+import { MAX_AUDIO_SIZE_BYTES } from '@/core/constants/properties.constant';
+import type z from 'zod';
 
 export type TAudioFile = {
   audioBlob: Blob | null;
@@ -22,7 +15,6 @@ export type TAudioFile = {
 
 function AudioPlayer({
   setErrors,
-  audioFile,
   setAudioFile,
 }: {
   setErrors: Dispatch<SetStateAction<z.ZodIssue[]>>;
@@ -31,8 +23,6 @@ function AudioPlayer({
 }) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const chunksRef = useRef<Blob[]>([]);
@@ -40,7 +30,7 @@ function AudioPlayer({
   const startRecording = async () => {
     setErrors([]);
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      notifyError("Media devices not supported");
+      notifyError('Media devices not supported');
       return;
     }
     try {
@@ -52,7 +42,7 @@ function AudioPlayer({
         if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
       };
       mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
         if (blob.size > MAX_AUDIO_SIZE_BYTES) {
           notifyError(new Error(STRINGS.file_too_large));
           stream.getTracks().forEach((t) => t.stop());
@@ -82,26 +72,6 @@ function AudioPlayer({
     mr.stop();
     mediaRecorderRef.current = null;
     setIsRecording(false);
-  };
-
-  const handlePlay = () => {
-    if (!audioUrl) return;
-    if (!audioRef.current) {
-      audioRef.current = new Audio(audioUrl);
-      audioRef.current.onended = () => setIsPlaying(false);
-    } else {
-      audioRef.current.pause();
-      audioRef.current.src = audioUrl;
-    }
-    audioRef.current.play();
-    setIsPlaying(true);
-  };
-
-  const handleStopPlay = () => {
-    if (!audioRef.current) return;
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-    setIsPlaying(false);
   };
 
   const handleFileSelect = (f?: File | null) => {
@@ -135,10 +105,6 @@ function AudioPlayer({
       audioName: null,
       audioBlob: null,
     });
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
   };
 
   useEffect(() => {
@@ -148,73 +114,72 @@ function AudioPlayer({
   }, [audioUrl]);
 
   return (
-    <Box>
+    <Stack gap={1}>
       <Typography variant="body2" sx={{ mb: 1 }}>
         {STRINGS.record_audio}
       </Typography>
-      <Stack gap={2}>
+
+      <Stack gap={1}>
         <Stack direction="row" gap={1} alignItems="center">
           {!isRecording ? (
-            <Button
-              variant="contained"
-              startIcon={<MicIcon />}
-              onClick={startRecording}
-            >
+            <Button variant="contained" startIcon={<MicIcon />} onClick={startRecording}>
               {STRINGS.start_recording}
             </Button>
           ) : (
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<StopIcon />}
-              onClick={stopRecording}
-            >
+            <Button variant="outlined" color="error" startIcon={<StopIcon />} onClick={stopRecording}>
               {STRINGS.stop_recording}
             </Button>
           )}
-          <Button
-            component="label"
-            variant="outlined"
-            startIcon={<UploadFileIcon />}
-          >
+          <Button component="label" variant="outlined" startIcon={<UploadFileIcon />}>
             {STRINGS.upload_audio}
-            <input
-              hidden
-              accept="audio/*"
-              type="file"
-              onChange={handleFileInput}
-            />
+            <input hidden accept="audio/*" type="file" onChange={handleFileInput} />
           </Button>
         </Stack>
+        {isRecording && (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              color: 'error.main',
+            }}
+          >
+            <Box
+              sx={{
+                width: 12,
+                height: 12,
+                borderRadius: '50%',
+                bgcolor: 'error.main',
+                animation: 'pulse 1.5s ease-in-out infinite',
+                '@keyframes pulse': {
+                  '0%, 100%': {
+                    opacity: 1,
+                    transform: 'scale(1)',
+                  },
+                  '50%': {
+                    opacity: 0.5,
+                    transform: 'scale(1.2)',
+                  },
+                },
+              }}
+            />
+            <Typography variant="body2">{STRINGS.recording}</Typography>
+          </Box>
+        )}
         {audioUrl && (
           <Stack direction="row" gap={1} alignItems="center">
-            {!isPlaying ? (
-              <IconButton size="small" onClick={handlePlay}>
-                <PlayArrowIcon />
-              </IconButton>
-            ) : (
-              <IconButton size="small" onClick={handleStopPlay}>
-                <StopIcon />
-              </IconButton>
-            )}
-            <Typography variant="body2">
-              {audioFile?.audioName ??
-                `${Date.now()}_${STRINGS.recorded_audio}`}
-            </Typography>
+            <audio controlsList="nodownload" controls src={audioUrl} style={{ flexGrow: 1 }} />
             <Button size="small" onClick={clearAudio}>
               {STRINGS.clear}
             </Button>
           </Stack>
         )}
       </Stack>
-      <Typography
-        variant="caption"
-        color="text.secondary"
-        sx={{ display: "block", mt: 1 }}
-      >
+
+      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
         {STRINGS.audio_help_text}
       </Typography>
-    </Box>
+    </Stack>
   );
 }
 

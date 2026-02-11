@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { indigo, deepPurple } from '@mui/material/colors';
+// import { indigo, deepPurple } from '@mui/material/colors';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import { Edit } from '@mui/icons-material';
@@ -29,7 +29,7 @@ const SystemBroadcastCard = ({
   return (
     <ReusableCardComponent
       headerContent={headerContent}
-      headerBackground={`linear-gradient(to right, ${indigo[400]}, ${deepPurple[400]})`}
+      // headerBackground={`linear-gradient(to right, ${indigo[400]}, ${deepPurple[400]})`}
       bodyContent={
         <Stack gap={2}>
           <DetailItemComponent

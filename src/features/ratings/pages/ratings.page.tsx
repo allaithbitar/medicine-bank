@@ -24,12 +24,12 @@ const RatingsPage = () => {
   };
 
   return (
-    <Stack gap={2} sx={{ height: '100%' }}>
+    <Stack gap={1} sx={{ height: '100%' }}>
       <CustomAppBar title={STRINGS.ratings_management} subtitle={STRINGS.add_manage_ratings} />
-      <RatingsList 
-        onEditRating={currentCanEdit ? handleOpenRatingActionPage : undefined} 
-        isLoadingRatings={isLoadingRatings} 
-        ratings={ratings} 
+      <RatingsList
+        onEditRating={currentCanEdit ? handleOpenRatingActionPage : undefined}
+        isLoadingRatings={isLoadingRatings}
+        ratings={ratings}
       />
       {currentCanAdd && (
         <ActionsFab

@@ -1,5 +1,4 @@
 import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
-
 import { Stack } from '@mui/material';
 import z from 'zod';
 import { type TDisclosure, type TDisclosureType } from '../types/disclosure.types';
@@ -7,11 +6,12 @@ import STRINGS from '@/core/constants/strings.constant';
 import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
 import PriorityDegreesAutocomplete from '@/features/priority-degres/components/priority-degees-autocomplete.component';
 import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
-import { useEffect, useImperativeHandle, type Ref } from 'react';
+import { useCallback, useEffect, useImperativeHandle, type Ref } from 'react';
 import BeneficiariesAutocomplete from '@/features/beneficiaries/components/beneficiaries-autocomplete.component';
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 import DisclosureTypeAutocomplete from './disclosure-type-autocomplete.component';
+import useScoutRecommendation from '../hooks/use-scout-recommendation.hook';
 
 const createDisclosureSchema = (beneficiaryAlreadyDefined = false) =>
   z
@@ -67,6 +67,19 @@ const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }
     }),
     [handleSubmit]
   );
+
+  const handleScoutRecommendation = useCallback(
+    (scout: TAutocompleteItem) => {
+      setValue({ employee: scout });
+    },
+    [setValue]
+  );
+
+  const { isLoading: isLoadingRecommendation } = useScoutRecommendation({
+    beneficiaryId: formState.beneficiary?.id,
+    currentScout: formState.employee,
+    onRecommendationFound: handleScoutRecommendation,
+  });
 
   useEffect(() => {
     if (disclosureData) {
@@ -128,6 +141,7 @@ const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }
         value={formState.employee}
         onChange={(v) => setValue({ employee: v })}
         errorText={formErrors.employee?.[0].message}
+        helperText={isLoadingRecommendation ? STRINGS.loading_recommendation : ''}
       />
       <FormTextAreaInput
         label={STRINGS.initial_note}

@@ -29,7 +29,7 @@ const ReusableCard = ({ headerBackground, headerContent, bodyContent, footerCont
             p: 1,
             background:
               headerBackground ||
-              `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+              `linear-gradient(to right, ${theme.palette.primary.dark}, ${theme.palette.primary.light})`,
           }}
         >
           {headerContent}

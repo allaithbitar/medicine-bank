@@ -1,14 +1,5 @@
 import { useMemo } from 'react';
-import { Box, Stack, Typography, Paper } from '@mui/material';
-import {
-  Timeline,
-  TimelineItem,
-  TimelineSeparator,
-  TimelineConnector,
-  TimelineContent,
-  TimelineDot,
-  TimelineOppositeContent,
-} from '@mui/lab';
+import { Box, Stack, Typography, Paper, Divider, Chip } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import CustomAppBar from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 import STRINGS from '@/core/constants/strings.constant';
@@ -56,97 +47,158 @@ const DisclosureAuditTimelinePage = () => {
   };
 
   return (
-    <Stack gap={2} sx={{ height: '100%' }}>
-      <CustomAppBar title={STRINGS.audit_log} subtitle={STRINGS.view_audit_log} />
+    <Stack gap={1} sx={{ height: '100%' }}>
+      <CustomAppBar title={STRINGS.audit_log} />
+      {isLoading && <LoadingOverlay />}
 
-      <Box sx={{ px: 2, flex: 1, overflow: 'auto' }}>
-        {isLoading && <LoadingOverlay />}
+      {!isLoading && groups.length === 0 && (
+        <Paper
+          elevation={0}
+          sx={{
+            p: 6,
+            textAlign: 'center',
+            border: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
+          <Typography variant="body1" color="text.secondary">
+            {STRINGS.no_data_found}
+          </Typography>
+        </Paper>
+      )}
 
-        {!isLoading && groups.length === 0 && (
-          <Paper sx={{ p: 3 }}>
-            <Typography>{STRINGS.no_data_found}</Typography>
-          </Paper>
-        )}
-
-        {!isLoading && groups.length > 0 && (
-          <Timeline position="right">
-            {enriched.map(({ group, color }) => (
-              <TimelineItem key={group.createdAt}>
-                <TimelineOppositeContent
-                  style={{
-                    maxWidth: '1px',
-                    paddingLeft: '0px',
-                    paddingRight: '0px',
-                  }}
-                />
-                <TimelineSeparator>
-                  <TimelineDot
-                    sx={{
-                      bgcolor: color,
-                      width: 18,
-                      height: 18,
-                      border: '3px solid rgba(255,255,255,0.08)',
-                      boxShadow: 'none',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => handleOpenDetails(group.createdAt)}
-                    aria-label={`audit-${group.createdAt}`}
-                  />
-                  <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent sx={{ py: '12px', px: 2 }}>
-                  <Paper
-                    elevation={1}
-                    sx={{ p: 2, cursor: 'pointer' }}
-                    onClick={() => handleOpenDetails(group.createdAt)}
-                  >
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                      <Stack sx={{ gap: 1, width: '100%' }}>
-                        <Typography
+      {!isLoading && groups.length > 0 && (
+        <Stack gap={1} spacing={1}>
+          {enriched.map(({ group, color, dominant }, index) => (
+            <Box
+              key={group.createdAt}
+              sx={{
+                position: 'relative',
+                animation: 'fadeInUp 0.5s ease-out',
+                animationDelay: `${index * 0.1}s`,
+                animationFillMode: 'both',
+                '@keyframes fadeInUp': {
+                  '0%': {
+                    opacity: 0,
+                    transform: 'translateY(20px)',
+                  },
+                  '100%': {
+                    opacity: 1,
+                    transform: 'translateY(0)',
+                  },
+                },
+              }}
+            >
+              <Paper
+                elevation={0}
+                onClick={() => handleOpenDetails(group.createdAt)}
+                sx={{
+                  p: 2,
+                  cursor: 'pointer',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  position: 'relative',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <Stack spacing={2}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        letterSpacing: '0.02em',
+                      }}
+                    >
+                      {STRINGS.action_type}
+                    </Typography>
+                    <Chip
+                      label={getStringsLabel({
+                        key: 'update_column_action',
+                        val: dominant.toLowerCase(),
+                      })}
+                      size="small"
+                      sx={{
+                        bgcolor: `${color}22`,
+                        color: color,
+                        fontWeight: 600,
+                        border: `1px solid ${color}44`,
+                        fontSize: '0.75rem',
+                        height: 24,
+                      }}
+                    />
+                  </Stack>
+                  <Divider sx={{ borderColor: 'divider', opacity: 0.5 }} />
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        color: 'text.secondary',
+                        fontWeight: 600,
+                        mb: 1,
+                        display: 'block',
+                      }}
+                    >
+                      {STRINGS.edited_fields}
+                    </Typography>
+                    <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                      {group?.logs.map(({ column, id }) => (
+                        <Chip
+                          key={id}
+                          label={getStringsLabel({
+                            key: 'update_column',
+                            val: column || STRINGS.update_column_disclosure_notes,
+                          })}
+                          size="small"
                           sx={{
-                            textAlign: 'start',
+                            bgcolor: 'action.hover',
+                            fontSize: '0.75rem',
+                            fontWeight: 500,
+                            height: 28,
+                            border: '1px solid',
+                            borderColor: 'divider',
                           }}
-                          variant="subtitle2"
-                        >
-                          {STRINGS.edit_done}
-                        </Typography>
-                        <Stack sx={{ flexDirection: 'row', gap: 1 }}>
-                          {group?.logs.map(({ column, id }) => (
-                            <Typography key={id} variant="caption" color="textDisabled">
-                              {getStringsLabel({
-                                key: 'update_column',
-                                val: column || STRINGS.update_column_disclosure_notes,
-                              })}
-                            </Typography>
-                          ))}
-                        </Stack>
-
-                        <Typography
-                          sx={{
-                            textAlign: 'start',
-                          }}
-                          variant="subtitle2"
-                        >
-                          {STRINGS.changes_at}
-                        </Typography>
-                        <Typography variant="caption" color="textDisabled">
-                          {formatDateTime(group.createdAt)}
-                        </Typography>
-                        <Typography variant="caption" color="secondary">
-                          {/* {getEmployeeName(group.)} */}
-                        </Typography>
-                        <Typography sx={{ pt: 1, textAlign: 'start' }} color="primary" variant="subtitle2">
-                          {STRINGS.details}
-                        </Typography>
-                      </Stack>
+                        />
+                      ))}
                     </Stack>
-                  </Paper>
-                </TimelineContent>
-              </TimelineItem>
-            ))}
-          </Timeline>
-        )}
-      </Box>
+                  </Box>
+                  <Divider />
+                  <Stack gap={2}>
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: 'text.secondary',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {STRINGS.changes_at} :
+                      </Typography>
+                      <Typography variant="body2">{formatDateTime(group.createdAt)}</Typography>
+                    </Stack>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: color,
+                        fontWeight: 700,
+                        placeSelf: 'flex-end',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        textDecoration: 'underline',
+                        textDecorationThickness: '2px',
+                        textUnderlineOffset: '3px',
+                      }}
+                    >
+                      {STRINGS.details} ←
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </Paper>
+            </Box>
+          ))}
+        </Stack>
+      )}
     </Stack>
   );
 };

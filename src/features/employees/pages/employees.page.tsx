@@ -2,7 +2,7 @@
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import STRINGS from '@/core/constants/strings.constant';
 import { Add } from '@mui/icons-material';
-import { Card, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import EmployeeCard from '../components/employee-card.component';
 import { useNavigate } from 'react-router-dom';
 import VirtualizedList from '@/core/components/common/virtualized-list/virtualized-list.component';
@@ -14,7 +14,7 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
 import useUser from '@/core/hooks/user-user.hook';
-import Header from '@/core/components/common/header/header';
+import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 
 const defaultState = {
   pageSize: DEFAULT_PAGE_SIZE,
@@ -24,11 +24,11 @@ const defaultState = {
 const EmployeesPage = () => {
   const navigate = useNavigate();
   const { name } = useUser();
-  const { currentCanAdd, currentCanEdit, currentUserRole } = usePermissions();
+  const { currentCanAdd, currentCanEdit, isScoutRole } = usePermissions();
 
   const [queryData] = useState<TSearchEmployeesDto>({
     ...defaultState,
-    ...(currentUserRole === 'scout' && { query: name }),
+    ...(isScoutRole && { query: name }),
   });
 
   const { items, error, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } = useEmployeesLoader(queryData);
@@ -38,29 +38,27 @@ const EmployeesPage = () => {
   }
 
   return (
-    <Stack gap={2} sx={{ height: '100%' }}>
-      <Card sx={{ p: 1 }}>
-        <Header title={currentUserRole === 'scout' ? STRINGS.employee : STRINGS.employees} />
-        <VirtualizedList
-          items={items}
-          onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
-          isLoading={isFetchingNextPage}
-        >
-          {({ item: e }) => <EmployeeCard canEdit={currentCanEdit} employee={e} key={e.id} />}
-        </VirtualizedList>
-        {currentCanAdd && (
-          <ActionsFab
-            actions={[
-              {
-                label: STRINGS.add_employee,
-                icon: <Add />,
-                onClick: () => navigate('/employees/action'),
-              },
-            ]}
-          />
-        )}
-        {isLoading && <LoadingOverlay />}
-      </Card>
+    <Stack gap={1} sx={{ height: '100%' }}>
+      <CustomAppBarComponent title={isScoutRole ? STRINGS.employee : STRINGS.employees} />
+      <VirtualizedList
+        items={items}
+        onEndReach={hasNextPage && !isFetchingNextPage ? fetchNextPage : undefined}
+        isLoading={isFetchingNextPage}
+      >
+        {({ item: e }) => <EmployeeCard canEdit={currentCanEdit} employee={e} key={e.id} />}
+      </VirtualizedList>
+      {currentCanAdd && (
+        <ActionsFab
+          actions={[
+            {
+              label: STRINGS.add_employee,
+              icon: <Add />,
+              onClick: () => navigate('/employees/action'),
+            },
+          ]}
+        />
+      )}
+      {isLoading && <LoadingOverlay />}
     </Stack>
   );
 };

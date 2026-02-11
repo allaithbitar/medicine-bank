@@ -1,5 +1,5 @@
 import { Stack } from '@mui/material';
-import { useCallback, useImperativeHandle, useState, type Ref } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useState, type Ref } from 'react';
 import DisclosureStatusAutocomplete from './disclosure-status-autocomplete';
 import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
 import STRINGS from '@/core/constants/strings.constant';
@@ -14,6 +14,8 @@ import FormSelectInput from '@/core/components/common/inputs/form-select-input.c
 import DisclosureVisitResultAutocomplete from './disclosure-visit-result-autocomplete.component';
 import { defaultDisclosureFilterValues, type TDisclosureFiltersForm } from '../helpers/disclosure.helpers';
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
+import usePermissions from '@/core/hooks/use-permissions.hook';
+import { selectUser } from '@/core/slices/auth/auth.slice';
 
 export type TDisclosureFiltesHandlers = {
   getValues: () => TDisclosureFiltersForm;
@@ -26,7 +28,18 @@ type TProps = {
 };
 
 const DisclosureFilters = ({ ref, value }: TProps) => {
+  const { isScoutRole } = usePermissions();
+  const { id, name } = selectUser();
   const [filters, setFilters] = useState<TDisclosureFiltersForm>(value || defaultDisclosureFilterValues);
+
+  useEffect(() => {
+    if (isScoutRole && id && filters.scouts.length === 0) {
+      setFilters((prev) => ({
+        ...prev,
+        scouts: [{ id: id, name: name }],
+      }));
+    }
+  }, [isScoutRole, id, name, filters.scouts.length]);
 
   const handleSubmit = useCallback(() => {
     return filters;
@@ -59,8 +72,12 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
 
       <DisclosureStatusAutocomplete
         multiple
+        disableClearable={true as any}
         value={filters.status}
-        onChange={(status) => setFilters((prev) => ({ ...prev, status }))}
+        onChange={(newValue) => {
+          if (newValue && newValue.length === 0) return;
+          setFilters((prev) => ({ ...prev, status: newValue }));
+        }}
       />
 
       <BeneficiariesAutocomplete
@@ -68,14 +85,17 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
         value={filters.beneficiary}
         onChange={(beneficiary) => setFilters((prev) => ({ ...prev, beneficiary }))}
       />
-      <FormCheckbxInput
-        label={STRINGS.undelivered}
-        value={filters.undelivered}
-        onChange={(undelivered) => setFilters((prev) => ({ ...prev, undelivered }))}
-      />
+
+      {!isScoutRole && (
+        <FormCheckbxInput
+          label={STRINGS.undelivered}
+          value={filters.undelivered}
+          onChange={(undelivered) => setFilters((prev) => ({ ...prev, undelivered }))}
+        />
+      )}
 
       <EmployeesAutocomplete
-        disabled={filters.undelivered}
+        disabled={filters.undelivered || isScoutRole}
         roles={['scout']}
         label={STRINGS.the_scout}
         multiple
@@ -152,21 +172,23 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
         onChange={(appointmentDate) => setFilters((prev) => ({ ...prev, appointmentDate }))}
       />
 
-      <FormSelectInput
-        label={STRINGS.disclosure_appointment_status}
-        value={filters.isAppointmentCompleted}
-        getOptionLabel={(option) => option.label}
-        onChange={(value) => {
-          setFilters((prev) => ({
-            ...prev,
-            isAppointmentCompleted: value,
-          }));
-        }}
-        options={[
-          { id: 'true', label: STRINGS.appointment_completed },
-          { id: 'false', label: STRINGS.appointment_not_completed },
-        ]}
-      />
+      {!isScoutRole && (
+        <FormSelectInput
+          label={STRINGS.disclosure_appointment_status}
+          value={filters.isAppointmentCompleted}
+          getOptionLabel={(option) => option.label}
+          onChange={(value) => {
+            setFilters((prev) => ({
+              ...prev,
+              isAppointmentCompleted: value,
+            }));
+          }}
+          options={[
+            { id: 'true', label: STRINGS.appointment_completed },
+            { id: 'false', label: STRINGS.appointment_not_completed },
+          ]}
+        />
+      )}
 
       <FormCheckbxInput
         label={STRINGS.disclosure_is_late}
@@ -190,21 +212,23 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
       {/*   }} */}
       {/* /> */}
 
-      <FormSelectInput
-        label={STRINGS.disclosure_is_received_status}
-        value={filters.isReceived}
-        getOptionLabel={(option) => option.label}
-        onChange={(value) => {
-          setFilters((prev) => ({
-            ...prev,
-            isReceived: value,
-          }));
-        }}
-        options={[
-          { id: 'true', label: STRINGS.is_received },
-          { id: 'false', label: STRINGS.hasnt_been_received_yet },
-        ]}
-      />
+      {!isScoutRole && (
+        <FormSelectInput
+          label={STRINGS.disclosure_is_received_status}
+          value={filters.isReceived}
+          getOptionLabel={(option) => option.label}
+          onChange={(value) => {
+            setFilters((prev) => ({
+              ...prev,
+              isReceived: value,
+            }));
+          }}
+          options={[
+            { id: 'true', label: STRINGS.is_received },
+            { id: 'false', label: STRINGS.hasnt_been_received_yet },
+          ]}
+        />
+      )}
     </Stack>
   );
 };

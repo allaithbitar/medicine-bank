@@ -16,7 +16,7 @@ import disclosuresApi from '../api/disclosures.api';
 export default function DisclosureProperties({ disclosure }: { disclosure: TDisclosure }) {
   const navigate = useNavigate();
   const { openModal } = useModal();
-  const { currentCanArchive } = usePermissions();
+  const { currentCanArchive, currentCanCompleteAppointment, currentCanReceiveDisclosure } = usePermissions();
   const [archiveDisclosure, { isLoading: isArchiving }] = disclosuresApi.useArchiveDisclosureMutation();
   const [unarchiveDisclosure, { isLoading: isUnarchiving }] = disclosuresApi.useUnarchiveDisclosureMutation();
 
@@ -26,6 +26,7 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
   const isDisclosureAppointmentCompleted = disclosure.isAppointmentCompleted === true;
   const canArchive = hasVisit && hasRating && isDisclosureReceived && isDisclosureAppointmentCompleted;
   const isArchived = disclosure.status === 'archived';
+
   // const [updateDisclosure, { isLoading: isUpdating }] = disclosuresApi.useUpdateDisclosureMutation();
   const [mutateDisclosure, { isLoading: isUpdating }] = useDisclosureMutation();
 
@@ -119,13 +120,20 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
         <Stack direction="row" sx={{ width: '100%', alignItems: 'stretch' }} gap={1}>
           <Button
             startIcon={<DateRange />}
+            disabled={isArchived}
             fullWidth
             onClick={() => navigate(`/disclosures/appointment/action?id=${disclosure.id}`)}
           >
             {STRINGS.select_appointment_date}
           </Button>
           {!isDisclosureAppointmentCompleted && (
-            <Button onClick={handleCompleteAppointment} fullWidth color="success" startIcon={<CheckCircle />}>
+            <Button
+              disabled={!currentCanCompleteAppointment || isArchived}
+              onClick={handleCompleteAppointment}
+              fullWidth
+              color="success"
+              startIcon={<CheckCircle />}
+            >
               {STRINGS.appointment_completed}
             </Button>
           )}
@@ -143,7 +151,13 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
         {!isDisclosureReceived && (
           <>
             <Divider flexItem />
-            <Button onClick={handleReceiveDisclosure} startIcon={<CheckCircle />} fullWidth color="success">
+            <Button
+              disabled={!currentCanReceiveDisclosure || isArchived}
+              onClick={handleReceiveDisclosure}
+              startIcon={<CheckCircle />}
+              fullWidth
+              color="success"
+            >
               {STRINGS.is_received}
             </Button>
           </>

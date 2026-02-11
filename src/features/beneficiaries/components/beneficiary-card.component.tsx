@@ -63,7 +63,11 @@ const BeneficiaryCard = ({
         icon={<LocationPin />}
         label={STRINGS.patient_address}
         iconColorPreset="deepPurple"
-        value={`${beneficiary.area?.name} - ${beneficiary.address ?? ''}`}
+        value={
+          beneficiary.address
+            ? `${beneficiary.area?.name ?? ''}  - ${beneficiary.address || ''}`
+            : (beneficiary.area?.name ?? '')
+        }
       />
 
       <DetailItemComponent

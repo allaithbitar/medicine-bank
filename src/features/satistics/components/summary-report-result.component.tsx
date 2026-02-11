@@ -2,15 +2,23 @@ import { Card, Grid, Typography } from '@mui/material';
 import type { TSummaryReportResult } from '../types/satistics.types';
 import STRINGS from '@/core/constants/strings.constant';
 import { BarChart } from '@mui/x-charts/BarChart';
+import usePermissions from '@/core/hooks/use-permissions.hook';
 
 const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
+  const { isScoutRole } = usePermissions();
+
   const dataCards = [
-    {
-      label: STRINGS.added_disclosures,
-      value: result.addedDisclosuresCount,
-      // bgcolor: indigo[50],
-      // textColor: indigo[500],
-    },
+    ...(!isScoutRole
+      ? [
+          {
+            label: STRINGS.added_disclosures,
+            value: result.addedDisclosuresCount,
+            // bgcolor: indigo[50],
+            // textColor: indigo[500],
+          },
+        ]
+      : []),
+
     {
       label: STRINGS.completed_visits,
       value: result.completedVisitsCount,
@@ -40,8 +48,9 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
       <Grid container spacing={1}>
         {dataCards.map((i, idx, arr) => {
           const isLast = idx === arr.length - 1;
+          const isOdd = idx % 2 === 0;
           return (
-            <Grid size={isLast ? 12 : 6}>
+            <Grid size={isLast && isOdd ? 12 : 6}>
               <Card key={i.label} sx={{ textAlign: 'center', p: 1, py: 2 }}>
                 <Typography variant="h4">{i.value}</Typography>
                 <Typography color="textSecondary" variant="body2">

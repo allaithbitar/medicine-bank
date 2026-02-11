@@ -31,6 +31,7 @@ const DisclosurePage = () => {
   const navigate = useNavigate();
 
   const { data: disclosure, isLoading, error } = useDisclosureLoader({ id: disclosureId ?? '' });
+  const isArchived = disclosure?.status === 'archived';
 
   const openEditExtra = useCallback(
     (section: 'appointment' | 'rating' | 'visit' | 'visit-rating') =>
@@ -102,7 +103,6 @@ const DisclosurePage = () => {
       <Stack gap={1}>
         <DisclosureHeaderCard disclosure={disclosure} />
         <DisclosureVisitAndRatingSection disclosure={disclosure} />
-
         <DisclosureProperties disclosure={disclosure} />
 
         <DisclosureTabs
@@ -140,12 +140,12 @@ const DisclosurePage = () => {
 
       <ActionsFab
         actions={[
-          ...(currentCanEdit
+          ...(currentCanEdit && !isArchived
             ? [
                 {
                   icon: <Add />,
                   label: STRINGS.add_disclosure_note,
-                  onClick: () => navigate(`/disclosures/${disclosureId}/note/action`),
+                  onClick: () => openNoteAction(),
                 },
                 {
                   icon: <Add />,
@@ -168,7 +168,7 @@ const DisclosurePage = () => {
                 },
               ]
             : []),
-          ...(canSeeConsultingAdviser
+          ...(canSeeConsultingAdviser && !isArchived
             ? [
                 {
                   icon: <PsychologyAltIcon />,
