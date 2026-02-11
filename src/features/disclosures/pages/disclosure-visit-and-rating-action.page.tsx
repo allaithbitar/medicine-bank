@@ -65,7 +65,7 @@ const DisclosureVisitAndRatingActionPage = () => {
     visitNote: disclosure?.visitNote,
     visitReason: disclosure?.visitReason,
     visitResult: disclosure?.visitResult ?? 'not_completed',
-    isCustom: disclosure?.isCustomRating,
+    isCustomRating: disclosure?.isCustomRating,
     customRating: disclosure?.customRating,
     ratingId: disclosure?.rating?.id,
     rating: disclosure?.rating,
