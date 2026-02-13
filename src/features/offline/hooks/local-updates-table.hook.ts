@@ -1,3 +1,4 @@
+import { deleteAudioFile, listAudioFiles } from '@/core/helpers/opfs-audio.helpers';
 import type { TLocalDb } from '@/libs/kysely/schema';
 import { localDb } from '@/libs/sqlocal';
 import { useQueryClient } from '@tanstack/react-query';
@@ -118,6 +119,10 @@ const useLocalUpdatesTable = () => {
 
   const deleteAll = useCallback(async () => {
     await localDb.deleteFrom('updates').execute();
+    const files = await listAudioFiles();
+    for await (const filePath of files) {
+      await deleteAudioFile(filePath);
+    }
     invalidateQueries();
   }, [invalidateQueries]);
 

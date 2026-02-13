@@ -10,28 +10,38 @@ import { isNullOrUndefined } from '@/core/helpers/helpers';
 import useLocalUpdatesTable from '../hooks/local-updates-table.hook';
 import Header from '@/core/components/common/header/header';
 import { Link } from 'react-router-dom';
+import DisabledOnOffline from '@/core/components/common/disabled-on-offline/disabled-on-offline.component';
+import { useOfflineSync } from '../hooks/offline-sync.hook';
 
 const OfflineUpdatesPage = () => {
   const [updateIndex, setUpdateIndex] = useState<number | undefined>(undefined);
   const { data: updates, isFetching } = useLocalUpdatesLoader();
+  const { handleSync, isLoading: isRefreshingLocalDb } = useOfflineSync();
   const { deleteAll } = useLocalUpdatesTable();
 
   // const { syncUpdate, syncingId } = useSyncUpdate();
 
   useEffect(() => {
     if (isFetching) return;
-    if (updates) {
-      const nextIdx = updates?.findIndex((u) => u.status === 'pending');
-      if (nextIdx !== -1) {
-        setUpdateIndex(nextIdx);
-      } else {
-        deleteAll();
+    (async () => {
+      if (updates) {
+        const nextIdx = updates?.findIndex((u) => u.status === 'pending');
+        if (nextIdx !== -1) {
+          setUpdateIndex(nextIdx);
+        } else {
+          deleteAll();
+          try {
+            await handleSync();
+          } catch (error) {
+            console.warn(error);
+          }
+        }
       }
-    }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteAll, updates]);
 
-  if (isFetching) {
+  if (isFetching || isRefreshingLocalDb) {
     return <PageLoading />;
   }
 
@@ -65,6 +75,7 @@ const OfflineUpdatesPage = () => {
   }
 
   return (
+    <DisabledOnOffline>
     <Stack gap={1} sx={{ height: '100%' }}>
       {updates[updateIndex] && (
         <Card sx={{ flexShrink: 0 }}>
@@ -107,6 +118,7 @@ const OfflineUpdatesPage = () => {
         <OfflineUpdate key={u.id} update={u} />
       ))} */}
     </Stack>
+</DisabledOnOffline>
   );
 };
 
