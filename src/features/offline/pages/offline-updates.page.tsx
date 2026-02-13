@@ -19,6 +19,7 @@ const OfflineUpdatesPage = () => {
   // const { syncUpdate, syncingId } = useSyncUpdate();
 
   useEffect(() => {
+    if (isFetching) return;
     if (updates) {
       const nextIdx = updates?.findIndex((u) => u.status === 'pending');
       if (nextIdx !== -1) {
@@ -27,6 +28,7 @@ const OfflineUpdatesPage = () => {
         deleteAll();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteAll, updates]);
 
   if (isFetching) {

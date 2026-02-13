@@ -3,7 +3,7 @@ import { AddCircleOutline, ChangeCircleOutlined, DeleteOutline, EditOutlined, Sa
 import { Button, Card, Grid, Paper, Stack, Typography } from '@mui/material';
 import { lightGreen, orange, red, teal } from '@mui/material/colors';
 import STRINGS from '@/core/constants/strings.constant';
-import { useEffect, useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useBeneficiaryLoader } from '@/features/beneficiaries/hooks/use-beneficiary-loader.hook';
 import InfoItem from './info-item.component';
 import { compareObjects, type FieldDiff } from '@/core/utils/conflict-diff.util';
@@ -18,7 +18,13 @@ import { useDisclosureLoader } from '@/features/disclosures/hooks/disclosure-loa
 // TAutocompleteItem is not referenced directly after normalization helpers
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import useLocalUpdateLoader from '../hooks/local-update-loader.hook';
-import { formatDateTime, getErrorMessage, getStringsLabel, isNullOrUndefined } from '@/core/helpers/helpers';
+import {
+  formatDateTime,
+  getErrorMessage,
+  getStringsLabel,
+  getVoiceSrc,
+  isNullOrUndefined,
+} from '@/core/helpers/helpers';
 import { useBeneficiaryFamilyMemberLoader } from '@/features/beneficiaries/hooks/beneficiary-family-member-loader.hook';
 import { useDisclosureDetailsLoader } from '@/features/disclosures/hooks/disclosure-details-loader.hook';
 import { useDisclosureNoteLoader } from '@/features/disclosures/hooks/disclosure-note-loader.hook';
@@ -32,11 +38,42 @@ import type {
   TAddDisclosureDto,
   TAddDisclosureNotePayload,
 } from '@/features/disclosures/types/disclosure.types';
+import { deleteAudioFile, readAudioFile } from '@/core/helpers/opfs-audio.helpers';
+import { baseUrl } from '@/core/api/root.api';
 
 type TOfflineUpdateComponent = (props: {
   id: string;
   // invalidateQueries: (id: string) => void
 }) => ReactNode;
+
+const RenderAudioFile = ({ field, isServerValue }: { field: FieldDiff; isServerValue?: boolean }) => {
+  const [objectUrl, setObjectUrl] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      if (field.localValue && !isServerValue) {
+        const audio = await readAudioFile(field.localValue);
+        if (audio) {
+          const url = URL.createObjectURL(audio);
+          setObjectUrl(url);
+        }
+      }
+      if (field.serverValue && isServerValue) {
+        setObjectUrl(getVoiceSrc({ baseUrl, filePath: field.serverValue }));
+      }
+    })();
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field.localValue, isServerValue]);
+
+  if (!objectUrl) return STRINGS.none;
+
+  return <audio controlsList="nodownload" controls src={objectUrl} style={{ width: '100%' }} />;
+};
 
 const ActionButtons = ({ onSave, disabled }: { disabled?: boolean; onSave?: () => void }) => {
   return (
@@ -129,11 +166,13 @@ const DiffColumns = ({
   grid,
   order,
   showDiff = false,
+  customRenderer,
 }: {
   diffs: FieldDiff[];
   grid?: Record<string, number>;
   order?: Record<string, number>;
   showDiff?: boolean;
+  customRenderer?: Record<string, (payload: { field: FieldDiff; isServerValue?: boolean }) => ReactNode>;
 }) => {
   const sorted = useMemo(() => {
     let _sorted = diffs.slice();
@@ -149,26 +188,41 @@ const DiffColumns = ({
   return (
     <Grid container columnSpacing={1} rowSpacing={1.5}>
       {sorted.map((d) => {
+        const Renderer = customRenderer?.[d.field];
+
         if (showDiff) {
           return (
-            <Grid container size={12}>
-              <Grid size={grid?.[d.field] ?? 12}>
+            <Grid key={d.field} container size={12}>
+              <Grid key={`${d.field}-server-value`} size={grid?.[d.field] ?? 12}>
                 <Paper elevation={0} sx={{ p: 0, background: red[50], py: 0.5 }}>
-                  <InfoItem icon={null} label={d.displayName} value={d.serverValue || STRINGS.none} />
+                  <InfoItem
+                    icon={null}
+                    label={d.displayName}
+                    value={Renderer ? <Renderer field={d} isServerValue /> : d.serverValue || STRINGS.none}
+                  />
                 </Paper>
               </Grid>
-              <Grid size={grid?.[d.field] ?? 12} sx={{}}>
+              <Grid key={`${d.field}-local-value`} size={grid?.[d.field] ?? 12} sx={{}}>
                 <Paper elevation={0} sx={{ background: lightGreen[50], py: 0.5 }}>
-                  <InfoItem icon={null} label={d.displayName} value={d.localValue || STRINGS.none} />
+                  <InfoItem
+                    icon={null}
+                    label={d.displayName}
+                    value={Renderer ? <Renderer field={d} /> : d.localValue || STRINGS.none}
+                  />
                 </Paper>
               </Grid>
             </Grid>
           );
         }
+
         return (
           <Grid size={grid?.[d.field] ?? 12} key={d.field}>
             <Paper elevation={0} sx={{ background: lightGreen[50], py: 0.5 }}>
-              <InfoItem icon={null} label={d.displayName} value={d.localValue || STRINGS.none} />
+              <InfoItem
+                icon={null}
+                label={d.displayName}
+                value={Renderer ? <Renderer field={d} /> : d.localValue || STRINGS.none}
+              />
             </Paper>
           </Grid>
         );
@@ -356,8 +410,6 @@ const DisclosureOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
 
         return acc;
       }, {} as TAddDisclosureDto);
-
-    console.log({ _diffs, dto }, update.payload);
 
     try {
       let serverRecordId = '';
@@ -786,21 +838,16 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
 
   const diffs = useMemo(() => {
     if (!localDisclosureNoteData) return null;
+
     let result = compareObjects(localDisclosureNoteData, onlineDisclosureNoteData || {}, {
       noteAudio: STRINGS.recorded_audio,
       noteText: STRINGS.note,
     }).filter((v) => v.hasConflict);
 
-    result = removeKeys(result, ['disclosureId', 'noteAudio']);
+    result = removeKeys(result, ['disclosureId']);
 
     return result;
   }, [localDisclosureNoteData, onlineDisclosureNoteData]);
-
-  useEffect(() => {
-    if (!onlineDisclosureNoteData && !!localDisclosureNoteData && !update?.serverRecordId) {
-      console.warn('NEEDS SERVER ID');
-    }
-  }, [localDisclosureNoteData, onlineDisclosureNoteData, update?.serverRecordId]);
 
   const isLoading =
     isFetchingOnlineBeneficiaryData ||
@@ -814,6 +861,9 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
   const handleSave = async () => {
     const _diffs = compareObjects(localDisclosureNoteData, onlineDisclosureNoteData || {}, {});
 
+    let _newNoteAudio: string | Blob | null | undefined = null;
+
+    let _noteAudioToDelete = '';
     const dto = _diffs
       .filter((d) => d.hasConflict)
       .reduce((acc, curr) => {
@@ -829,18 +879,40 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
     try {
       let serverRecordId = '';
       if (update.operation === 'INSERT') {
+        _newNoteAudio = dto.noteAudio;
+        if (_newNoteAudio && typeof _newNoteAudio === 'string') {
+          const _opfsAudioFile = await readAudioFile(_newNoteAudio);
+          if (_opfsAudioFile) {
+            dto.noteAudio = _opfsAudioFile;
+          }
+        }
         if (parentDisclosureData) {
           dto.disclosureId = (parentDisclosureData.serverRecordId || dto.disclosureId || update.parentId!) ?? '';
         }
+
         await addDisclosureNote(dto).unwrap();
+        if (_newNoteAudio && typeof _newNoteAudio === 'string') {
+          _noteAudioToDelete = _newNoteAudio;
+        }
         serverRecordId = dto.disclosureId;
       } else {
+        if (dto.noteAudio && typeof dto.noteAudio === 'string') {
+          const _opfsAudioFile = await readAudioFile(dto.noteAudio);
+          if (_opfsAudioFile) {
+            _noteAudioToDelete = dto.noteAudio;
+            dto.noteAudio = _opfsAudioFile;
+          }
+        }
+
         await updateDisclosureNote({
           ...dto,
           id: update.recordId,
           disclosureId: update.parentId!,
         }).unwrap();
         serverRecordId = update.parentId!;
+      }
+      if (_noteAudioToDelete) {
+        await deleteAudioFile(_noteAudioToDelete);
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
     } catch (error: any) {
@@ -875,6 +947,9 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
                 pros: 10,
                 cons: 11,
                 other: 12,
+              }}
+              customRenderer={{
+                noteAudio: RenderAudioFile,
               }}
             />
           </Stack>

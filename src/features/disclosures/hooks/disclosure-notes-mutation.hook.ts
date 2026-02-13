@@ -5,6 +5,8 @@ import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.h
 import type { TAddDisclosureNotePayload, TUpdateDisclosureNotePayload } from '../types/disclosure.types';
 import disclosuresApi from '../api/disclosures.api';
 import useUser from '@/core/hooks/user-user.hook';
+import { deleteAudioFile, saveAudioFile } from '@/core/helpers/opfs-audio.helpers';
+import { useQueryClient } from '@tanstack/react-query';
 
 type IUpdateDisclosureNoteDto = { type: 'UPDATE'; dto: TUpdateDisclosureNotePayload };
 
@@ -14,6 +16,7 @@ type TDisclosureNoteMutation = TInsertDisclosureNoteDto | IUpdateDisclosureNoteD
 
 const useDisclsoureNoteMutation = () => {
   const { id: userId } = useUser();
+  const queryClient = useQueryClient();
   const localUpdatesTable = useLocalUpdatesTable();
   const [onlineUpdate, onlineUpdateProperties] = disclosuresApi.useUpdateDisclosureNoteMutation();
   const [onlineInsert, onlineInsertProperties] = disclosuresApi.useAddDisclosureNoteMutation();
@@ -21,7 +24,6 @@ const useDisclsoureNoteMutation = () => {
 
   const handleInsert = useCallback(
     async (dto: TAddDisclosureNotePayload) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { noteAudio, ...restDto } = dto;
       const insertDto = {
         id: crypto.randomUUID(),
@@ -29,45 +31,99 @@ const useDisclsoureNoteMutation = () => {
         createdBy: userId,
         ...restDto,
       } as const;
-      await localDb.insertInto('disclosure_notes').values(insertDto).execute();
+
+      let audioName: string | null = null;
+      if (noteAudio && noteAudio instanceof Blob) {
+        const id = crypto.randomUUID();
+        const name = id + '.webm';
+        await saveAudioFile(name, noteAudio);
+        audioName = name;
+      }
+
+      await localDb
+        .insertInto('disclosure_notes')
+        .values({
+          ...insertDto,
+          noteAudio: audioName,
+        })
+        .execute();
 
       await localUpdatesTable.create({
         operation: 'INSERT',
         table: 'disclosure_notes',
         status: 'pending',
         recordId: insertDto.id,
-        payload: insertDto,
+        payload: {
+          ...insertDto,
+          noteAudio: audioName,
+        },
         serverRecordId: null,
         parentId: insertDto.disclosureId,
       });
+
+      await queryClient.invalidateQueries({
+        queryKey: ['LOCAL_DISCLOSURE_NOTES'],
+      });
     },
-    [localUpdatesTable, userId]
+    [localUpdatesTable, queryClient, userId]
   );
 
   const handleUpdate = useCallback(
     async (dto: TUpdateDisclosureNotePayload) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, noteAudio, ...values } = dto;
-
-      await localDb.updateTable('disclosure_notes').set(values).where('id', '=', id).execute();
 
       const updateEntity = await localUpdatesTable.getByRecordId(id);
 
+      let newNoteAudio = noteAudio;
+
+      if (noteAudio && noteAudio instanceof Blob) {
+        const audioId = crypto.randomUUID();
+        const name = audioId + '.webm';
+        await saveAudioFile(name, noteAudio);
+        newNoteAudio = name;
+      }
+
+      await localDb
+        .updateTable('disclosure_notes')
+        .set({
+          ...values,
+          ...(typeof newNoteAudio === 'string' && {
+            noteAudio: newNoteAudio,
+          }),
+        })
+        .where('id', '=', id)
+        .execute();
+
       if (updateEntity) {
-        await localUpdatesTable.updatePayload(updateEntity.id, values);
+        if (noteAudio && noteAudio instanceof Blob) {
+          if ((updateEntity.payload as any).noteAudio) {
+            const deleteResult = await deleteAudioFile((updateEntity.payload as any).noteAudio);
+            console.log({ deleteResult });
+          }
+        }
+        await localUpdatesTable.updatePayload(updateEntity.id, { ...values, noteAudio: newNoteAudio });
       } else {
         await localUpdatesTable.create({
           operation: 'UPDATE',
           table: 'disclosure_notes',
           status: 'pending',
           recordId: id,
-          payload: values,
+          payload: { ...values, noteAudio: newNoteAudio },
           serverRecordId: null,
           parentId: values.disclosureId,
         });
       }
+
+      // queryKey: ['LOCAL_DISCLOSURE_NOTE', id, forceOffline],
+      await queryClient.invalidateQueries({
+        queryKey: ['LOCAL_DISCLOSURE_NOTES'],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ['LOCAL_DISCLOSURE_NOTE', id],
+      });
     },
-    [localUpdatesTable]
+
+    [localUpdatesTable, queryClient]
   );
 
   // const handleOnlineUpdate = useCallback(onlineUpdate, []);
