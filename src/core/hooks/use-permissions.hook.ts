@@ -15,6 +15,7 @@ export const usePermissions = () => {
   const isManagerRole = user.role === 'manager';
   const isScoutRole = user.role === 'scout';
   const isSupervisorRole = user.role === 'supervisor';
+  const isAccountantRole = user.role === 'accountant';
 
   const hasRouteAccess = useMemo(
     () => (routePath: string) => checkRouteAccess(routePath, currentUserRole),
@@ -101,6 +102,7 @@ export const usePermissions = () => {
     currentCanArchive,
     isSupervisorRole,
     isManagerRole,
+    isAccountantRole,
     isScoutRole,
     currentCanReceiveDisclosure,
     currentCanCompleteAppointment,

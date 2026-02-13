@@ -9,7 +9,7 @@ import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
 import SidebarExpandableItem from './sidebar-expandable-list-item.component';
-import { Business as BuildingOfficeIcon, Sync, ThumbsUpDown } from '@mui/icons-material';
+import { Business as BuildingOfficeIcon, Sync, ThumbsUpDown, Payment } from '@mui/icons-material';
 import STRINGS from '@/core/constants/strings.constant';
 import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -94,6 +94,11 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       label: STRINGS.calendar,
       href: '/calendar',
       icon: <CalendarMonthIcon />,
+    },
+    {
+      label: STRINGS.payments,
+      href: '/payments',
+      icon: <Payment />,
     },
     {
       label: STRINGS.the_sync,

@@ -1,4 +1,4 @@
-type TUserRole = 'manager' | 'supervisor' | 'scout';
+type TUserRole = 'manager' | 'supervisor' | 'scout' | 'accountant';
 //cant find better way to implement if u know be my guest
 export type TRoutePermission = {
   path: string;
@@ -182,6 +182,8 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   { path: '/sync', allowedRoles: ['manager', 'supervisor', 'scout'] },
 
   { path: '/offline-updates', allowedRoles: ['manager', 'supervisor', 'scout'] },
+
+  { path: '/payments', allowedRoles: ['manager', 'accountant'] },
 ];
 
 export const checkRouteAccess = (routePath: string, userRole: TUserRole | undefined) => {

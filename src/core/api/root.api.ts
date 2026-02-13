@@ -105,6 +105,8 @@ export const rootApi = createApi({
     'Disclosure_Adviser_Consultation',
     'Disclosure',
     'notifications',
+    'Payments_Eligible',
+    'Payments_History',
   ],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   endpoints: (_builder) => ({}),

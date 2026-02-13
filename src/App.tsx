@@ -46,6 +46,7 @@ import DisclosureVisitAndRatingActionPage from './features/disclosures/pages/dis
 import AuditDetailsActionPage from './features/disclosures/pages/disclosue-audit-details.page';
 import NotificationsPage from './features/notifications/pages/notifications.Page';
 import OfflineUpdatesPage from './features/offline/pages/offline-updates.page';
+import PaymentsPage from './features/payments/pages/payments.page';
 
 function App() {
   const router = createBrowserRouter(
@@ -114,6 +115,8 @@ function App() {
               <Route path="/system-broadcast/action" element={<SystemBroadcastActionPage />} />
 
               <Route path="/calendar" element={<AppointmentsPage />} />
+
+              <Route path="/payments" element={<PaymentsPage />} />
 
               <Route path="/sync" element={<SyncPage />} />
             </Route>

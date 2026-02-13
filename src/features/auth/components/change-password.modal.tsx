@@ -11,7 +11,7 @@ import type { TUpdateEmployeeDto } from '@/features/employees/types/employee.typ
 
 const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, { message: STRINGS.schema_required }),
+    // currentPassword: z.string().min(1, { message: STRINGS.schema_required }),
     newPassword: z.string().min(6, { message: STRINGS.schema_weak_password }),
     confirmPassword: z.string().min(1, { message: STRINGS.schema_required }),
   })
@@ -24,21 +24,17 @@ const ChangePasswordModal = () => {
   const { closeModal } = useModal();
   const currentUser = selectUser();
   const [updateEmployee, { isLoading }] = employeesApi.useUpdateEmployeeMutation();
-
   const { formState, setValue, formErrors, handleSubmit } = useForm({
     schema: changePasswordSchema,
     initalState: {
-      currentPassword: '',
+      // currentPassword: '',
       newPassword: '',
       confirmPassword: '',
     },
   });
-
   const handleSave = async () => {
     const { isValid, result } = await handleSubmit();
-
     if (!isValid) return;
-
     try {
       const updateDto: TUpdateEmployeeDto = {
         id: currentUser.id,
@@ -71,7 +67,7 @@ const ChangePasswordModal = () => {
       <DialogTitle>{STRINGS.change_password}</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={2} sx={{ pt: 1 }}>
-          <FormTextFieldInput
+          {/* <FormTextFieldInput
             required
             type="password"
             label={STRINGS.current_password}
@@ -79,8 +75,7 @@ const ChangePasswordModal = () => {
             onChange={(v) => setValue({ currentPassword: v })}
             errorText={formErrors.currentPassword?.[0]?.message}
             disabled={isLoading}
-          />
-
+          /> */}
           <FormTextFieldInput
             required
             type="password"
@@ -90,7 +85,6 @@ const ChangePasswordModal = () => {
             errorText={formErrors.newPassword?.[0]?.message}
             disabled={isLoading}
           />
-
           <FormTextFieldInput
             required
             type="password"
