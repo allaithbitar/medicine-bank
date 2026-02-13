@@ -25,7 +25,6 @@ import DetailedReportResult from '../components/detailed-report-result.component
 import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import type { TAutocompleteItem } from '@/core/types/common.types';
-import DisabledOnOffline from '@/core/components/common/disabled-on-offline/disabled-on-offline.component';
 import usePermissions from '@/core/hooks/use-permissions.hook';
 import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 
@@ -129,61 +128,59 @@ const SatisticsPage = () => {
   }, []);
 
   return (
-    <DisabledOnOffline>
+    <Stack gap={1}>
       <Stack gap={1}>
-        <Stack gap={1}>
-          <CustomAppBarComponent title={STRINGS.statistics} />
-          <Card>
-            <Stack gap={1}>
-              <Stack direction="row" gap={1}>
-                <FormAutocompleteInput
-                  label={STRINGS.satistics_type}
-                  options={[
-                    { id: SATISTICS_TYPE.SUMMARY, label: STRINGS.summary },
-                    { id: SATISTICS_TYPE.DETAILED, label: STRINGS.detailed },
-                  ]}
-                  value={satisticsType}
-                  onChange={(v) => setSatisticsType(v)}
-                />
-                <FormAutocompleteInput
-                  label={STRINGS.time_period}
-                  disableClearable
-                  options={[
-                    { id: TIME_PERIOD_TYPE.THIS_WEEK, label: STRINGS.this_week },
-                    { id: TIME_PERIOD_TYPE.THIS_MONTH, label: STRINGS.this_month },
-                    { id: TIME_PERIOD_TYPE.THIS_YEAR, label: STRINGS.this_year },
-                    { id: TIME_PERIOD_TYPE.CUSTOM, label: STRINGS.custom },
-                  ]}
-                  value={timePeriod}
-                  onChange={(v) => setTimePeriod(v!)}
-                />
-              </Stack>
-              {timePeriod.id === TIME_PERIOD_TYPE.CUSTOM && (
-                <>
-                  <FormDateInput
-                    label={STRINGS.from_date}
-                    value={customPeriod.fromDate}
-                    onChange={(fromDate) => setCustomPeriod((prev) => ({ ...prev, fromDate }))}
-                  />
-                  <FormDateInput
-                    label={STRINGS.to_date}
-                    value={customPeriod.toDate}
-                    onChange={(toDate) => setCustomPeriod((prev) => ({ ...prev, toDate }))}
-                  />
-                </>
-              )}
-              {isManagerRole && <EmployeesAutocomplete value={employee} onChange={setEmployee} />}
-              <Button disabled={disableGetButton} onClick={handleGetSatistics}>
-                {STRINGS.view}
-              </Button>
+        <CustomAppBarComponent title={STRINGS.statistics} />
+        <Card>
+          <Stack gap={1}>
+            <Stack direction="row" gap={1}>
+              <FormAutocompleteInput
+                label={STRINGS.satistics_type}
+                options={[
+                  { id: SATISTICS_TYPE.SUMMARY, label: STRINGS.summary },
+                  { id: SATISTICS_TYPE.DETAILED, label: STRINGS.detailed },
+                ]}
+                value={satisticsType}
+                onChange={(v) => setSatisticsType(v)}
+              />
+              <FormAutocompleteInput
+                label={STRINGS.time_period}
+                disableClearable
+                options={[
+                  { id: TIME_PERIOD_TYPE.THIS_WEEK, label: STRINGS.this_week },
+                  { id: TIME_PERIOD_TYPE.THIS_MONTH, label: STRINGS.this_month },
+                  { id: TIME_PERIOD_TYPE.THIS_YEAR, label: STRINGS.this_year },
+                  { id: TIME_PERIOD_TYPE.CUSTOM, label: STRINGS.custom },
+                ]}
+                value={timePeriod}
+                onChange={(v) => setTimePeriod(v!)}
+              />
             </Stack>
-          </Card>
-        </Stack>
-        {result && <SummaryReportResult result={result} />}
-        {detailedResult && <DetailedReportResult result={detailedResult} />}
-        {(isLoadingDetailedReport || isLoadingSummaryReport) && <LoadingOverlay />}
+            {timePeriod.id === TIME_PERIOD_TYPE.CUSTOM && (
+              <>
+                <FormDateInput
+                  label={STRINGS.from_date}
+                  value={customPeriod.fromDate}
+                  onChange={(fromDate) => setCustomPeriod((prev) => ({ ...prev, fromDate }))}
+                />
+                <FormDateInput
+                  label={STRINGS.to_date}
+                  value={customPeriod.toDate}
+                  onChange={(toDate) => setCustomPeriod((prev) => ({ ...prev, toDate }))}
+                />
+              </>
+            )}
+            {isManagerRole && <EmployeesAutocomplete value={employee} onChange={setEmployee} />}
+            <Button disabled={disableGetButton} onClick={handleGetSatistics}>
+              {STRINGS.view}
+            </Button>
+          </Stack>
+        </Card>
       </Stack>
-    </DisabledOnOffline>
+      {result && <SummaryReportResult result={result} />}
+      {detailedResult && <DetailedReportResult result={detailedResult} />}
+      {(isLoadingDetailedReport || isLoadingSummaryReport) && <LoadingOverlay />}
+    </Stack>
   );
 };
 

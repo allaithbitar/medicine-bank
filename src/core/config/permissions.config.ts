@@ -3,6 +3,7 @@ type TUserRole = 'manager' | 'supervisor' | 'scout' | 'accountant';
 export type TRoutePermission = {
   path: string;
   allowedRoles: TUserRole[];
+  requiresOnline?: boolean;
   canAdd?: TUserRole[];
   canEdit?: TUserRole[];
   canRate?: TUserRole[];
@@ -24,16 +25,17 @@ export type TActionType =
   | 'canEditDisclosure';
 
 export const ROUTE_PERMISSIONS: TRoutePermission[] = [
-  { path: '/', allowedRoles: ['manager', 'supervisor', 'scout'] },
-  { path: '/notifications', allowedRoles: ['manager', 'supervisor', 'scout'] },
+  { path: '/', allowedRoles: ['manager', 'supervisor', 'scout'], requiresOnline: true },
+  { path: '/notifications', allowedRoles: ['manager', 'supervisor', 'scout'], requiresOnline: true },
 
   {
     path: '/employees',
     allowedRoles: ['manager', 'supervisor', 'scout'],
+    requiresOnline: true,
     canAdd: ['manager'],
     canEdit: ['manager'],
   },
-  { path: '/employees/action', allowedRoles: ['manager'] },
+  { path: '/employees/action', allowedRoles: ['manager'], requiresOnline: true },
 
   {
     path: '/disclosures',
@@ -94,78 +96,90 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   {
     path: '/beneficiaries',
     allowedRoles: ['manager', 'supervisor'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
   {
     path: '/beneficiaries/:id',
     allowedRoles: ['manager', 'supervisor'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
   {
     path: '/beneficiaries/action',
     allowedRoles: ['manager', 'supervisor'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
   {
     path: '/beneficiaries/:id/medicine/action',
     allowedRoles: ['manager', 'supervisor', 'scout'],
+    requiresOnline: true,
   },
   {
     path: '/beneficiaries/:id/family/action',
     allowedRoles: ['manager', 'supervisor', 'scout'],
+    requiresOnline: true,
   },
 
   {
     path: '/cities',
     allowedRoles: ['manager', 'supervisor'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
-  { path: '/cities/action', allowedRoles: ['manager', 'supervisor'] },
+  { path: '/cities/action', allowedRoles: ['manager', 'supervisor'], requiresOnline: true },
   {
     path: '/work-areas',
     allowedRoles: ['manager', 'supervisor'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
-  { path: '/work-areas/action', allowedRoles: ['manager', 'supervisor'] },
+  { path: '/work-areas/action', allowedRoles: ['manager', 'supervisor'], requiresOnline: true },
   {
     path: '/ratings',
     allowedRoles: ['manager', 'supervisor'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
-  { path: '/ratings/action', allowedRoles: ['manager', 'supervisor'] },
+  { path: '/ratings/action', allowedRoles: ['manager', 'supervisor'], requiresOnline: true },
   {
     path: '/priority-degrees',
     allowedRoles: ['manager', 'supervisor'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
-  { path: '/priority-degrees/action', allowedRoles: ['manager', 'supervisor'] },
+  { path: '/priority-degrees/action', allowedRoles: ['manager', 'supervisor'], requiresOnline: true },
 
   {
     path: '/medicines',
     allowedRoles: ['manager', 'supervisor'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
-  { path: '/medicines/action', allowedRoles: ['manager', 'supervisor'] },
+  { path: '/medicines/action', allowedRoles: ['manager', 'supervisor'], requiresOnline: true },
 
   {
     path: '/meetings',
     allowedRoles: ['manager', 'supervisor', 'scout'],
+    requiresOnline: true,
     canAdd: ['manager'],
     canEdit: ['manager'],
   },
-  { path: '/meetings/action', allowedRoles: ['manager'] },
+  { path: '/meetings/action', allowedRoles: ['manager'], requiresOnline: true },
 
   {
     path: '/calendar',
     allowedRoles: ['manager', 'supervisor', 'scout'],
+    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
@@ -173,17 +187,18 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   {
     path: '/system-broadcast',
     allowedRoles: ['manager', 'supervisor', 'scout'],
+    requiresOnline: true,
     canAdd: ['manager'],
     canEdit: ['manager'],
     showFilters: ['manager'],
   },
-  { path: '/system-broadcast/action', allowedRoles: ['manager'] },
+  { path: '/system-broadcast/action', allowedRoles: ['manager'], requiresOnline: true },
 
-  { path: '/sync', allowedRoles: ['manager', 'supervisor', 'scout'] },
+  { path: '/sync', allowedRoles: ['manager', 'supervisor', 'scout'], requiresOnline: true },
 
-  { path: '/offline-updates', allowedRoles: ['manager', 'supervisor', 'scout'] },
+  { path: '/offline-updates', allowedRoles: ['manager', 'supervisor', 'scout'], requiresOnline: true },
 
-  { path: '/payments', allowedRoles: ['manager', 'accountant'] },
+  { path: '/payments', allowedRoles: ['manager', 'accountant'], requiresOnline: true },
 ];
 
 export const checkRouteAccess = (routePath: string, userRole: TUserRole | undefined) => {
@@ -225,4 +240,16 @@ export const checkActionPermission = (routePath: string, action: TActionType, us
   if (!allowedRoles) return false;
 
   return allowedRoles.includes(userRole);
+};
+
+/**
+ * Checks if a route requires online connectivity.
+ * Routes without explicit requiresOnline flag default to offline-capable (false).
+ *
+ * @param routePath - The route path to check (e.g., '/employees', '/disclosures/123')
+ * @returns true if route requires online, false if route works offline or route not found
+ */
+export const doesRouteRequireOnline = (routePath: string): boolean => {
+  const permission = getRoutePermission(routePath);
+  return permission?.requiresOnline ?? false;
 };

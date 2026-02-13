@@ -10,7 +10,6 @@ import { isNullOrUndefined } from '@/core/helpers/helpers';
 import useLocalUpdatesTable from '../hooks/local-updates-table.hook';
 import Header from '@/core/components/common/header/header';
 import { Link } from 'react-router-dom';
-import DisabledOnOffline from '@/core/components/common/disabled-on-offline/disabled-on-offline.component';
 
 const OfflineUpdatesPage = () => {
   const [updateIndex, setUpdateIndex] = useState<number | undefined>(undefined);
@@ -64,17 +63,16 @@ const OfflineUpdatesPage = () => {
   }
 
   return (
-    <DisabledOnOffline>
-      <Stack gap={1} sx={{ height: '100%' }}>
-        {updates[updateIndex] && (
-          <Card sx={{ flexShrink: 0 }}>
-            <Typography color="primary">
-              {updateIndex + 1} {STRINGS.out_of} {updates.length} {STRINGS.offline_updates}
-            </Typography>
-          </Card>
-        )}
-        {updates && updates[updateIndex] && <OfflineUpdate key={updateIndex} update={updates[updateIndex]} />}
-        {/*  <Card
+    <Stack gap={1} sx={{ height: '100%' }}>
+      {updates[updateIndex] && (
+        <Card sx={{ flexShrink: 0 }}>
+          <Typography color="primary">
+            {updateIndex + 1} {STRINGS.out_of} {updates.length} {STRINGS.offline_updates}
+          </Typography>
+        </Card>
+      )}
+      {updates && updates[updateIndex] && <OfflineUpdate key={updateIndex} update={updates[updateIndex]} />}
+      {/*  <Card
         sx={{
           p: 1,
           width: '100%',
@@ -103,11 +101,10 @@ const OfflineUpdatesPage = () => {
           </Button>
         </Stack>
       </Card> */}
-        {/*  {data.map((u) => (
+      {/*  {data.map((u) => (
         <OfflineUpdate key={u.id} update={u} />
       ))} */}
-      </Stack>
-    </DisabledOnOffline>
+    </Stack>
   );
 };
 
