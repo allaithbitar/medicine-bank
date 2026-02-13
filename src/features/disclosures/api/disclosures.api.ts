@@ -244,14 +244,14 @@ export const disclosuresApi = rootApi.injectEndpoints({
       TDisclosureAdviserConsultation,
       TAddDisclosureAdviserConsultationPayload
     >({
-      query: ({ disclosureId, consultationNote, consultationAudioFile }) => {
+      query: ({ disclosureId, consultationNote, consultationAudio }) => {
         const formData = new FormData();
         formData.append('disclosureId', disclosureId);
         if (consultationNote && consultationNote.trim().length > 0)
           formData.append('consultationNote', consultationNote.trim());
-        if (consultationAudioFile && consultationAudioFile instanceof Blob) {
+        if (consultationAudio && consultationAudio instanceof Blob) {
           const name = `audio-${Date.now()}.webm`;
-          formData.append('consultationAudioFile', consultationAudioFile, name);
+          formData.append('consultationAudioFile', consultationAudio, name);
         }
         return {
           url: '/disclosures/consultations',
@@ -263,15 +263,15 @@ export const disclosuresApi = rootApi.injectEndpoints({
     }),
 
     updateDisclosureAdviserConsultation: builder.mutation<void, TUpdateDisclosureAdviserConsultationPayload>({
-      query: ({ id, disclosureId, consultationNote, consultationAudioFile }) => {
+      query: ({ id, disclosureId, consultationNote, consultationAudio }) => {
         const formData = new FormData();
         formData.append('disclosureId', disclosureId);
         formData.append('id', id);
         if (consultationNote && consultationNote.trim().length > 0)
           formData.append('consultationNote', consultationNote.trim());
-        if (consultationAudioFile && consultationAudioFile instanceof Blob) {
+        if (consultationAudio && consultationAudio instanceof Blob) {
           const name = `audio-${Date.now()}.webm`;
-          formData.append('consultationAudioFile', consultationAudioFile, name);
+          formData.append('consultationAudioFile', consultationAudio, name);
           formData.append('deleteAudioFile', 'true');
         }
         return {
@@ -287,22 +287,23 @@ export const disclosuresApi = rootApi.injectEndpoints({
       ],
     }),
 
-    getDisclosureAdviserConsultations: builder.query<
+    getDisclosureAdviserConsultations: builder.infiniteQuery<
       TPaginatedResponse<TDisclosureAdviserConsultation>,
-      TGetDisclosureAdviserConsultationParams
+      TGetDisclosureAdviserConsultationParams,
+      number
     >({
-      query: ({ consultationStatus, createdBy, disclosureId }) => ({
+      query: ({ queryArg, pageParam }) => ({
         url: '/disclosures/consultations',
         method: 'GET',
-        params: {
-          consultationStatus,
-          createdBy,
-          disclosureId,
-        },
+        params: { ...queryArg, pageNumber: pageParam },
       }),
 
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
+      },
       providesTags: () => [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }],
-
       transformResponse: (res: ApiResponse<TPaginatedResponse<TDisclosureAdviserConsultation>>) => res.data,
     }),
 

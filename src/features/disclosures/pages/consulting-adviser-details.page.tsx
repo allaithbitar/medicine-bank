@@ -1,7 +1,6 @@
 import { Card, Stack, Chip, Divider } from '@mui/material';
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { skipToken } from '@reduxjs/toolkit/query';
 import disclosuresApi from '../api/disclosures.api';
 import STRINGS from '@/core/constants/strings.constant';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
@@ -18,6 +17,7 @@ import { Comment } from '@mui/icons-material';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
+import { useDisclosureConsultationLoader } from '../hooks/disclosure-consultaion-loader.hook';
 
 function ConsultingAdviserDetailsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,11 +26,7 @@ function ConsultingAdviserDetailsPage() {
   const { closeModal, openModal } = useModal();
   const { currentCanRate } = usePermissions();
 
-  const {
-    data: consultation,
-    isFetching,
-    isError,
-  } = disclosuresApi.useGetDisclosureAdviserConsultationByIdQuery(id ? { id } : skipToken);
+  const { data: consultation, isFetching, error } = useDisclosureConsultationLoader(id);
 
   const { data: ratings = [], isFetching: isFetchingRatings } = ratingsApi.useGetRatingsQuery(
     {},
@@ -122,12 +118,8 @@ function ConsultingAdviserDetailsPage() {
             label={STRINGS.created_at}
             value={formatDateTime(consultation.createdAt)}
           />
-          {consultation.disclosureRating?.rating?.code && (
-            <DetailItem
-              icon={<ThumbsUpDown />}
-              label={STRINGS.rating}
-              value={consultation.disclosureRating.rating.code}
-            />
+          {consultation.disclosure?.rating?.code && (
+            <DetailItem icon={<ThumbsUpDown />} label={STRINGS.rating} value={consultation.disclosure.rating.code} />
           )}
 
           {consultation.consultationAudio && (
@@ -175,7 +167,7 @@ function ConsultingAdviserDetailsPage() {
           </>
         )}
 
-        {!isFetching && (isError || !consultation) && <Nodata />}
+        {!isFetching && (error || !consultation) && <Nodata />}
         {(isFetching || isFetchingRatings || isCompleting) && <LoadingOverlay />}
       </Stack>
     </Card>

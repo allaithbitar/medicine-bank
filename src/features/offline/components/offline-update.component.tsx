@@ -1,5 +1,5 @@
 import type { TLocalDb } from '@/libs/kysely/schema';
-import { AddCircleOutline, ChangeCircleOutlined, DeleteOutline, EditOutlined, Save } from '@mui/icons-material';
+import { AddCircleOutline, ChangeCircleOutlined, EditOutlined, Save } from '@mui/icons-material';
 import { Button, Card, Grid, Paper, Stack, Typography } from '@mui/material';
 import { lightGreen, orange, red, teal } from '@mui/material/colors';
 import STRINGS from '@/core/constants/strings.constant';
@@ -34,12 +34,14 @@ import useLocalUpdatesTable from '../hooks/local-updates-table.hook';
 import { notifyError } from '@/core/components/common/toast/toast';
 import disclosuresApi from '@/features/disclosures/api/disclosures.api';
 import type {
+  TAddDisclosureAdviserConsultationPayload,
   TAddDisclosureDetailsDto,
   TAddDisclosureDto,
   TAddDisclosureNotePayload,
 } from '@/features/disclosures/types/disclosure.types';
 import { deleteAudioFile, readAudioFile } from '@/core/helpers/opfs-audio.helpers';
 import { baseUrl } from '@/core/api/root.api';
+import { useDisclosureConsultationLoader } from '@/features/disclosures/hooks/disclosure-consultaion-loader.hook';
 
 type TOfflineUpdateComponent = (props: {
   id: string;
@@ -81,9 +83,9 @@ const ActionButtons = ({ onSave, disabled }: { disabled?: boolean; onSave?: () =
       <Button onClick={onSave} disabled={disabled} startIcon={<Save />} fullWidth>
         {STRINGS.save}
       </Button>
-      <Button disabled={disabled} startIcon={<DeleteOutline />} variant="outlined" color="error">
+      {/*  <Button disabled={disabled} startIcon={<DeleteOutline />} variant="outlined" color="error">
         {STRINGS.cancel}
-      </Button>
+      </Button> */}
     </Stack>
   );
 };
@@ -815,7 +817,7 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
     true
   );
 
-  const { data: onlineDisclosureNoteData, isFetching: isFetchingOnlineBeneficiaryData } = useDisclosureNoteLoader(
+  const { data: onlineDisclosureNoteData, isFetching: isFetchingOnlineDisclosureNote } = useDisclosureNoteLoader(
     update?.recordId ?? ''
   );
   const { data: localDisclosureData } = useDisclosureLoader({ id: update?.parentId ?? '' }, true);
@@ -850,7 +852,7 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
   }, [localDisclosureNoteData, onlineDisclosureNoteData]);
 
   const isLoading =
-    isFetchingOnlineBeneficiaryData ||
+    isFetchingOnlineDisclosureNote ||
     isFetchingLocalDisclosureNote ||
     isAddingDisclosureNote ||
     isUpdatingDisclosureNote ||
@@ -935,18 +937,8 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
               showDiff={update.operation === 'UPDATE'}
               diffs={diffs}
               order={{
-                diseasesOrSurgeries: 1,
-                jobOrSchool: 2,
-                houseOwnership: 3,
-                houseOwnershipNote: 4,
-                electricity: 5,
-                expenses: 6,
-                houseCondition: 7,
-                houseConditionStatus: 8,
-                houseConditionNote: 9,
-                pros: 10,
-                cons: 11,
-                other: 12,
+                noteText: 1,
+                noteAudio: 2,
               }}
               customRenderer={{
                 noteAudio: RenderAudioFile,
@@ -1087,6 +1079,151 @@ const BeneficiaryMedicineOfflineUpdate = ({ id }: { id: string }) => {
   );
 };
 
+const DisclosureConsultationOfflineUpdate = ({ id }: { id: string }) => {
+  const { data: update } = useLocalUpdateLoader({ id });
+
+  const { data: localDisclosureConsultationData, isFetching: isFetchingLocalDisclosureConsultation } =
+    useDisclosureConsultationLoader(update?.recordId, true);
+
+  const { data: onlineDisclosureConsultationData, isFetching: isFetchingOnlineDisclosureConsultation } =
+    useDisclosureConsultationLoader(update?.recordId ?? '');
+
+  const { data: localDisclosureData } = useDisclosureLoader({ id: update?.parentId ?? '' }, true);
+
+  const localUpdateTable = useLocalUpdatesTable();
+
+  const [addDisclosureConsultation, { isLoading: isAddingDisclosureConsultation }] =
+    disclosuresApi.useAddDisclosureAdviserConsultationMutation();
+
+  const [updateDisclosureConsultation, { isLoading: isUpdatingDisclosureConsultation }] =
+    disclosuresApi.useUpdateDisclosureAdviserConsultationMutation();
+
+  const { data: parentDisclosureData, isFetching: isFetchingParentUpdateData } = useLocalUpdateLoader({
+    recordId: update?.parentId ?? '',
+  });
+
+  const blocked =
+    !isNullOrUndefined(parentDisclosureData) &&
+    parentDisclosureData.table === 'disclosures' &&
+    !parentDisclosureData.serverRecordId;
+
+  const diffs = useMemo(() => {
+    if (!localDisclosureConsultationData) return null;
+
+    let result = compareObjects(localDisclosureConsultationData, onlineDisclosureConsultationData || {}, {
+      consultationAudio: STRINGS.recorded_audio,
+      consultationNote: STRINGS.note,
+    }).filter((v) => v.hasConflict);
+
+    result = removeKeys(result, ['disclosureId', 'createdBy', 'consultedBy', 'disclosure', 'consultationStatus']);
+
+    return result;
+  }, [localDisclosureConsultationData, onlineDisclosureConsultationData]);
+
+  const isLoading =
+    isFetchingOnlineDisclosureConsultation ||
+    isFetchingLocalDisclosureConsultation ||
+    isAddingDisclosureConsultation ||
+    isUpdatingDisclosureConsultation ||
+    isFetchingParentUpdateData;
+
+  if (!localDisclosureConsultationData || !update) return null;
+
+  const handleSave = async () => {
+    const _diffs = compareObjects(localDisclosureConsultationData, onlineDisclosureConsultationData || {}, {});
+
+    let _newConsultationAudio: string | Blob | null | undefined = null;
+
+    let _consultationAudioToDelete = '';
+    const dto = _diffs
+      .filter((d) => d.hasConflict)
+      .reduce((acc, curr) => {
+        if (curr.field in update.payload) {
+          acc[curr.field as keyof typeof acc] = update.payload[curr.field as keyof typeof update.payload];
+        } else {
+          console.warn(curr.field, curr.localValue);
+        }
+
+        return acc;
+      }, {} as TAddDisclosureAdviserConsultationPayload);
+
+    try {
+      let serverRecordId = '';
+      if (update.operation === 'INSERT') {
+        _newConsultationAudio = dto.consultationAudio;
+        if (_newConsultationAudio && typeof _newConsultationAudio === 'string') {
+          const _opfsAudioFile = await readAudioFile(_newConsultationAudio);
+          if (_opfsAudioFile) {
+            dto.consultationAudio = _opfsAudioFile;
+          }
+        }
+        if (parentDisclosureData) {
+          dto.disclosureId = (parentDisclosureData.serverRecordId || dto.disclosureId || update.parentId!) ?? '';
+        }
+
+        await addDisclosureConsultation(dto).unwrap();
+        if (_newConsultationAudio && typeof _newConsultationAudio === 'string') {
+          _consultationAudioToDelete = _newConsultationAudio;
+        }
+        serverRecordId = dto.disclosureId;
+      } else {
+        if (dto.consultationAudio && typeof dto.consultationAudio === 'string') {
+          const _opfsAudioFile = await readAudioFile(dto.consultationAudio);
+          if (_opfsAudioFile) {
+            _consultationAudioToDelete = dto.consultationAudio;
+            dto.consultationAudio = _opfsAudioFile;
+          }
+        }
+
+        await updateDisclosureConsultation({
+          ...dto,
+          id: update.recordId,
+          disclosureId: update.parentId!,
+        }).unwrap();
+        serverRecordId = update.parentId!;
+      }
+      if (_consultationAudioToDelete) {
+        await deleteAudioFile(_consultationAudioToDelete);
+      }
+      await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+    } catch (error: any) {
+      notifyError(getErrorMessage(error));
+    }
+  };
+  console.log({ diffs });
+
+  return (
+    <Card sx={{ p: 1, height: '100%', position: 'relative' }}>
+      <Stack gap={1} sx={{ height: '100%', overflow: 'auto' }}>
+        <OfflineUpdateHeader
+          operation={update?.operation}
+          title={`${STRINGS.consulting} ${STRINGS.the_patient} ${localDisclosureData?.patient.name} `}
+        />
+
+        {!!diffs?.length && (
+          <Stack gap={1} sx={{ flex: 1, overflow: 'auto' }}>
+            <OperationLabel operation={update.operation} />{' '}
+            <DiffColumns
+              showDiff={update.operation === 'UPDATE'}
+              diffs={diffs}
+              order={{
+                consultationNote: 1,
+                consultationAudio: 2,
+              }}
+              customRenderer={{
+                consultationAudio: RenderAudioFile,
+              }}
+            />
+          </Stack>
+        )}
+        {/* {!update?.serverRecordId && <div>needs server id</div>} */}
+        <ActionButtons onSave={handleSave} disabled={isLoading || blocked} />
+      </Stack>
+      {isLoading && <LoadingOverlay />}
+    </Card>
+  );
+};
+
 const OfflineUpdate = ({ update }: { update: TLocalDb['updates'] }) => {
   const content = useMemo(() => {
     switch (update.table) {
@@ -1106,6 +1243,10 @@ const OfflineUpdate = ({ update }: { update: TLocalDb['updates'] }) => {
 
       case 'disclosure_notes': {
         return <DisclosureNoteOfflineUpdate id={update.id} />;
+      }
+
+      case 'disclosure_consultations': {
+        return <DisclosureConsultationOfflineUpdate id={update.id} />;
       }
 
       case 'patient_medicines': {

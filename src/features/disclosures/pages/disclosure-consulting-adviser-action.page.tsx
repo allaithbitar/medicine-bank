@@ -12,10 +12,10 @@ import type {
   TDisclosureAdviserConsultation,
 } from '../types/disclosure.types';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
-import disclosuresApi from '../api/disclosures.api';
-import { skipToken } from '@reduxjs/toolkit/query';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 import Header from '@/core/components/common/header/header';
+import { useDisclosureConsultationLoader } from '../hooks/disclosure-consultaion-loader.hook';
+import useDisclsoureConsultationMutation from '../hooks/disclosure-consultation-mutation.hook';
 
 const AdviserConsultationSchema = z.object({
   consultationNote: z.string().min(0),
@@ -28,21 +28,23 @@ const DisclosureConsultingAdviserActionPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id') ?? undefined;
-  const { data: oldAdviserConsultation, isLoading: isLoadingById } =
-    disclosuresApi.useGetDisclosureAdviserConsultationByIdQuery(id ? { id } : skipToken);
+  const { data: oldAdviserConsultation, isLoading: isLoadingById } = useDisclosureConsultationLoader(id);
 
-  const [addDisclosureAdviserConsultation, { isLoading: isAdding }] =
-    disclosuresApi.useAddDisclosureAdviserConsultationMutation();
+  // const [addDisclosureAdviserConsultation, { isLoading: isAdding }] =
+  //   disclosuresApi.useAddDisclosureAdviserConsultationMutation();
+  //
+  // const [updateDisclosureAdviserConsultation, { isLoading: isUpdating }] =
+  //   disclosuresApi.useUpdateDisclosureAdviserConsultationMutation();
 
-  const [updateDisclosureAdviserConsultation, { isLoading: isUpdating }] =
-    disclosuresApi.useUpdateDisclosureAdviserConsultationMutation();
+  const [mutateDisclosureConsultation, { isLoading: isMutating }] = useDisclsoureConsultationMutation();
+
   const [val, setVal] = useReducerState<TFormValues>({
     consultationNote: '',
   });
 
   useEffect(() => {
     if (oldAdviserConsultation) {
-      setVal({ consultationNote: oldAdviserConsultation.consultationNote });
+      setVal({ consultationNote: oldAdviserConsultation.consultationNote || '' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [oldAdviserConsultation]);
@@ -95,14 +97,14 @@ const DisclosureConsultingAdviserActionPage = () => {
       // }
       const dto: TAddDisclosureAdviserConsultationPayload = {
         disclosureId,
-        consultationAudioFile: audioFile?.audioBlob || null,
-        consultationNote: val.consultationNote,
+        consultationAudio: audioFile?.audioBlob || null,
+        consultationNote: val.consultationNote || null,
       };
       if (oldAdviserConsultation) {
-        await updateDisclosureAdviserConsultation({ ...dto, id: oldAdviserConsultation.id }).unwrap();
+        await mutateDisclosureConsultation({ type: 'UPDATE', dto: { ...dto, id: oldAdviserConsultation.id } });
         notifySuccess(STRINGS.edited_successfully);
       } else {
-        await addDisclosureAdviserConsultation(dto).unwrap();
+        await mutateDisclosureConsultation({ type: 'INSERT', dto });
         notifySuccess(STRINGS.added_successfully);
       }
       navigate(-1);
@@ -115,7 +117,7 @@ const DisclosureConsultingAdviserActionPage = () => {
     }
   };
 
-  const isLoading = isAdding || isUpdating || isLoadingById;
+  const isLoading = isMutating || isLoadingById;
 
   return (
     <Card>

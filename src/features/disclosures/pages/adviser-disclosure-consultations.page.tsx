@@ -12,6 +12,7 @@ import Nodata from '@/core/components/common/no-data/no-data.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
 import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
+import { useDisclosureConsultationsLoader } from '../hooks/disclosure-consultations-loader.hook';
 
 function AdviserDisclosureConsultationsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,10 +21,10 @@ function AdviserDisclosureConsultationsPage() {
   const { closeModal, openModal } = useModal();
   const { currentCanRate } = usePermissions();
 
-  const { data: response = { items: [] }, isFetching } = disclosuresApi.useGetDisclosureAdviserConsultationsQuery({
+  const { items, isFetching } = useDisclosureConsultationsLoader({
     consultationStatus: currentTab,
   });
-  const adviserConsultations = response.items ?? [];
+  const adviserConsultations = items ?? [];
 
   const { data: ratings = [], isFetching: isFetchingRatings } = ratingsApi.useGetRatingsQuery(
     {},

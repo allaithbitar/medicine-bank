@@ -218,23 +218,21 @@ export type TUpdateDisclosureNotePayload = TAddDisclosureNotePayload & { id: str
 export type TDisclosureAdviserConsultation = {
   id: string;
   consultationStatus: 'pending' | 'completed';
-  disclosureRatingId: string;
   disclosureId: string;
-  disclosureRating: TDisclosureRating;
-  consultedBy: null;
-  consultationNote: string;
-  consultationAudio: string;
+  consultedBy: TActioner;
+  consultationNote: string | null;
+  consultationAudio: string | null;
   createdAt: string;
   updatedAt: string;
-  updatedBy: TUpdatedBy;
-  disclosure: TDisclosure;
-} & TCreatedBy;
+  disclosure?: TDisclosure;
+} & TCreatedBy &
+  TUpdatedBy;
 
 export type TAddDisclosureAdviserConsultationPayload = Pick<
   TDisclosureAdviserConsultation,
   'disclosureId' | 'consultationNote'
 > & {
-  consultationAudioFile: TAddDisclosureNotePayload['noteAudio'];
+  consultationAudio: TAddDisclosureNotePayload['noteAudio'];
 };
 
 export type TUpdateDisclosureAdviserConsultationPayload = TAddDisclosureAdviserConsultationPayload & {
@@ -245,7 +243,7 @@ export type TGetDisclosureAdviserConsultationParams = {
   disclosureId?: string;
   createdBy?: string;
   consultationStatus?: 'pending' | 'completed';
-};
+} & TPaginationDto;
 
 export type TAuditLogItem = {
   id: string;
@@ -298,4 +296,3 @@ export type TMoveDisclosuresDto = {
   toScoutId: string;
   areaIds?: string[];
 };
-

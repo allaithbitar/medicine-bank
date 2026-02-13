@@ -239,7 +239,8 @@ export type TLocalDb = {
       | 'family_members'
       | 'patient_medicines'
       | 'disclosure_details'
-      | 'disclosure_notes';
+      | 'disclosure_notes'
+      | 'disclosure_consultations';
     recordId: string;
     status: 'pending' | 'success' | 'failed';
     operation: 'INSERT' | 'UPDATE';

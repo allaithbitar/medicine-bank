@@ -10,7 +10,7 @@ import Header from '@/core/components/common/header/header';
 import FormCheckbxInput from '@/core/components/common/inputs/form-checkbox-input.component';
 import RatingsAutocomplete from '@/features/ratings/components/ratings-autocomplete.component';
 import type { TRating } from '@/features/ratings/types/rating.types';
-import disclosuresApi from '../api/disclosures.api';
+import { useDisclosureConsultationsLoader } from '../hooks/disclosure-consultations-loader.hook';
 
 const defaultRatingData = {
   rating: null,
@@ -92,13 +92,11 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclo
       ...defaultRatingData,
     },
   });
-  console.log({ formErrors });
   //  { items: groups = [] } = { items: [] },
-  const { data: { items: adviserConsultations = [] } = { items: [] }, isFetching: isFetchingConsultations } =
-    disclosuresApi.useGetDisclosureAdviserConsultationsQuery({
-      disclosureId,
-      consultationStatus: 'pending',
-    });
+  const { items: adviserConsultations, isFetching: isFetchingConsultations } = useDisclosureConsultationsLoader({
+    disclosureId,
+    consultationStatus: 'pending',
+  });
 
   useImperativeHandle(
     ref,

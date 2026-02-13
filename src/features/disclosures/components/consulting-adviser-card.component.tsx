@@ -50,15 +50,16 @@ export const ConsultingAdviserCard = ({
               })}
             />
           </Stack>
-          {(adviserConsultation.disclosureRating?.rating?.code || ratings || adviserConsultation.consultationAudio) && (
+          {(adviserConsultation.disclosure?.rating?.code || ratings || adviserConsultation.consultationAudio) && (
             <Divider flexItem />
           )}
-          {adviserConsultation.disclosureRating?.rating?.code && (
-            <Typography alignSelf="start">{adviserConsultation.disclosureRating?.rating?.code}</Typography>
+          {adviserConsultation.disclosure?.rating?.code && (
+            <Typography alignSelf="start">{adviserConsultation.disclosure?.rating?.code}</Typography>
           )}
           {adviserConsultation.consultationAudio && (
             <>
               <audio
+                style={{ width: '100%' }}
                 controlsList="nodownload"
                 controls
                 src={getVoiceSrc({ baseUrl, filePath: adviserConsultation.consultationAudio })}
