@@ -100,6 +100,8 @@ const STRINGS = {
   local_not_found_error: 'لم يتم العثور على بيانات لعرضها',
   // created_by: "تمّت الإضافة من قبل",
   // updated_by: "تمّ التعديل من قبل",
+  add_consulting: 'اضافة استشارة',
+  edit_consulting: 'تعديل استشارة',
   by: 'من قِبل',
   work_areas: 'ادارة المناطق',
   work_areas_subtitle: 'ادارة وتنظيم المناطق',

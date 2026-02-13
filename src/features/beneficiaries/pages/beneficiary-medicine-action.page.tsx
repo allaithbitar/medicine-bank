@@ -37,9 +37,6 @@ const BeneficiaryMedicineActionPage = () => {
   const { data: oldBeneficiaryMedicine, isLoading: isLoadingById } = useBeneficiaryMedicineLoader(medicineId);
   const [mutateBeneficiaryMedicine, { isLoading: isMutatingBeneficiaryMedicine }] = useBeneficiaryMedicineMutation();
 
-  // const [addPatientMedicine, { isLoading: isAdding }] = beneficiaryApi.useAddBeneficiaryMedicineMutation();
-  // const [updatePatientMedicine, { isLoading: isUpdating }] = beneficiaryApi.useUpdateBeneficiaryMedicineMutation();
-
   const [values, setValues] = useReducerState<TFormValues & { med: TMedicinesAutocompleteItem | null }>({
     medicineId: '',
     dosePerIntake: undefined,
@@ -156,7 +153,7 @@ const BeneficiaryMedicineActionPage = () => {
         <MedicinesAutocomplete
           defaultValueId={oldBeneficiaryMedicine?.medicineId}
           value={values.med}
-          onChange={(m) => handleMedicineChange(m)}
+          onChange={(m: TMedicinesAutocompleteItem | null) => handleMedicineChange(m)}
           errorText={getErrorForField('medicineId')}
         />
         <FormTextFieldInput
@@ -166,35 +163,34 @@ const BeneficiaryMedicineActionPage = () => {
           error={!!getErrorForField('intakeFrequency')}
           errorText={getErrorForField('intakeFrequency')}
         />
-        <Box>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            {STRINGS.dose_per_intake}
-          </Typography>
+        {!!doseVariantsForSelected.length && values.med && (
+          <Box>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              {STRINGS.dose_per_intake}
+            </Typography>
 
-          <Stack direction="row" gap={1} flexWrap="wrap" alignItems="center">
-            {doseVariantsForSelected.map((d) => {
-              const selected = values.dosePerIntake === d;
-              return (
-                <Chip
-                  key={d}
-                  label={`${d} mg`}
-                  color={selected ? 'primary' : 'default'}
-                  onClick={() => handleDoseSelect(d)}
-                  clickable
-                />
-              );
-            })}
-
-            {!doseVariantsForSelected.includes(values.dosePerIntake as any) && (values.dosePerIntake || 0) > 0 ? (
-              <Chip key={`custom-${values.dosePerIntake}`} label={`${values.dosePerIntake} mg`} color="secondary" />
-            ) : null}
-          </Stack>
-
-          <Typography color="error" variant="caption" sx={{ display: 'block', mt: 1 }}>
-            {getErrorForField('dosePerIntake')}
-          </Typography>
-        </Box>
-
+            <Stack direction="row" gap={1} flexWrap="wrap" alignItems="center">
+              {doseVariantsForSelected.map((d) => {
+                const selected = values.dosePerIntake === d;
+                return (
+                  <Chip
+                    key={d}
+                    label={`${d} mg`}
+                    color={selected ? 'primary' : 'default'}
+                    onClick={() => handleDoseSelect(d)}
+                    clickable
+                  />
+                );
+              })}
+              {!doseVariantsForSelected.includes(values.dosePerIntake as any) && (values.dosePerIntake || 0) > 0 ? (
+                <Chip key={`custom-${values.dosePerIntake}`} label={`${values.dosePerIntake} mg`} color="secondary" />
+              ) : null}
+            </Stack>
+            <Typography color="error" variant="caption" sx={{ display: 'block', mt: 1 }}>
+              {getErrorForField('dosePerIntake')}
+            </Typography>
+          </Box>
+        )}
         <FormTextAreaInput label={STRINGS.note} value={values.note ?? ''} onChange={handleNoteChange} />
       </Stack>
       <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isLoading} />

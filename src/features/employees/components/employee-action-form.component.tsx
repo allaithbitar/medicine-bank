@@ -142,6 +142,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
       {formState.role?.id == 'scout' && (
         <>
           <CitiesAutocomplete
+            autoSelectFirst={employeeData ? false : true}
             multiple={false}
             value={formState.city}
             onChange={(v) => setValue({ city: v })}

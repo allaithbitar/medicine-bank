@@ -11,8 +11,6 @@ import { Button, IconButton, Stack, Collapse, Box, Typography } from '@mui/mater
 import z from 'zod';
 import type { TBenefieciary } from '../types/beneficiary.types';
 import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
-import { useAppDispatch } from '@/core/store/root.store.types';
-import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomplete-input.component';
 import type { TListItem } from '@/core/types/input.type';
 import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
@@ -60,7 +58,6 @@ type TProps = {
 );
 
 function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProps) {
-  const [isLoading, setIsLoading] = useState(false);
   const [showOptionalFields, setShowOptionalFields] = useState(false);
   const { formState, formErrors, handleSubmit, setFormState } = useForm({
     schema: PatientFormSchema,
@@ -115,52 +112,31 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
   //   //   notifySuccess(STRINGS.added_successfully);
   //   // }
   // };
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (beneficiaryData) {
-      setIsLoading(true);
-      (async () => {
-        let _city: TAutocompleteItem | null = null;
-        let _area: TAutocompleteItem | null = null;
-        let _gender: (TListItem & { label: string }) | null = null;
-
-        if (beneficiaryData.area) {
-          // const areas = await dispatch(
-          //   workAreasApi.endpoints.getWorkAreas.initiate({
-          //     cityId: beneficiaryData.area?.cityId,
-          //     name: beneficiaryData.area.name,
-          //   })
-          // ).unwrap();
-          // const allAreas = areas.pages.flatMap((page) => page.items);
-          _area = { id: beneficiaryData.area.id, name: beneficiaryData.area.name };
-
-          _city = { id: beneficiaryData.area.cityId, name: '' };
+      let _gender: (TListItem & { label: string }) | null = null;
+      if (beneficiaryData.gender) {
+        if (beneficiaryData.gender === 'male') {
+          _gender = { id: 'male', label: STRINGS.male };
+        } else {
+          _gender = { id: 'female', label: STRINGS.female };
         }
-
-        if (beneficiaryData.gender) {
-          if (beneficiaryData.gender === 'male') {
-            _gender = { id: 'male', label: STRINGS.male };
-          } else {
-            _gender = { id: 'female', label: STRINGS.female };
-          }
-        }
-        setFormState({
-          name: beneficiaryData.name,
-          about: beneficiaryData.about,
-          address: beneficiaryData.address || '',
-          area: _area,
-          city: _city,
-          nationalNumber: beneficiaryData.nationalNumber || '',
-          phoneNumbers: beneficiaryData.phones.map((p) => p.phone),
-          birthDate: beneficiaryData.birthDate ?? '',
-          job: beneficiaryData.job,
-          gender: _gender,
-        });
-      })();
-      setIsLoading(false);
+      }
+      setFormState({
+        name: beneficiaryData.name,
+        about: beneficiaryData.about,
+        address: beneficiaryData.address || '',
+        area: null,
+        city: null,
+        nationalNumber: beneficiaryData.nationalNumber || '',
+        phoneNumbers: beneficiaryData.phones.map((p) => p.phone),
+        birthDate: beneficiaryData.birthDate ?? '',
+        job: beneficiaryData.job,
+        gender: _gender,
+      });
     }
-  }, [beneficiaryData, dispatch, setFormState]);
+  }, [beneficiaryData, setFormState]);
 
   useImperativeHandle(
     ref,
@@ -185,6 +161,7 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
       <CitiesAutocomplete
         required
         label={STRINGS.city}
+        defaultValueId={beneficiaryData?.area?.cityId}
         value={formState.city}
         onChange={(v: TCity | null) => handleChange('city', v)}
         errorText={formErrors.city?.[0].message ?? ''}
@@ -193,6 +170,7 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
         multiple={false}
         required
         cityId={formState.city?.id}
+        defaultValueId={beneficiaryData?.area?.id}
         label={STRINGS.area}
         value={formState.area}
         onChange={(v) => handleChange('area', v)}
@@ -307,8 +285,6 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
           </Stack>
         </Collapse>
       </Box>
-
-      {isLoading && <LoadingOverlay />}
     </Stack>
   );
 }

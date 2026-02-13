@@ -104,6 +104,7 @@ const WorkAreaActionPage = () => {
         <CitiesAutocomplete
           multiple={false}
           disabled
+          autoSelectFirst={workAreaById ? false : true}
           defaultValueId={workAreaById?.cityId}
           value={state.selectedCity}
           onChange={(v) => setState({ selectedCity: v })}
