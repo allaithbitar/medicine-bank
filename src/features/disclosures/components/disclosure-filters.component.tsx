@@ -212,7 +212,7 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
       {/*   }} */}
       {/* /> */}
 
-      {!isScoutRole && (
+      {/* {!isScoutRole && (
         <FormSelectInput
           label={STRINGS.disclosure_is_received_status}
           value={filters.isReceived}
@@ -228,7 +228,7 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
             { id: 'false', label: STRINGS.hasnt_been_received_yet },
           ]}
         />
-      )}
+      )} */}
     </Stack>
   );
 };

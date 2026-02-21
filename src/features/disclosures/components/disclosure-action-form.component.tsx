@@ -19,7 +19,9 @@ const createDisclosureSchema = (beneficiaryAlreadyDefined = false) =>
       type: z.custom<{ id: TDisclosureType; label: string } | null>((data) => !!data, {
         message: STRINGS.schema_required,
       }),
-      employee: z.custom<TAutocompleteItem | null>(),
+      employee: z.custom<TAutocompleteItem | null>((data) => !!data, {
+        message: STRINGS.schema_required,
+      }),
       beneficiary: z.custom<TAutocompleteItem | null>(),
       priorityDegree: z.custom<TPriorityDegree | null>((data) => !!data, {
         message: STRINGS.schema_required,
@@ -138,6 +140,7 @@ const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }
         roles={['scout']}
         label={STRINGS.disclosure_scout}
         multiple={false}
+        required
         value={formState.employee}
         onChange={(v) => setValue({ employee: v })}
         errorText={formErrors.employee?.[0].message}

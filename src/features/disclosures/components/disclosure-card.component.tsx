@@ -65,7 +65,7 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   );
   const isAppointmentCompletedChip = disclosure.isAppointmentCompleted && STRINGS.appointment_completed;
 
-  const isReceivedChip = disclosure.isReceived && STRINGS.is_received;
+  // const isReceivedChip = disclosure.isReceived && STRINGS.is_received;
 
   return (
     <ReusableCardComponent
@@ -75,7 +75,7 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
       footerContent={
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" justifyContent="space-between" alignItems="center" gap={0.5}>
-            {isReceivedChip && <Chip size="small" variant="outlined" label={isReceivedChip} color="secondary" />}
+            {/* {isReceivedChip && <Chip size="small" variant="outlined" label={isReceivedChip} color="secondary" />} */}
             {isAppointmentCompletedChip && (
               <Chip size="small" variant="outlined" label={isAppointmentCompletedChip} color="primary" />
             )}

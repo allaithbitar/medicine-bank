@@ -19,7 +19,7 @@ import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const PatientFormSchema = z.object({
   name: z.string().min(5, STRINGS.schema_name_too_short),
-  nationalNumber: z.string().optional(),
+  nationalNumber: z.string().min(1, { message: STRINGS.schema_required }),
   area: z.custom<TAutocompleteItem | null>((data) => !!data, {
     message: STRINGS.schema_required,
   }),
@@ -58,7 +58,7 @@ type TProps = {
 );
 
 function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProps) {
-  const [showOptionalFields, setShowOptionalFields] = useState(false);
+  const [showOptionalFields, setShowOptionalFields] = useState(beneficiaryData ? true : false);
   const { formState, formErrors, handleSubmit, setFormState } = useForm({
     schema: PatientFormSchema,
     initalState: {
@@ -158,6 +158,16 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
         onChange={(v) => handleChange('name', v)}
         errorText={formErrors.name?.[0].message ?? ''}
       />
+
+      <FormTextFieldInput
+        label={STRINGS.national_number}
+        name="nationalNumber"
+        required
+        value={formState.nationalNumber}
+        onChange={(v) => handleChange('nationalNumber', v)}
+        errorText={validationErrors?.nationalNumber || formErrors.nationalNumber?.[0].message || ''}
+      />
+
       <CitiesAutocomplete
         required
         label={STRINGS.city}
@@ -169,6 +179,7 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
       <AreasAutocomplete
         multiple={false}
         required
+        autoSelectFirst={false}
         cityId={formState.city?.id}
         defaultValueId={beneficiaryData?.area?.id}
         label={STRINGS.area}
@@ -243,13 +254,6 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
         </Button>
         <Collapse in={showOptionalFields}>
           <Stack gap={2}>
-            <FormTextFieldInput
-              label={STRINGS.national_number}
-              name="nationalNumber"
-              value={formState.nationalNumber}
-              onChange={(v) => handleChange('nationalNumber', v)}
-              errorText={validationErrors?.nationalNumber || formErrors.nationalNumber?.[0].message || ''}
-            />
             <FormAutocompleteInput<{ id: string; label: string }>
               value={formState.gender}
               label={STRINGS.gender}

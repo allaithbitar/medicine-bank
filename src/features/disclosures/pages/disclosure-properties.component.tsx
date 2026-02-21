@@ -16,15 +16,15 @@ import disclosuresApi from '../api/disclosures.api';
 export default function DisclosureProperties({ disclosure }: { disclosure: TDisclosure }) {
   const navigate = useNavigate();
   const { openModal } = useModal();
-  const { currentCanArchive, currentCanCompleteAppointment, currentCanReceiveDisclosure } = usePermissions();
+  const { currentCanArchive, currentCanCompleteAppointment } = usePermissions();
   const [archiveDisclosure, { isLoading: isArchiving }] = disclosuresApi.useArchiveDisclosureMutation();
   const [unarchiveDisclosure, { isLoading: isUnarchiving }] = disclosuresApi.useUnarchiveDisclosureMutation();
 
   const hasVisit = !!disclosure.visitResult;
   const hasRating = !!(disclosure.ratingId || disclosure.customRating);
-  const isDisclosureReceived = disclosure.isReceived === true;
+  // const isDisclosureReceived = disclosure.isReceived === true;
   const isDisclosureAppointmentCompleted = disclosure.isAppointmentCompleted === true;
-  const canArchive = hasVisit && hasRating && isDisclosureReceived && isDisclosureAppointmentCompleted;
+  const canArchive = hasVisit && hasRating && isDisclosureAppointmentCompleted;
   const isArchived = disclosure.status === 'archived';
 
   // const [updateDisclosure, { isLoading: isUpdating }] = disclosuresApi.useUpdateDisclosureMutation();
@@ -43,18 +43,18 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleReceiveDisclosure = useCallback(() => {
-    openModal({
-      name: 'CONFIRM_MODAL',
-      props: {
-        message: STRINGS.receive_disclosure_confirmation,
-        onConfirm: async () => {
-          await mutateDisclosure({ type: 'UPDATE', dto: { isReceived: true, id: disclosure.id } });
-        },
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // const handleReceiveDisclosure = useCallback(() => {
+  //   openModal({
+  //     name: 'CONFIRM_MODAL',
+  //     props: {
+  //       message: STRINGS.receive_disclosure_confirmation,
+  //       onConfirm: async () => {
+  //         await mutateDisclosure({ type: 'UPDATE', dto: { isReceived: true, id: disclosure.id } });
+  //       },
+  //     },
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const handleArchiveDisclosure = useCallback(() => {
     openModal({
@@ -139,8 +139,8 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
           )}
         </Stack>
 
-        <Divider flexItem />
-        <Stack gap={1} sx={{ width: '100%' }}>
+        {/* <Divider flexItem /> */}
+        {/* <Stack gap={1} sx={{ width: '100%' }}>
           <Card sx={{ px: 2, py: 0.5 }}>
             <Typography textAlign="center">{STRINGS.the_receive}</Typography>
           </Card>
@@ -161,7 +161,7 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
               {STRINGS.is_received}
             </Button>
           </>
-        )}
+        )} */}
 
         {currentCanArchive && (
           <>

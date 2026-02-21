@@ -8,6 +8,7 @@ import STRINGS from '@/core/constants/strings.constant';
 import type { TEmployee } from '../types/employee.types';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 import { useNavigate } from 'react-router-dom';
+import PhoneActionsMenu from '@/core/components/common/phone-actions-menu/phone-actions-menu.component';
 
 const EmployeeCard = ({
   employee,
@@ -39,7 +40,7 @@ const EmployeeCard = ({
         value={STRINGS[employee.role as keyof typeof STRINGS]}
       />
 
-      <DetailItemComponent icon={<Phone />} label={STRINGS.phones} value={employee.phone} />
+      <DetailItemComponent icon={<Phone />} label={STRINGS.phones} value={<PhoneActionsMenu phone={employee.phone} />} />
 
       <DetailItemComponent
         icon={<LocationPin />}

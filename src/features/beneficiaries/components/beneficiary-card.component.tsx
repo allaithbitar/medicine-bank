@@ -1,13 +1,14 @@
-import { Button, Stack, Typography, useTheme } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
 import { LocationPin, Phone, Pin, PriorityHighOutlined, Visibility } from '@mui/icons-material';
-import { formatDateTime, sanitizePhoneForTel } from '@/core/helpers/helpers';
+import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 import type { TBenefieciary } from '../types/beneficiary.types';
 import { teal } from '@mui/material/colors';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 import { useCallback } from 'react';
+import PhoneActionsMenu from '@/core/components/common/phone-actions-menu/phone-actions-menu.component';
 
 const BeneficiaryCard = ({
   beneficiary,
@@ -16,7 +17,6 @@ const BeneficiaryCard = ({
   beneficiary: TBenefieciary;
   onEnterClick?: (id: string) => void;
 }) => {
-  const theme = useTheme();
   const headerContent = (
     <CardAvatar
       name={beneficiary.name}
@@ -32,20 +32,13 @@ const BeneficiaryCard = ({
     if (!beneficiary?.phones?.length) {
       return STRINGS.none;
     }
-    return beneficiary.phones.map((p, i) => {
-      const tel = sanitizePhoneForTel(p.phone || '');
-      return (
-        <span key={i}>
-          <a href={`tel:${tel}`} style={{ color: theme.palette.secondary.main, textDecoration: 'none' }}>
-            <Typography component="span" variant="subtitle2">
-              {p.phone}
-            </Typography>
-          </a>
-          {i < beneficiary.phones.length - 1 && ' , '}
-        </span>
-      );
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return (
+      <Stack spacing={0.5}>
+        {beneficiary.phones.map((p) => (
+          <PhoneActionsMenu key={p.id} phone={p.phone} />
+        ))}
+      </Stack>
+    );
   }, [beneficiary.phones]);
 
   const bodyContent = (
