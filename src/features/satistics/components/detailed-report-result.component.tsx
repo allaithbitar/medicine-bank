@@ -61,7 +61,17 @@ const DetailedReportResult = ({ result }: { result: TDetailedReportResult }) => 
 
   return (
     <>
-      <Card sx={{ p: 1, py: 2 }}>
+      <Card
+        sx={{
+          p: 1,
+          py: 2,
+          '.recharts-wrapper': {
+            '*': {
+              outline: 'none',
+            },
+          },
+        }}
+      >
         <Stack gap={2}>
           <LineChart
             margin={{ bottom: 50 }}
@@ -123,7 +133,17 @@ const DetailedReportResult = ({ result }: { result: TDetailedReportResult }) => 
           />
         </Stack>
       </Card>
-      <Card sx={{ p: 1, py: 2 }}>
+      <Card
+        sx={{
+          p: 1,
+          py: 2,
+          '.recharts-wrapper': {
+            '*': {
+              outline: 'none',
+            },
+          },
+        }}
+      >
         <Stack gap={2}>
           <LineChart
             margin={{ bottom: 50 }}

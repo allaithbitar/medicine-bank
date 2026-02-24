@@ -66,7 +66,17 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
       </Grid>
 
       {result && (
-        <Card sx={{ p: 1, py: 2 }}>
+        <Card
+          sx={{
+            p: 1,
+            py: 2,
+            '.recharts-wrapper': {
+              '*': {
+                outline: 'none',
+              },
+            },
+          }}
+        >
           <BarChart
             height={400}
             style={{
