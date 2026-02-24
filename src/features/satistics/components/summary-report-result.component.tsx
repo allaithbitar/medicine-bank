@@ -1,8 +1,11 @@
 import { Card, Grid, Typography } from '@mui/material';
 import type { TSummaryReportResult } from '../types/satistics.types';
 import STRINGS from '@/core/constants/strings.constant';
-import { BarChart } from '@mui/x-charts/BarChart';
+// import { BarChart } from '@mui/x-charts/BarChart';
 import usePermissions from '@/core/hooks/use-permissions.hook';
+import { BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
+import { CHART_COLORS } from '@/core/constants/properties.constant';
+import CustomChartLegend from './custom-chart-legend.component';
 
 const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
   const { isScoutRole } = usePermissions();
@@ -63,40 +66,73 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
       </Grid>
 
       {result && (
-        <Card sx={{ p: 0, pt: 2 }}>
+        <Card sx={{ p: 1, py: 2 }}>
           <BarChart
-            grid={{ horizontal: true }}
-            yAxis={[{ disableLine: true }]}
-            xAxis={[
-              {
-                scaleType: 'band',
-                data: [''],
-                label: '',
-              },
-            ]}
-            series={[
-              {
-                data: [result.addedDisclosuresCount],
-                color: '#9BBFE0',
-                label: STRINGS.added_disclosures,
-              },
-              {
-                data: [result.completedVisitsCount],
-                color: '#C6D68F',
-                label: STRINGS.completed_visits,
-              },
-              {
-                data: [result.uncompletedVisitsCount],
-                label: STRINGS.not_completed_visits,
-                color: '#FBE29F',
-              },
-              {
-                data: [result.cantBeCompletedVisitsCount],
-                label: STRINGS.couldnt_be_completed_visits,
-                color: '#E8A09A',
-              },
-            ]}
             height={400}
+            style={{
+              direction: 'ltr',
+              fontFamily: 'alexandria',
+              fontSize: 11,
+            }}
+            responsive
+            data={[
+              {
+                label: STRINGS.added_disclosures,
+                [STRINGS.the_count]: result.addedDisclosuresCount,
+                fill: CHART_COLORS[0],
+              },
+              {
+                label: STRINGS.late_disclosures,
+                [STRINGS.the_count]: result.lateDisclosuresCount,
+                fill: CHART_COLORS[2],
+              },
+
+              {
+                label: STRINGS.completed_visits,
+                [STRINGS.the_count]: result.completedVisitsCount,
+                fill: CHART_COLORS[1],
+              },
+              {
+                label: STRINGS.not_completed_visits,
+                [STRINGS.the_count]: result.uncompletedVisitsCount,
+                fill: CHART_COLORS[4],
+              },
+              {
+                label: STRINGS.couldnt_be_completed_visits,
+                [STRINGS.the_count]: result.cantBeCompletedVisitsCount,
+                fill: CHART_COLORS[3],
+              },
+            ]}
+          >
+            <XAxis dataKey="label" reversed style={{ fontSize: 11 }} tickFormatter={() => ''} tickLine={false} />
+            <YAxis width="auto" />
+            <Tooltip wrapperStyle={{ direction: 'rtl' }} />
+            <Bar dataKey={STRINGS.the_count} radius={[10, 10, 0, 0]} />
+          </BarChart>
+          <CustomChartLegend
+            items={[
+              {
+                label: STRINGS.added_disclosures,
+                color: CHART_COLORS[0],
+              },
+              {
+                label: STRINGS.late_disclosures,
+                color: CHART_COLORS[2],
+              },
+
+              {
+                label: STRINGS.completed_visits,
+                color: CHART_COLORS[1],
+              },
+              {
+                label: STRINGS.not_completed_visits,
+                color: CHART_COLORS[4],
+              },
+              {
+                label: STRINGS.couldnt_be_completed_visits,
+                color: CHART_COLORS[3],
+              },
+            ]}
           />
         </Card>
       )}

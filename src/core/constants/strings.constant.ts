@@ -314,6 +314,7 @@ const STRINGS = {
   install_application: 'تثبيت التطبيق',
   synced_successfully: 'تمت المزامنة بنجاح',
   result_count: 'نتيجة',
+  the_count: 'العدد',
   disclosure_is_late: 'متأخّر',
   day: 'يوم',
   house_ownership: 'وضع ملكية المسكن',
