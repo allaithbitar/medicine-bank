@@ -134,6 +134,8 @@ const STRINGS = {
   custom: 'مخصّصّ',
   summary: 'ملخّص',
   detailed: 'مفصّل',
+  half_detailed: ' تفاصيل اخرى',
+  half_detailed_by_area: 'تفاصيل حسب المنطقة',
   time_period: 'الفترة الزمنيّة',
   satistics_type: 'نوع الإحصائية',
   home_page: 'الصفحة الرئيسيّة',

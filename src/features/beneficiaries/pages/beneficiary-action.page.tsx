@@ -1,7 +1,7 @@
 import STRINGS from '@/core/constants/strings.constant';
 import { Card, Stack } from '@mui/material';
 import type { TAddBeneficiaryDto } from '../types/beneficiary.types';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import type { TBenefificaryFormHandlers } from '../components/beneficiary-action-form.component';
 import BeneficiaryActionForm from '../components/beneficiary-action-form.component';
@@ -43,9 +43,15 @@ const BeneficiaryActionPage = () => {
     phoneNumbers?: string;
   }>({});
 
+  const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
+
   const { data: beneficiaryData, isLoading: isGetting } = useBeneficiaryLoader({ id: beneficiaryId ?? '' });
 
   const showDisclosureForm = !beneficiaryId && !beneficiaryData && !isGetting;
+
+  const handleAreaChange = useCallback((areaId: string | null) => {
+    setSelectedAreaId(areaId);
+  }, []);
 
   const isLoading =
     isMutating || isGetting || isValidatingNationalNumber || isValidatingPhoneNumbers || isMutatingDisclosure;
@@ -133,11 +139,16 @@ const BeneficiaryActionPage = () => {
     <Card>
       <Stack gap={2} sx={{ position: 'relative' }}>
         <Header title={beneficiaryId ? STRINGS.edit : STRINGS.add} />
-        <BeneficiaryActionForm ref={ref} beneficiaryData={beneficiaryData} validationErrors={validationErrors} />
+        <BeneficiaryActionForm
+          ref={ref}
+          beneficiaryData={beneficiaryData}
+          validationErrors={validationErrors}
+          onAreaChange={handleAreaChange}
+        />
         {showDisclosureForm && (
           <>
             <Header title={STRINGS.add_disclosure} />
-            <DisclosureActionForm ref={disclosureRef} beneficiaryAlreadyDefined={true} />
+            <DisclosureActionForm ref={disclosureRef} beneficiaryAlreadyDefined={true} areaId={selectedAreaId} />
           </>
         )}
         <ActionFab icon={<Save />} color="success" onClick={handleSave} />

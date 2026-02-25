@@ -6,11 +6,13 @@ import { useModal } from '@/core/components/common/modal/modal-provider.componen
 import STRINGS from '@/core/constants/strings.constant';
 import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
+import DisclosureVisitResultAutocomplete from './disclosure-visit-result-autocomplete.component';
 import type { TAutocompleteItem } from '@/core/types/common.types';
+import { DisclosureVisitResult, type TDisclosureVisitResult } from '../types/disclosure.types';
 import employeesApi from '@/features/employees/api/employees.api';
 
 interface IMoveDisclosuresModalProps {
-  onConfirm: (data: { fromScoutId: string; toScoutId: string; areaIds?: string[] }) => void;
+  onConfirm: (data: { fromScoutId: string; toScoutId: string; areaIds?: string[]; visitResult: TDisclosureVisitResult[] }) => void;
 }
 
 const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
@@ -18,6 +20,9 @@ const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
   const [fromScout, setFromScout] = useState<TAutocompleteItem | null>(null);
   const [toScout, setToScout] = useState<TAutocompleteItem | null>(null);
   const [selectedAreas, setSelectedAreas] = useState<TAutocompleteItem[]>([]);
+  const [visitResult, setVisitResult] = useState<{ id: NonNullable<TDisclosureVisitResult>; label: string }[]>([
+    { id: DisclosureVisitResult.not_completed, label: `${STRINGS.not_completed} (${STRINGS.hg})` },
+  ]);
   const [fromScoutCityId, setFromScoutCityId] = useState<string | undefined>(undefined);
   const { data: fromScoutData } = employeesApi.useGetEmployeeQuery(
     { id: fromScout?.id ?? '' },
@@ -40,10 +45,11 @@ const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
       fromScoutId: fromScout.id,
       toScoutId: toScout.id,
       areaIds: selectedAreas.length > 0 ? selectedAreas.map((a) => a.id) : undefined,
+      visitResult: visitResult.map((v) => v.id),
     });
   };
 
-  const isValid = fromScout && toScout && fromScout.id !== toScout.id;
+  const isValid = fromScout && toScout && fromScout.id !== toScout.id && visitResult.length > 0;
   const isSameScout = fromScout && toScout && fromScout.id === toScout.id;
   const areaOptions: TAutocompleteItem[] = useMemo(
     () =>
@@ -90,6 +96,13 @@ const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
             {STRINGS.cannot_select_same_scout}
           </Alert>
         )}
+        <DisclosureVisitResultAutocomplete
+          multiple
+          required
+          label={STRINGS.visit_result}
+          value={visitResult}
+          onChange={(v) => setVisitResult(v)}
+        />
         <>
           <AreasAutocomplete
             multiple

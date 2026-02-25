@@ -79,6 +79,8 @@ export const rootApi = createApi({
     'Ratings',
     'Summary_Statistics',
     'Detailed_Statistics',
+    'HalfDetailed_Statistics',
+    'HalfDetailedByArea_Statistics',
     'Medicines',
     'Medicine',
     'Beneficiary_Medicines',

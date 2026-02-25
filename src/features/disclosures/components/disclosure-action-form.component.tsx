@@ -46,9 +46,10 @@ type TProps = {
   ref: Ref<TDisclosureFormHandlers>;
   disclosureData?: TDisclosure;
   beneficiaryAlreadyDefined?: boolean;
+  areaId?: string | null;
 };
 
-const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }: TProps) => {
+const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined, areaId }: TProps) => {
   const { formState, formErrors, setValue, handleSubmit, setFormState } = useForm({
     schema: createDisclosureSchema(beneficiaryAlreadyDefined),
     initalState: {
@@ -79,7 +80,7 @@ const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined }
 
   const { isLoading: isLoadingRecommendation } = useScoutRecommendation({
     beneficiaryId: formState.beneficiary?.id,
-    currentScout: formState.employee,
+    areaId: areaId,
     onRecommendationFound: handleScoutRecommendation,
   });
 

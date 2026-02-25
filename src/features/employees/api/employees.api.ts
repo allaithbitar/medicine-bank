@@ -55,10 +55,15 @@ export const employeesApi = rootApi.injectEndpoints({
       invalidatesTags: ['Employees'],
     }),
 
-    getPatientScoutRecommendations: builder.query<TAutocompleteItem[], { patientId: string }>({
-      query: ({ patientId }) => ({
-        url: `employees/patient-scouts-recommendations?patientId=${patientId}`,
-      }),
+    getPatientScoutRecommendations: builder.query<TAutocompleteItem[], { patientId?: string; areaId?: string }>({
+      query: ({ patientId, areaId }) => {
+        const params = new URLSearchParams();
+        if (patientId) params.append('patientId', patientId);
+        if (areaId) params.append('areaId', areaId);
+        return {
+          url: `employees/get-recommended-scouts?${params.toString()}`,
+        };
+      },
       transformResponse: (res: ApiResponse<TAutocompleteItem[]>) => res.data,
       providesTags: ['Employees'],
     }),

@@ -295,4 +295,5 @@ export type TMoveDisclosuresDto = {
   fromScoutId: string;
   toScoutId: string;
   areaIds?: string[];
+  visitResult: TDisclosureVisitResult[];
 };

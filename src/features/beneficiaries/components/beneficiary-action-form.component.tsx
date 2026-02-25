@@ -40,6 +40,7 @@ const PatientFormSchema = z.object({
 
 export type TBenefificaryFormHandlers = {
   handleSubmit: () => Promise<TFormSubmitResult<z.infer<typeof PatientFormSchema>>>;
+  getSelectedArea: () => string | null;
 };
 
 type TProps = {
@@ -48,6 +49,7 @@ type TProps = {
     nationalNumber?: string;
     phoneNumbers?: string;
   };
+  onAreaChange?: (areaId: string | null) => void;
 } & (
   | {
       beneficiaryData: TBenefieciary;
@@ -57,7 +59,7 @@ type TProps = {
     }
 );
 
-function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProps) {
+function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaChange }: TProps) {
   const [showOptionalFields, setShowOptionalFields] = useState(beneficiaryData ? true : false);
   const { formState, formErrors, handleSubmit, setFormState } = useForm({
     schema: PatientFormSchema,
@@ -77,6 +79,9 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
 
   const handleChange = (key: keyof typeof formState, value: any) => {
     setFormState((prev) => ({ ...prev, [key]: value }));
+    if (key === 'area' && onAreaChange) {
+      onAreaChange(value?.id || null);
+    }
   };
 
   // const handleSave = async () => {
@@ -144,8 +149,11 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors }: TProp
       handleSubmit() {
         return handleSubmit();
       },
+      getSelectedArea() {
+        return formState.area?.id || null;
+      },
     }),
-    [handleSubmit]
+    [handleSubmit, formState.area]
   );
 
   return (

@@ -53,7 +53,7 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
           const isLast = idx === arr.length - 1;
           const isOdd = idx % 2 === 0;
           return (
-            <Grid size={isLast && isOdd ? 12 : 6}>
+            <Grid key={i.label} size={isLast && isOdd ? 12 : 6}>
               <Card key={i.label} sx={{ textAlign: 'center', p: 1, py: 2 }}>
                 <Typography variant="h4">{i.value}</Typography>
                 <Typography color="textSecondary" variant="body2">
