@@ -16,6 +16,7 @@ import { defaultDisclosureFilterValues, type TDisclosureFiltersForm } from '../h
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 import usePermissions from '@/core/hooks/use-permissions.hook';
 import { selectUser } from '@/core/slices/auth/auth.slice';
+import FormNumberInput from '@/core/components/common/inputs/form-number-input.component';
 
 export type TDisclosureFiltesHandlers = {
   getValues: () => TDisclosureFiltersForm;
@@ -199,6 +200,11 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
             isLate: value,
           }));
         }}
+      />
+      <FormNumberInput
+        label={STRINGS.archive_number}
+        value={filters.archiveNumber}
+        onChange={(v) => setFilters((prev) => ({ ...prev, archiveNumber: String(v) }))}
       />
 
       {/* <FormCheckbxInput */}

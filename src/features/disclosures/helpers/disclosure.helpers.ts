@@ -27,6 +27,7 @@ export type TDisclosureFiltersForm = {
   unvisited: boolean;
   areaIds: TAutocompleteItem[];
   isLate: boolean;
+  archiveNumber: string;
 } & Pick<TGetDisclosuresDto, 'createdAtStart' | 'createdAtEnd'>;
 
 export const defaultDisclosureFilterValues: TDisclosureFiltersForm = {
@@ -47,6 +48,7 @@ export const defaultDisclosureFilterValues: TDisclosureFiltersForm = {
   unvisited: false,
   areaIds: [],
   isLate: false,
+  archiveNumber: '',
 };
 
 export const parseStringBooleanValue = (value: 'true' | 'false' | string) => {
@@ -89,7 +91,10 @@ export const normalizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
   if (values.isCustomRating) result.isCustomRating = values.isCustomRating;
 
   if (values.unvisited) result.unvisited = values.unvisited;
+
   if (values.isLate) result.isLate = values.isLate;
+
+  if (values.archiveNumber && !isNaN(Number(values.archiveNumber))) result.archiveNumber = Number(values.archiveNumber);
 
   return result;
 };
