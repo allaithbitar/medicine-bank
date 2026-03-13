@@ -37,7 +37,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     (payload: TOpenModalPayload) => {
       const id = Date.now();
       searchParams.append('modal', String(id));
-      setSearchParams(searchParams);
+      setSearchParams(searchParams, { replace: true });
       setModalState((prev) => [...prev, { ...payload, id }]);
     },
     [searchParams, setSearchParams]
@@ -49,12 +49,12 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
 
       if (modalId) {
         newModalsState = newModalsState.filter((mid) => mid !== modalId.toString());
-        setSearchParams((prev) => ({ ...prev, modal: newModalsState }));
+        setSearchParams((prev) => ({ ...prev, modal: newModalsState }), { replace: true });
 
         return setModalState((prev) => prev.filter((m) => newModalsState.includes(m.id.toString())));
       }
       newModalsState = newModalsState.slice(0, -1);
-      setSearchParams((prev) => ({ ...prev, modal: newModalsState }));
+      setSearchParams((prev) => ({ ...prev, modal: newModalsState }), { replace: true });
       setModalState((prev) => prev.filter((m) => newModalsState.includes(m.id.toString())));
     },
     [searchParams, setSearchParams]
