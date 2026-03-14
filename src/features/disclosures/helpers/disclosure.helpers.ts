@@ -94,7 +94,7 @@ export const normalizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
 
   if (values.isLate) result.isLate = values.isLate;
 
-  if (values.archiveNumber && !isNaN(Number(values.archiveNumber))) result.archiveNumber = Number(values.archiveNumber);
+  if (values.archiveNumber) result.archiveNumber = values.archiveNumber;
 
   return result;
 };

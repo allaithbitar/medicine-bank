@@ -4,12 +4,7 @@ import STRINGS from '@/core/constants/strings.constant';
 export const beneficiaryFieldSchemas = {
   name: z.string().min(1, STRINGS.schema_required).max(500, STRINGS.schema_max_500_chars),
 
-  nationalNumber: z
-    .string()
-    .min(1, STRINGS.schema_required)
-    .max(100, STRINGS.schema_max_500_chars)
-    .nullable()
-    .optional(),
+  nationalNumber: z.string(),
 
   address: z.string().max(1000, STRINGS.schema_max_1000_chars).nullable().optional(),
 

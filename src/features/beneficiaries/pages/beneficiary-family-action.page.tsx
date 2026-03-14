@@ -115,7 +115,7 @@ const BeneficiaryFamilyActionPage = () => {
 
   return (
     <Card>
-      <Header title={memberId ? STRINGS.edit_family_member : STRINGS.add_family_member} />
+      <Header title={memberId ? STRINGS.edit_family_member : STRINGS.add_family_member} showBackButton />
       <Stack gap={2}>
         <FormTextFieldInput
           required

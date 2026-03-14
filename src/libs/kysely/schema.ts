@@ -143,7 +143,7 @@ export type TLocalDb = {
     scoutId: string | null;
     initialNote: string | null;
     isReceived: boolean | null;
-    archiveNumber: number | null;
+    archiveNumber: string | null;
     visitResult: TDisclosureVisitResult | null;
     visitReason: string | null;
     visitNote: string | null;

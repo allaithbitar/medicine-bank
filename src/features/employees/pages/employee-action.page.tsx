@@ -74,7 +74,7 @@ const EmployeeActionPage = () => {
 
   return (
     <Card>
-      <Header title={employeeId ? STRINGS.edit : STRINGS.add} />
+      <Header title={employeeId ? STRINGS.edit : STRINGS.add} showBackButton />
       <EmployeeActionForm ref={ref} employeeData={employeeData} />
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}

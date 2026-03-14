@@ -29,6 +29,7 @@ import FormAutocompleteInput from '@/core/components/common/inputs/form-autocomp
 import FormDateInput from '@/core/components/common/inputs/form-date-input-component';
 import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
+import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import SummaryReportResult from '../components/summary-report-result.component';
 import DetailedReportResult from '../components/detailed-report-result.component';
@@ -79,6 +80,7 @@ const SatisticsPage = () => {
   });
   const [customPeriod, setCustomPeriod] = useState({ fromDate: '', toDate: '' });
   const [employee, setEmployee] = useState<TAutocompleteItem | null>(null);
+  const [area, setArea] = useState<TAutocompleteItem | null>(null);
   const [summaryResult, setSummaryResult] = useState<TSummaryReportResult | null>(null);
   const [detailedResult, setDetailedResult] = useState<TDetailedReportResult | null>(null);
   const [halfDetailedResult, setHalfDetailedResult] = useState<THalfDetailedStatisticsResult | null>(null);
@@ -128,6 +130,7 @@ const SatisticsPage = () => {
       fromDate,
       toDate,
       employeeId: isScoutRole ? user.id : (employee?.id ?? undefined),
+      ...(satisticsType.id === SATISTICS_TYPE.HALF_DETAILED_BY_AREA && area?.id ? { areaId: area.id } : {}),
     };
     try {
       clearAllResults();
@@ -201,6 +204,9 @@ const SatisticsPage = () => {
               </>
             )}
             {isManagerRole && <EmployeesAutocomplete value={employee} onChange={setEmployee} />}
+            {satisticsType?.id === SATISTICS_TYPE.HALF_DETAILED_BY_AREA && (
+              <AreasAutocomplete value={area} onChange={setArea} autoSelectFirst={false} />
+            )}
             <Button disabled={isViewButtonDisabled} onClick={handleGetStatistics}>
               {STRINGS.view}
             </Button>

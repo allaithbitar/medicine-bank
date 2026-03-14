@@ -29,6 +29,8 @@ const STRINGS = {
   archive_confirmation: 'هل أنت متأكد من أرشفة هذا الكشف',
   unarchive_confirmation: 'هل أنت متأكد من إلغاء أرشفة هذا الكشف',
   archive_requirements_not_met: 'يجب إكمال الزيارة والتقييم والموعد والاستلام أولاً',
+  archive_number_optional: 'رقم الأرشيف (اختياري)',
+  archive_disclosure: 'أرشفة الكشف',
   delete: 'حذف',
   result: 'النتيجة',
   app_data: 'البيانات',

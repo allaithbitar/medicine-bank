@@ -17,7 +17,6 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
   const navigate = useNavigate();
   const { openModal } = useModal();
   const { currentCanArchive, currentCanCompleteAppointment } = usePermissions();
-  const [archiveDisclosure, { isLoading: isArchiving }] = disclosuresApi.useArchiveDisclosureMutation();
   const [unarchiveDisclosure, { isLoading: isUnarchiving }] = disclosuresApi.useUnarchiveDisclosureMutation();
 
   const hasVisit = !!disclosure.visitResult;
@@ -58,21 +57,12 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
 
   const handleArchiveDisclosure = useCallback(() => {
     openModal({
-      name: 'CONFIRM_MODAL',
+      name: 'ARCHIVE_DISCLOSURE_MODAL',
       props: {
-        message: STRINGS.archive_confirmation,
-        onConfirm: async () => {
-          try {
-            await archiveDisclosure({ id: disclosure.id }).unwrap();
-            notifySuccess(STRINGS.action_done_successfully);
-          } catch (err: any) {
-            notifyError(err);
-          }
-        },
+        disclosureId: disclosure.id,
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [disclosure.id, archiveDisclosure]);
+  }, [disclosure.id, openModal]);
 
   const handleUnarchiveDisclosure = useCallback(() => {
     openModal({
@@ -91,7 +81,7 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disclosure.id, unarchiveDisclosure]);
-  const isLoading = isUpdating || isArchiving || isUnarchiving;
+  const isLoading = isUpdating || isUnarchiving;
   return (
     <Card>
       {isLoading && <LoadingOverlay />}
@@ -138,6 +128,20 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
             </Button>
           )}
         </Stack>
+
+        {disclosure.archiveNumber && (
+          <>
+            <Divider flexItem />
+            <Stack gap={1} sx={{ width: '100%' }}>
+              <Card sx={{ px: 2, py: 0.5 }}>
+                <Typography textAlign="center">{STRINGS.archive_number}</Typography>
+              </Card>
+              <CustomBadge textAlign="center" colors="info">
+                {disclosure.archiveNumber}
+              </CustomBadge>
+            </Stack>
+          </>
+        )}
 
         {/* <Divider flexItem /> */}
         {/* <Stack gap={1} sx={{ width: '100%' }}>

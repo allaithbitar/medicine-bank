@@ -30,7 +30,7 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
 
   {
     path: '/employees',
-    allowedRoles: ['manager', 'supervisor', 'scout'],
+    allowedRoles: ['manager', 'supervisor'],
     requiresOnline: true,
     canAdd: ['manager'],
     canEdit: ['manager'],
@@ -96,21 +96,18 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   {
     path: '/beneficiaries',
     allowedRoles: ['manager', 'supervisor'],
-    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
   {
     path: '/beneficiaries/:id',
     allowedRoles: ['manager', 'supervisor'],
-    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
   {
     path: '/beneficiaries/action',
     allowedRoles: ['manager', 'supervisor'],
-    requiresOnline: true,
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },

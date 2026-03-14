@@ -126,7 +126,7 @@ const PriorityDegreesActionPage = () => {
 
   return (
     <Card>
-      <Header title={id ? STRINGS.edit_priority_degree : STRINGS.add_priority_degree} />
+      <Header title={id ? STRINGS.edit_priority_degree : STRINGS.add_priority_degree} showBackButton />
       <Stack gap={2}>
         <FormTextFieldInput
           required

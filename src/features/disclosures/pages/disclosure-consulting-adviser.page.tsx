@@ -12,7 +12,7 @@ const DisclosureConsultingAdviserPage = () => {
 
   return (
     <Card sx={{ minHeight: '100%' }}>
-      <Header title={STRINGS.consulting_adviser} />
+      <Header title={STRINGS.consulting_adviser} showBackButton />
       <DisclosureConsultingAdviserCards disclosureId={disclosureId} />
       <ActionFab
         icon={<Add />}

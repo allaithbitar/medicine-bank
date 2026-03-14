@@ -5,7 +5,7 @@ import { LocationPin, Phone, Pin, PriorityHighOutlined, Visibility } from '@mui/
 import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 import type { TBenefieciary } from '../types/beneficiary.types';
-import { teal } from '@mui/material/colors';
+import { green } from '@mui/material/colors';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 import { useCallback } from 'react';
 import PhoneActionsMenu from '@/core/components/common/phone-actions-menu/phone-actions-menu.component';
@@ -74,7 +74,7 @@ const BeneficiaryCard = ({
 
   return (
     <ReusableCardComponent
-      headerBackground={`linear-gradient(to right, ${teal[800]}, ${teal[500]})`}
+      headerBackground={`linear-gradient(to right, ${green[800]}, ${green[400]})`}
       headerContent={headerContent}
       bodyContent={bodyContent}
       footerContent={

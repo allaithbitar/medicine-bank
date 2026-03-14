@@ -72,7 +72,7 @@ const DisclosureActionPage = () => {
 
   return (
     <Card>
-      <Header title={disclosureId ? STRINGS.edit : STRINGS.add} />
+      <Header title={disclosureId ? STRINGS.edit : STRINGS.add} showBackButton />
       <DisclosureActionForm ref={ref} beneficiaryAlreadyDefined={!!beneficiaryId} disclosureData={disclosureData} />
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}

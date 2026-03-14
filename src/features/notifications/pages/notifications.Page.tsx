@@ -9,7 +9,7 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import notificationsApi from '../api/notifications.api';
 import { useModal } from '@/core/components/common/modal/modal-provider.component';
 import { notifySuccess, notifyError } from '@/core/components/common/toast/toast';
-import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
+import Header from '@/core/components/common/header/header';
 
 const NotificationsPage = () => {
   const { id } = useUser();
@@ -59,7 +59,7 @@ const NotificationsPage = () => {
   return (
     <Stack gap={1} sx={{ height: '100%', position: 'relative' }}>
       <Card sx={{ flexShrink: 0 }}>
-        <CustomAppBarComponent title={STRINGS.notifications} />
+        <Header title={STRINGS.notifications} showBackButton />
         <Stack direction="row" gap={1}>
           <Button
             fullWidth

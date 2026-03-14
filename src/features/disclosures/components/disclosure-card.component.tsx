@@ -2,7 +2,7 @@ import { Button, Chip, Stack } from '@mui/material';
 import type { TDisclosure } from '../types/disclosure.types';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
-import { InfoOutline, Person, PriorityHighOutlined, Visibility } from '@mui/icons-material';
+import { InfoOutline, LocationPin, Person, PriorityHighOutlined, Visibility, Archive } from '@mui/icons-material';
 import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 // import { purple } from '@mui/material/colors';
@@ -53,6 +53,23 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         label={STRINGS.disclosure_scout}
         value={disclosure.scout?.name ?? STRINGS.none}
       />
+      <DetailItemComponent
+        icon={<LocationPin />}
+        label={STRINGS.patient_address}
+        value={
+          disclosure.patient.address &&
+          // ? `${disclosure.area?.name ?? ''}  - ${disclosure.address || ''}`
+          (disclosure.patient.address ?? '')
+        }
+      />
+
+      {disclosure.archiveNumber && (
+        <DetailItemComponent
+          icon={<Archive />}
+          label={STRINGS.archive_number}
+          value={disclosure.archiveNumber}
+        />
+      )}
 
       <FormattedVisitRatingResult disclosure={disclosure} />
 

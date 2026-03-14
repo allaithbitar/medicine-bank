@@ -4,6 +4,7 @@ import type BeneficiariesFiltersModal from '@/features/beneficiaries/components/
 import type DisclosureFiltersModal from '@/features/disclosures/components/disclosure-filters.modal';
 import type ChangePasswordModal from '@/features/auth/components/change-password.modal';
 import type MoveDisclosuresModal from '@/features/disclosures/components/move-disclosures.modal';
+import type ArchiveDisclosureModal from '@/features/disclosures/components/archive-disclosure.modal';
 
 export type TModalExtraProps = {
   // it will always be sent but just to stop the ts compiler from parking
@@ -16,6 +17,7 @@ export const MODAL_NAMES = {
   DISCLOSURE_FILTERS_MODAL: 'DISCLOSURE_FILTERS_MODAL',
   CHANGE_PASSWORD_MODAL: 'CHANGE_PASSWORD_MODAL',
   MOVE_DISCLOSURES_MODAL: 'MOVE_DISCLOSURES_MODAL',
+  ARCHIVE_DISCLOSURE_MODAL: 'ARCHIVE_DISCLOSURE_MODAL',
 } as const;
 
 export type TOpenModalPayload =
@@ -38,4 +40,8 @@ export type TOpenModalPayload =
   | {
       name: typeof MODAL_NAMES.MOVE_DISCLOSURES_MODAL;
       props: ComponentProps<typeof MoveDisclosuresModal>;
+    }
+  | {
+      name: typeof MODAL_NAMES.ARCHIVE_DISCLOSURE_MODAL;
+      props: ComponentProps<typeof ArchiveDisclosureModal>;
     };

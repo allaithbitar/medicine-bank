@@ -387,8 +387,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         { id: args.disclosureId, type: 'Disclosures' },
       ],
     }),
-
-    archiveDisclosure: builder.mutation<void, { id: string }>({
+    archiveDisclosure: builder.mutation<void, { id: string; archiveNumber?: string }>({
       query: (body) => ({
         url: '/disclosures/archive',
         method: 'PUT',

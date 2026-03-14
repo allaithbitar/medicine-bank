@@ -9,7 +9,6 @@ import ErrorCard from '@/core/components/common/error-card/error-card.component'
 import ActionsFab from '@/core/components/common/actions-fab/actions-fab.component';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
-
 import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
 import DisclosureHeaderCard from '../components/disclosure-header-card';
 import DisclosureTabs from '../components/disclosure-tabs';

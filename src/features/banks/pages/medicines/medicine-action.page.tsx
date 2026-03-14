@@ -164,7 +164,7 @@ const MedicineActionPage = () => {
 
   return (
     <Card>
-      <Header title={initialMedicine ? STRINGS.edit_medicine : STRINGS.add_medicine} />
+      <Header title={initialMedicine ? STRINGS.edit_medicine : STRINGS.add_medicine} showBackButton />
       <Stack gap={2}>
         <FormTextFieldInput
           required

@@ -48,7 +48,7 @@ const OfflineUpdatesPage = () => {
   if (!updates || updates.length === 0 || isNullOrUndefined(updateIndex)) {
     return (
       <Card sx={{ p: 1 }}>
-        <Header title={STRINGS.offline_updates} />
+        <Header title={STRINGS.offline_updates} showBackButton />
         <NoData
           icon={CloudDone}
           title={STRINGS.all_synced}
@@ -76,16 +76,16 @@ const OfflineUpdatesPage = () => {
 
   return (
     <DisabledOnOffline>
-    <Stack gap={1} sx={{ height: '100%' }}>
-      {updates[updateIndex] && (
-        <Card sx={{ flexShrink: 0 }}>
-          <Typography color="primary">
-            {updateIndex + 1} {STRINGS.out_of} {updates.length} {STRINGS.offline_updates}
-          </Typography>
-        </Card>
-      )}
-      {updates && updates[updateIndex] && <OfflineUpdate key={updateIndex} update={updates[updateIndex]} />}
-      {/*  <Card
+      <Stack gap={1} sx={{ height: '100%' }}>
+        {updates[updateIndex] && (
+          <Card sx={{ flexShrink: 0 }}>
+            <Typography color="primary">
+              {updateIndex + 1} {STRINGS.out_of} {updates.length} {STRINGS.offline_updates}
+            </Typography>
+          </Card>
+        )}
+        {updates && updates[updateIndex] && <OfflineUpdate key={updateIndex} update={updates[updateIndex]} />}
+        {/*  <Card
         sx={{
           p: 1,
           width: '100%',
@@ -114,11 +114,11 @@ const OfflineUpdatesPage = () => {
           </Button>
         </Stack>
       </Card> */}
-      {/*  {data.map((u) => (
+        {/*  {data.map((u) => (
         <OfflineUpdate key={u.id} update={u} />
       ))} */}
-    </Stack>
-</DisabledOnOffline>
+      </Stack>
+    </DisabledOnOffline>
   );
 };
 

@@ -66,7 +66,7 @@ const CityActionPage = () => {
 
   return (
     <Card>
-      <Header title={id ? STRINGS.edit_city : STRINGS.add_city} />
+      <Header title={id ? STRINGS.edit_city : STRINGS.add_city} showBackButton />
       <FormTextFieldInput
         required
         label={STRINGS.city_name}

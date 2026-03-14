@@ -138,7 +138,7 @@ const BeneficiaryActionPage = () => {
   return (
     <Card>
       <Stack gap={2} sx={{ position: 'relative' }}>
-        <Header title={beneficiaryId ? STRINGS.edit : STRINGS.add} />
+        <Header title={beneficiaryId ? STRINGS.edit : STRINGS.add} showBackButton />
         <BeneficiaryActionForm
           ref={ref}
           beneficiaryData={beneficiaryData}

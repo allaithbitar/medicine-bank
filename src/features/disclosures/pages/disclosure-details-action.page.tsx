@@ -61,7 +61,7 @@ function DisclosureDetailsActionPage() {
 
   return (
     <Card>
-      <Header title={STRINGS.disclosures_details} />
+      <Header title={STRINGS.disclosures_details} showBackButton />
       <DisclosureDetailsActionForm ref={ref} disclosureDetails={disclosureDetails} />
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}

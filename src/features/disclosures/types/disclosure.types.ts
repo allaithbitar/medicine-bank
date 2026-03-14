@@ -82,6 +82,7 @@ export type TDisclosure = {
   initialNote: string | null;
   priorityId: string;
   patientId: string;
+  archiveNumber: string | null;
   createdAt: string;
   updatedAt: string | null;
   patient: TBenefieciary;
@@ -97,7 +98,7 @@ export type TDisclosure = {
 export type TGetDisclosuresDto = Partial<
   TPaginationDto & {
     isReceived: boolean;
-    archiveNumber: number;
+    archiveNumber: string;
     visitResult: TDisclosureVisitResult[];
     isCustomRating: boolean;
     appointmentDate: string;

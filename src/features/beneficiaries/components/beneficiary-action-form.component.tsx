@@ -19,7 +19,7 @@ import type { TAutocompleteItem } from '@/core/types/common.types';
 
 const PatientFormSchema = z.object({
   name: z.string().min(5, STRINGS.schema_name_too_short),
-  nationalNumber: z.string().min(1, { message: STRINGS.schema_required }),
+  nationalNumber: z.string(),
   area: z.custom<TAutocompleteItem | null>((data) => !!data, {
     message: STRINGS.schema_required,
   }),
@@ -170,7 +170,6 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaC
       <FormTextFieldInput
         label={STRINGS.national_number}
         name="nationalNumber"
-        required
         value={formState.nationalNumber}
         onChange={(v) => handleChange('nationalNumber', v)}
         errorText={validationErrors?.nationalNumber || formErrors.nationalNumber?.[0].message || ''}

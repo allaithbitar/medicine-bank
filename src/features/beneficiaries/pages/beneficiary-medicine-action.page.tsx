@@ -148,7 +148,10 @@ const BeneficiaryMedicineActionPage = () => {
 
   return (
     <Card sx={{ p: 2 }}>
-      <Header title={oldBeneficiaryMedicine ? STRINGS.edit_beneficiary_medicine : STRINGS.add_beneficiary_medicine} />
+      <Header
+        title={oldBeneficiaryMedicine ? STRINGS.edit_beneficiary_medicine : STRINGS.add_beneficiary_medicine}
+        showBackButton
+      />
       <Stack gap={2}>
         <MedicinesAutocomplete
           defaultValueId={oldBeneficiaryMedicine?.medicineId}

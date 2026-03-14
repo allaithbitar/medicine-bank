@@ -121,7 +121,7 @@ const DisclosureConsultingAdviserActionPage = () => {
 
   return (
     <Card>
-      <Header title={oldAdviserConsultation ? STRINGS.edit_consulting : STRINGS.add_consulting} />
+      <Header title={oldAdviserConsultation ? STRINGS.edit_consulting : STRINGS.add_consulting} showBackButton />
       <Stack gap={2}>
         <FormTextAreaInput
           label={STRINGS.note}

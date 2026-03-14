@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Typography, Stack, Divider, Box, Paper, Chip, Collapse, IconButton } from '@mui/material';
+import { Typography, Stack, Divider, Box, Paper, Chip, Collapse, IconButton, useTheme } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -12,7 +12,7 @@ import { ACTION_COLOR_MAP, formatDateTime, getStringsLabel } from '@/core/helper
 import STRINGS from '@/core/constants/strings.constant';
 import { useEmployeesAutocompleteLoader } from '@/features/autocomplete/hooks/employees-autocomplete-loader.hook';
 import type { TAutocompleteItem } from '@/core/types/common.types';
-import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
+import Header from '@/core/components/common/header/header';
 
 const RAW_COLUMNS = new Set([
   'is_custom_rating',
@@ -37,7 +37,7 @@ function AuditDetailsPage() {
   const { state } = useLocation();
   const date: string = state?.date;
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-
+  const theme = useTheme();
   const {
     data: auditData,
     isLoading: isAuditLoading,
@@ -115,7 +115,8 @@ function AuditDetailsPage() {
 
   return (
     <Stack gap={1}>
-      <CustomAppBarComponent title={STRINGS.audit_details} />
+      <Header title={STRINGS.audit_details} showBackButton sx={{ bgcolor: theme.palette.background.default }} />
+
       <Stack spacing={2.5}>
         {sorted.map((entry: TAuditDetailsRow, index: number) => {
           const createdByName = employeeMap.get(entry.createdBy ?? '')?.name;

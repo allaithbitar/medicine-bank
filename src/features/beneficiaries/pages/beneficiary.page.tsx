@@ -42,7 +42,7 @@ const BeneficiaryPage = () => {
   return (
     <Stack gap={1}>
       <Card>
-        <Header title={` ${STRINGS.detailed} ${STRINGS.beneficiary}`} />
+        <Header title={` ${STRINGS.detailed} ${STRINGS.beneficiary}`} showBackButton />
         <BeneficiaryCommonCard canEditPatient={currentCanEdit} beneficiary={beneficiary} />
       </Card>
       <BeneficiaryDisclosures beneficiaryId={beneficiary.id} />

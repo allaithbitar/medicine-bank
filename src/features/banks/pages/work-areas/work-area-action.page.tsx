@@ -99,7 +99,7 @@ const WorkAreaActionPage = () => {
 
   return (
     <Card>
-      <Header title={workAreaById ? STRINGS.edit_work_area : STRINGS.add_work_area} />
+      <Header title={workAreaById ? STRINGS.edit_work_area : STRINGS.add_work_area} showBackButton />
       <Stack gap={3}>
         <CitiesAutocomplete
           multiple={false}

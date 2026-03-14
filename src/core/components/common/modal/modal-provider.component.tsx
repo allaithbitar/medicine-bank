@@ -7,6 +7,7 @@ import BeneficiariesFiltersModal from '@/features/beneficiaries/components/benef
 import DisclosureFiltersModal from '@/features/disclosures/components/disclosure-filters.modal';
 import ChangePasswordModal from '@/features/auth/components/change-password.modal';
 import MoveDisclosuresModal from '@/features/disclosures/components/move-disclosures.modal';
+import ArchiveDisclosureModal from '@/features/disclosures/components/archive-disclosure.modal';
 import ErrorBoundary from '@/components/errorBoundary/error-boundary.component';
 import useDebouncedEffect from '@/core/hooks/use-debounced-effect.hook';
 
@@ -16,6 +17,7 @@ const MODALS = {
   [MODAL_NAMES.DISCLOSURE_FILTERS_MODAL]: DisclosureFiltersModal,
   [MODAL_NAMES.CHANGE_PASSWORD_MODAL]: ChangePasswordModal,
   [MODAL_NAMES.MOVE_DISCLOSURES_MODAL]: MoveDisclosuresModal,
+  [MODAL_NAMES.ARCHIVE_DISCLOSURE_MODAL]: ArchiveDisclosureModal,
 } as const;
 
 const ModalContext = createContext<{

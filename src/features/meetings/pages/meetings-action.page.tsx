@@ -91,7 +91,7 @@ const MeetingActionPage = () => {
 
   return (
     <Card>
-      <Header title={oldMeeting ? STRINGS.edit_meeting : STRINGS.add_meeting} />
+      <Header title={oldMeeting ? STRINGS.edit_meeting : STRINGS.add_meeting} showBackButton />
       <Stack gap={2}>
         <FormTextAreaInput
           label={STRINGS.note}

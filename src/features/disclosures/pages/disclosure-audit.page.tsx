@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { Box, Stack, Typography, Paper, Divider, Chip } from '@mui/material';
+import { Box, Stack, Typography, Paper, Divider, Chip, useTheme } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import CustomAppBar from '@/core/components/common/custom-app-bar/custom-app-bar.component';
+import Header from '@/core/components/common/header/header';
 import STRINGS from '@/core/constants/strings.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import type { TAuditGroup } from '../types/disclosure.types';
@@ -26,7 +26,7 @@ const getDominantAction = (group: TAuditGroup) => {
 const DisclosureAuditTimelinePage = () => {
   const navigate = useNavigate();
   const { disclosureId } = useParams();
-
+  const theme = useTheme();
   const { data: { items: groups = [] } = { items: [] }, isLoading } = disclosuresApi.useGetAuditLogQuery(
     { disclosureId },
     { skip: !disclosureId, refetchOnMountOrArgChange: true }
@@ -48,7 +48,7 @@ const DisclosureAuditTimelinePage = () => {
 
   return (
     <Stack gap={1} sx={{ height: '100%' }}>
-      <CustomAppBar title={STRINGS.audit_log} />
+      <Header title={STRINGS.audit_log} showBackButton sx={{ bgcolor: theme.palette.background.default }} />
       {isLoading && <LoadingOverlay />}
 
       {!isLoading && groups.length === 0 && (

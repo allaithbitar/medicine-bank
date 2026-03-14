@@ -127,7 +127,7 @@ const DisclosureNoteActionPage = () => {
 
   return (
     <Card sx={{ p: 2 }}>
-      <Header title={oldNote ? STRINGS.edit_note : STRINGS.add_note} />
+      <Header title={oldNote ? STRINGS.edit_note : STRINGS.add_note} showBackButton />
       <Stack gap={2}>
         <FormTextAreaInput
           label={STRINGS.note}

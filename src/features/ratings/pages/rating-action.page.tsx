@@ -94,7 +94,7 @@ const RatingActionPage = () => {
 
   return (
     <Card>
-      <Header title={id ? STRINGS.edit_rating : STRINGS.add_rating} />
+      <Header title={id ? STRINGS.edit_rating : STRINGS.add_rating} showBackButton />
       <Stack sx={{ flexDirection: 'column', gap: 1 }}>
         <FormTextFieldInput
           label={STRINGS.name}

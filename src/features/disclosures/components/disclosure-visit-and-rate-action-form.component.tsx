@@ -133,7 +133,7 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclo
   return (
     <Stack gap={2}>
       <Card>
-        <Header title={STRINGS.visit} />
+        <Header title={STRINGS.visit} showBackButton />
         <Stack gap={2}>
           <DisclosureVisitResultAutocomplete
             required

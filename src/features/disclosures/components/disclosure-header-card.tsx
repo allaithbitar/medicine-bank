@@ -62,7 +62,7 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   return (
     <>
       <Card>
-        <Header title={STRINGS.the_patient} />
+        <Header title={STRINGS.the_patient} showBackButton />
         <BeneficiaryCommonCard
           canEditPatient={canUserEditPatient}
           isDisclosurePage

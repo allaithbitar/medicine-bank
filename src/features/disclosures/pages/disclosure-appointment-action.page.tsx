@@ -59,7 +59,10 @@ const DisclosureAppointmentActionPage = () => {
   return (
     <Card sx={{ p: 1 }}>
       <Stack sx={{ gap: 2 }}>
-        <Header title={disclosure?.appointmentDate ? STRINGS.edit_appointment_date : STRINGS.select_appointment_date} />
+        <Header
+          title={disclosure?.appointmentDate ? STRINGS.edit_appointment_date : STRINGS.select_appointment_date}
+          showBackButton
+        />
         <Calendar selectedDate={selectedDate} onClick={(d, c) => handleSelectDate({ d, c })} />
         <WarningNotice title={STRINGS.warning} message={STRINGS.appointment_warning_message} variant="outlined" />
         <ActionFab color="success" icon={<Save />} disabled={!selectedDate} onClick={handleSave} />

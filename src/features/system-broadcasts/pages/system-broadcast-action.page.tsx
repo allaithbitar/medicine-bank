@@ -115,7 +115,7 @@ const SystemBroadcastActionPage = () => {
 
   return (
     <Card>
-      <Header title={id ? STRINGS.edit : STRINGS.add} />
+      <Header title={id ? STRINGS.edit : STRINGS.add} showBackButton />
       <Stack spacing={2}>
         <FormSelectInput
           value={values.type}

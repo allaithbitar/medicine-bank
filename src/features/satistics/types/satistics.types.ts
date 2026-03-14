@@ -4,6 +4,7 @@ export type TGetSatisticsDto = {
   fromDate: string;
   toDate: string;
   employeeId?: string;
+  areaId?: string;
 };
 
 export type TSummaryReportResult = {
