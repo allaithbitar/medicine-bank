@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Stack, Typography, Chip, Card } from '@mui/material';
+import { Box, Stack, Typography, Chip, Card, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { z } from 'zod';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
@@ -44,6 +44,8 @@ const BeneficiaryMedicineActionPage = () => {
     note: '',
     med: null,
   });
+
+  const [stayAfterSave, setStayAfterSave] = React.useState(false);
 
   const [errors, setErrors] = React.useState<z.ZodIssue[]>([]);
 
@@ -102,6 +104,17 @@ const BeneficiaryMedicineActionPage = () => {
 
   const handleNoteChange = (v: string) => setValues({ note: v });
 
+  const resetForm = () => {
+    setValues({
+      medicineId: '',
+      dosePerIntake: undefined,
+      intakeFrequency: '',
+      note: '',
+      med: null,
+    });
+    setErrors([]);
+  };
+
   const handleSubmit = async () => {
     try {
       const toValidate = {
@@ -131,6 +144,10 @@ const BeneficiaryMedicineActionPage = () => {
         await mutateBeneficiaryMedicine({ type: 'INSERT', dto: payload });
       }
       notifySuccess(oldBeneficiaryMedicine ? STRINGS.edited_successfully : STRINGS.added_successfully);
+      if (stayAfterSave && !oldBeneficiaryMedicine) {
+        resetForm();
+        return;
+      }
       navigate(-1);
     } catch (err: any) {
       console.log(err);
@@ -195,6 +212,25 @@ const BeneficiaryMedicineActionPage = () => {
           </Box>
         )}
         <FormTextAreaInput label={STRINGS.note} value={values.note ?? ''} onChange={handleNoteChange} />
+        {!oldBeneficiaryMedicine && (
+          <Box>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              {STRINGS.post_save_behavior}
+            </Typography>
+            <ToggleButtonGroup
+              exclusive
+              color="primary"
+              value={stayAfterSave ? 'stay' : 'back'}
+              onChange={(_e, val) => {
+                if (!val) return;
+                setStayAfterSave(val === 'stay');
+              }}
+            >
+              <ToggleButton value="back">{STRINGS.post_save_go_back}</ToggleButton>
+              <ToggleButton value="stay">{STRINGS.post_save_stay}</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+        )}
       </Stack>
       <ActionFab icon={<Save />} color="success" onClick={handleSubmit} disabled={isLoading} />
       {isLoading && <LoadingOverlay />}

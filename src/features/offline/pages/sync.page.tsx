@@ -5,14 +5,16 @@ import { notifyError, notifySuccess } from '@/core/components/common/toast/toast
 import { getErrorMessage } from '@/core/helpers/helpers';
 import DisabledOnOffline from '@/core/components/common/disabled-on-offline/disabled-on-offline.component';
 import { useOfflineSync } from '../hooks/offline-sync.hook';
+import { useNavigate } from 'react-router-dom';
 
 const SyncPage = () => {
+  const navigate = useNavigate();
   const { handleSync, isLoading } = useOfflineSync();
 
   const handleSyncClick = async () => {
     try {
       await handleSync();
-
+      navigate('/');
       notifySuccess(STRINGS.synced_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));

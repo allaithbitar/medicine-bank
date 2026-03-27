@@ -25,7 +25,7 @@ const DisclosureDetailsSection = ({
   const navigate = useNavigate();
 
   const handleOpenDisclosureDetails = () => {
-    navigate('/disclosures/details/action?disclosureId=${disclosureId}');
+    navigate(`/disclosures/details/action?disclosureId=${disclosureId}`);
   };
 
   if (isFetching) {

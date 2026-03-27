@@ -114,12 +114,10 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   {
     path: '/beneficiaries/:id/medicine/action',
     allowedRoles: ['manager', 'supervisor', 'scout'],
-    requiresOnline: true,
   },
   {
     path: '/beneficiaries/:id/family/action',
     allowedRoles: ['manager', 'supervisor', 'scout'],
-    requiresOnline: true,
   },
 
   {

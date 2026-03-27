@@ -455,6 +455,9 @@ const STRINGS = {
   add_phone: 'إضافة رقم هاتف',
   delete_phone: 'حذف رقم الهاتف',
   confirm_delete_phone: 'هل أنت متأكد من حذف هذا الرقم؟',
+  post_save_behavior: 'ماذا يحدث بعد الحفظ؟',
+  post_save_go_back: 'العودة إلى الصفحة السابقة',
+  post_save_stay: 'البقاء في الصفحة لإضافة المزيد',
 };
 
 export default STRINGS;
