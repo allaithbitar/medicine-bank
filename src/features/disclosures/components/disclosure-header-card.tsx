@@ -30,8 +30,7 @@ import type { TPriorityDegree } from '@/features/priority-degres/types/priority-
 
 const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
-  const { canEdit, currentCanEditDisclosure } = usePermissions();
-  const canUserEditPatient = canEdit('/beneficiaries/action');
+  const { currentCanEditDisclosure } = usePermissions();
   const isArchived = disclosure.status === 'archived';
 
   const updateDisclosureField = useDisclosureFieldMutation(disclosure.id);
@@ -64,7 +63,7 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
       <Card>
         <Header title={STRINGS.the_patient} showBackButton />
         <BeneficiaryCommonCard
-          canEditPatient={canUserEditPatient}
+          canEditPatient
           isDisclosurePage
           beneficiary={disclosure.patient}
           disclosureId={disclosure.id}

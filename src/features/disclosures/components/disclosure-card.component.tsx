@@ -31,6 +31,18 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
       }
     />
   );
+  const showAddress = () => {
+    if (disclosure.patient.address && !disclosure.patient.area?.name) {
+      return disclosure.patient.address;
+    }
+    if (disclosure.patient.area?.name && !disclosure.patient.address) {
+      return disclosure.patient.area.name;
+    }
+    if (disclosure.patient.area?.name && disclosure.patient.address) {
+      return `${disclosure.patient.area.name}  - ${disclosure.patient.address}`;
+    }
+    return STRINGS.none;
+  };
 
   const bodyContent = (
     <Stack gap={2}>
@@ -53,22 +65,10 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         label={STRINGS.disclosure_scout}
         value={disclosure.scout?.name ?? STRINGS.none}
       />
-      <DetailItemComponent
-        icon={<LocationPin />}
-        label={STRINGS.patient_address}
-        value={
-          disclosure.patient.address &&
-          // ? `${disclosure.area?.name ?? ''}  - ${disclosure.address || ''}`
-          (disclosure.patient.address ?? '')
-        }
-      />
+      <DetailItemComponent icon={<LocationPin />} label={STRINGS.patient_address} value={showAddress()} />
 
       {disclosure.archiveNumber && (
-        <DetailItemComponent
-          icon={<Archive />}
-          label={STRINGS.archive_number}
-          value={disclosure.archiveNumber}
-        />
+        <DetailItemComponent icon={<Archive />} label={STRINGS.archive_number} value={disclosure.archiveNumber} />
       )}
 
       <FormattedVisitRatingResult disclosure={disclosure} />
