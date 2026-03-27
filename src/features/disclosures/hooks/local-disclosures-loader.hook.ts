@@ -4,7 +4,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { jsonObjectFrom } from 'kysely/helpers/sqlite';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
 import { DEFAULT_PAGE_SIZE } from '@/core/constants/properties.constant';
-import { sql } from 'kysely';
+import { ParseJSONResultsPlugin, sql } from 'kysely';
 export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresDto) => {
   const isOffline = useIsOffline();
   const { data, ...restQueryResult } = useInfiniteQuery({
@@ -138,7 +138,18 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
           jsonObjectFrom(
             col
               .selectFrom('patients')
-              .select(['patients.id', 'patients.name'])
+              .select([
+                'patients.id',
+                'patients.name',
+                'patients.address',
+                (nCol) =>
+                  jsonObjectFrom(
+                    nCol
+                      .selectFrom('areas')
+                      .select(['areas.id', 'areas.name', 'areas.cityId'])
+                      .whereRef('areaId', '=', 'patients.areaId')
+                  ).as('area'),
+              ])
               .whereRef('patients.id', '=', 'disclosures.patientId')
           ).as('patient'),
           jsonObjectFrom(
@@ -153,6 +164,7 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
               .whereRef('priority_degrees.id', '=', 'disclosures.priorityId')
           ).as('priority'),
         ])
+        .withPlugin(new ParseJSONResultsPlugin())
         .limit(pageSize || DEFAULT_PAGE_SIZE)
         .offset(pageSize || DEFAULT_PAGE_SIZE! * pageParam)
         .orderBy('createdAt', 'desc');
