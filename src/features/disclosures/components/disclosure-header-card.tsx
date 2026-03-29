@@ -27,11 +27,16 @@ import { usePriorityDegreesLoader } from '@/features/priority-degres/hooks/prior
 import { EmployeeRole } from '@/features/employees/types/employee.types';
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
+import disclosuresApi from '../api/disclosures.api';
+import { DisclosureStatus } from '../types/disclosure.types';
 
 const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
   const { currentCanEditDisclosure } = usePermissions();
   const isArchived = disclosure.status === 'archived';
+  const [enableDisclosureMutation, { isLoading: isEnablingDisclosure }] = disclosuresApi.useUpdateDisclosureMutation();
+  const canEnableDisclosure = disclosure.status === DisclosureStatus.suspended;
 
   const updateDisclosureField = useDisclosureFieldMutation(disclosure.id);
 
@@ -57,6 +62,24 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
     },
     [updateDisclosureField]
   );
+
+  const handleEnableDisclosure = useCallback(async () => {
+    try {
+      await enableDisclosureMutation({
+        id: disclosure.id,
+        visitResult: null,
+        visitReason: null,
+        visitNote: null,
+        ratingId: null,
+        isCustomRating: false,
+        customRating: null,
+        ratingNote: null,
+      }).unwrap();
+      notifySuccess(STRINGS.action_done_successfully);
+    } catch (error) {
+      notifyError(error);
+    }
+  }, [disclosure.id, enableDisclosureMutation]);
 
   return (
     <>
@@ -170,12 +193,26 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
               </InlineEditWrapper>
             }
           />
-          {currentCanEditDisclosure && !isArchived && (
-            <Link to={`/disclosures/action?disclosureId=${disclosure.id}`}>
-              <Button fullWidth startIcon={<Edit />}>
-                {STRINGS.edit} {STRINGS.the_disclosure}
-              </Button>
-            </Link>
+          {!isArchived && (
+            <Stack sx={{ flexDirection: 'row', gap: 1 }}>
+              {currentCanEditDisclosure && (
+                <Link style={{ flex: 1 }} to={`/disclosures/action?disclosureId=${disclosure.id}`}>
+                  <Button fullWidth startIcon={<Edit />}>
+                    {STRINGS.edit} {STRINGS.the_disclosure}
+                  </Button>
+                </Link>
+              )}
+              {canEnableDisclosure && (
+                <Button
+                  color="success"
+                  variant="outlined"
+                  disabled={isEnablingDisclosure}
+                  onClick={handleEnableDisclosure}
+                >
+                  {STRINGS.enable_disclosure}
+                </Button>
+              )}
+            </Stack>
           )}
         </Stack>
       </Card>

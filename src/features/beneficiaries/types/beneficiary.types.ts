@@ -131,5 +131,6 @@ export type TValidationNationalErrorResponse = {
 export type TValidationPhoneNumberErrorResponse = {
   existing: {
     patient: TBenefieciary;
+    phone?: string | null;
   };
 };

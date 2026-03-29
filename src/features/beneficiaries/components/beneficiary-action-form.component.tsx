@@ -47,7 +47,7 @@ type TProps = {
   ref: Ref<TBenefificaryFormHandlers>;
   validationErrors?: {
     nationalNumber?: string;
-    phoneNumbers?: string;
+    phoneNumbers?: Record<number, string>;
   };
   onAreaChange?: (areaId: string | null) => void;
 } & (
@@ -194,6 +194,14 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaC
         onChange={(v) => handleChange('area', v)}
         errorText={formErrors.area?.[0].message ?? ''}
       />
+      <FormTextFieldInput
+        label={STRINGS.patient_address}
+        name="address"
+        required
+        value={formState.address}
+        onChange={(v) => handleChange('address', v)}
+        errorText={formErrors.address?.[0].message ?? ''}
+      />
       <FieldSet label={STRINGS.phone_numbers}>
         <Stack gap={2}>
           {formState.phoneNumbers.map((pn, index) => (
@@ -202,14 +210,15 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaC
                 label={`${STRINGS.phone_number} ${index + 1}`}
                 value={pn}
                 onChange={(v) => {
+                  const sanitizedValue = v.replace(/\s+/g, '');
                   const clone = structuredClone(formState.phoneNumbers);
-                  clone[index] = v;
+                  clone[index] = sanitizedValue;
                   return setFormState((prev) => ({
                     ...prev,
                     phoneNumbers: clone,
                   }));
                 }}
-                errorText={formErrors.phoneNumbers?.[index]?.message || validationErrors?.phoneNumbers}
+                errorText={formErrors.phoneNumbers?.[index]?.message || validationErrors?.phoneNumbers?.[index] || ''}
                 endAdornment={
                   <IconButton
                     disabled={formState.phoneNumbers.length === 1}
@@ -280,12 +289,6 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaC
               name="job"
               value={formState.job ?? ''}
               onChange={(v) => handleChange('job', v)}
-            />
-            <FormTextFieldInput
-              label={STRINGS.patient_address}
-              name="address"
-              value={formState.address}
-              onChange={(v) => handleChange('address', v)}
             />
             <FormTextAreaInput
               label={STRINGS.patient_about}

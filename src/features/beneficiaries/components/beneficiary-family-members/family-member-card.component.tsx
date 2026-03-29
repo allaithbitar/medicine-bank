@@ -87,7 +87,11 @@ const FamilyMemberCard = ({ member, onEdit }: { member: TFamilyMember; onEdit?: 
             icon={<CakeIcon />}
             value={formatDateTime(member.birthDate, false, { year: 'numeric' })}
           />
-          <DetailItemComponent label={STRINGS.job_or_school} icon={<WorkIcon />} value={member.jobOrSchool} />
+          <DetailItemComponent
+            label={STRINGS.job_or_school}
+            icon={<WorkIcon />}
+            value={member.jobOrSchool ?? STRINGS.none}
+          />
           <DetailItemComponent label={STRINGS.residential} icon={<Home />} value={member.residential ?? STRINGS.none} />
           <DetailItemComponent
             label={STRINGS.kids_count}

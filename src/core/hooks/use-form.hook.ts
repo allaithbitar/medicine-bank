@@ -1,7 +1,7 @@
-import { useCallback, useState } from "react";
-import { Schema, ZodError } from "zod";
+import { useCallback, useState } from 'react';
+import { type Schema, ZodError } from 'zod';
 
-type TFormErrors<T> = Partial<
+export type TFormErrors<T> = Partial<
   Record<
     keyof T,
     Record<
@@ -96,7 +96,7 @@ function useForm<T extends Schema>({
     setFormState((prev) => ({ ...prev, ...dto }));
   }, []);
 
-  return { formState, formErrors, handleSubmit, setFormState, setValue };
+  return { formState, formErrors, handleSubmit, setFormState, setValue, setFormErrors };
 }
 
 export default useForm;

@@ -74,7 +74,7 @@ const DisclosureDetailsSection = ({
               icon={<Work />}
               iconColorPreset="blue"
               label={STRINGS.job_or_school}
-              value={details.jobOrSchool}
+              value={details.jobOrSchool ?? STRINGS.none}
             />
           )}
 

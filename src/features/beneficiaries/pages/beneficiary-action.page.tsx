@@ -40,7 +40,7 @@ const BeneficiaryActionPage = () => {
 
   const [validationErrors, setValidationErrors] = useState<{
     nationalNumber?: string;
-    phoneNumbers?: string;
+    phoneNumbers?: Record<number, string>;
   }>({});
 
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
@@ -59,6 +59,8 @@ const BeneficiaryActionPage = () => {
   const handleSave = async () => {
     const { isValid, result } = await ref.current!.handleSubmit();
     if (!isValid) return;
+
+    const normalizePhone = (phone?: string | null) => (phone ?? '').replace(/\D/g, '');
 
     let disclosureResult = null;
     if (showDisclosureForm) {
@@ -82,8 +84,30 @@ const BeneficiaryActionPage = () => {
           phoneNumbers: result.phoneNumbers,
           patientId: beneficiaryId || undefined,
         });
-        if (data?.existing) {
-          errors.phoneNumbers = `${STRINGS.phone_already_exists_for_patient}: ${data.existing?.patient.name}`;
+
+        if (data?.existing?.patient) {
+          const duplicatePhone = data.existing.phone;
+          const normalizedDuplicate = normalizePhone(duplicatePhone);
+          const phoneErrors: Record<number, string> = {};
+          const duplicateMessage = `${STRINGS.phone_already_exists_for_patient}: ${data.existing.patient.name}`;
+
+          result.phoneNumbers.forEach((phone, index) => {
+            if (normalizedDuplicate) {
+              if (normalizePhone(phone) === normalizedDuplicate) {
+                phoneErrors[index] = duplicateMessage;
+              }
+              return;
+            }
+            phoneErrors[index] = duplicateMessage;
+          });
+
+          if (!Object.keys(phoneErrors).length) {
+            phoneErrors[0] = duplicateMessage;
+          }
+
+          if (Object.keys(phoneErrors).length > 0) {
+            errors.phoneNumbers = phoneErrors;
+          }
         }
       }
       if (Object.keys(errors).length > 0) {
