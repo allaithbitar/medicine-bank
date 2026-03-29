@@ -89,7 +89,7 @@ export async function createTables() {
     .addColumn('id', 'uuid', (col) => col.primaryKey())
     .addColumn('name', 'text', (col) => col.notNull())
     .addColumn('form', 'text', (col) => col.notNull())
-    .addColumn('doseVariants', 'json', (col) => col.notNull())
+    .addColumn('doseVariants', 'json')
     .execute();
 
   await localDb.schema
