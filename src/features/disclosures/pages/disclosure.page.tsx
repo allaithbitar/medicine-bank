@@ -101,8 +101,6 @@ const DisclosurePage = () => {
     <>
       <Stack gap={1}>
         <DisclosureHeaderCard disclosure={disclosure} />
-        <DisclosureVisitAndRatingSection disclosure={disclosure} />
-        <DisclosureProperties disclosure={disclosure} />
 
         <DisclosureTabs
           value={tabIndex}
@@ -135,6 +133,8 @@ const DisclosurePage = () => {
             },
           ]}
         />
+        <DisclosureProperties disclosure={disclosure} />
+        <DisclosureVisitAndRatingSection disclosure={disclosure} />
       </Stack>
 
       <ActionsFab

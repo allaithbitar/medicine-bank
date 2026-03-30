@@ -1,7 +1,7 @@
 import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
 import { Stack } from '@mui/material';
 import z from 'zod';
-import { type TDisclosure, type TDisclosureType } from '../types/disclosure.types';
+import { DisclosureType, type TDisclosure, type TDisclosureType } from '../types/disclosure.types';
 import STRINGS from '@/core/constants/strings.constant';
 import EmployeesAutocomplete from '@/features/employees/components/employees-autocomplete.component';
 import PriorityDegreesAutocomplete from '@/features/priority-degres/components/priority-degees-autocomplete.component';
@@ -12,6 +12,7 @@ import type { TAutocompleteItem } from '@/core/types/common.types';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 import DisclosureTypeAutocomplete from './disclosure-type-autocomplete.component';
 import useScoutRecommendation from '../hooks/use-scout-recommendation.hook';
+import { usePriorityDegreesLoader } from '@/features/priority-degres/hooks/priority-degrees-loader.hook';
 
 const createDisclosureSchema = (beneficiaryAlreadyDefined = false) =>
   z
@@ -50,10 +51,17 @@ type TProps = {
 };
 
 const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined, areaId }: TProps) => {
+  const { data: priorityDegrees = [] } = usePriorityDegreesLoader({});
+
+  const defaultDisclosureType = {
+    id: DisclosureType.new,
+    label: STRINGS.new,
+  } as const;
+
   const { formState, formErrors, setValue, handleSubmit, setFormState } = useForm({
     schema: createDisclosureSchema(beneficiaryAlreadyDefined),
     initalState: {
-      type: null as any,
+      type: defaultDisclosureType,
       priorityDegree: null,
       employee: null,
       beneficiary: null,
@@ -108,6 +116,12 @@ const DisclosureActionForm = ({ ref, disclosureData, beneficiaryAlreadyDefined, 
       });
     }
   }, [disclosureData, setFormState]);
+
+  useEffect(() => {
+    if (!disclosureData && !formState.priorityDegree && priorityDegrees.length > 0) {
+      setValue({ priorityDegree: priorityDegrees[0] });
+    }
+  }, [disclosureData, formState.priorityDegree, priorityDegrees, setValue]);
 
   return (
     <Stack gap={2}>
