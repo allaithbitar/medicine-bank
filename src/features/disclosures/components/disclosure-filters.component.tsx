@@ -116,21 +116,9 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
         value={filters.priorityDegrees}
         onChange={(priorityDegrees) => setFilters((prev) => ({ ...prev, priorityDegrees }))}
       />
-      <FormCheckbxInput
-        label={STRINGS.hasnt_been_visited_yet}
-        value={filters.unvisited}
-        onChange={(value) => {
-          setFilters((prev) => ({
-            ...prev,
-            unvisited: value,
-            ...(value && { visitResult: [], ratings: [] }),
-          }));
-        }}
-      />
 
       <DisclosureVisitResultAutocomplete
         multiple
-        disabled={filters.unvisited}
         value={filters.visitResult}
         onChange={(visitResult) => setFilters((prev) => ({ ...prev, visitResult }))}
       />

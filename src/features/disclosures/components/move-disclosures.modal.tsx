@@ -12,7 +12,12 @@ import { DisclosureVisitResult, type TDisclosureVisitResult } from '../types/dis
 import employeesApi from '@/features/employees/api/employees.api';
 
 interface IMoveDisclosuresModalProps {
-  onConfirm: (data: { fromScoutId: string; toScoutId: string; areaIds?: string[]; visitResult: TDisclosureVisitResult[] }) => void;
+  onConfirm: (data: {
+    fromScoutId: string;
+    toScoutId: string;
+    areaIds?: string[];
+    visitResult: TDisclosureVisitResult[];
+  }) => void;
 }
 
 const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
@@ -101,7 +106,8 @@ const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
           required
           label={STRINGS.visit_result}
           value={visitResult}
-          onChange={(v) => setVisitResult(v)}
+          onChange={(v) => setVisitResult(v as any)}
+          filterOptions={(options) => options.filter((o) => o.id !== 'null')}
         />
         <>
           <AreasAutocomplete
