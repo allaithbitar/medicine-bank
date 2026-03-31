@@ -143,9 +143,9 @@ const NotificationCard = ({ notification }: { notification: TNotification }) => 
             </Typography>
           )}
 
-          {notification.createAt && (
+          {notification.createdAt && (
             <Typography alignSelf="end" variant="caption">
-              {formatDateFromNow(notification.createAt)}/
+              {formatDateFromNow(notification.createdAt)}
             </Typography>
           )}
         </Stack>
