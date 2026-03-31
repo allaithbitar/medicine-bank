@@ -47,10 +47,6 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
         baseQuery = baseQuery.where('scoutId', 'is', null);
       }
 
-      if (dto.unvisited) {
-        baseQuery = baseQuery.where('visitResult', 'is', null);
-      }
-
       if (dto.appointmentDate) {
         baseQuery = baseQuery.where('appointmentDate', '=', dto.appointmentDate);
       }
@@ -76,8 +72,16 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
       }
 
       if (dto.visitResult?.length) {
-        const noramlizedVisitResult = dto.visitResult?.filter((v) => !!v);
-        baseQuery = baseQuery.where('visitResult', 'in', noramlizedVisitResult);
+        baseQuery = baseQuery.where((eb) =>
+          eb.or(
+            dto.visitResult!.map((r) => {
+              if (r === null) {
+                return eb('visitResult', 'is', null);
+              }
+              return eb('visitResult', '=', r);
+            })
+          )
+        );
       }
 
       if (dto.areaIds?.length) {

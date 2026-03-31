@@ -4,11 +4,15 @@ import STRINGS from '@/core/constants/strings.constant';
 import { DisclosureVisitResult, type TDisclosureVisitResult } from '../types/disclosure.types';
 
 type TStatusAutocompleteProps<T extends boolean> = Partial<
-  ComponentProps<typeof FormAutocompleteInput<{ id: NonNullable<TDisclosureVisitResult>; label: string }, T>>
+  ComponentProps<typeof FormAutocompleteInput<{ id: NonNullable<TDisclosureVisitResult> | 'null'; label: string }, T>>
 >;
 
 function DisclosureVisitResultAutocomplete<T extends boolean>({ ...props }: TStatusAutocompleteProps<T>) {
   const options = [
+    {
+      label: `${STRINGS.hasnt_been_visited_yet}`,
+      id: 'null' as const,
+    },
     {
       label: `${STRINGS.not_completed} (${STRINGS.hg})`,
       id: DisclosureVisitResult.not_completed,

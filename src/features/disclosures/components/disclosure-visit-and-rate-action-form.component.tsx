@@ -139,10 +139,11 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclo
             required
             multiple={false}
             value={formState.visitResult as any}
-            onChange={(visitResult) => {
+            onChange={(visitResult: any) => {
               setValue({ visitResult, ...defaultRatingData });
             }}
             errorText={formErrors.visitResult?.[0]?.message}
+            filterOptions={(options) => options.filter((o) => o.id !== 'null')}
           />
           {formState.visitResult && formState.visitResult.id !== 'completed' && (
             <FormTextAreaInput

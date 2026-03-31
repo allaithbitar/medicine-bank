@@ -112,7 +112,6 @@ export type TGetDisclosuresDto = Partial<
     status: TDisclosureStatus[];
     type: TDisclosureType[];
     undelivered: boolean;
-    unvisited: boolean;
     areaIds: string[];
     isLate: boolean;
   }

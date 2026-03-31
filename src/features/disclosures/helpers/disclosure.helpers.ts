@@ -17,14 +17,13 @@ export type TDisclosureFiltersForm = {
   scouts: TAutocompleteItem[];
   priorityDegrees: TPriorityDegree[];
   ratings: TRating[];
-  visitResult: { id: NonNullable<TDisclosureVisitResult>; label: string }[];
+  visitResult: { id: NonNullable<TDisclosureVisitResult> | 'null'; label: string }[];
   isCustomRating: boolean;
   beneficiary: TAutocompleteItem | null;
   appointmentDate: string;
   isAppointmentCompleted: string;
   isReceived: string;
   undelivered: boolean;
-  unvisited: boolean;
   areaIds: TAutocompleteItem[];
   isLate: boolean;
   archiveNumber: string;
@@ -45,7 +44,6 @@ export const defaultDisclosureFilterValues: TDisclosureFiltersForm = {
   isReceived: '',
   appointmentDate: '',
   undelivered: false,
-  unvisited: false,
   areaIds: [],
   isLate: false,
   archiveNumber: '',
@@ -64,8 +62,11 @@ export const normalizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
     ratingIds: values.ratings.map((r) => r.id),
     status: values.status.map((s) => s.id),
     type: values.type.map((s) => s.id),
-    visitResult: values.visitResult.map((s) => s.id),
     areaIds: values.areaIds.map((a) => a.id),
+    visitResult: values.visitResult.map((s) => {
+      if (s.id === 'null') return null;
+      return s.id;
+    }),
   };
   if (values.beneficiary) {
     result.patientId = values.beneficiary.id;
@@ -89,8 +90,6 @@ export const normalizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
     result.isReceived = parseStringBooleanValue(values.isReceived) as boolean;
 
   if (values.isCustomRating) result.isCustomRating = values.isCustomRating;
-
-  if (values.unvisited) result.unvisited = values.unvisited;
 
   if (values.isLate) result.isLate = values.isLate;
 
