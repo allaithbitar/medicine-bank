@@ -101,15 +101,15 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
   },
   {
     path: '/beneficiaries/:id',
-    allowedRoles: ['manager', 'supervisor'],
+    allowedRoles: ['manager', 'supervisor', 'scout'],
     canAdd: ['manager', 'supervisor'],
     canEdit: ['manager', 'supervisor'],
   },
   {
     path: '/beneficiaries/action',
-    allowedRoles: ['manager', 'supervisor'],
+    allowedRoles: ['manager', 'supervisor', 'scout'],
     canAdd: ['manager', 'supervisor'],
-    canEdit: ['manager', 'supervisor'],
+    canEdit: ['manager', 'supervisor', 'scout'],
   },
   {
     path: '/beneficiaries/:id/medicine/action',
