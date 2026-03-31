@@ -8,7 +8,7 @@ import EmployeesAutocomplete from '@/features/employees/components/employees-aut
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 import DisclosureVisitResultAutocomplete from './disclosure-visit-result-autocomplete.component';
 import type { TAutocompleteItem } from '@/core/types/common.types';
-import { DisclosureVisitResult, type TDisclosureVisitResult } from '../types/disclosure.types';
+import { type TDisclosureVisitResult } from '../types/disclosure.types';
 import employeesApi from '@/features/employees/api/employees.api';
 
 interface IMoveDisclosuresModalProps {
@@ -25,9 +25,9 @@ const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
   const [fromScout, setFromScout] = useState<TAutocompleteItem | null>(null);
   const [toScout, setToScout] = useState<TAutocompleteItem | null>(null);
   const [selectedAreas, setSelectedAreas] = useState<TAutocompleteItem[]>([]);
-  const [visitResult, setVisitResult] = useState<{ id: NonNullable<TDisclosureVisitResult>; label: string }[]>([
-    { id: DisclosureVisitResult.not_completed, label: `${STRINGS.not_completed} (${STRINGS.hg})` },
-  ]);
+  const [visitResult, setVisitResult] = useState<{ id: NonNullable<TDisclosureVisitResult> | 'null'; label: string }[]>(
+    [{ id: 'null', label: `${STRINGS.hasnt_been_visited_yet}` }]
+  );
   const [fromScoutCityId, setFromScoutCityId] = useState<string | undefined>(undefined);
   const { data: fromScoutData } = employeesApi.useGetEmployeeQuery(
     { id: fromScout?.id ?? '' },
@@ -50,7 +50,10 @@ const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
       fromScoutId: fromScout.id,
       toScoutId: toScout.id,
       areaIds: selectedAreas.length > 0 ? selectedAreas.map((a) => a.id) : undefined,
-      visitResult: visitResult.map((v) => v.id),
+      visitResult: visitResult.map((v) => {
+        if (v.id === 'null') return null;
+        return v.id;
+      }),
     });
   };
 
@@ -106,8 +109,8 @@ const MoveDisclosuresModal = ({ onConfirm }: IMoveDisclosuresModalProps) => {
           required
           label={STRINGS.visit_result}
           value={visitResult}
-          onChange={(v) => setVisitResult(v as any)}
-          filterOptions={(options) => options.filter((o) => o.id !== 'null')}
+          onChange={(v) => setVisitResult(v)}
+          filterOptions={(options) => options.filter((o) => !['cant_be_completed', 'completed'].includes(o.id))}
         />
         <>
           <AreasAutocomplete
