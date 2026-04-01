@@ -151,7 +151,7 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
                     nCol
                       .selectFrom('areas')
                       .select(['areas.id', 'areas.name', 'areas.cityId'])
-                      .whereRef('areaId', '=', 'patients.areaId')
+                      .whereRef('areas.id', '=', 'patients.areaId')
                   ).as('area'),
               ])
               .whereRef('patients.id', '=', 'disclosures.patientId')
