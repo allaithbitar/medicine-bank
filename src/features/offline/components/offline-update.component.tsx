@@ -38,10 +38,12 @@ import type {
   TAddDisclosureDetailsDto,
   TAddDisclosureDto,
   TAddDisclosureNotePayload,
+  TAddSubPatientDto,
 } from '@/features/disclosures/types/disclosure.types';
 import { deleteAudioFile, readAudioFile } from '@/core/helpers/opfs-audio.helpers';
 import { baseUrl } from '@/core/api/root.api';
 import { useDisclosureConsultationLoader } from '@/features/disclosures/hooks/disclosure-consultaion-loader.hook';
+import { useDisclosureSubPatientLoader } from '@/features/disclosures/hooks/disclosure-sub-patient-loader.hook';
 
 type TOfflineUpdateComponent = (props: {
   id: string;
@@ -927,7 +929,7 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
       <Stack gap={1} sx={{ height: '100%', overflow: 'auto' }}>
         <OfflineUpdateHeader
           operation={update?.operation}
-          title={`${STRINGS.note} ${STRINGS.the_patient} ${localDisclosureData?.patient.name} `}
+          title={`${STRINGS.note} ${STRINGS.disclosure} ${STRINGS.the_patient} ${localDisclosureData?.patient.name} `}
         />
 
         {!!diffs?.length && (
@@ -1224,6 +1226,135 @@ const DisclosureConsultationOfflineUpdate = ({ id }: { id: string }) => {
   );
 };
 
+const DisclosureSubPatientOfflineUpdate = ({ id }: { id: string }) => {
+  const { data: update } = useLocalUpdateLoader({ id });
+
+  const { data: localDisclosureSubPatientData, isFetching: isFetchingLocalDisclosureSubPatient } =
+    useDisclosureSubPatientLoader(update?.recordId, true);
+
+  console.log({ localDisclosureSubPatientData });
+
+  const { data: onlineDisclosureSubPatientData, isFetching: isFetchingOnlineDisclosureSubPatient } =
+    useDisclosureSubPatientLoader(update?.recordId ?? '');
+  const { data: localDisclosureData } = useDisclosureLoader({ id: update?.parentId ?? '' }, true);
+
+  const localUpdateTable = useLocalUpdatesTable();
+
+  const [addDisclosureSubPatient, { isLoading: isAddingDisclosureSubPatient }] =
+    disclosuresApi.useAddDisclosureSubPatientMutation();
+
+  const [updateDisclosureSubPatient, { isLoading: isUpdatingDisclosureSubPatient }] =
+    disclosuresApi.useUpdateDisclosureSubPatientMutation();
+
+  const { data: parentDisclosureData, isFetching: isFetchingParentUpdateData } = useLocalUpdateLoader({
+    recordId: update?.parentId ?? '',
+  });
+
+  const blocked =
+    !isNullOrUndefined(parentDisclosureData) &&
+    parentDisclosureData.table === 'disclosures' &&
+    !parentDisclosureData.serverRecordId;
+
+  const diffs = useMemo(() => {
+    if (!localDisclosureSubPatientData) return null;
+
+    let result = compareObjects(localDisclosureSubPatientData, onlineDisclosureSubPatientData || {}, {
+      // noteAudio: STRINGS.recorded_audio,
+      about: STRINGS.note,
+      birthDate: STRINGS.birth_date,
+      gender: STRINGS.gender,
+      job: STRINGS.job_or_school,
+      name: STRINGS.name,
+      nationalNumber: STRINGS.national_number,
+      phones: STRINGS.phones,
+    }).filter((v) => v.hasConflict);
+
+    result = removeKeys(result, ['disclosureId']);
+
+    const phonesDiff = result.find((d) => d.field === 'phones');
+    if (phonesDiff?.hasConflict) {
+      if (phonesDiff.localValue) {
+        phonesDiff.localValue = phonesDiff.localValue.join(', ');
+      }
+      if (phonesDiff.serverValue) {
+        phonesDiff.serverValue = phonesDiff.serverValue.join(', ');
+      }
+    }
+
+    return result;
+  }, [localDisclosureSubPatientData, onlineDisclosureSubPatientData]);
+
+  const isLoading =
+    isFetchingOnlineDisclosureSubPatient ||
+    isFetchingLocalDisclosureSubPatient ||
+    isAddingDisclosureSubPatient ||
+    isUpdatingDisclosureSubPatient ||
+    isFetchingParentUpdateData;
+
+  if (!localDisclosureSubPatientData || !update) return null;
+
+  const handleSave = async () => {
+    const _diffs = compareObjects(localDisclosureSubPatientData, onlineDisclosureSubPatientData || {}, {});
+
+    const dto = _diffs
+      .filter((d) => d.hasConflict)
+      .reduce((acc, curr) => {
+        if (curr.field in update.payload) {
+          acc[curr.field as keyof typeof acc] = update.payload[curr.field as keyof typeof update.payload];
+        } else {
+          console.warn(curr.field, curr.localValue);
+        }
+
+        return acc;
+      }, {} as TAddSubPatientDto);
+
+    try {
+      let serverRecordId = '';
+      if (update.operation === 'INSERT') {
+        const addedSubPatient = await addDisclosureSubPatient(dto).unwrap();
+        serverRecordId = addedSubPatient.id;
+      } else {
+        await updateDisclosureSubPatient({ ...dto, id: update.recordId }).unwrap();
+        serverRecordId = update.recordId;
+      }
+      await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+    } catch (error: any) {
+      notifyError(getErrorMessage(error));
+    }
+  };
+
+  return (
+    <Card sx={{ p: 1, height: '100%', position: 'relative' }}>
+      <Stack gap={1} sx={{ height: '100%', overflow: 'auto' }}>
+        <OfflineUpdateHeader
+          operation={update?.operation}
+          title={`${STRINGS.sub_patient} ${STRINGS.disclosure} ${STRINGS.the_patient} ${localDisclosureData?.patient.name} `}
+        />
+
+        {!!diffs?.length && (
+          <Stack gap={1} sx={{ flex: 1, overflow: 'auto' }}>
+            <OperationLabel operation={update.operation} />{' '}
+            <DiffColumns
+              showDiff={update.operation === 'UPDATE'}
+              diffs={diffs}
+              order={{
+                noteText: 1,
+                noteAudio: 2,
+              }}
+              customRenderer={{
+                noteAudio: RenderAudioFile,
+              }}
+            />
+          </Stack>
+        )}
+        {/* {!update?.serverRecordId && <div>needs server id</div>} */}
+        <ActionButtons onSave={handleSave} disabled={isLoading || blocked} />
+      </Stack>
+      {isLoading && <LoadingOverlay />}
+    </Card>
+  );
+};
+
 const OfflineUpdate = ({ update }: { update: TLocalDb['updates'] }) => {
   const content = useMemo(() => {
     switch (update.table) {
@@ -1251,6 +1382,10 @@ const OfflineUpdate = ({ update }: { update: TLocalDb['updates'] }) => {
 
       case 'patient_medicines': {
         return <BeneficiaryMedicineOfflineUpdate id={update.id} />;
+      }
+
+      case 'disclosure_sub_patients': {
+        return <DisclosureSubPatientOfflineUpdate id={update.id} />;
       }
 
       default: {

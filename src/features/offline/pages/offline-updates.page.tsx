@@ -1,6 +1,6 @@
 import { Button, Card, Stack, Typography } from '@mui/material';
 import { CloudDone } from '@mui/icons-material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocalUpdatesLoader } from '../hooks/local-updates-loader.hook';
 import NoData from '@/core/components/common/no-data/no-data.component';
 import STRINGS from '@/core/constants/strings.constant';
@@ -21,19 +21,24 @@ const OfflineUpdatesPage = () => {
 
   // const { syncUpdate, syncingId } = useSyncUpdate();
 
+  const isCleaning = useRef(false);
+
   useEffect(() => {
-    if (isFetching) return;
+    if (isFetching || isCleaning.current) return;
     (async () => {
       if (updates) {
         const nextIdx = updates?.findIndex((u) => u.status === 'pending');
         if (nextIdx !== -1) {
           setUpdateIndex(nextIdx);
         } else {
-          deleteAll();
+          isCleaning.current = true;
+          await deleteAll();
           try {
             await handleSync();
           } catch (error) {
             console.warn(error);
+          } finally {
+            isCleaning.current = false;
           }
         }
       }

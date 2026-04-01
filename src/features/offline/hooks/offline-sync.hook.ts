@@ -26,6 +26,7 @@ export const useOfflineSync = () => {
       ratings: 'ratings',
       disclosure_consultations: 'disclosureConsultations',
       updates: 'updates',
+      disclosure_sub_patients: 'disclosureSubPatients',
     } as const;
 
     try {
