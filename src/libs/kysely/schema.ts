@@ -240,7 +240,8 @@ export type TLocalDb = {
       | 'patient_medicines'
       | 'disclosure_details'
       | 'disclosure_notes'
-      | 'disclosure_consultations';
+      | 'disclosure_consultations'
+      | 'disclosure_sub_patients';
     recordId: string;
     status: 'pending' | 'success' | 'failed';
     operation: 'INSERT' | 'UPDATE';
@@ -249,10 +250,16 @@ export type TLocalDb = {
     parentId: string | null;
     createdAt: string;
   };
-  id_mappings: {
-    localId: string;
-    serverId: string;
-    table: string;
-    createdAt: string;
+
+  disclosure_sub_patients: {
+    id: string;
+    name: string;
+    nationalNumber: string | null;
+    birthDate: string | null;
+    job: string | null;
+    about: string | null;
+    gender: TGender | null;
+    disclosureId: string;
+    phones: string[] | null;
   };
 };

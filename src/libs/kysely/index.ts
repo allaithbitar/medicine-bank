@@ -275,11 +275,16 @@ export async function createTables() {
     .execute();
 
   await localDb.schema
-    .createTable('id_mappings')
+    .createTable('disclosure_sub_patients')
     .ifNotExists()
-    .addColumn('localId', 'text', (col) => col.primaryKey())
-    .addColumn('serverId', 'text', (col) => col.notNull())
-    .addColumn('table', 'text', (col) => col.notNull())
-    .addColumn('createdAt', 'datetime', (col) => col.notNull())
+    .addColumn('id', 'uuid', (col) => col.primaryKey())
+    .addColumn('name', 'text', (col) => col.notNull())
+    .addColumn('nationalNumber', 'text')
+    .addColumn('birthDate', 'text')
+    .addColumn('gender', 'text')
+    .addColumn('job', 'text')
+    .addColumn('about', 'text')
+    .addColumn('disclosureId', 'text', (col) => col.notNull())
+    .addColumn('phones', 'json')
     .execute();
 }

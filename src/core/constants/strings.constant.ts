@@ -324,7 +324,7 @@ const STRINGS = {
   the_count: 'العدد',
   disclosure_is_late: 'متأخّر',
   day: 'يوم',
-  house_ownership: 'وضع ملكية المسكن',
+  house_ownership: 'وضع م��كية المسكن',
   house_ownership_owned: 'ملك',
   house_ownership_rent: 'إيجار',
   house_ownership_loan: 'إعارة',
@@ -465,6 +465,7 @@ const STRINGS = {
   queued_family_members_hint: 'اضغط على الفرد لتعديله أو على الحذف لإزالته',
   queue_family_before_save: 'يرجى إضافة فرد عائلة واحد على الأقل قبل الحفظ',
   add_family_member_to_list: 'أضف الفرد إلى القائمة',
+  sub_patient: 'مستفيد إضافي',
 };
 
 export default STRINGS;

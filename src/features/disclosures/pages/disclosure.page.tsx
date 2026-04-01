@@ -19,6 +19,7 @@ import DisclosureFamilyMembersTab from '../components/tabs/disclosure-family-mem
 import DisclosureVisitAndRatingSection from '../components/disclosure-visit-and-rating-section';
 import DisclosureProperties from './disclosure-properties.component';
 import type { TBeneficiaryMedicine, TFamilyMember } from '@/features/beneficiaries/types/beneficiary.types';
+import DisclosureSubPateints from '../components/disclosure-sub-patients.component';
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -100,6 +101,7 @@ const DisclosurePage = () => {
   return (
     <>
       <Stack gap={1}>
+        <DisclosureSubPateints disclosureId={disclosure.id} />
         <DisclosureHeaderCard disclosure={disclosure} />
 
         <DisclosureTabs

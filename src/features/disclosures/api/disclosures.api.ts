@@ -28,6 +28,9 @@ import type {
   TGetDateAppointmentsDto,
   TUpdateDisclosureAdviserConsultationPayload,
   TMoveDisclosuresDto,
+  TDisclosureSubPatient,
+  TAddSubPatientDto,
+  TUpdateSubPatientDto,
 } from '../types/disclosure.types';
 
 export const disclosuresApi = rootApi.injectEndpoints({
@@ -412,6 +415,36 @@ export const disclosuresApi = rootApi.injectEndpoints({
         body: payload,
       }),
       invalidatesTags: ['Disclosures'],
+    }),
+    getDisclosureSubPatients: builder.query<TDisclosureSubPatient[], { disclosureId: string }>({
+      query: ({ disclosureId }) => ({
+        url: `/disclosures/sub-patients/${disclosureId}`,
+      }),
+      transformResponse: (res: ApiResponse<TDisclosureSubPatient[]>) => res.data,
+      providesTags: (_, __, args) => [{ type: 'Sub_Patinets', id: args.disclosureId }],
+    }),
+    getDisclosureSubPatientById: builder.query<TDisclosureSubPatient, { id: string }>({
+      query: ({ id }) => ({
+        url: `/disclosures/sub-patient/${id}`,
+      }),
+      transformResponse: (res: ApiResponse<TDisclosureSubPatient>) => res.data,
+      providesTags: (_, __, args) => [{ type: 'Sub_Patinet', id: args.id }],
+    }),
+    addDisclosureSubPatient: builder.mutation<TDisclosureSubPatient, TAddSubPatientDto>({
+      query: (payload) => ({
+        url: 'disclosures/sub-patient',
+        method: 'POST',
+        body: payload,
+      }),
+      invalidatesTags: ['Sub_Patinets'],
+    }),
+    updateDisclosureSubPatient: builder.mutation<TDisclosureSubPatient, TUpdateSubPatientDto>({
+      query: (payload) => ({
+        url: 'disclosures/sub-patient',
+        method: 'PUT',
+        body: payload,
+      }),
+      invalidatesTags: (_, __, args) => ['Sub_Patinets', { type: 'Sub_Patinet', id: args.id }],
     }),
   }),
 });

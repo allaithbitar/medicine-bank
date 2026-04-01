@@ -1,6 +1,6 @@
 import type { TActioner, TCreatedBy, TPaginationDto, TUpdatedBy } from '@/core/types/common.types';
 import type { TAppointment } from '@/features/appointments/types/appointment.type';
-import type { TBenefieciary } from '@/features/beneficiaries/types/beneficiary.types';
+import type { TBenefieciary, TGender } from '@/features/beneficiaries/types/beneficiary.types';
 import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
 import type { TRating } from '@/features/ratings/types/rating.types';
 import type { THouseHoldAssetCondition, THouseOwnership } from '@/libs/kysely/schema';
@@ -297,3 +297,19 @@ export type TMoveDisclosuresDto = {
   areaIds?: string[];
   visitResult: TDisclosureVisitResult[];
 };
+
+export type TDisclosureSubPatient = {
+  id: string;
+  name: string;
+  nationalNumber: string | null;
+  birthDate: string | null;
+  gender: TGender | null;
+  job: string | null;
+  about: string | null;
+  disclosureId: string;
+  phones: string[] | null;
+};
+
+export type TAddSubPatientDto = Partial<TDisclosureSubPatient> & Pick<TDisclosureSubPatient, 'name' | 'disclosureId'>;
+
+export type TUpdateSubPatientDto = Partial<TAddSubPatientDto> & Pick<TDisclosureSubPatient, 'id' | 'disclosureId'>;
