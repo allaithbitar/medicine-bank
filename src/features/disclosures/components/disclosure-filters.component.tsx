@@ -121,6 +121,7 @@ const DisclosureFilters = ({ ref, value }: TProps) => {
         multiple
         value={filters.visitResult}
         onChange={(visitResult) => setFilters((prev) => ({ ...prev, visitResult }))}
+        filterOptions={(options) => options.filter((o) => !(isScoutRole && o.id === 'cant_be_completed'))}
       />
       <FormCheckbxInput
         label={STRINGS.custom_rating}
