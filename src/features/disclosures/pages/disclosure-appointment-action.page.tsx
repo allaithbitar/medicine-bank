@@ -12,6 +12,7 @@ import disclosuresApi from '../api/disclosures.api';
 import { skipToken } from '@reduxjs/toolkit/query';
 import Header from '@/core/components/common/header/header';
 import useDisclosureMutation from '../hooks/disclosure-mutation.hook';
+import type { TUpdateDisclosureDto } from '../types/disclosure.types';
 
 const DisclosureAppointmentActionPage = () => {
   const [searchParams] = useSearchParams();
@@ -32,12 +33,14 @@ const DisclosureAppointmentActionPage = () => {
 
   const [mutateDisclosure, { isLoading }] = useDisclosureMutation();
 
+  console.log(disclosure);
   const handleSave = async () => {
     if (!disclosure?.id) return;
-    const updateDto = {
+
+    const updateDto: TUpdateDisclosureDto = {
       appointmentDate: selectedDate,
       id: disclosure.id,
-      isCompleted: false,
+      isAppointmentCompleted: false,
     };
     try {
       await mutateDisclosure({ type: 'UPDATE', dto: updateDto });

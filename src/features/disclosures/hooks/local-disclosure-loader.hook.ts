@@ -31,7 +31,12 @@ export const useLocalDisclosureLoader = ({ id }: { id: string }, forceOffline = 
           jsonObjectFrom(
             col
               .selectFrom('priority_degrees')
-              .select(['priority_degrees.id', 'priority_degrees.name', 'priority_degrees.color'])
+              .select([
+                'priority_degrees.id',
+                'priority_degrees.name',
+                'priority_degrees.color',
+                'priority_degrees.durationInDays',
+              ])
               .whereRef('priority_degrees.id', '=', 'disclosures.priorityId')
           ).as('priority'),
           jsonObjectFrom(
