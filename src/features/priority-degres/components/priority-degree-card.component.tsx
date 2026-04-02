@@ -29,7 +29,9 @@ const PriorityDegreeCard = ({ priorityDegree, onEdit }: IProps) => {
       value={
         priorityDegree.durationInDays ? (
           <Typography variant="body2">
-            <strong>{priorityDegree.durationInDays}</strong>{' '}
+            <Typography component="span" fontWeight="bold">
+              {priorityDegree.durationInDays}
+            </Typography>{' '}
             {priorityDegree.durationInDays === 1 ? STRINGS.day : STRINGS.days}
           </Typography>
         ) : (

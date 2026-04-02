@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, type ReactNode } from 'react';
-import { Box, IconButton, CircularProgress, Button } from '@mui/material';
+import { Box, IconButton, CircularProgress, Button, Typography } from '@mui/material';
 import { Edit as EditIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
@@ -225,7 +225,9 @@ const InlineEditWrapper = ({
         },
       }}
     >
-      {children}
+      <Typography variant="subtitle2" color="text.primary" component="span">
+        {children}
+      </Typography>
       {canEdit && (
         <IconButton
           className="edit-icon"

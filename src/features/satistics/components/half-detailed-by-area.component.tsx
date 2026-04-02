@@ -16,7 +16,7 @@ export const HalfDetailedByArea = ({ data }: Props) => {
   }
 
   return (
-    <Stack spacing={4} sx={{ fontFamily: 'alexandria' }}>
+    <Stack spacing={4}>
       {filteredAreas.map((area, index) => (
         <Box key={area.areaId}>
           <Box
@@ -36,7 +36,6 @@ export const HalfDetailedByArea = ({ data }: Props) => {
             <Typography
               variant="h5"
               sx={{
-                fontFamily: 'alexandria',
                 fontWeight: 600,
               }}
             >
@@ -45,7 +44,6 @@ export const HalfDetailedByArea = ({ data }: Props) => {
             <Typography
               variant="h5"
               sx={{
-                fontFamily: 'alexandria',
                 fontWeight: 500,
               }}
             >

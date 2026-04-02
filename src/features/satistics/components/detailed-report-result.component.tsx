@@ -78,7 +78,6 @@ const DetailedReportResult = ({ result }: { result: TDetailedReportResult }) => 
             height={400}
             style={{
               direction: 'ltr',
-              fontFamily: 'alexandria',
               fontSize: 11,
             }}
             responsive
@@ -150,7 +149,6 @@ const DetailedReportResult = ({ result }: { result: TDetailedReportResult }) => 
             height={400}
             style={{
               direction: 'ltr',
-              fontFamily: 'alexandria',
               fontSize: 11,
             }}
             responsive

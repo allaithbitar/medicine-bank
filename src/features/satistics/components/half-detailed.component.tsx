@@ -34,7 +34,7 @@ export const HalfDetailed = ({ data }: Props) => {
   }
 
   return (
-    <Stack spacing={2} sx={{ fontFamily: 'alexandria' }}>
+    <Stack spacing={2}>
       {Object.entries(metricLabels).map(([key, label]) => {
         const metricData = data[key as keyof THalfDetailedStatisticsResult];
         if (!metricData || metricData.count === 0) return null;

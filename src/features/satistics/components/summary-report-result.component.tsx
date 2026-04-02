@@ -81,7 +81,6 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
             height={400}
             style={{
               direction: 'ltr',
-              fontFamily: 'alexandria',
               fontSize: 11,
             }}
             responsive
