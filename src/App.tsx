@@ -48,6 +48,7 @@ import AuditDetailsActionPage from './features/disclosures/pages/disclosue-audit
 import NotificationsPage from './features/notifications/pages/notifications.Page';
 import OfflineUpdatesPage from './features/offline/pages/offline-updates.page';
 import PaymentsPage from './features/payments/pages/payments.page';
+import DisclosureSubPatientActionPage from './features/disclosures/pages/disclosure-sub-patient-action.page';
 
 function App() {
   const router = createBrowserRouter(
@@ -76,6 +77,10 @@ function App() {
                 <Route path="/disclosures/visit-rating/action" element={<DisclosureVisitAndRatingActionPage />} />
                 <Route path="/disclosures/appointment/action" element={<DisclosureAppointmentActionPage />} />
                 <Route path="/disclosures/:disclosureId/note/action" element={<DisclosureNoteActionPage />} />
+                <Route
+                  path="/disclosures/:disclosureId/sub-patient/action"
+                  element={<DisclosureSubPatientActionPage />}
+                />
                 <Route
                   path="/disclosures/:disclosureId/consulting_adviser"
                   element={<DisclosureConsultingAdviserPage />}

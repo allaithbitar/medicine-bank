@@ -1,8 +1,5 @@
-import { Box, Button, Card, Collapse, Divider, IconButton, Stack, Typography } from '@mui/material';
-import useDisclosureSubPatientMutation from '../hooks/disclosure-sub-patient.mutation.hook';
-import { useDisclosureSubPatientsLoader } from '../hooks/disclosure-sub-patients-loader.hook';
-import { useDisclosureSubPatientLoader } from '../hooks/disclosure-sub-patient-loader.hook';
-import { useEffect, useImperativeHandle, useRef, useState, type Ref } from 'react';
+import { Box, Button, Card, IconButton, Stack, Typography, Collapse } from '@mui/material';
+import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
 import STRINGS from '@/core/constants/strings.constant';
 import z from 'zod';
 import type { TListItem } from '@/core/types/input.type';
@@ -15,7 +12,6 @@ import FormDateInput from '@/core/components/common/inputs/form-date-input-compo
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
 import { addTimeZoneOffestToIsoDate } from '@/core/helpers/helpers';
 import type { TDisclosureSubPatient } from '../types/disclosure.types';
-import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 
 const FormSchema = z.object({
   name: z.string().min(5, STRINGS.schema_name_too_short),
@@ -35,13 +31,12 @@ export type TSubPatientFormHandlers = {
   handleSubmit: () => Promise<any>;
 };
 
-const Form = ({
-  subPatientData,
-  ref,
-}: {
+interface DisclosureSubPatientActionFormProps {
   subPatientData?: TDisclosureSubPatient;
-  ref: Ref<TSubPatientFormHandlers>;
-}) => {
+  formRef: Ref<TSubPatientFormHandlers>;
+}
+
+const DisclosureSubPatientActionForm = ({ subPatientData, formRef }: DisclosureSubPatientActionFormProps) => {
   const [showOptionalFields, setShowOptionalFields] = useState(subPatientData ? true : false);
   const { formState, formErrors, handleSubmit, setFormState } = useForm({
     schema: FormSchema,
@@ -61,7 +56,7 @@ const Form = ({
   };
 
   useImperativeHandle(
-    ref,
+    formRef,
     () => ({
       handleSubmit() {
         return handleSubmit();
@@ -214,57 +209,4 @@ const Form = ({
   );
 };
 
-const DisclosureSubPateints = ({ disclosureId }: { disclosureId: string }) => {
-  const formRef = useRef<TSubPatientFormHandlers>(null);
-  const [selectedId, setSelectedId] = useState('');
-  const { data } = useDisclosureSubPatientsLoader(disclosureId);
-
-  const { data: selectedSubPatientData } = useDisclosureSubPatientLoader(selectedId);
-  const [mutateSubPatient, { isLoading: isMutating }] = useDisclosureSubPatientMutation();
-
-  const handleSave = async () => {
-    try {
-      const result = await formRef.current?.handleSubmit();
-      console.log({ result });
-      if (!result.isValid) return;
-
-      const values = result.result;
-
-      if (values.gender) {
-        values.gender = values.gender.id;
-      }
-
-      if (values.birthDate) {
-        values.birthDate = values.birthDate?.split('T')[0] || null;
-      }
-      if (selectedSubPatientData) {
-        await mutateSubPatient({ type: 'UPDATE', dto: { ...values, id: selectedSubPatientData.id, disclosureId } });
-      } else {
-        await mutateSubPatient({ type: 'INSERT', dto: { ...values, disclosureId } });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  return (
-    <Stack sx={{ position: 'relative' }}>
-      {data?.map((d) => (
-        <Card key={d.id} onClick={() => setSelectedId(d.id)}>
-          {JSON.stringify(d)}
-        </Card>
-      ))}
-      {selectedSubPatientData && (
-        <>
-          <Divider />
-          <Card>{JSON.stringify(selectedSubPatientData)}</Card>
-        </>
-      )}
-      <Form ref={formRef} subPatientData={selectedSubPatientData} />
-      <Button onClick={() => handleSave()}>save</Button>
-      {isMutating && <LoadingOverlay />}
-    </Stack>
-  );
-};
-
-export default DisclosureSubPateints;
+export default DisclosureSubPatientActionForm;

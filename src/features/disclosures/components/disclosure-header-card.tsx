@@ -1,4 +1,4 @@
-import { Stack, Button, Card, Typography, Chip, Box } from '@mui/material';
+import { Stack, Button, Card, Typography, Chip, Box, Collapse, Divider } from '@mui/material';
 import DetailItem from '@/core/components/common/detail-item/detail-item.component';
 import BeneficiaryCommonCard from '@/shared/components/beneficiary-common-card';
 import Header from '@/core/components/common/header/header';
@@ -14,9 +14,12 @@ import {
   Info,
   InfoOutline,
   Archive,
+  People,
+  ExpandMore,
+  PersonAdd,
 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
 import usePermissions from '@/core/hooks/use-permissions.hook';
 import InlineEditWrapper from '@/core/components/common/inline-edit-wrapper/inline-edit-wrapper.component';
@@ -30,6 +33,9 @@ import type { TPriorityDegree } from '@/features/priority-degres/types/priority-
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import disclosuresApi from '../api/disclosures.api';
 import { DisclosureStatus } from '../types/disclosure.types';
+import { useDisclosureSubPatientsLoader } from '../hooks/disclosure-sub-patients-loader.hook';
+import DisclosureSubPatientCard from './disclosure-sub-patient-card.component';
+import { useNavigate } from 'react-router-dom';
 
 const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
@@ -37,6 +43,10 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const isArchived = disclosure.status === 'archived';
   const [enableDisclosureMutation, { isLoading: isEnablingDisclosure }] = disclosuresApi.useUpdateDisclosureMutation();
   const canEnableDisclosure = disclosure.status === DisclosureStatus.suspended;
+  const navigate = useNavigate();
+
+  const [showSubPatients, setShowSubPatients] = useState(false);
+  const { data: subPatients } = useDisclosureSubPatientsLoader(disclosure.id);
 
   const updateDisclosureField = useDisclosureFieldMutation(disclosure.id);
 
@@ -91,6 +101,67 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
           beneficiary={disclosure.patient}
           disclosureId={disclosure.id}
         />
+        <Divider sx={{ my: 2 }} />
+        <Stack gap={2}>
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Button
+              variant="text"
+              onClick={() => setShowSubPatients(!showSubPatients)}
+              endIcon={
+                <ExpandMore
+                  sx={{
+                    transform: showSubPatients ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.3s',
+                  }}
+                />
+              }
+              startIcon={<People />}
+              sx={{ px: 0 }}
+            >
+              <Typography variant="subtitle1" fontWeight={600}>
+                {STRINGS.sub_patients}
+              </Typography>
+              <Chip
+                label={subPatients?.length || 0}
+                size="small"
+                sx={{ ml: 1 }}
+                color={subPatients?.length ? 'primary' : 'default'}
+              />
+            </Button>
+
+            {!isArchived && (
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<PersonAdd />}
+                onClick={() => navigate(`/disclosures/${disclosure.id}/sub-patient/action`)}
+              >
+                {STRINGS.add}
+              </Button>
+            )}
+          </Stack>
+          <Collapse in={showSubPatients}>
+            <Stack gap={2}>
+              {!subPatients || subPatients.length === 0 ? (
+                <Typography variant="body2" color="text.secondary" sx={{ py: 2, textAlign: 'center' }}>
+                  {STRINGS.no_sub_patients}
+                </Typography>
+              ) : (
+                subPatients.map((subPatient) => (
+                  <DisclosureSubPatientCard
+                    key={subPatient.id}
+                    subPatient={subPatient}
+                    onEdit={
+                      !isArchived
+                        ? (sp) => navigate(`/disclosures/${disclosure.id}/sub-patient/action?id=${sp.id}`)
+                        : undefined
+                    }
+                  />
+                ))
+              )}
+            </Stack>
+          </Collapse>
+        </Stack>
       </Card>
       <Card>
         <Header title={STRINGS.the_disclosure} />

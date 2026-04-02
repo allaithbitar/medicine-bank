@@ -436,7 +436,10 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
-      invalidatesTags: ['Sub_Patinets'],
+      invalidatesTags: (_, __, args) => [
+        'Sub_Patinets',
+        { type: 'Sub_Patinets', id: args.disclosureId },
+      ],
     }),
     updateDisclosureSubPatient: builder.mutation<TDisclosureSubPatient, TUpdateSubPatientDto>({
       query: (payload) => ({
@@ -444,7 +447,11 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: 'PUT',
         body: payload,
       }),
-      invalidatesTags: (_, __, args) => ['Sub_Patinets', { type: 'Sub_Patinet', id: args.id }],
+      invalidatesTags: (_, __, args) => [
+        'Sub_Patinets',
+        { type: 'Sub_Patinets', id: args.disclosureId },
+        { type: 'Sub_Patinet', id: args.id },
+      ],
     }),
   }),
 });
