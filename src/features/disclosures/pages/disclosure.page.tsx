@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Stack } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import DifferenceIcon from '@mui/icons-material/Difference';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import STRINGS from '@/core/constants/strings.constant';
 import PageLoading from '@/core/components/common/page-loading/page-loading.component';
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
@@ -19,7 +20,6 @@ import DisclosureFamilyMembersTab from '../components/tabs/disclosure-family-mem
 import DisclosureVisitAndRatingSection from '../components/disclosure-visit-and-rating-section';
 import DisclosureProperties from './disclosure-properties.component';
 import type { TBeneficiaryMedicine, TFamilyMember } from '@/features/beneficiaries/types/beneficiary.types';
-import DisclosureSubPateints from '../components/disclosure-sub-patients.component';
 
 const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -101,7 +101,6 @@ const DisclosurePage = () => {
   return (
     <>
       <Stack gap={1}>
-        <DisclosureSubPateints disclosureId={disclosure.id} />
         <DisclosureHeaderCard disclosure={disclosure} />
 
         <DisclosureTabs
@@ -157,6 +156,11 @@ const DisclosurePage = () => {
                   icon: <Add />,
                   label: STRINGS.add_family_member,
                   onClick: () => handleOpenFamilyMembersActionPage(undefined),
+                },
+                {
+                  icon: <PersonAddIcon />,
+                  label: STRINGS.add_sub_patient,
+                  onClick: () => navigate(`/disclosures/${disclosureId}/sub-patient/action`),
                 },
               ]
             : []),
