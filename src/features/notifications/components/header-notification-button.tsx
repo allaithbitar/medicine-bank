@@ -1,9 +1,12 @@
 import { IconButton, Badge } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import notificationsApi from '@/features/notifications/api/notifications.api';
+import useIsOffline from '@/core/hooks/use-is-offline.hook';
 
 const HeaderNotificationButton = () => {
-  const { data } = notificationsApi.useGetUnreadCountQuery(undefined, { pollingInterval: 30000 });
+  const isOffline = useIsOffline();
+
+  const { data } = notificationsApi.useGetUnreadCountQuery(undefined, { pollingInterval: 30000, skip: isOffline });
 
   const count = data || 0;
 
