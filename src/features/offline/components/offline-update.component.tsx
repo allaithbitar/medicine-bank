@@ -72,7 +72,7 @@ const RenderAudioFile = ({ field, isServerValue }: { field: FieldDiff; isServerV
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field.localValue, isServerValue]);
+  }, [field.localValue, field.serverValue, isServerValue]);
 
   if (!objectUrl) return STRINGS.none;
 

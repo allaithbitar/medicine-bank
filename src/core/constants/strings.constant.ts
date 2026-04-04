@@ -165,7 +165,7 @@ const STRINGS = {
   appointment_completed: 'تمّت المراجعة',
   appointment_date: 'تاريخ المراجعة',
   family_members: 'أفراد العائلة',
-  family_member: 'فرد عائل ',
+  family_member: 'فرد عائلة',
   add_family_member: 'اضافة فرد عائلة',
   edit_family_member: 'تعديل فرد عائلة',
   birth_date: 'تاريخ الميلاد',
@@ -472,6 +472,7 @@ const STRINGS = {
   manage_sub_patients: 'إدارة المستفيدين الإضافيين',
   no_sub_patients: 'لا يوجد مستفيدون إضافيون',
   sub_patient_details: 'تفاصيل المستفيد الإضافي',
+  cant_play_synced_notes: 'لا يمكن تشغيل صوت الملاحظات المزامنة بدون انترنت',
 };
 
 export default STRINGS;

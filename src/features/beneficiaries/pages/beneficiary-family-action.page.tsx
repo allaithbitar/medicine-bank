@@ -125,7 +125,7 @@ const BeneficiaryFamilyActionPage = () => {
       return;
     }
     const dto: TAddFamilyMemberPayload = {
-      birthDate: result.birthDate,
+      birthDate: result.birthDate.split('T')[0],
       gender: result.gender,
       kidsCount: isNaN(Number(result.kidsCount)) || result.kidsCount === '' ? null : Number(result.kidsCount),
       kinshep: result.kinshep,

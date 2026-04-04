@@ -62,7 +62,7 @@ const useDisclsoureNoteMutation = () => {
       });
 
       queryClient.invalidateQueries({
-        queryKey: ['LOCAL_DISCLOSURE_NOTES'],
+        queryKey: ['LOCAL_DISCLOSURE_NOTES', insertDto.disclosureId],
       });
     },
     [localUpdatesTable, queryClient, userId]
@@ -116,7 +116,7 @@ const useDisclsoureNoteMutation = () => {
 
       // queryKey: ['LOCAL_DISCLOSURE_NOTE', id, forceOffline],
       queryClient.invalidateQueries({
-        queryKey: ['LOCAL_DISCLOSURE_NOTES'],
+        queryKey: ['LOCAL_DISCLOSURE_NOTES', values.disclosureId],
       });
       queryClient.invalidateQueries({
         queryKey: ['LOCAL_DISCLOSURE_NOTE', id],

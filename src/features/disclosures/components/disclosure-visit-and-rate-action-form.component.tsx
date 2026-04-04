@@ -177,7 +177,7 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclo
           <FormCheckbxInput
             label={STRINGS.custom_rating}
             value={formState.isCustomRating}
-            onChange={(isCustomRating) => setValue({ isCustomRating })}
+            onChange={(isCustomRating) => setValue({ isCustomRating, rating: null, customRating: '' })}
             disabled={!ratingEnabled}
           />
 

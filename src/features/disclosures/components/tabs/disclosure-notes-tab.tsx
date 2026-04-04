@@ -44,7 +44,7 @@ const NoteCard = ({ note, canEditNote }: { note: TDisclosureNote; canEditNote?: 
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOffline]);
+  }, [isOffline, note.noteAudio]);
 
   return (
     <ReusableCardComponent
@@ -67,11 +67,16 @@ const NoteCard = ({ note, canEditNote }: { note: TDisclosureNote; canEditNote?: 
           {note.noteAudio && (
             <>
               <Divider flexItem />
-              <audio
-                controlsList="nodownload"
-                controls
-                src={offlineAudioObjectUrl || getVoiceSrc({ baseUrl, filePath: note.noteAudio })}
-              />
+              {isOffline && offlineAudioObjectUrl && (
+                <audio controlsList="nodownload" controls src={offlineAudioObjectUrl} />
+              )}
+              {!isOffline && note.noteAudio && (
+                <audio controlsList="nodownload" controls src={getVoiceSrc({ baseUrl, filePath: note.noteAudio })} />
+              )}
+
+              {isOffline && !offlineAudioObjectUrl && (
+                <Typography color="warning">{STRINGS.cant_play_synced_notes}</Typography>
+              )}
             </>
           )}
         </Stack>

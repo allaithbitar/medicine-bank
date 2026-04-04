@@ -43,7 +43,7 @@ const DisclosureVisitAndRatingActionPage = () => {
       };
 
       if (updateDto.ratingId || updateDto.customRating) {
-        updateDto.visitNote = null;
+        // updateDto.visitNote = null;
         updateDto.visitReason = null;
       } else {
         updateDto.ratingId = null;
@@ -70,7 +70,7 @@ const DisclosureVisitAndRatingActionPage = () => {
     ratingId: disclosure?.rating?.id,
     rating: disclosure?.rating,
     ratingNote: disclosure?.ratingNote,
-  } as unknown as TDisclosureRating & TVisit;
+  } as TDisclosureRating & TVisit;
 
   return (
     <Stack>
