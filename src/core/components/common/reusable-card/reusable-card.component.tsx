@@ -27,6 +27,9 @@ const ReusableCard = ({
         width: '100%',
         transition: 'all 0.3s ease-in-out',
         cursor: onClick ? 'pointer' : 'default',
+        ...(onClick && {
+          '-webkit-tap-highlight-color': 'transparent',
+        }),
         // boxShadow: 3,
         ...cardSx,
       }}
