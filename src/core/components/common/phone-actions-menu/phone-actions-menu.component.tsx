@@ -14,15 +14,18 @@ interface IPhoneActionsMenuProps {
 const PhoneActionsMenu = ({ phone, showWhatsApp = false, compact = false }: IPhoneActionsMenuProps) => {
   const tel = sanitizePhoneForTel(phone);
 
-  const handleCall = useCallback(() => {
+  const handleCall = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     window.location.href = `tel:${tel}`;
   }, [tel]);
 
-  const handleSMS = useCallback(() => {
+  const handleSMS = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     window.location.href = `sms:${tel}`;
   }, [tel]);
 
-  const handleCopy = useCallback(async () => {
+  const handleCopy = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       await navigator.clipboard.writeText(phone);
       notifySuccess(STRINGS.copied_to_clipboard);
@@ -31,7 +34,8 @@ const PhoneActionsMenu = ({ phone, showWhatsApp = false, compact = false }: IPho
     }
   }, [phone]);
 
-  const handleWhatsApp = useCallback(() => {
+  const handleWhatsApp = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     const cleanPhone = phone.replace(/[^\d+]/g, '');
     window.open(`https://wa.me/${cleanPhone}`, '_blank');
   }, [phone]);

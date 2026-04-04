@@ -2,7 +2,7 @@ import { Button, Chip, Stack } from '@mui/material';
 import type { TDisclosure } from '../types/disclosure.types';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
-import { InfoOutline, LocationPin, Person, PriorityHighOutlined, Visibility, Archive } from '@mui/icons-material';
+import { InfoOutline, LocationPin, Person, PriorityHighOutlined, Visibility, Archive, Phone } from '@mui/icons-material';
 import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 // import { purple } from '@mui/material/colors';
@@ -12,6 +12,7 @@ import CustomBadge from './custom-badge.component';
 import FormattedVisitRatingResult from './formatted-visit-rating-result';
 import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
 import { useMemo, useCallback } from 'react';
+import PhoneActionsMenu from '@/core/components/common/phone-actions-menu/phone-actions-menu.component';
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const navigate = useNavigate();
@@ -25,6 +26,19 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
     e.stopPropagation();
     navigate(`/disclosures/${disclosure.id}`);
   }, [navigate, disclosure.id]);
+
+  const getPhoneValues = useCallback(() => {
+    if (!disclosure.patient.phones?.length) {
+      return STRINGS.none;
+    }
+    return (
+      <Stack spacing={0.5}>
+        {disclosure.patient.phones.map((p) => (
+          <PhoneActionsMenu key={p.id} phone={p.phone} />
+        ))}
+      </Stack>
+    );
+  }, [disclosure.patient.phones]);
 
   const headerContent = (
     <CardAvatar
@@ -75,6 +89,9 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
         label={STRINGS.disclosure_scout}
         value={disclosure.scout?.name ?? STRINGS.none}
       />
+
+      <DetailItemComponent icon={<Phone />} label={STRINGS.phone_numbers} value={getPhoneValues()} />
+
       <DetailItemComponent icon={<LocationPin />} label={STRINGS.patient_address} value={showAddress()} />
 
       {disclosure.archiveNumber && (
