@@ -181,6 +181,31 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
 
       const items = (await query.execute()) as unknown as TDisclosure[];
 
+      const patientIds = [...new Set(items.map((i) => i.patientId))];
+
+      const phoneNumbers = await localDb
+        .selectFrom('patients_phone_numbers')
+        .select(['id', 'phone', 'patientId'])
+        .where('patientId', 'in', patientIds)
+        .execute();
+
+      const phoneNumbersDic = phoneNumbers.reduce(
+        (acc, curr) => {
+          if (!acc[curr.patientId]) {
+            acc[curr.patientId] = [];
+          }
+          acc[curr.patientId].push({ id: curr.id, phone: curr.phone, patientId: curr.patientId });
+          return acc;
+        },
+        {} as Record<string, { id: string; phone: string; patientId: string }[]>
+      );
+
+      for (const item of items) {
+        if (phoneNumbersDic[item.patientId]) {
+          item.patient = { ...item.patient, phones: phoneNumbersDic[item.patientId] };
+        }
+      }
+
       return {
         items,
         totalCount,

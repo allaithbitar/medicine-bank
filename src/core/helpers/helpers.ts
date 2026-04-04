@@ -15,7 +15,8 @@ export const isApiError = (obj: any): obj is ApiErrorResponse => {
 export const getErrorMessage = (
   error: FetchBaseQueryError | SerializedError | Error | ApiErrorResponse | string | object
 ) => {
-  if (!error) return 'something_went_wrong';
+  if (!error) return STRINGS.something_went_wrong;
+
   if (typeof error === 'string') {
     return error;
   }
@@ -30,7 +31,8 @@ export const getErrorMessage = (
   if (isApiError(error)) {
     return error.errorMessage.ar;
   }
-  return 'something_went_wrong';
+
+  return STRINGS.something_went_wrong;
 };
 
 export const formatDateTime = (date: string | Date, withTime = true, overrideOptions?: Intl.DateTimeFormatOptions) =>

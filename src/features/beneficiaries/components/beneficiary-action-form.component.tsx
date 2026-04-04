@@ -129,12 +129,15 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaC
           _gender = { id: 'female', label: STRINGS.female };
         }
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { city, cityId: _cityId, ...area } = beneficiaryData.area ?? {};
+
       setFormState({
         name: beneficiaryData.name,
         about: beneficiaryData.about,
         address: beneficiaryData.address || '',
-        area: null,
-        city: null,
+        area: (area as any) ?? null,
+        city: city ?? null,
         nationalNumber: beneficiaryData.nationalNumber || '',
         phoneNumbers: beneficiaryData.phones.map((p) => p.phone),
         birthDate: beneficiaryData.birthDate ?? '',

@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 
 const AppUiWrapper = () => {
   const [queryClient] = useState(
-    () => new QueryClient({ defaultOptions: { queries: { retry: 1, networkMode: 'offlineFirst' } } })
+    () => new QueryClient({ defaultOptions: { queries: { retry: 0, networkMode: 'offlineFirst' } } })
   );
 
   return (

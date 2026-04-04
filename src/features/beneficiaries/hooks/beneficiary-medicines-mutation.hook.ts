@@ -4,6 +4,7 @@ import { localDb } from '@/libs/sqlocal';
 import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.hook';
 import type { TAddBeneficiaryMedicinePayload, TUpdateBeneficiaryMedicinePayload } from '../types/beneficiary.types';
 import beneficiaryApi from '../api/beneficiary.api';
+import { useQueryClient } from '@tanstack/react-query';
 
 type IUpdateBeneficiaryMedicineDto = { type: 'UPDATE'; dto: TUpdateBeneficiaryMedicinePayload };
 
@@ -12,6 +13,7 @@ type TInsertBeneficiaryMedicineDto = { type: 'INSERT'; dto: TAddBeneficiaryMedic
 type TBeneficiaryMedicineMutation = TInsertBeneficiaryMedicineDto | IUpdateBeneficiaryMedicineDto;
 
 const useBeneficiaryMedicineMutation = () => {
+  const queryClient = useQueryClient();
   const localUpdatesTable = useLocalUpdatesTable();
   const [onlineUpdate, onlineUpdateProperties] = beneficiaryApi.useUpdateBeneficiaryMedicineMutation();
   const [onlineInsert, onlineInsertProperties] = beneficiaryApi.useAddBeneficiaryMedicineMutation();
@@ -35,8 +37,9 @@ const useBeneficiaryMedicineMutation = () => {
         serverRecordId: null,
         parentId: dto.patientId,
       });
+      queryClient.invalidateQueries({ queryKey: ['LOCAL_BENEFICIARY_MEDICINES'] });
     },
-    [localUpdatesTable]
+    [localUpdatesTable, queryClient]
   );
 
   const handleUpdate = useCallback(
@@ -60,8 +63,11 @@ const useBeneficiaryMedicineMutation = () => {
           parentId: values.patientId,
         });
       }
+
+      queryClient.invalidateQueries({ queryKey: ['LOCAL_BENEFICIARY_MEDICINES'] });
+      queryClient.invalidateQueries({ queryKey: ['LOCAL_BENEFICIARY_MEDICINE', id] });
     },
-    [localUpdatesTable]
+    [localUpdatesTable, queryClient]
   );
 
   // const handleOnlineUpdate = useCallback(onlineUpdate, []);

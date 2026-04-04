@@ -4,6 +4,7 @@ import { localDb } from '@/libs/sqlocal';
 import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.hook';
 import type { TAddDisclosureDetailsDto, TUpdateDisclosureDetailsDto } from '../types/disclosure.types';
 import disclosuresApi from '../api/disclosures.api';
+import { useQueryClient } from '@tanstack/react-query';
 
 type IUpdateDisclosureDetailsDto = { type: 'UPDATE'; dto: TUpdateDisclosureDetailsDto };
 
@@ -12,6 +13,7 @@ type TInsertDisclosureDetailsDto = { type: 'INSERT'; dto: TAddDisclosureDetailsD
 type TDisclosureDetailsMutation = TInsertDisclosureDetailsDto | IUpdateDisclosureDetailsDto;
 
 const useDisclosureDetailsMutation = () => {
+  const queryClient = useQueryClient();
   const localUpdatesTable = useLocalUpdatesTable();
   const [onlineUpdate, onlineUpdateProperties] = disclosuresApi.useUpdateDisclosureDetailsMutation();
   const [onlineInsert, onlineInsertProperties] = disclosuresApi.useAddDisclosureDetailsMutation();
@@ -34,8 +36,12 @@ const useDisclosureDetailsMutation = () => {
         serverRecordId: null,
         parentId: insertDto.disclosureId,
       });
+      queryClient.invalidateQueries({
+        queryKey: ['LOCAL_DISCLOSURE_DETAILS', insertDto.disclosureId],
+      });
     },
-    [localUpdatesTable]
+
+    [localUpdatesTable, queryClient]
   );
 
   const handleUpdate = useCallback(
@@ -59,8 +65,12 @@ const useDisclosureDetailsMutation = () => {
           parentId: disclosureId,
         });
       }
+
+      queryClient.invalidateQueries({
+        queryKey: ['LOCAL_DISCLOSURE_DETAILS', disclosureId],
+      });
     },
-    [localUpdatesTable]
+    [localUpdatesTable, queryClient]
   );
 
   // const handleOnlineUpdate = useCallback(onlineUpdate, []);

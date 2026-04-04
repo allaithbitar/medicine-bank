@@ -28,6 +28,7 @@ type TArea = {
   id: string;
   name: string;
   cityId: string;
+  city?: { id: string; name: string };
 };
 
 export type TBeneficiaryPhone = {

@@ -25,7 +25,14 @@ export const useLocalBeneficiaryLoader = ({ id }: { id: string }, forceOffline =
           jsonObjectFrom(
             col
               .selectFrom('areas')
-              .select(['areas.id', 'areas.name', 'areas.cityId'])
+              .select((nCol) => [
+                'areas.id',
+                'areas.name',
+                'areas.cityId',
+                jsonObjectFrom(
+                  nCol.selectFrom('cities').select(['name', 'id']).whereRef('areas.cityId', '=', 'cities.id')
+                ).as('city'),
+              ])
               .whereRef('areas.id', '=', 'patients.areaId')
           ).as('area'),
         ])

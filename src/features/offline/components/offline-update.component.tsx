@@ -31,7 +31,7 @@ import { useDisclosureNoteLoader } from '@/features/disclosures/hooks/disclosure
 import { useBeneficiaryMedicineLoader } from '@/features/beneficiaries/hooks/beneficiary-medicine-loader.hook';
 import beneficiaryApi from '@/features/beneficiaries/api/beneficiary.api';
 import useLocalUpdatesTable from '../hooks/local-updates-table.hook';
-import { notifyError } from '@/core/components/common/toast/toast';
+import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import disclosuresApi from '@/features/disclosures/api/disclosures.api';
 import type {
   TAddDisclosureAdviserConsultationPayload,
@@ -303,6 +303,7 @@ const PatientOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
         serverRecordId = update.recordId;
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+      notifySuccess(STRINGS.action_done_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));
     }
@@ -349,6 +350,7 @@ const DisclosureOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
 
   const { data: disclosureBeneficiaryUpdate, isFetching: isFetchingParentUpdateData } = useLocalUpdateLoader({
     recordId: localDisclosureData?.patientId ?? '',
+    operation: 'INSERT',
   });
 
   const localUpdateTable = useLocalUpdatesTable();
@@ -428,6 +430,7 @@ const DisclosureOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
         serverRecordId = update.recordId;
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+      notifySuccess(STRINGS.action_done_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));
     }
@@ -610,6 +613,7 @@ const FamilyMemberOfflineUpdate = ({ id }: { id: string }) => {
         serverRecordId = update.recordId!;
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+      notifySuccess(STRINGS.action_done_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));
     }
@@ -685,6 +689,7 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
 
   const { data: parentDisclosureData, isFetching: isFetchingParentUpdateData } = useLocalUpdateLoader({
     recordId: update?.parentId ?? '',
+    operation: 'INSERT',
   });
 
   const blocked =
@@ -755,10 +760,14 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
         await addDisclosureDetails(dto).unwrap();
         serverRecordId = dto.disclosureId;
       } else {
+        if (!dto.disclosureId) {
+          dto.disclosureId = update.parentId || (update.payload as any).disclosureId || '';
+        }
         await updateDisclosureDetails(dto).unwrap();
         serverRecordId = update.parentId!;
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+      notifySuccess(STRINGS.action_done_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));
     }
@@ -783,6 +792,7 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
           <Stack gap={1} sx={{ flex: 1, overflow: 'auto' }}>
             <OperationLabel operation={update.operation} />
             <DiffColumns
+              showDiff={update.operation === 'UPDATE'}
               diffs={diffs}
               order={{
                 diseasesOrSurgeries: 1,
@@ -833,6 +843,7 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
 
   const { data: parentDisclosureData, isFetching: isFetchingParentUpdateData } = useLocalUpdateLoader({
     recordId: update?.parentId ?? '',
+    operation: 'INSERT',
   });
 
   const blocked =
@@ -919,6 +930,7 @@ const DisclosureNoteOfflineUpdate = ({ id }: { id: string }) => {
         await deleteAudioFile(_noteAudioToDelete);
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+      notifySuccess(STRINGS.action_done_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));
     }
@@ -1041,6 +1053,7 @@ const BeneficiaryMedicineOfflineUpdate = ({ id }: { id: string }) => {
         serverRecordId = update.recordId!;
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+      notifySuccess(STRINGS.action_done_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));
     }
@@ -1188,6 +1201,7 @@ const DisclosureConsultationOfflineUpdate = ({ id }: { id: string }) => {
         await deleteAudioFile(_consultationAudioToDelete);
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+      notifySuccess(STRINGS.action_done_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));
     }
@@ -1248,6 +1262,7 @@ const DisclosureSubPatientOfflineUpdate = ({ id }: { id: string }) => {
 
   const { data: parentDisclosureData, isFetching: isFetchingParentUpdateData } = useLocalUpdateLoader({
     recordId: update?.parentId ?? '',
+    operation: 'INSERT',
   });
 
   const blocked =
@@ -1318,6 +1333,7 @@ const DisclosureSubPatientOfflineUpdate = ({ id }: { id: string }) => {
         serverRecordId = update.recordId;
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+      notifySuccess(STRINGS.action_done_successfully);
     } catch (error: any) {
       notifyError(getErrorMessage(error));
     }

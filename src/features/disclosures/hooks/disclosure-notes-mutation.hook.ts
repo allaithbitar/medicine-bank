@@ -61,7 +61,7 @@ const useDisclsoureNoteMutation = () => {
         parentId: insertDto.disclosureId,
       });
 
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['LOCAL_DISCLOSURE_NOTES'],
       });
     },
@@ -115,10 +115,10 @@ const useDisclsoureNoteMutation = () => {
       }
 
       // queryKey: ['LOCAL_DISCLOSURE_NOTE', id, forceOffline],
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['LOCAL_DISCLOSURE_NOTES'],
       });
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['LOCAL_DISCLOSURE_NOTE', id],
       });
     },

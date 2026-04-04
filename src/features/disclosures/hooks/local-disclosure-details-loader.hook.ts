@@ -10,13 +10,14 @@ export const useLocalDisclosureDetailsLoader = (disclosureId?: string, forceOffl
   const queryResult = useQuery({
     queryKey: ['LOCAL_DISCLOSURE_DETAILS', disclosureId, forceOffline],
     queryFn: async () => {
-      return (await localDb
+      const result = (await localDb
         .selectFrom('disclosure_details')
         .selectAll()
         .select((eb) => [withCreatedBy(eb, 'createdBy')])
         .where('disclosureId', '=', disclosureId!)
+        .executeTakeFirst()) as TDisclosureDetails | null;
 
-        .executeTakeFirstOrThrow()) as TDisclosureDetails;
+      return result || null;
     },
     enabled: isOffline && !!disclosureId,
   });

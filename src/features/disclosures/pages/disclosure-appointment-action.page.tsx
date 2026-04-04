@@ -8,20 +8,17 @@ import { notifyError, notifyInfo, notifySuccess } from '@/core/components/common
 import STRINGS from '@/core/constants/strings.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import WarningNotice from '@/core/components/common/warning-notice/warning-notice.component';
-import disclosuresApi from '../api/disclosures.api';
-import { skipToken } from '@reduxjs/toolkit/query';
 import Header from '@/core/components/common/header/header';
 import useDisclosureMutation from '../hooks/disclosure-mutation.hook';
 import type { TUpdateDisclosureDto } from '../types/disclosure.types';
+import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
 
 const DisclosureAppointmentActionPage = () => {
   const [searchParams] = useSearchParams();
   const disclosureId = searchParams.get('id');
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState('');
-  const { data: disclosure, isLoading: isLoadingDisclosure } = disclosuresApi.useGetDisclosureQuery(
-    disclosureId ? { id: disclosureId } : skipToken
-  );
+  const { data: disclosure, isLoading: isLoadingDisclosure } = useDisclosureLoader({ id: disclosureId || '' });
 
   useEffect(() => {
     if (disclosure) {

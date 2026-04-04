@@ -4,6 +4,7 @@ import { localDb } from '@/libs/sqlocal';
 import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.hook';
 import beneficiaryApi from '../api/beneficiary.api';
 import type { TAddFamilyMemberPayload, TUpdateFamilyMemberPayload } from '../types/beneficiary.types';
+import { useQueryClient } from '@tanstack/react-query';
 
 type IUpdateFamilyMemberDto = { type: 'UPDATE'; dto: TUpdateFamilyMemberPayload };
 
@@ -12,6 +13,7 @@ type TInsertFamilyMemberDto = { type: 'INSERT'; dto: TAddFamilyMemberPayload };
 type TFamilyMemberMutation = TInsertFamilyMemberDto | IUpdateFamilyMemberDto;
 
 const useFamilyMembersMutation = () => {
+  const queryClient = useQueryClient();
   const localUpdatesTable = useLocalUpdatesTable();
   const [onlineUpdate, onlineUpdateProperties] = beneficiaryApi.useUpdateFamilyMemberMutation();
   const [onlineInsert, onlineInsertProperties] = beneficiaryApi.useAddFamilyMemberMutation();
@@ -35,8 +37,9 @@ const useFamilyMembersMutation = () => {
         serverRecordId: null,
         parentId: dto.patientId,
       });
+      queryClient.invalidateQueries({ queryKey: ['LOCAL_BENEFICIARY_FAMILY_MEMBERS'] });
     },
-    [localUpdatesTable]
+    [localUpdatesTable, queryClient]
   );
 
   const handleUpdate = useCallback(
@@ -60,8 +63,10 @@ const useFamilyMembersMutation = () => {
           parentId: dto.patientId,
         });
       }
+      queryClient.invalidateQueries({ queryKey: ['LOCAL_BENEFICIARY_FAMILY_MEMBERS'] });
+      queryClient.invalidateQueries({ queryKey: ['LOCAL_BENEFICIARY_FAMILY_MEMBER', id] });
     },
-    [localUpdatesTable]
+    [localUpdatesTable, queryClient]
   );
 
   // const handleOnlineUpdate = useCallback(onlineUpdate, []);
