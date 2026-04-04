@@ -8,15 +8,25 @@ interface IReusableCardProps {
   bodyContent?: ReactNode;
   footerContent?: ReactNode;
   cardSx?: object;
+  onClick?: () => void;
 }
 
-const ReusableCard = ({ headerBackground, headerContent, bodyContent, footerContent, cardSx }: IReusableCardProps) => {
+const ReusableCard = ({
+  headerBackground,
+  headerContent,
+  bodyContent,
+  footerContent,
+  cardSx,
+  onClick,
+}: IReusableCardProps) => {
   return (
     <Card
+      onClick={onClick}
       sx={{
         p: 0,
         width: '100%',
         transition: 'all 0.3s ease-in-out',
+        cursor: onClick ? 'pointer' : 'default',
         // boxShadow: 3,
         ...cardSx,
       }}

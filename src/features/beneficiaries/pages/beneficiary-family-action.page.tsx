@@ -45,7 +45,7 @@ type TFamilyFormValues = z.infer<typeof FamilyMemberSchema>;
 const createInitialFormState = (): TFamilyFormValues => ({
   birthDate: '',
   gender: 'male' as TGender,
-  kinshep: 'partner' as TKinship,
+  kinshep: 'child' as TKinship,
   name: '',
   jobOrSchool: '',
   note: '',
@@ -61,7 +61,7 @@ type PartialFamilyState = Partial<TFamilyFormValues>;
 const normalizeDraftState = (state: PartialFamilyState) => ({
   birthDate: state.birthDate ?? '',
   gender: (state.gender as TGender) ?? 'male',
-  kinshep: (state.kinshep as TKinship) ?? 'partner',
+  kinshep: (state.kinshep as TKinship) ?? 'child',
   name: state.name ?? '',
   jobOrSchool: state.jobOrSchool ?? '',
   note: state.note ?? '',
@@ -344,7 +344,6 @@ const BeneficiaryFamilyActionPage = () => {
         <Stack sx={{ flexDirection: 'row', gap: 2 }}>
           <FormSelectInput
             value={formState.gender}
-            required
             disableClearable
             label={STRINGS.gender}
             options={GENDERS.map((g) => ({ id: g, label: STRINGS[g] }))}

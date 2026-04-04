@@ -110,3 +110,13 @@ export const formatDateFromNow = (date: Date | string) => {
     return formatter.format(Math.trunc((diff % HOUR_IN_MILLIS) / MIN_IN_MILLIS), 'minute');
   else return formatter.format(Math.trunc((diff % MIN_IN_MILLIS) / SEC_IN_MILLIS), 'second');
 };
+export const arabicToWesternDigits = (input: string): string => {
+  return input.replace(/[\u0660-\u0669]/g, (char) => {
+    return String.fromCharCode(char.charCodeAt(0) - 0x0660 + 0x0030);
+  });
+};
+export const westernToArabicDigits = (input: string): string => {
+  return input.replace(/[0-9]/g, (char) => {
+    return String.fromCharCode(char.charCodeAt(0) - 0x0030 + 0x0660);
+  });
+};

@@ -7,14 +7,24 @@ import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 // import { purple } from '@mui/material/colors';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CustomBadge from './custom-badge.component';
 import FormattedVisitRatingResult from './formatted-visit-rating-result';
 import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
+  const navigate = useNavigate();
   const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
+
+  const handleCardClick = useCallback(() => {
+    navigate(`/disclosures/${disclosure.id}`);
+  }, [navigate, disclosure.id]);
+
+  const handleViewClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/disclosures/${disclosure.id}`);
+  }, [navigate, disclosure.id]);
 
   const headerContent = (
     <CardAvatar
@@ -89,6 +99,7 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
       // headerBackground={`linear-gradient(to right, ${purple[800]}, ${purple[500]})`}
       headerContent={headerContent}
       bodyContent={bodyContent}
+      onClick={handleCardClick}
       footerContent={
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" justifyContent="space-between" alignItems="center" gap={0.5}>
@@ -108,11 +119,9 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
             )}
           </Stack>
 
-          <Link to={`/disclosures/${disclosure.id}`}>
-            <Button variant="outlined" startIcon={<Visibility />}>
-              {STRINGS.view}
-            </Button>
-          </Link>
+          <Button variant="outlined" startIcon={<Visibility />} onClick={handleViewClick}>
+            {STRINGS.view}
+          </Button>
         </Stack>
       }
     />

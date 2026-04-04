@@ -39,7 +39,16 @@ function FormSelectInput<T extends TListItem>({
       }}
     >
       <RequiredLabel required={required}>{label}</RequiredLabel>
-      <Select value={value} {...(props as any)}>
+      <Select
+        value={value}
+        {...(props as any)}
+        onClose={(event) => {
+          if (event?.target instanceof HTMLElement) {
+            event.target.blur();
+          }
+          props.onClose?.(event);
+        }}
+      >
         {!disableClearable && (
           <MenuItem value="" onClick={() => onChange?.('')}>
             {STRINGS.none}

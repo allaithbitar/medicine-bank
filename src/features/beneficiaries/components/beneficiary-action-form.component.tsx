@@ -3,6 +3,7 @@ import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-in
 import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
 import STRINGS from '@/core/constants/strings.constant';
 import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
+import { arabicToWesternDigits } from '@/core/helpers/helpers';
 import CitiesAutocomplete from '@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component';
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 import type { TCity } from '@/features/banks/types/city.types';
@@ -210,7 +211,7 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaC
                 label={`${STRINGS.phone_number} ${index + 1}`}
                 value={pn}
                 onChange={(v) => {
-                  const sanitizedValue = v.replace(/\s+/g, '');
+                  const sanitizedValue = arabicToWesternDigits(v.replace(/\s+/g, ''));
                   const clone = structuredClone(formState.phoneNumbers);
                   clone[index] = sanitizedValue;
                   return setFormState((prev) => ({
