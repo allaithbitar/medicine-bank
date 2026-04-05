@@ -85,8 +85,7 @@ const STRINGS = {
   code: 'الرمز',
   visit_result: 'نتيجة الزيارة',
   visit_reason: 'سبب فشل الزيارة',
-  the_sync: 'المزامنة',
-  sync: 'مزامنة',
+  sync: 'مزامنة البيانات على الجهاز',
   from_date: 'من تاريخ',
   to_date: 'الى تاريخ',
   search: 'بحث',
@@ -473,6 +472,8 @@ const STRINGS = {
   no_sub_patients: 'لا يوجد مستفيدون إضافيون',
   sub_patient_details: 'تفاصيل المستفيد الإضافي',
   cant_play_synced_notes: 'لا يمكن تشغيل صوت الملاحظات المزامنة بدون انترنت',
+  sync_warning: 'مزامنة البيانات على الجهاز تقوم بحذف اي تعديلات غير محفوظة, رجاء قم بالتأكد من حفظ التعديلات اولا',
+  go_to_unsaved_changes: 'الذهاب للبيانات غير المحفوظة',
 };
 
 export default STRINGS;

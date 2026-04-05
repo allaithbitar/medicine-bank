@@ -101,7 +101,7 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       icon: <Payment />,
     },
     {
-      label: STRINGS.the_sync,
+      label: STRINGS.sync,
       href: '/sync',
       icon: <Sync />,
     },
