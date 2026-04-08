@@ -987,6 +987,7 @@ const BeneficiaryMedicineOfflineUpdate = ({ id }: { id: string }) => {
 
   const { data: parentBeneficiaryUpdateData, isFetching: isFetchingParentUpdateData } = useLocalUpdateLoader({
     recordId: update?.parentId ?? '',
+    operation: 'INSERT',
   });
 
   const blocked =
