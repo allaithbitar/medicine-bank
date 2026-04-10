@@ -20,16 +20,15 @@ const useBeneficiaryFieldMutation = (beneficiary: TBenefieciary, options?: TUseB
   const isOffline = useIsOffline();
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
-
   const updateField = useCallback(
     async (fieldKey: TBeneficiaryFieldKey, value: any) => {
+      const normalizedValue = fieldKey === 'birthDate' && value ? value.split('T')[0] : value;
       await localDb
         .updateTable('patients')
-        .set({ [fieldKey]: value })
+        .set({ [fieldKey]: normalizedValue })
         .where('id', '=', beneficiary.id)
         .execute();
       queryClient.invalidateQueries({ queryKey: ['LOCAL_BENEFICIARY', beneficiary.id] });
-
       if (isOffline) {
         const updateEntity = await localUpdatesTable.getByRecordId(beneficiary.id);
         if (updateEntity) {
@@ -37,7 +36,7 @@ const useBeneficiaryFieldMutation = (beneficiary: TBenefieciary, options?: TUseB
             typeof updateEntity.payload === 'string' ? JSON.parse(updateEntity.payload) : updateEntity.payload;
           await localUpdatesTable.updatePayload(updateEntity.id, {
             ...existingPayload,
-            [fieldKey]: value,
+            [fieldKey]: normalizedValue,
           });
         } else {
           await localUpdatesTable.create({
@@ -45,7 +44,7 @@ const useBeneficiaryFieldMutation = (beneficiary: TBenefieciary, options?: TUseB
             table: 'patients',
             status: 'pending',
             recordId: beneficiary.id,
-            payload: { [fieldKey]: value },
+            payload: { [fieldKey]: normalizedValue },
             parentId: null,
             serverRecordId: null,
           });
@@ -54,7 +53,7 @@ const useBeneficiaryFieldMutation = (beneficiary: TBenefieciary, options?: TUseB
       }
       const patchResult = dispatch(
         beneficiaryApi.util.updateQueryData('getBeneficiary', { id: beneficiary.id }, (draft) => {
-          (draft as any)[fieldKey] = value;
+          (draft as any)[fieldKey] = normalizedValue;
         }) as any
       ) as any;
       let disclosurePatchResult: any = null;
@@ -62,7 +61,7 @@ const useBeneficiaryFieldMutation = (beneficiary: TBenefieciary, options?: TUseB
         disclosurePatchResult = dispatch(
           disclosuresApi.util.updateQueryData('getDisclosure', { id: options.disclosureId }, (draft) => {
             if (draft.patient) {
-              (draft.patient as any)[fieldKey] = value;
+              (draft.patient as any)[fieldKey] = normalizedValue;
             }
           }) as any
         ) as any;
@@ -76,10 +75,10 @@ const useBeneficiaryFieldMutation = (beneficiary: TBenefieciary, options?: TUseB
           areaId: beneficiary.areaId,
           address: beneficiary.address,
           about: beneficiary.about,
-          birthDate: beneficiary.birthDate,
+          birthDate: beneficiary.birthDate ? beneficiary.birthDate.split('T')[0] : null,
           job: beneficiary.job,
           gender: beneficiary.gender,
-          [fieldKey]: value,
+          [fieldKey]: normalizedValue,
         }).unwrap();
       } catch (error) {
         patchResult.undo();

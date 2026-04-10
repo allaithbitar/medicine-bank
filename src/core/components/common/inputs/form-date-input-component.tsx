@@ -21,7 +21,7 @@ const FormDateInput = ({ label, helperText, value, onChange, required, ...props 
         <MobileDatePicker
           format={'yyyy-MM-dd'}
           value={!!value && isValid(new Date(value)) ? parseISO(value) : null}
-          onChange={(val) => onChange?.(val?.toISOString() ?? '')}
+          onChange={(val) => onChange?.(val && isValid(val) ? val.toISOString() : '')}
           slots={{
             leftArrowIcon: ChevronRight,
             rightArrowIcon: ChevronLeft,

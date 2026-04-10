@@ -1,6 +1,6 @@
 import DetailItem from '@/core/components/common/detail-item/detail-item.component';
 import STRINGS from '@/core/constants/strings.constant';
-import { formatDateTime } from '@/core/helpers/helpers';
+import { formatDateTime, addTimeZoneOffestToIsoDate } from '@/core/helpers/helpers';
 import type { TBenefieciary } from '@/features/beneficiaries/types/beneficiary.types';
 import Man4Icon from '@mui/icons-material/Man4';
 import { Person, Pin, Phone, LocationPin, EventAvailable, Info, Edit, History } from '@mui/icons-material';
@@ -35,6 +35,16 @@ function BeneficiaryCommonCard({
   );
 
   const updateBeneficiaryField = useBeneficiaryFieldMutation(beneficiary, { disclosureId });
+
+  const handleBirthDateSave = useCallback(
+    async (fieldKey: 'birthDate', value: any) => {
+      // Add timezone offset to correct the date, then extract YYYY-MM-DD part
+      // This matches the behavior in beneficiary-action.page.tsx line 289 & 127
+      const dateValue = value ? addTimeZoneOffestToIsoDate(value).toISOString().split('T')[0] : '';
+      await updateBeneficiaryField(fieldKey, dateValue);
+    },
+    [updateBeneficiaryField]
+  );
 
   const getPhoneValues = useCallback(() => {
     if (!beneficiary?.phones?.length) {
@@ -89,14 +99,14 @@ function BeneficiaryCommonCard({
         label={STRINGS.birth_date}
         value={
           <InlineEditWrapper
-            editValue={beneficiary.birthDate}
+            editValue={beneficiary.birthDate ?? ''}
             fieldType="date"
             fieldKey="birthDate"
-            onSave={updateBeneficiaryField}
+            onSave={handleBirthDateSave}
             canEdit={canEditPatient}
             validation={beneficiaryFieldSchemas.birthDate}
           >
-            {beneficiary.birthDate || STRINGS.none}
+            {beneficiary.birthDate ? formatDateTime(beneficiary.birthDate, false) : STRINGS.none}
           </InlineEditWrapper>
         }
       />

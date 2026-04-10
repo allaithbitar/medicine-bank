@@ -52,6 +52,7 @@ const InlineEditWrapper = ({
         return;
       }
     }
+
     setIsSaving(true);
     try {
       await onSave(fieldKey, tempValue);
@@ -94,7 +95,7 @@ const InlineEditWrapper = ({
     setTempValue(newValue);
   };
 
-  const handleSelectOrDateChange = async (newValue: any) => {
+  const handleSelectChange = async (newValue: any) => {
     if (validation) {
       const result = validation.safeParse(newValue);
       if (!result.success) {
@@ -148,7 +149,7 @@ const InlineEditWrapper = ({
           <Box sx={{ minWidth: 150 }}>
             <FormSelectInput
               value={tempValue || ''}
-              onChange={handleSelectOrDateChange}
+              onChange={handleSelectChange}
               options={selectOptions}
               getOptionLabel={getOptionLabel}
               disabled={isSaving}
@@ -160,12 +161,7 @@ const InlineEditWrapper = ({
       case 'date':
         return (
           <Box sx={{ minWidth: 200 }}>
-            <FormDateInput
-              value={tempValue || ''}
-              onChange={handleSelectOrDateChange}
-              disabled={isSaving}
-              errorText={errorText}
-            />
+            <FormDateInput value={tempValue || ''} onChange={handleChange} disabled={isSaving} errorText={errorText} />
           </Box>
         );
       case 'autocomplete':
@@ -173,7 +169,7 @@ const InlineEditWrapper = ({
           <Box sx={{ minWidth: 200 }}>
             <FormAutocompleteInput
               value={tempValue}
-              onChange={handleSelectOrDateChange}
+              onChange={handleSelectChange}
               options={autocompleteOptions}
               getOptionLabel={getOptionLabel}
               disabled={isSaving}
@@ -186,7 +182,7 @@ const InlineEditWrapper = ({
     }
   };
   if (isEditing) {
-    const needsSaveButtons = fieldType === 'text' || fieldType === 'textarea';
+    const needsSaveButtons = fieldType === 'text' || fieldType === 'textarea' || fieldType === 'date';
     return (
       <Box display="flex" alignItems="center" gap={1} flexDirection="column">
         <Box display="flex" alignItems="center" gap={1} width="100%">
