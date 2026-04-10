@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Stack } from '@mui/material';
-import Add from '@mui/icons-material/Add';
+// Hidden tabs - commented for potential future use
+// import Add from '@mui/icons-material/Add';
 import DifferenceIcon from '@mui/icons-material/Difference';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+// import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import STRINGS from '@/core/constants/strings.constant';
 import PageLoading from '@/core/components/common/page-loading/page-loading.component';
 import ErrorCard from '@/core/components/common/error-card/error-card.component';
@@ -12,18 +13,16 @@ import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
 import { useDisclosureLoader } from '../hooks/disclosure-loader.hook';
 import DisclosureHeaderCard from '../components/disclosure-header-card';
-import DisclosureTabs from '../components/disclosure-tabs';
+// import DisclosureTabs from '../components/disclosure-tabs';
 import DisclosureDetailsSection from '../components/disclosure-details-section';
-import DisclosureNotesTab from '../components/tabs/disclosure-notes-tab';
-import DisclosureMedicinesTab from '../components/tabs/disclosure-medicines-tab';
-import DisclosureFamilyMembersTab from '../components/tabs/disclosure-family-members-tab';
+// import DisclosureNotesTab from '../components/tabs/disclosure-notes-tab';
+// import DisclosureMedicinesTab from '../components/tabs/disclosure-medicines-tab';
+// import DisclosureFamilyMembersTab from '../components/tabs/disclosure-family-members-tab';
 import DisclosureVisitAndRatingSection from '../components/disclosure-visit-and-rating-section';
 import DisclosureProperties from './disclosure-properties.component';
 import type { TBeneficiaryMedicine, TFamilyMember } from '@/features/beneficiaries/types/beneficiary.types';
 
 const DisclosurePage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const tabIndex = Number(searchParams.get('tab') ?? 0);
   const { currentCanEdit, hasRouteAccess } = usePermissions();
   const canSeeConsultingAdviser = hasRouteAccess('/disclosures/:disclosureId/consulting_adviser');
   const { disclosureId } = useParams<{ disclosureId: string }>();
@@ -72,7 +71,7 @@ const DisclosurePage = () => {
     [navigate, disclosure?.patientId]
   );
 
-  const tabProps = useMemo(
+  const detailsProps = useMemo(
     () => ({
       disclosureId,
       disclosure,
@@ -102,65 +101,40 @@ const DisclosurePage = () => {
       <Stack gap={1}>
         <DisclosureHeaderCard disclosure={disclosure} />
 
-        <DisclosureTabs
-          value={tabIndex}
-          onChange={(newTab) =>
-            setSearchParams(
-              {
-                ...Object.fromEntries(searchParams.entries()),
-                tab: String(newTab),
-              },
-              { replace: true }
-            )
-          }
-          tabs={[
-            {
-              label: STRINGS.disclosures_details,
-              node: <DisclosureDetailsSection {...tabProps} />,
-            },
+        <DisclosureDetailsSection {...detailsProps} />
 
-            {
-              label: STRINGS.family_members,
-              node: <DisclosureFamilyMembersTab {...tabProps} />,
-            },
-            {
-              label: STRINGS.medicines,
-              node: <DisclosureMedicinesTab {...tabProps} />,
-            },
-            {
-              label: STRINGS.notes,
-              node: <DisclosureNotesTab {...tabProps} />,
-            },
-          ]}
-        />
         <DisclosureProperties disclosure={disclosure} />
         <DisclosureVisitAndRatingSection disclosure={disclosure} />
       </Stack>
 
       <ActionsFab
         actions={[
-          ...(currentCanEdit && !isArchived
+          // ...(currentCanEdit && !isArchived
+          //   ? [
+          //       {
+          //         icon: <Add />,
+          //         label: STRINGS.add_disclosure_note,
+          //         onClick: () => openNoteAction(),
+          //       },
+          //       {
+          //         icon: <Add />,
+          //         label: STRINGS.add_medicine,
+          //         onClick: () => handleOpenBeneficiaryMedicineActionPage(undefined),
+          //       },
+          //       {
+          //         icon: <Add />,
+          //         label: STRINGS.add_family_member,
+          //         onClick: () => handleOpenFamilyMembersActionPage(undefined),
+          //       },
+          //       {
+          //         icon: <PersonAddIcon />,
+          //         label: STRINGS.add_sub_patient,
+          //         onClick: () => navigate(`/disclosures/${disclosureId}/sub-patient/action`),
+          //       },
+          //     ]
+          //   : []),
+          ...(canSeeAudit
             ? [
-                {
-                  icon: <Add />,
-                  label: STRINGS.add_disclosure_note,
-                  onClick: () => openNoteAction(),
-                },
-                {
-                  icon: <Add />,
-                  label: STRINGS.add_medicine,
-                  onClick: () => handleOpenBeneficiaryMedicineActionPage(undefined),
-                },
-                {
-                  icon: <Add />,
-                  label: STRINGS.add_family_member,
-                  onClick: () => handleOpenFamilyMembersActionPage(undefined),
-                },
-                {
-                  icon: <PersonAddIcon />,
-                  label: STRINGS.add_sub_patient,
-                  onClick: () => navigate(`/disclosures/${disclosureId}/sub-patient/action`),
-                },
                 {
                   icon: <DifferenceIcon />,
                   label: STRINGS.audit_log,

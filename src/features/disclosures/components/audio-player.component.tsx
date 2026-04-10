@@ -7,6 +7,10 @@ import React, { useEffect, useRef, useState, type Dispatch, type SetStateAction 
 import { notifyError } from '@/core/components/common/toast/toast';
 import { MAX_AUDIO_SIZE_BYTES } from '@/core/constants/properties.constant';
 import type z from 'zod';
+import { baseUrl } from '@/core/api/root.api';
+import { getVoiceSrc } from '@/core/helpers/helpers';
+import useIsOffline from '@/core/hooks/use-is-offline.hook';
+import { readAudioFile } from '@/core/helpers/opfs-audio.helpers';
 
 export type TAudioFile = {
   audioBlob: Blob | null;
@@ -16,19 +20,45 @@ export type TAudioFile = {
 function AudioPlayer({
   setErrors,
   setAudioFile,
+  audioFile,
 }: {
-  setErrors: Dispatch<SetStateAction<z.ZodIssue[]>>;
+  setErrors?: Dispatch<SetStateAction<z.ZodIssue[]>>;
   audioFile?: TAudioFile;
   setAudioFile: Dispatch<SetStateAction<TAudioFile | undefined>>;
 }) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const isOffline = useIsOffline();
+  const [offlineAudioObjectUrl, setOfflineAudioObjectUrl] = useState('');
 
   const chunksRef = useRef<Blob[]>([]);
 
+  useEffect(() => {
+    if (audioFile?.audioName && !audioFile?.audioBlob) {
+      if (isOffline) {
+        readAudioFile(audioFile.audioName).then((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            setOfflineAudioObjectUrl(url);
+            setAudioUrl(url);
+          }
+        });
+      } else {
+        const url = getVoiceSrc({ baseUrl, filePath: audioFile.audioName });
+        setAudioUrl(url);
+      }
+    }
+
+    return () => {
+      if (offlineAudioObjectUrl) {
+        URL.revokeObjectURL(offlineAudioObjectUrl);
+      }
+    };
+  }, [audioFile?.audioName, audioFile?.audioBlob, isOffline, offlineAudioObjectUrl]);
+
   const startRecording = async () => {
-    setErrors([]);
+    setErrors?.([]);
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       notifyError('Media devices not supported');
       return;

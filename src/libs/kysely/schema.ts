@@ -178,8 +178,11 @@ export type TLocalDb = {
     houseOwnershipNote: string | null;
     houseCondition: THouseHoldAssetCondition | null;
     houseConditionNote: string | null;
+    note: string | null;
     pros: string | null;
     cons: string | null;
+    meds: string | null;
+    audio: string | null;
     other: string | null;
     createdAt: string;
     createdBy: string | null;

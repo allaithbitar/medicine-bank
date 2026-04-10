@@ -10,7 +10,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import STRINGS from '@/core/constants/strings.constant';
 import Header from '@/core/components/common/header/header';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
-import type { THouseHoldAssetCondition, THouseOwnership } from '@/libs/kysely/schema';
+// import type { THouseHoldAssetCondition, THouseOwnership } from '@/libs/kysely/schema';
 import useDisclosureDetailsMutation from '../hooks/disclosure-details-mutation.hook';
 import { useDisclosureDetailsLoader } from '../hooks/disclosure-details-loader.hook';
 
@@ -29,27 +29,38 @@ function DisclosureDetailsActionPage() {
 
   const handleSave = async () => {
     const { isValid, result } = await ref.current!.handleSubmit();
-    console.log({ isValid, result });
+    const audioFile = ref.current?.getAudioFile?.();
+
+    console.log({ isValid, result, audioFile });
 
     if (!isValid || !disclosureId) return;
 
     try {
-      const payload = {
-        disclosureId,
-        diseasesOrSurgeries: result.diseasesOrSurgeries || null,
-        jobOrSchool: result.jobOrSchool || null,
-        electricity: result.electricity || null,
-        expenses: result.expenses || null,
-        houseOwnership: (result.houseOwnership?.id as THouseOwnership) || null,
-        houseOwnershipNote: result.houseOwnershipNote || null,
-        houseCondition: (result.houseCondition?.id as THouseHoldAssetCondition) || null,
-        houseConditionNote: result.houseConditionNote || null,
-        pros: result.pros || null,
-        cons: result.cons || null,
-        other: result.other || null,
-      };
+      if (disclosureDetails) {
+        const payload = {
+          disclosureId,
+          pros: result.pros || '',
+          cons: result.cons || '',
+          note: result.note || '',
+          meds: result.meds || '',
+          audioFile: audioFile?.audioBlob || null,
+          deleteAudioFile: audioFile?.audioBlob === null && disclosureDetails.audio ? true : null,
+        };
 
-      await mutateDisclosureDetails({ type: disclosureDetails ? 'UPDATE' : 'INSERT', dto: payload });
+        await mutateDisclosureDetails({ type: 'UPDATE', dto: payload });
+      } else {
+        const payload = {
+          disclosureId,
+          pros: result.pros || '',
+          cons: result.cons || '',
+          note: result.note || '',
+          meds: result.meds || '',
+          audioFile: audioFile?.audioBlob || null,
+        };
+
+        await mutateDisclosureDetails({ type: 'INSERT', dto: payload });
+      }
+
       navigate(-1);
       notifySuccess(disclosureDetails ? STRINGS.edited_successfully : STRINGS.added_successfully);
     } catch (error) {

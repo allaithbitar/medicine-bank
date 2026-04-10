@@ -5,6 +5,7 @@ import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.h
 import type { TAddDisclosureDetailsDto, TUpdateDisclosureDetailsDto } from '../types/disclosure.types';
 import disclosuresApi from '../api/disclosures.api';
 import { useQueryClient } from '@tanstack/react-query';
+import { saveAudioFile } from '@/core/helpers/opfs-audio.helpers';
 
 type IUpdateDisclosureDetailsDto = { type: 'UPDATE'; dto: TUpdateDisclosureDetailsDto };
 
@@ -21,10 +22,22 @@ const useDisclosureDetailsMutation = () => {
 
   const handleInsert = useCallback(
     async (dto: TAddDisclosureDetailsDto) => {
+      const { audioFile, ...restDto } = dto;
+
+      let audioName: string | null = null;
+      if (audioFile && audioFile instanceof Blob) {
+        const id = crypto.randomUUID();
+        const name = id + '.webm';
+        await saveAudioFile(name, audioFile);
+        audioName = name;
+      }
+
       const insertDto = {
         createdAt: new Date().toISOString(),
-        ...dto,
+        ...restDto,
+        audio: audioName,
       } as const;
+
       await localDb.insertInto('disclosure_details').values(insertDto).execute();
 
       await localUpdatesTable.create({
@@ -46,7 +59,20 @@ const useDisclosureDetailsMutation = () => {
 
   const handleUpdate = useCallback(
     async (dto: TUpdateDisclosureDetailsDto) => {
-      const { disclosureId, ...values } = dto;
+      const { disclosureId, audioFile, deleteAudioFile, ...restValues } = dto;
+      let audioName: string | null = null;
+      if (deleteAudioFile) {
+        audioName = null;
+      } else if (audioFile && audioFile instanceof Blob) {
+        const id = crypto.randomUUID();
+        const name = id + '.webm';
+        await saveAudioFile(name, audioFile);
+        audioName = name;
+      }
+      const values = {
+        ...restValues,
+        ...(deleteAudioFile || audioFile ? { audio: audioName } : {}),
+      };
 
       await localDb.updateTable('disclosure_details').set(values).where('disclosureId', '=', disclosureId).execute();
 
@@ -60,7 +86,7 @@ const useDisclosureDetailsMutation = () => {
           table: 'disclosure_details',
           status: 'pending',
           recordId: '',
-          payload: dto,
+          payload: { disclosureId, ...values },
           serverRecordId: null,
           parentId: disclosureId,
         });

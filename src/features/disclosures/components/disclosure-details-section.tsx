@@ -1,4 +1,4 @@
-import { Stack, Typography, Button, Card } from '@mui/material';
+import { Stack, Typography, Button, Card, Divider, Box } from '@mui/material';
 import Header from '@/core/components/common/header/header';
 import STRINGS from '@/core/constants/strings.constant';
 import Nodata from '@/core/components/common/no-data/no-data.component';
@@ -6,10 +6,16 @@ import { useNavigate } from 'react-router-dom';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
-import { Home, Work, ElectricBolt, AttachMoney, MedicalServices, ThumbUp, ThumbDown, Info } from '@mui/icons-material';
-import { getStringsLabel } from '@/core/helpers/helpers';
+// import { Home, Work, ElectricBolt, AttachMoney, MedicalServices, Info } from '@mui/icons-material';
+import { ThumbUp, ThumbDown, Note, Medication, AudioFile } from '@mui/icons-material';
+// import { getStringsLabel } from '@/core/helpers/helpers';
+import { getVoiceSrc } from '@/core/helpers/helpers';
 import { useDisclosureDetailsLoader } from '../hooks/disclosure-details-loader.hook';
 import type { TDisclosure } from '../types/disclosure.types';
+import { baseUrl } from '@/core/api/root.api';
+import useIsOffline from '@/core/hooks/use-is-offline.hook';
+import { useEffect, useState } from 'react';
+import { readAudioFile } from '@/core/helpers/opfs-audio.helpers';
 
 const DisclosureDetailsSection = ({
   disclosureId,
@@ -23,6 +29,24 @@ const DisclosureDetailsSection = ({
   const { data: details, isFetching } = useDisclosureDetailsLoader(disclosureId!);
   const isArchived = disclosure?.status === 'archived';
   const navigate = useNavigate();
+  const isOffline = useIsOffline();
+  const [offlineAudioObjectUrl, setOfflineAudioObjectUrl] = useState('');
+
+  useEffect(() => {
+    if (isOffline && details?.audio) {
+      readAudioFile(details.audio).then((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          setOfflineAudioObjectUrl(url);
+        }
+      });
+    }
+    return () => {
+      if (offlineAudioObjectUrl) {
+        URL.revokeObjectURL(offlineAudioObjectUrl);
+      }
+    };
+  }, [isOffline, details?.audio, offlineAudioObjectUrl]);
 
   const handleOpenDisclosureDetails = () => {
     navigate(`/disclosures/details/action?disclosureId=${disclosureId}`);
@@ -60,7 +84,7 @@ const DisclosureDetailsSection = ({
       <Stack gap={1}>
         <Header title={STRINGS.disclosures_details} />
         <Stack gap={2}>
-          {details.diseasesOrSurgeries && (
+          {/* {details.diseasesOrSurgeries && (
             <DetailItemComponent
               icon={<MedicalServices />}
               iconColorPreset="red"
@@ -134,6 +158,10 @@ const DisclosureDetailsSection = ({
                 </Stack>
               }
             />
+          )} */}
+
+          {details.note && (
+            <DetailItemComponent icon={<Note />} iconColorPreset="blue" label={STRINGS.note} value={details.note} />
           )}
 
           {details.pros && (
@@ -144,14 +172,53 @@ const DisclosureDetailsSection = ({
             <DetailItemComponent icon={<ThumbDown />} iconColorPreset="red" label={STRINGS.cons} value={details.cons} />
           )}
 
-          {details.other && (
+          {details.meds && (
+            <DetailItemComponent
+              icon={<Medication />}
+              iconColorPreset="deepPurple"
+              label={STRINGS.medicines}
+              value={details.meds}
+            />
+          )}
+
+          {details.audio && (
+            <Box sx={{ p: 2, backgroundColor: 'background.default', borderRadius: 1 }}>
+              <Stack gap={1}>
+                <Stack direction="row" gap={1} alignItems="center">
+                  <AudioFile sx={{ color: 'primary.main' }} />
+                  <Typography variant="body2" fontWeight="medium">
+                    {STRINGS.recorded_audio}
+                  </Typography>
+                </Stack>
+                <Divider />
+                {isOffline && offlineAudioObjectUrl && (
+                  <audio controlsList="nodownload" controls src={offlineAudioObjectUrl} style={{ width: '100%' }} />
+                )}
+                {!isOffline && details.audio && (
+                  <audio
+                    controlsList="nodownload"
+                    controls
+                    src={getVoiceSrc({ baseUrl, filePath: details.audio })}
+                    style={{ width: '100%' }}
+                  />
+                )}
+                {isOffline && !offlineAudioObjectUrl && (
+                  <Typography color="warning.main" variant="body2">
+                    {STRINGS.cant_play_synced_notes}
+                  </Typography>
+                )}
+              </Stack>
+            </Box>
+          )}
+
+          {/* {details.other && (
             <DetailItemComponent
               icon={<Info />}
               iconColorPreset="blue"
               label={STRINGS.other_details}
               value={details.other}
             />
-          )}
+          )} */}
 
           {openEditDetails && (
             <Button

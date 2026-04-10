@@ -1,36 +1,42 @@
 import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
-import { Stack, Autocomplete, TextField } from '@mui/material';
+import { Stack } from '@mui/material';
+// Commented fields - imports kept for potential future use
+// import { Autocomplete, TextField } from '@mui/material';
 import z from 'zod';
 import type { TDisclosureDetails } from '../types/disclosure.types';
 import STRINGS from '@/core/constants/strings.constant';
-import { useEffect, useImperativeHandle, type Ref } from 'react';
+import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
 import FormTextAreaInput from '@/core/components/common/inputs/form-text-area-input.component';
-import FieldSet from '@/core/components/common/fieldset/fieldset.component';
+// import FieldSet from '@/core/components/common/fieldset/fieldset.component';
+import AudioPlayer, { type TAudioFile } from './audio-player.component';
 
-const OptionSchema = z
-  .object({
-    id: z.string(),
-    label: z.string(),
-  })
-  .optional();
+// const OptionSchema = z
+//   .object({
+//     id: z.string(),
+//     label: z.string(),
+//   })
+//   .optional();
 
 const createDisclosureDetailsSchema = () =>
   z.object({
-    jobOrSchool: z.string().optional(),
-    diseasesOrSurgeries: z.string().optional(),
-    expenses: z.string().optional(),
-    houseCondition: OptionSchema,
-    houseConditionNote: z.string().optional(),
-    houseOwnership: OptionSchema,
-    houseOwnershipNote: z.string().optional(),
-    electricity: z.string().optional(),
+    // jobOrSchool: z.string().optional(),
+    // diseasesOrSurgeries: z.string().optional(),
+    // expenses: z.string().optional(),
+    // houseCondition: OptionSchema,
+    // houseConditionNote: z.string().optional(),
+    // houseOwnership: OptionSchema,
+    // houseOwnershipNote: z.string().optional(),
+    // electricity: z.string().optional(),
+    note: z.string().optional(),
     pros: z.string().optional(),
     cons: z.string().optional(),
-    other: z.string().optional(),
+    meds: z.string().optional(),
+    // other: z.string().optional(),
   });
 
 export type TDisclosureDetailsFormHandlers = {
   handleSubmit: () => Promise<TFormSubmitResult<z.infer<ReturnType<typeof createDisclosureDetailsSchema>>>>;
+  getAudioFile?: () => TAudioFile | undefined;
 };
 
 type TProps = {
@@ -38,81 +44,86 @@ type TProps = {
   disclosureDetails?: TDisclosureDetails | null;
 };
 
-const HOUSE_CONDITION_OPTIONS = [
-  {
-    id: 'very_good',
-    label: STRINGS.house_condition_very_good,
-  },
-  {
-    id: 'good',
-    label: STRINGS.house_condition_good,
-  },
-  {
-    id: 'medium',
-    label: STRINGS.house_condition_medium,
-  },
-  {
-    id: 'bad',
-    label: STRINGS.house_condition_bad,
-  },
-  {
-    id: 'very_bad',
-    label: STRINGS.house_condition_very_bad,
-  },
-  {
-    id: 'not_working',
-    label: STRINGS.house_condition_not_working,
-  },
-];
+// const HOUSE_CONDITION_OPTIONS = [
+//   {
+//     id: 'very_good',
+//     label: STRINGS.house_condition_very_good,
+//   },
+//   {
+//     id: 'good',
+//     label: STRINGS.house_condition_good,
+//   },
+//   {
+//     id: 'medium',
+//     label: STRINGS.house_condition_medium,
+//   },
+//   {
+//     id: 'bad',
+//     label: STRINGS.house_condition_bad,
+//   },
+//   {
+//     id: 'very_bad',
+//     label: STRINGS.house_condition_very_bad,
+//   },
+//   {
+//     id: 'not_working',
+//     label: STRINGS.house_condition_not_working,
+//   },
+// ];
 
-const HOUSE_OWNERSHIP_OPTIONS = [
-  {
-    id: 'owned',
-    label: STRINGS.house_ownership_owned,
-  },
-  {
-    id: 'rent',
-    label: STRINGS.house_ownership_rent,
-  },
-  {
-    id: 'loan',
-    label: STRINGS.house_ownership_loan,
-  },
-  {
-    id: 'mortage',
-    label: STRINGS.house_ownership_mortage,
-  },
-];
+// const HOUSE_OWNERSHIP_OPTIONS = [
+//   {
+//     id: 'owned',
+//     label: STRINGS.house_ownership_owned,
+//   },
+//   {
+//     id: 'rent',
+//     label: STRINGS.house_ownership_rent,
+//   },
+//   {
+//     id: 'loan',
+//     label: STRINGS.house_ownership_loan,
+//   },
+//   {
+//     id: 'mortage',
+//     label: STRINGS.house_ownership_mortage,
+//   },
+// ];
 
 const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
+  const [audioFile, setAudioFile] = useState<TAudioFile | undefined>();
+
   const { formState, setValue, handleSubmit, setFormState } = useForm({
     schema: createDisclosureDetailsSchema(),
     initalState: {
-      houseCondition: HOUSE_CONDITION_OPTIONS[2],
-      houseOwnership: HOUSE_OWNERSHIP_OPTIONS[0],
+      // houseCondition: HOUSE_CONDITION_OPTIONS[2],
+      // houseOwnership: HOUSE_OWNERSHIP_OPTIONS[0],
     },
   });
 
   useEffect(() => {
     if (disclosureDetails) {
       const mappedState: any = {
-        jobOrSchool: disclosureDetails.jobOrSchool || '',
-        diseasesOrSurgeries: disclosureDetails.diseasesOrSurgeries || '',
-        expenses: disclosureDetails.expenses || '',
-        electricity: disclosureDetails.electricity || '',
+        // jobOrSchool: disclosureDetails.jobOrSchool || '',
+        // diseasesOrSurgeries: disclosureDetails.diseasesOrSurgeries || '',
+        // expenses: disclosureDetails.expenses || '',
+        // electricity: disclosureDetails.electricity || '',
+        note: disclosureDetails.note || '',
         pros: disclosureDetails.pros || '',
         cons: disclosureDetails.cons || '',
-        other: disclosureDetails.other || '',
-        houseConditionNote: disclosureDetails.houseConditionNote || '',
-        houseOwnershipNote: disclosureDetails.houseOwnershipNote || '',
+        meds: disclosureDetails.meds || '',
+        // other: disclosureDetails.other || '',
+        // houseConditionNote: disclosureDetails.houseConditionNote || '',
+        // houseOwnershipNote: disclosureDetails.houseOwnershipNote || '',
       };
-
-      if (disclosureDetails.houseCondition) {
-        mappedState.houseCondition = HOUSE_CONDITION_OPTIONS.find((opt) => opt.id === disclosureDetails.houseCondition);
-      }
-
-      if (disclosureDetails.houseOwnership) {
-        mappedState.houseOwnership = HOUSE_OWNERSHIP_OPTIONS.find((opt) => opt.id === disclosureDetails.houseOwnership);
+      // if (disclosureDetails.houseCondition) {
+      //   mappedState.houseCondition = HOUSE_CONDITION_OPTIONS.find((opt) => opt.id === disclosureDetails.houseCondition);
+      // }
+      // if (disclosureDetails.houseOwnership) {
+      //   mappedState.houseOwnership = HOUSE_OWNERSHIP_OPTIONS.find((opt) => opt.id === disclosureDetails.houseOwnership);
+      // }
+      if (disclosureDetails.audio) {
+        setAudioFile({ audioBlob: null, audioName: disclosureDetails.audio });
       }
 
       setFormState(mappedState);
@@ -125,13 +136,14 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
       handleSubmit() {
         return handleSubmit();
       },
+      getAudioFile: () => audioFile,
     }),
-    [handleSubmit]
+    [handleSubmit, audioFile]
   );
 
   return (
     <Stack gap={2}>
-      <FormTextAreaInput
+      {/* <FormTextAreaInput
         label={STRINGS.diseases_or_surgeries}
         name="diseasesOrSurgeries"
         value={formState.diseasesOrSurgeries}
@@ -211,7 +223,14 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
             onChange={(v) => setValue({ houseConditionNote: v })}
           />
         </Stack>
-      </FieldSet>
+      </FieldSet> */}
+
+      <FormTextAreaInput
+        label={STRINGS.note}
+        name="note"
+        value={formState.note}
+        onChange={(v) => setValue({ note: v })}
+      />
 
       <FormTextAreaInput
         label={STRINGS.pons}
@@ -228,11 +247,20 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
       />
 
       <FormTextAreaInput
+        label={STRINGS.medicines}
+        name="meds"
+        value={formState.meds}
+        onChange={(v) => setValue({ meds: v })}
+      />
+
+      <AudioPlayer audioFile={audioFile} setAudioFile={setAudioFile} />
+
+      {/* <FormTextAreaInput
         label={STRINGS.other_details}
         name="other"
         value={formState.other}
         onChange={(v) => setValue({ other: v })}
-      />
+      /> */}
     </Stack>
   );
 };

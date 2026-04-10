@@ -49,8 +49,11 @@ export type TDisclosureDetails = {
   houseOwnershipNote: string | null;
   houseCondition: THouseHoldAssetCondition | null;
   houseConditionNote: string | null;
+  note: string | null;
   pros: string | null;
   cons: string | null;
+  meds: string | null;
+  audio: string | null;
   other: string | null;
   createdAt: string;
   createdBy: TActioner | null;
@@ -60,6 +63,11 @@ export type TDisclosureDetails = {
 
 export type TAddDisclosureDetailsDto = {
   disclosureId: string;
+  pros?: string | null;
+  cons?: string | null;
+  note?: string | null;
+  meds?: string | null;
+  audioFile?: Blob | File | null;
   diseasesOrSurgeries?: string | null;
   jobOrSchool?: string | null;
   electricity?: string | null;
@@ -68,12 +76,27 @@ export type TAddDisclosureDetailsDto = {
   houseOwnershipNote?: string | null;
   houseCondition?: THouseHoldAssetCondition | null;
   houseConditionNote?: string | null;
-  pros?: string | null;
-  cons?: string | null;
   other?: string | null;
 };
 
-export type TUpdateDisclosureDetailsDto = TAddDisclosureDetailsDto;
+export type TUpdateDisclosureDetailsDto = {
+  disclosureId: string;
+  pros?: string | null;
+  cons?: string | null;
+  note?: string | null;
+  meds?: string | null;
+  audioFile?: Blob | File | null;
+  deleteAudioFile?: boolean | null;
+  diseasesOrSurgeries?: string | null;
+  jobOrSchool?: string | null;
+  electricity?: string | null;
+  expenses?: string | null;
+  houseOwnership?: THouseOwnership | null;
+  houseOwnershipNote?: string | null;
+  houseCondition?: THouseHoldAssetCondition | null;
+  houseConditionNote?: string | null;
+  other?: string | null;
+};
 
 export type TDisclosure = {
   id: string;
