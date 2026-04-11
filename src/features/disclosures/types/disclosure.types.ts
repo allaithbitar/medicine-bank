@@ -3,7 +3,6 @@ import type { TAppointment } from '@/features/appointments/types/appointment.typ
 import type { TBenefieciary, TGender } from '@/features/beneficiaries/types/beneficiary.types';
 import type { TPriorityDegree } from '@/features/priority-degres/types/priority-degree.types';
 import type { TRating } from '@/features/ratings/types/rating.types';
-import type { THouseHoldAssetCondition, THouseOwnership } from '@/libs/kysely/schema';
 
 export const DisclosureType = {
   new: 'new',

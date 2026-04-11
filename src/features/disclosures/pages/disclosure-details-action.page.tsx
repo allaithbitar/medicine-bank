@@ -44,7 +44,7 @@ function DisclosureDetailsActionPage() {
           note: result.note || '',
           meds: result.meds || '',
           audioFile: audioFile?.audioBlob || null,
-          deleteAudioFile: audioFile?.audioBlob === null && disclosureDetails.audio ? true : null,
+          deleteAudioFile: audioFile?.audioBlob === null && disclosureDetails.audio ? true : undefined,
         };
 
         await mutateDisclosureDetails({ type: 'UPDATE', dto: payload });
