@@ -37,7 +37,7 @@ export const beneficiaryApi = rootApi.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: (_, __, args) => [{ type: 'Beneficiaries', id: args.id }],
+      invalidatesTags: (_, __, args) => [{ type: 'Beneficiaries', id: args.id }, 'Disclosures'],
     }),
     //
     // getBeneficiaries: builder.query<

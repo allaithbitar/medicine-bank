@@ -48,9 +48,12 @@ const DisclosureAuditTimelinePage = () => {
 
   return (
     <Stack gap={1} sx={{ height: '100%' }}>
-      <Header title={STRINGS.audit_log} showBackButton sx={{ bgcolor: theme.palette.background.default }} />
+      <Header
+        title={STRINGS.audit_log}
+        showBackButton
+        sx={{ bgcolor: theme.palette.background.default, minHeight: 50 }}
+      />
       {isLoading && <LoadingOverlay />}
-
       {!isLoading && groups.length === 0 && (
         <Paper
           elevation={0}
@@ -66,7 +69,6 @@ const DisclosureAuditTimelinePage = () => {
           </Typography>
         </Paper>
       )}
-
       {!isLoading && groups.length > 0 && (
         <Stack gap={1} spacing={1}>
           {enriched.map(({ group, color, dominant }, index) => (

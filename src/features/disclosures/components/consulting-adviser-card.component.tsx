@@ -59,6 +59,7 @@ export const ConsultingAdviserCard = ({
           {adviserConsultation.consultationAudio && (
             <>
               <audio
+                preload="metadata"
                 style={{ width: '100%' }}
                 controlsList="nodownload"
                 controls

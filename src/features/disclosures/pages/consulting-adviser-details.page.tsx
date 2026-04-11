@@ -1,4 +1,4 @@
-import { Card, Stack, Chip, Divider } from '@mui/material';
+import { Card, Stack, Chip, Divider, Button } from '@mui/material';
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import disclosuresApi from '../api/disclosures.api';
@@ -13,7 +13,7 @@ import DetailItem from '@/core/components/common/detail-item/detail-item.compone
 import { baseUrl } from '@/core/api/root.api';
 import { formatDateTime, getStringsLabel, getVoiceSrc } from '@/core/helpers/helpers';
 import VolumeDownIcon from '@mui/icons-material/VolumeDown';
-import { Comment } from '@mui/icons-material';
+import { Comment, Visibility } from '@mui/icons-material';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
@@ -129,6 +129,7 @@ function ConsultingAdviserDetailsPage() {
               value={
                 <Stack direction="row" alignItems="center">
                   <audio
+                    preload="metadata"
                     controlsList="nodownload"
                     controls
                     src={getVoiceSrc({ baseUrl, filePath: consultation.consultationAudio })}
@@ -164,6 +165,22 @@ function ConsultingAdviserDetailsPage() {
                 </Stack>
               }
             />
+          </>
+        )}
+
+        {consultation.disclosureId && (
+          <>
+            <Divider />
+            <Stack>
+              <Button
+                onClick={() => navigate(`/disclosures/${consultation.disclosureId}`)}
+                variant="outlined"
+                startIcon={<Visibility />}
+                sx={{ ml: 'auto' }}
+              >
+                {STRINGS.disclosures_details}
+              </Button>
+            </Stack>
           </>
         )}
 

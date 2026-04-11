@@ -25,7 +25,6 @@ const DisclosurePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabIndex = Number(searchParams.get('tab') ?? 0);
   const { currentCanEdit, hasRouteAccess } = usePermissions();
-  const canSeeAudit = hasRouteAccess('/disclosures/:disclosureId/audit');
   const canSeeConsultingAdviser = hasRouteAccess('/disclosures/:disclosureId/consulting_adviser');
   const { disclosureId } = useParams<{ disclosureId: string }>();
   const navigate = useNavigate();
@@ -162,10 +161,6 @@ const DisclosurePage = () => {
                   label: STRINGS.add_sub_patient,
                   onClick: () => navigate(`/disclosures/${disclosureId}/sub-patient/action`),
                 },
-              ]
-            : []),
-          ...(canSeeAudit
-            ? [
                 {
                   icon: <DifferenceIcon />,
                   label: STRINGS.audit_log,
@@ -173,6 +168,7 @@ const DisclosurePage = () => {
                 },
               ]
             : []),
+
           ...(canSeeConsultingAdviser && !isArchived
             ? [
                 {

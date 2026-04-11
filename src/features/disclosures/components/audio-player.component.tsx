@@ -35,14 +35,25 @@ function AudioPlayer({
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mr = new MediaRecorder(stream);
+      const options: MediaRecorderOptions = {
+        audioBitsPerSecond: 32000,
+      };
+      if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+        options.mimeType = 'audio/webm;codecs=opus';
+      }
+      const mr = new MediaRecorder(stream, options);
       mediaRecorderRef.current = mr;
       chunksRef.current = [];
+
       mr.ondataavailable = (e: BlobEvent) => {
         if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
       };
+
       mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        const blob = new Blob(chunksRef.current, {
+          type: options.mimeType || 'audio/webm',
+        });
+
         if (blob.size > MAX_AUDIO_SIZE_BYTES) {
           notifyError(new Error(STRINGS.file_too_large));
           stream.getTracks().forEach((t) => t.stop());
@@ -54,18 +65,22 @@ function AudioPlayer({
           if (prev) URL.revokeObjectURL(prev);
           return url;
         });
+
         setAudioFile({
           audioName: null,
           audioBlob: blob,
         });
+
         stream.getTracks().forEach((t) => t.stop());
       };
+
       mr.start();
       setIsRecording(true);
     } catch (err) {
       notifyError(err);
     }
   };
+
   const stopRecording = () => {
     const mr = mediaRecorderRef.current;
     if (!mr) return;
@@ -168,7 +183,7 @@ function AudioPlayer({
         )}
         {audioUrl && (
           <Stack direction="row" gap={1} alignItems="center">
-            <audio controlsList="nodownload" controls src={audioUrl} style={{ flexGrow: 1 }} />
+            <audio controlsList="nodownload" controls preload="metadata" src={audioUrl} style={{ flexGrow: 1 }} />
             <Button size="small" onClick={clearAudio}>
               {STRINGS.clear}
             </Button>

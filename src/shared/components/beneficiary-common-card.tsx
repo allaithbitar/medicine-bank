@@ -38,8 +38,6 @@ function BeneficiaryCommonCard({
 
   const handleBirthDateSave = useCallback(
     async (fieldKey: 'birthDate', value: any) => {
-      // Add timezone offset to correct the date, then extract YYYY-MM-DD part
-      // This matches the behavior in beneficiary-action.page.tsx line 289 & 127
       const dateValue = value ? addTimeZoneOffestToIsoDate(value).toISOString().split('T')[0] : '';
       await updateBeneficiaryField(fieldKey, dateValue);
     },

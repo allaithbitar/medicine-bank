@@ -44,5 +44,5 @@ export const arabicLocaleText = {
       : view === 'minutes'
         ? STRINGS.calendar_choose_min
         : STRINGS.calendar_choose_Time,
-  dateTimePickerToolbarFormat: 'yyyy-MM-dd hh:mm aa',
+  dateTimePickerToolbarFormat: 'yyyy-MM-dd hh:mm a',
 };

@@ -68,10 +68,15 @@ const NoteCard = ({ note, canEditNote }: { note: TDisclosureNote; canEditNote?: 
             <>
               <Divider flexItem />
               {isOffline && offlineAudioObjectUrl && (
-                <audio controlsList="nodownload" controls src={offlineAudioObjectUrl} />
+                <audio preload="metadata" controlsList="nodownload" controls src={offlineAudioObjectUrl} />
               )}
               {!isOffline && note.noteAudio && (
-                <audio controlsList="nodownload" controls src={getVoiceSrc({ baseUrl, filePath: note.noteAudio })} />
+                <audio
+                  preload="metadata"
+                  controlsList="nodownload"
+                  controls
+                  src={getVoiceSrc({ baseUrl, filePath: note.noteAudio })}
+                />
               )}
 
               {isOffline && !offlineAudioObjectUrl && (

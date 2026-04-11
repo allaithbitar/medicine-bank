@@ -80,10 +80,10 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
     path: '/disclosures/:disclosureId/consulting_adviser/action',
     allowedRoles: ['manager', 'scout'],
   },
-  { path: '/disclosures/:disclosureId/audit', allowedRoles: ['manager', 'supervisor'] },
+  { path: '/disclosures/:disclosureId/audit', allowedRoles: ['manager', 'supervisor', 'scout'] },
   {
     path: '/disclosures/:disclosureId/audit/details',
-    allowedRoles: ['manager', 'supervisor'],
+    allowedRoles: ['manager', 'supervisor', 'scout'],
   },
 
   {
