@@ -71,7 +71,12 @@ function DisclosureDetailsActionPage() {
   const isLoading = isMutatingDisclosureDetails || isGetting;
 
   return (
-    <Card>
+    <Card
+      sx={{
+        overscrollBehavior: 'contain',
+        touchAction: 'pan-y',
+      }}
+    >
       <Header title={STRINGS.disclosures_details} showBackButton />
       <DisclosureDetailsActionForm ref={ref} disclosureDetails={disclosureDetails} />
       <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />

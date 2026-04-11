@@ -18,7 +18,7 @@ export const useOfflineSync = () => {
       family_members: 'familyMembers',
       audit_logs: 'auditLogs',
       disclosure_notes: 'disclosureNotes',
-      disclosure_details: 'disclosureDetails',
+      disclosure_properties: 'disclosureDetails',
       disclosures: 'disclosures',
       cities: 'cities',
       areas: 'areas',

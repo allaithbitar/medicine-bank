@@ -359,7 +359,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
 
     getDisclosureDetails: builder.query<TDisclosureDetails, { disclosureId: string }>({
       query: ({ disclosureId }) => ({
-        url: '/disclosures/details',
+        url: '/disclosures/properties',
         method: 'GET',
         params: { disclosureId },
       }),
@@ -368,11 +368,21 @@ export const disclosuresApi = rootApi.injectEndpoints({
     }),
 
     addDisclosureDetails: builder.mutation<void, TAddDisclosureDetailsDto>({
-      query: (payload) => ({
-        url: '/disclosures/details',
-        method: 'POST',
-        body: payload,
-      }),
+      query: (payload) => {
+        const formData = new FormData();
+        formData.append('disclosureId', payload.disclosureId);
+        if (payload.pros) formData.append('pros', payload.pros);
+        if (payload.cons) formData.append('cons', payload.cons);
+        if (payload.note) formData.append('note', payload.note);
+        if (payload.meds) formData.append('meds', payload.meds);
+        if (payload.audioFile) formData.append('audioFile', payload.audioFile);
+
+        return {
+          url: '/disclosures/properties',
+          method: 'POST',
+          body: formData,
+        };
+      },
       invalidatesTags: (_, __, args) => [
         { id: args.disclosureId, type: 'Disclosure_Details' },
         { id: args.disclosureId, type: 'Disclosures' },
@@ -380,11 +390,22 @@ export const disclosuresApi = rootApi.injectEndpoints({
     }),
 
     updateDisclosureDetails: builder.mutation<void, TUpdateDisclosureDetailsDto>({
-      query: (payload) => ({
-        url: '/disclosures/details',
-        method: 'PUT',
-        body: payload,
-      }),
+      query: (payload) => {
+        const formData = new FormData();
+        formData.append('disclosureId', payload.disclosureId);
+        if (payload.pros !== undefined) formData.append('pros', payload.pros || '');
+        if (payload.cons !== undefined) formData.append('cons', payload.cons || '');
+        if (payload.note !== undefined) formData.append('note', payload.note || '');
+        if (payload.meds !== undefined) formData.append('meds', payload.meds || '');
+        if (payload.audioFile) formData.append('audioFile', payload.audioFile);
+        if (payload.deleteAudioFile) formData.append('deleteAudioFile', 'true');
+
+        return {
+          url: '/disclosures/properties',
+          method: 'PUT',
+          body: formData,
+        };
+      },
       invalidatesTags: (_, __, args) => [
         { id: args.disclosureId, type: 'Disclosure_Details' },
         { id: args.disclosureId, type: 'Disclosures' },

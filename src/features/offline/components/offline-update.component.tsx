@@ -1385,7 +1385,7 @@ const OfflineUpdate = ({ update }: { update: TLocalDb['updates'] }) => {
         return <FamilyMemberOfflineUpdate id={update.id} />;
       }
 
-      case 'disclosure_details': {
+      case 'disclosure_properties': {
         return <DisclosureDetialsOfflineUpdate id={update.id} />;
       }
 

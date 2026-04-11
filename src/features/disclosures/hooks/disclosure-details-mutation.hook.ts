@@ -38,11 +38,11 @@ const useDisclosureDetailsMutation = () => {
         audio: audioName,
       } as const;
 
-      await localDb.insertInto('disclosure_details').values(insertDto).execute();
+      await localDb.insertInto('disclosure_properties').values(insertDto).execute();
 
       await localUpdatesTable.create({
         operation: 'INSERT',
-        table: 'disclosure_details',
+        table: 'disclosure_properties',
         status: 'pending',
         recordId: '',
         payload: insertDto,
@@ -50,7 +50,7 @@ const useDisclosureDetailsMutation = () => {
         parentId: insertDto.disclosureId,
       });
       queryClient.invalidateQueries({
-        queryKey: ['LOCAL_DISCLOSURE_DETAILS', insertDto.disclosureId],
+        queryKey: ['LOCAL_DISCLOSURE_PROPERTIES', insertDto.disclosureId],
       });
     },
 
@@ -74,7 +74,7 @@ const useDisclosureDetailsMutation = () => {
         ...(deleteAudioFile || audioFile ? { audio: audioName } : {}),
       };
 
-      await localDb.updateTable('disclosure_details').set(values).where('disclosureId', '=', disclosureId).execute();
+      await localDb.updateTable('disclosure_properties').set(values).where('disclosureId', '=', disclosureId).execute();
 
       const updateEntity = await localUpdatesTable.getByRecordId(disclosureId);
 
@@ -83,7 +83,7 @@ const useDisclosureDetailsMutation = () => {
       } else {
         await localUpdatesTable.create({
           operation: 'UPDATE',
-          table: 'disclosure_details',
+          table: 'disclosure_properties',
           status: 'pending',
           recordId: '',
           payload: { disclosureId, ...values },
@@ -93,7 +93,7 @@ const useDisclosureDetailsMutation = () => {
       }
 
       queryClient.invalidateQueries({
-        queryKey: ['LOCAL_DISCLOSURE_DETAILS', disclosureId],
+        queryKey: ['LOCAL_DISCLOSURE_PROPERTIES', disclosureId],
       });
     },
     [localUpdatesTable, queryClient]

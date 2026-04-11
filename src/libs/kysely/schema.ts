@@ -39,7 +39,7 @@ export type THouseOwnership = 'owned' | 'rent' | 'loan' | 'mortage';
 export type TNotificationType = 'consultation_requested' | 'consultation_completed' | 'disclosure_assigned';
 // export type TSystemBroadcastType = 'meeting' | 'custom';
 // export type TBroadcastAudience = 'all' | 'scouts' | 'supervisors';
-export type TAuditTable = 'disclosures' | 'disclosure_notes' | 'disclosure_consultations' | 'disclosure_details';
+export type TAuditTable = 'disclosures' | 'disclosure_notes' | 'disclosure_consultations' | 'disclosure_properties';
 // export type TAuditAction = 'INSERT' | 'UPDATE' | 'DELETE';
 // export type TConsultationStatus = 'pending' | 'completed';
 
@@ -168,7 +168,7 @@ export type TLocalDb = {
     createdBy: string | null;
     updatedAt: string | null;
   };
-  disclosure_details: {
+  disclosure_properties: {
     disclosureId: string;
     diseasesOrSurgeries: string | null;
     jobOrSchool: string | null;
@@ -242,7 +242,7 @@ export type TLocalDb = {
       | 'patients'
       | 'family_members'
       | 'patient_medicines'
-      | 'disclosure_details'
+      | 'disclosure_properties'
       | 'disclosure_notes'
       | 'disclosure_consultations'
       | 'disclosure_sub_patients';
