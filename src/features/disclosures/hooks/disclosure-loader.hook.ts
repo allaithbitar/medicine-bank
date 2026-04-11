@@ -7,10 +7,7 @@ export const useDisclosureLoader = ({ id }: { id: string }, forceOffline = false
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const isOffline = forceOffline || useIsOffline();
 
-  const onlineQueryResult = disclosuresApi.useGetDisclosureQuery(
-    { id },
-    { skip: !id || isOffline, refetchOnMountOrArgChange: true }
-  );
+  const onlineQueryResult = disclosuresApi.useGetDisclosureQuery({ id }, { skip: !id || isOffline });
 
   const offlineQueryResult = useLocalDisclosureLoader({ id }, forceOffline);
 
