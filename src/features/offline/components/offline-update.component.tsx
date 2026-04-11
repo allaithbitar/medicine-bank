@@ -687,31 +687,33 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
   const [updateDisclosureDetails, { isLoading: isUpdatingDisclosureDetails }] =
     disclosuresApi.useUpdateDisclosureDetailsMutation();
 
-  const { data: parentDisclosureData, isFetching: isFetchingParentUpdateData } = useLocalUpdateLoader({
+  const { data: parentDisclosureUpdate, isFetching: isFetchingParentDisclosureUpdate } = useLocalUpdateLoader({
     recordId: update?.parentId ?? '',
     operation: 'INSERT',
+    table: 'disclosures',
   });
 
   const blocked =
-    !isNullOrUndefined(parentDisclosureData) &&
-    parentDisclosureData.table === 'disclosures' &&
-    !parentDisclosureData.serverRecordId;
+    !isNullOrUndefined(parentDisclosureUpdate) &&
+    parentDisclosureUpdate.table === 'disclosures' &&
+    !parentDisclosureUpdate.serverRecordId;
 
   const diffs = useMemo(() => {
     if (!localDisclosureDetailsData) return null;
     let result = compareObjects(localDisclosureDetailsData, onlineDisclosureDetailsData || {}, {
-      diseasesOrSurgeries: STRINGS.diseases_or_surgeries,
-      jobOrSchool: STRINGS.job_or_school,
-      houseOwnership: STRINGS.house_ownership,
-      houseOwnershipNote: STRINGS.house_ownership_note,
-      electricity: STRINGS.electricity,
-      expenses: STRINGS.expenses,
-      houseCondition: STRINGS.home_condition,
-      houseConditionStatus: STRINGS.home_condition_status,
-      houseConditionNote: STRINGS.home_condition_status_note,
+      audio: STRINGS.recorded_audio,
+      note: STRINGS.note,
+      meds: STRINGS.medicines,
+      // houseOwnership: STRINGS.house_ownership,
+      // houseOwnershipNote: STRINGS.house_ownership_note,
+      // electricity: STRINGS.electricity,
+      // expenses: STRINGS.expenses,
+      // houseCondition: STRINGS.home_condition,
+      // houseConditionStatus: STRINGS.home_condition_status,
+      // houseConditionNote: STRINGS.home_condition_status_note,
       pros: STRINGS.pons,
       cons: STRINGS.cons,
-      other: STRINGS.other_details,
+      // other: STRINGS.other_details,
     }).filter((v) => v.hasConflict);
 
     result = removeKeys(result, ['disclosureId']);
@@ -739,32 +741,55 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
   const handleSave = async () => {
     const _diffs = compareObjects(localDisclosureDetailsData, onlineDisclosureDetailsData || {}, {});
 
+    let _newAudio: string | Blob | null | undefined = null;
+
     const dto = _diffs
       .filter((d) => d.hasConflict)
-      .reduce((acc, curr) => {
-        if (curr.field in update.payload) {
-          acc[curr.field as keyof typeof acc] = update.payload[curr.field as keyof typeof update.payload];
-        } else {
-          console.warn(curr.field, curr.localValue);
-        }
+      .reduce(
+        (acc, curr) => {
+          if (curr.field in update.payload) {
+            acc[curr.field as keyof typeof acc] = update.payload[curr.field as keyof typeof update.payload];
+          } else {
+            console.warn(curr.field, curr.localValue);
+          }
 
-        return acc;
-      }, {} as TAddDisclosureDetailsDto);
+          return acc;
+        },
+        {} as TAddDisclosureDetailsDto & { audio: string | null }
+      );
 
     try {
       let serverRecordId = '';
       if (update.operation === 'INSERT') {
-        if (parentDisclosureData) {
-          dto.disclosureId = (parentDisclosureData.serverRecordId || dto.disclosureId || update.parentId!) ?? '';
+        _newAudio = dto.audio;
+        if (_newAudio && typeof _newAudio === 'string') {
+          const _opfsAudioFile = await readAudioFile(_newAudio);
+          if (_opfsAudioFile) {
+            dto.audioFile = _opfsAudioFile;
+          }
+        }
+        if (parentDisclosureUpdate) {
+          dto.disclosureId = (parentDisclosureUpdate.serverRecordId || dto.disclosureId || update.parentId!) ?? '';
         }
         await addDisclosureDetails(dto).unwrap();
         serverRecordId = dto.disclosureId;
       } else {
+        if (dto.audio && typeof dto.audio === 'string') {
+          const _opfsAudioFile = await readAudioFile(dto.audio);
+          if (_opfsAudioFile) {
+            dto.audioFile = _opfsAudioFile;
+          }
+        }
+
         if (!dto.disclosureId) {
           dto.disclosureId = update.parentId || (update.payload as any).disclosureId || '';
         }
         await updateDisclosureDetails(dto).unwrap();
         serverRecordId = update.parentId!;
+      }
+
+      if (dto.audio) {
+        await deleteAudioFile(dto.audio);
       }
       await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
       notifySuccess(STRINGS.action_done_successfully);
@@ -778,7 +803,7 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
     isFetchingLocalDisclosureDetails ||
     isAddingDisclosureDetails ||
     isUpdatingDisclosureDetails ||
-    isFetchingParentUpdateData;
+    isFetchingParentDisclosureUpdate;
 
   return (
     <Card sx={{ p: 1, height: '100%', position: 'relative' }}>
@@ -795,18 +820,14 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
               showDiff={update.operation === 'UPDATE'}
               diffs={diffs}
               order={{
-                diseasesOrSurgeries: 1,
-                jobOrSchool: 2,
-                houseOwnership: 3,
-                houseOwnershipNote: 4,
-                electricity: 5,
-                expenses: 6,
-                houseCondition: 7,
-                houseConditionStatus: 8,
-                houseConditionNote: 9,
-                pros: 10,
-                cons: 11,
-                other: 12,
+                note: 1,
+                pros: 2,
+                cons: 3,
+                meds: 4,
+                audio: 5,
+              }}
+              customRenderer={{
+                audio: RenderAudioFile,
               }}
             />
           </Stack>

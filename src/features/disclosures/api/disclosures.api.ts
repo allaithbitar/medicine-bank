@@ -375,8 +375,11 @@ export const disclosuresApi = rootApi.injectEndpoints({
         if (payload.cons) formData.append('cons', payload.cons);
         if (payload.note) formData.append('note', payload.note);
         if (payload.meds) formData.append('meds', payload.meds);
-        if (payload.audioFile) formData.append('audioFile', payload.audioFile);
 
+        if (payload.audioFile && payload.audioFile instanceof Blob) {
+          // fd.append('deleteAudioFile', 'false');
+          formData.append('audioFile', payload.audioFile, `audio-${Date.now()}.webm`);
+        }
         return {
           url: '/disclosures/properties',
           method: 'POST',
@@ -397,7 +400,12 @@ export const disclosuresApi = rootApi.injectEndpoints({
         if (payload.cons !== undefined) formData.append('cons', payload.cons || '');
         if (payload.note !== undefined) formData.append('note', payload.note || '');
         if (payload.meds !== undefined) formData.append('meds', payload.meds || '');
-        if (payload.audioFile) formData.append('audioFile', payload.audioFile);
+
+        if (payload.audioFile && payload.audioFile instanceof Blob) {
+          // fd.append('deleteAudioFile', 'false');
+          formData.append('audioFile', payload.audioFile, `audio-${Date.now()}.webm`);
+        }
+
         if (payload.deleteAudioFile) formData.append('deleteAudioFile', 'true');
 
         return {
@@ -457,10 +465,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
-      invalidatesTags: (_, __, args) => [
-        'Sub_Patinets',
-        { type: 'Sub_Patinets', id: args.disclosureId },
-      ],
+      invalidatesTags: (_, __, args) => ['Sub_Patinets', { type: 'Sub_Patinets', id: args.disclosureId }],
     }),
     updateDisclosureSubPatient: builder.mutation<TDisclosureSubPatient, TUpdateSubPatientDto>({
       query: (payload) => ({

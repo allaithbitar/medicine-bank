@@ -5,7 +5,7 @@ import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.h
 import type { TAddDisclosureDetailsDto, TUpdateDisclosureDetailsDto } from '../types/disclosure.types';
 import disclosuresApi from '../api/disclosures.api';
 import { useQueryClient } from '@tanstack/react-query';
-import { saveAudioFile } from '@/core/helpers/opfs-audio.helpers';
+import { deleteAudioFile, saveAudioFile } from '@/core/helpers/opfs-audio.helpers';
 
 type IUpdateDisclosureDetailsDto = { type: 'UPDATE'; dto: TUpdateDisclosureDetailsDto };
 
@@ -24,18 +24,18 @@ const useDisclosureDetailsMutation = () => {
     async (dto: TAddDisclosureDetailsDto) => {
       const { audioFile, ...restDto } = dto;
 
-      let audioName: string | null = null;
+      let audio: string | null = null;
       if (audioFile && audioFile instanceof Blob) {
         const id = crypto.randomUUID();
         const name = id + '.webm';
         await saveAudioFile(name, audioFile);
-        audioName = name;
+        audio = name;
       }
 
       const insertDto = {
         createdAt: new Date().toISOString(),
         ...restDto,
-        audio: audioName,
+        audio,
       } as const;
 
       await localDb.insertInto('disclosure_properties').values(insertDto).execute();
@@ -44,7 +44,7 @@ const useDisclosureDetailsMutation = () => {
         operation: 'INSERT',
         table: 'disclosure_properties',
         status: 'pending',
-        recordId: '',
+        recordId: insertDto.disclosureId,
         payload: insertDto,
         serverRecordId: null,
         parentId: insertDto.disclosureId,
@@ -59,38 +59,82 @@ const useDisclosureDetailsMutation = () => {
 
   const handleUpdate = useCallback(
     async (dto: TUpdateDisclosureDetailsDto) => {
-      const { disclosureId, audioFile, deleteAudioFile, ...restValues } = dto;
-      let audioName: string | null = null;
-      if (deleteAudioFile) {
-        audioName = null;
-      } else if (audioFile && audioFile instanceof Blob) {
-        const id = crypto.randomUUID();
-        const name = id + '.webm';
-        await saveAudioFile(name, audioFile);
-        audioName = name;
-      }
-      const values = {
-        ...restValues,
-        ...(deleteAudioFile || audioFile ? { audio: audioName } : {}),
-      };
-
-      await localDb.updateTable('disclosure_properties').set(values).where('disclosureId', '=', disclosureId).execute();
+      const { disclosureId, audioFile, deleteAudioFile: _deleteAudioFile, ...values } = dto;
 
       const updateEntity = await localUpdatesTable.getByRecordId(disclosureId);
 
+      let audio;
+
+      if (audioFile && audioFile instanceof Blob) {
+        const audioId = crypto.randomUUID();
+        const name = audioId + '.webm';
+        await saveAudioFile(name, audioFile);
+        audio = name;
+      }
+
+      if ((_deleteAudioFile || audioFile) && (updateEntity?.payload as any)?.audio) {
+        await deleteAudioFile((updateEntity?.payload as any)?.audio);
+
+        if (_deleteAudioFile) {
+          audio = null;
+        }
+      }
+
+      await localDb
+        .updateTable('disclosure_properties')
+        .set({
+          ...values,
+          audio,
+        })
+        .where('disclosureId', '=', disclosureId)
+        .execute();
+
       if (updateEntity) {
-        await localUpdatesTable.updatePayload(updateEntity.id, values);
+        await localUpdatesTable.updatePayload(updateEntity.id, { ...values, audio });
       } else {
         await localUpdatesTable.create({
           operation: 'UPDATE',
           table: 'disclosure_properties',
           status: 'pending',
-          recordId: '',
-          payload: { disclosureId, ...values },
+          recordId: disclosureId,
+          payload: { ...values, audio },
           serverRecordId: null,
           parentId: disclosureId,
         });
       }
+
+      //////////////////////////////////////////////////////////////////////////////////
+      // let audioName: string | null = null;
+      // if (deleteAudioFile) {
+      //   audioName = null;
+      // } else if (audioFile && audioFile instanceof Blob) {
+      //   const id = crypto.randomUUID();
+      //   const name = id + '.webm';
+      //   await saveAudioFile(name, audioFile);
+      //   audioName = name;
+      // }
+      // const values = {
+      //   ...restValues,
+      //   ...(deleteAudioFile || audioFile ? { audio: audioName } : {}),
+      // };
+
+      // await localDb.updateTable('disclosure_properties').set(values).where('disclosureId', '=', disclosureId).execute();
+      //
+      // const updateEntity = await localUpdatesTable.getByRecordId(disclosureId);
+      //
+      // if (updateEntity) {
+      //   await localUpdatesTable.updatePayload(updateEntity.id, values);
+      // } else {
+      //   await localUpdatesTable.create({
+      //     operation: 'UPDATE',
+      //     table: 'disclosure_properties',
+      //     status: 'pending',
+      //     recordId: '',
+      //     payload: { disclosureId, ...values },
+      //     serverRecordId: null,
+      //     parentId: disclosureId,
+      //   });
+      // }
 
       queryClient.invalidateQueries({
         queryKey: ['LOCAL_DISCLOSURE_PROPERTIES', disclosureId],

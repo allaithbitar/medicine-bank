@@ -46,7 +46,8 @@ const DisclosureDetailsSection = ({
         URL.revokeObjectURL(offlineAudioObjectUrl);
       }
     };
-  }, [isOffline, details?.audio, offlineAudioObjectUrl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOffline, details?.audio]);
 
   const handleOpenDisclosureDetails = () => {
     navigate(`/disclosures/details/action?disclosureId=${disclosureId}`);
@@ -194,6 +195,7 @@ const DisclosureDetailsSection = ({
                 {isOffline && offlineAudioObjectUrl && (
                   <audio controlsList="nodownload" controls src={offlineAudioObjectUrl} style={{ width: '100%' }} />
                 )}
+
                 {!isOffline && details.audio && (
                   <audio
                     controlsList="nodownload"

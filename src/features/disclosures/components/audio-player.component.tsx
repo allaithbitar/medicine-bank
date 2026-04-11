@@ -55,7 +55,8 @@ function AudioPlayer({
         URL.revokeObjectURL(offlineAudioObjectUrl);
       }
     };
-  }, [audioFile?.audioName, audioFile?.audioBlob, isOffline, offlineAudioObjectUrl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioFile?.audioName, audioFile?.audioBlob, isOffline]);
 
   const startRecording = async () => {
     setErrors?.([]);

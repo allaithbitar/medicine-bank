@@ -170,20 +170,11 @@ export type TLocalDb = {
   };
   disclosure_properties: {
     disclosureId: string;
-    diseasesOrSurgeries: string | null;
-    jobOrSchool: string | null;
-    electricity: string | null;
-    expenses: string | null;
-    houseOwnership: THouseOwnership | null;
-    houseOwnershipNote: string | null;
-    houseCondition: THouseHoldAssetCondition | null;
-    houseConditionNote: string | null;
     note: string | null;
     pros: string | null;
     cons: string | null;
     meds: string | null;
     audio: string | null;
-    other: string | null;
     createdAt: string;
     createdBy: string | null;
     updatedAt: string | null;

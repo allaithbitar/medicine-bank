@@ -41,20 +41,11 @@ export type TDisclosureScout =
 
 export type TDisclosureDetails = {
   disclosureId: string;
-  diseasesOrSurgeries: string | null;
-  jobOrSchool: string | null;
-  electricity: string | null;
-  expenses: string | null;
-  houseOwnership: THouseOwnership | null;
-  houseOwnershipNote: string | null;
-  houseCondition: THouseHoldAssetCondition | null;
-  houseConditionNote: string | null;
   note: string | null;
   pros: string | null;
   cons: string | null;
   meds: string | null;
   audio: string | null;
-  other: string | null;
   createdAt: string;
   createdBy: TActioner | null;
   updatedAt: string | null;
@@ -63,40 +54,19 @@ export type TDisclosureDetails = {
 
 export type TAddDisclosureDetailsDto = {
   disclosureId: string;
-  pros?: string | null;
-  cons?: string | null;
-  note?: string | null;
-  meds?: string | null;
-  audioFile?: Blob | File | null;
-  diseasesOrSurgeries?: string | null;
-  jobOrSchool?: string | null;
-  electricity?: string | null;
-  expenses?: string | null;
-  houseOwnership?: THouseOwnership | null;
-  houseOwnershipNote?: string | null;
-  houseCondition?: THouseHoldAssetCondition | null;
-  houseConditionNote?: string | null;
-  other?: string | null;
+  pros: string | null;
+  cons: string | null;
+  note: string | null;
+  meds: string | null;
+  audioFile: Blob | File | null;
 };
 
-export type TUpdateDisclosureDetailsDto = {
-  disclosureId: string;
-  pros?: string | null;
-  cons?: string | null;
-  note?: string | null;
-  meds?: string | null;
-  audioFile?: Blob | File | null;
-  deleteAudioFile?: boolean | null;
-  diseasesOrSurgeries?: string | null;
-  jobOrSchool?: string | null;
-  electricity?: string | null;
-  expenses?: string | null;
-  houseOwnership?: THouseOwnership | null;
-  houseOwnershipNote?: string | null;
-  houseCondition?: THouseHoldAssetCondition | null;
-  houseConditionNote?: string | null;
-  other?: string | null;
-};
+export type TUpdateDisclosureDetailsDto = Partial<
+  TAddDisclosureDetailsDto & {
+    deleteAudioFile?: boolean;
+  }
+> &
+  Pick<TAddDisclosureDetailsDto, 'disclosureId'>;
 
 export type TDisclosure = {
   id: string;
