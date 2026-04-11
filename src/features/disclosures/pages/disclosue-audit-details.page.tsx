@@ -8,11 +8,12 @@ import { useLocation, useParams } from 'react-router-dom';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import Nodata from '@/core/components/common/no-data/no-data.component';
 import type { TAuditDetailsRow } from '../types/disclosure.types';
-import { ACTION_COLOR_MAP, formatDateTime, getStringsLabel } from '@/core/helpers/helpers';
+import { ACTION_COLOR_MAP, formatDateTime, getStringsLabel, getVoiceSrc } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 import { useEmployeesAutocompleteLoader } from '@/features/autocomplete/hooks/employees-autocomplete-loader.hook';
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import Header from '@/core/components/common/header/header';
+import { baseUrl } from '@/core/api/root.api';
 
 const RAW_COLUMNS = new Set([
   'is_custom_rating',
@@ -28,6 +29,11 @@ const RAW_COLUMNS = new Set([
   'initial_note',
   'archive_number',
   'custom_rating',
+  'pros',
+  'cons',
+  'meds',
+  'note',
+  'audio',
 ]);
 
 const RESOLVE_COLUMNS = new Set(['rating_id', 'scout_id', 'priority_id', 'details']);
@@ -93,6 +99,31 @@ function AuditDetailsPage() {
   const renderResolvedValue = (item: TAuditDetailsRow, which: 'old' | 'new') => {
     const raw = which === 'old' ? item.oldValue : item.newValue;
     const record = which === 'old' ? item.oldRecordValue : item.newRecordValue;
+
+    if (item.column === 'audio') {
+      if (which === 'old') {
+        const hasNewValue = item.newValue && item.newValue !== 'null';
+        return (
+          <Typography variant="body2" color="warning.main" sx={{ fontStyle: 'italic' }}>
+            {hasNewValue ? STRINGS.audio_deleted_and_replaced : STRINGS.audio_deleted}
+          </Typography>
+        );
+      } else {
+        if (!raw || raw === 'null') {
+          return <Typography variant="body2">{STRINGS.none}</Typography>;
+        }
+        return (
+          <Box sx={{ mt: 1 }}>
+            <audio
+              controlsList="nodownload"
+              controls
+              src={getVoiceSrc({ baseUrl, filePath: raw })}
+              style={{ width: '100%' }}
+            />
+          </Box>
+        );
+      }
+    }
 
     if (RAW_COLUMNS.has(item.column ?? '')) {
       if (raw === 'null') return STRINGS.none;
@@ -286,14 +317,18 @@ function AuditDetailsPage() {
                           borderColor: 'divider',
                         }}
                       >
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            wordBreak: 'break-word',
-                          }}
-                        >
-                          {renderResolvedValue(entry, 'old') || STRINGS.none}
-                        </Typography>
+                        {entry.column === 'audio' ? (
+                          renderResolvedValue(entry, 'old') || STRINGS.none
+                        ) : (
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              wordBreak: 'break-word',
+                            }}
+                          >
+                            {renderResolvedValue(entry, 'old') || STRINGS.none}
+                          </Typography>
+                        )}
                       </Paper>
                     </Box>
 
@@ -344,16 +379,20 @@ function AuditDetailsPage() {
                           borderColor: actionColor,
                         }}
                       >
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            wordBreak: 'break-word',
-                            fontWeight: 600,
-                            color: actionColor,
-                          }}
-                        >
-                          {renderResolvedValue(entry, 'new') || STRINGS.none}
-                        </Typography>
+                        {entry.column === 'audio' ? (
+                          renderResolvedValue(entry, 'new') || STRINGS.none
+                        ) : (
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              wordBreak: 'break-word',
+                              fontWeight: 600,
+                              color: actionColor,
+                            }}
+                          >
+                            {renderResolvedValue(entry, 'new') || STRINGS.none}
+                          </Typography>
+                        )}
                       </Paper>
                     </Box>
                   </Stack>

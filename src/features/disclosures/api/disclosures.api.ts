@@ -324,12 +324,21 @@ export const disclosuresApi = rootApi.injectEndpoints({
       invalidatesTags: [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }, 'Disclosure_Adviser_Consultation'],
     }),
 
-    getAuditLog: builder.query<TPaginatedResponse<TAuditGroup>, { disclosureId?: string | null }>({
-      query: (params) => ({
+    getAuditLog: builder.infiniteQuery<
+      TPaginatedResponse<TAuditGroup>,
+      { disclosureId?: string | null },
+      number
+    >({
+      query: ({ queryArg, pageParam }) => ({
         url: '/disclosures/audit-log',
         method: 'GET',
-        params,
+        params: { ...queryArg, pageNumber: pageParam },
       }),
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) =>
+          !lastPage.items.length || lastPage.items.length < lastPage.pageSize ? undefined : lastPage.pageNumber + 1,
+      },
       transformResponse: (res: ApiResponse<TPaginatedResponse<TAuditGroup>>) => res.data,
       providesTags: [{ type: 'audit', id: 'LIST' }],
     }),
