@@ -13,6 +13,7 @@ import { notifyError, notifySuccess } from '@/core/components/common/toast/toast
 // import type { THouseHoldAssetCondition, THouseOwnership } from '@/libs/kysely/schema';
 import useDisclosureDetailsMutation from '../hooks/disclosure-details-mutation.hook';
 import { useDisclosureDetailsLoader } from '../hooks/disclosure-details-loader.hook';
+import PreventPullToRefresh from '@/core/hooks/use-prevent-pull-to-refresh.hook';
 
 function DisclosureDetailsActionPage() {
   const [searchParams] = useSearchParams();
@@ -71,16 +72,14 @@ function DisclosureDetailsActionPage() {
   const isLoading = isMutatingDisclosureDetails || isGetting;
 
   return (
-    <Card
-      sx={{
-        touchAction: 'pan-down',
-      }}
-    >
-      <Header title={STRINGS.disclosures_details} showBackButton />
-      <DisclosureDetailsActionForm ref={ref} disclosureDetails={disclosureDetails} />
-      <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
-      {isLoading && <LoadingOverlay />}
-    </Card>
+    <PreventPullToRefresh>
+      <Card>
+        <Header title={STRINGS.disclosures_details} showBackButton />
+        <DisclosureDetailsActionForm ref={ref} disclosureDetails={disclosureDetails} />
+        <ActionFab icon={<Save />} color="success" onClick={handleSave} disabled={isLoading} />
+        {isLoading && <LoadingOverlay />}
+      </Card>
+    </PreventPullToRefresh>
   );
 }
 

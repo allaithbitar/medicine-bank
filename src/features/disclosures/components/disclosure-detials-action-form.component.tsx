@@ -142,12 +142,7 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
   );
 
   return (
-    <Stack
-      gap={2}
-      sx={{
-        overscrollBehavior: 'contain',
-      }}
-    >
+    <Stack gap={2}>
       {/* <FormTextAreaInput
         label={STRINGS.diseases_or_surgeries}
         name="diseasesOrSurgeries"
