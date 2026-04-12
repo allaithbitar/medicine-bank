@@ -1,4 +1,4 @@
-import React, { useEffect, type PropsWithChildren } from 'react';
+import { useEffect, type PropsWithChildren } from 'react';
 
 const PreventPullToRefresh = ({ children }: PropsWithChildren) => {
   useEffect(() => {
