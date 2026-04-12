@@ -129,6 +129,11 @@ function BeneficiaryCommonCard({
       <DetailItem
         icon={<LocationPin />}
         label={STRINGS.patient_address}
+        copyText={
+          beneficiary.address
+            ? `${beneficiary.area?.name ?? ''}  - ${beneficiary.address || ''}`
+            : (beneficiary.area?.name ?? '')
+        }
         value={
           <InlineEditWrapper
             editValue={beneficiary.address}
@@ -178,6 +183,7 @@ function BeneficiaryCommonCard({
       <DetailItem
         icon={<Info />}
         label={STRINGS.patient_about}
+        copyText={beneficiary.about ?? null}
         value={
           <InlineEditWrapper
             editValue={beneficiary.about}

@@ -251,6 +251,7 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
           <DetailItem
             icon={<Comment />}
             label={STRINGS.initial_note}
+            copyText={disclosure.initialNote ?? null}
             value={
               <InlineEditWrapper
                 editValue={disclosure.initialNote}

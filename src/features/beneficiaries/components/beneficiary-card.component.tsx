@@ -49,20 +49,22 @@ const BeneficiaryCard = ({
         iconColorPreset="green"
         value={beneficiary.nationalNumber ?? STRINGS.none}
       />
-
       <DetailItemComponent icon={<Phone />} label={STRINGS.phones} value={getPhoneValues()} />
-
       <DetailItemComponent
         icon={<LocationPin />}
         label={STRINGS.patient_address}
         iconColorPreset="deepPurple"
+        copyText={
+          beneficiary.address
+            ? `${beneficiary.area?.name ?? ''}  - ${beneficiary.address || ''}`
+            : (beneficiary.area?.name ?? '')
+        }
         value={
           beneficiary.address
             ? `${beneficiary.area?.name ?? ''}  - ${beneficiary.address || ''}`
             : (beneficiary.area?.name ?? '')
         }
       />
-
       <DetailItemComponent
         icon={<PriorityHighOutlined />}
         label={STRINGS.created_at}

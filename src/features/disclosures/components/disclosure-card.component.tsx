@@ -2,7 +2,15 @@ import { Button, Chip, Stack } from '@mui/material';
 import type { TDisclosure } from '../types/disclosure.types';
 import DetailItemComponent from '@/core/components/common/detail-item/detail-item.component';
 import ReusableCardComponent from '@/core/components/common/reusable-card/reusable-card.component';
-import { InfoOutline, LocationPin, Person, PriorityHighOutlined, Visibility, Archive, Phone } from '@mui/icons-material';
+import {
+  InfoOutline,
+  LocationPin,
+  Person,
+  PriorityHighOutlined,
+  Visibility,
+  Archive,
+  Phone,
+} from '@mui/icons-material';
 import { formatDateTime } from '@/core/helpers/helpers';
 import STRINGS from '@/core/constants/strings.constant';
 // import { purple } from '@mui/material/colors';
@@ -22,10 +30,13 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
     navigate(`/disclosures/${disclosure.id}`);
   }, [navigate, disclosure.id]);
 
-  const handleViewClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    navigate(`/disclosures/${disclosure.id}`);
-  }, [navigate, disclosure.id]);
+  const handleViewClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      navigate(`/disclosures/${disclosure.id}`);
+    },
+    [navigate, disclosure.id]
+  );
 
   const getPhoneValues = useCallback(() => {
     if (!disclosure.patient.phones?.length) {
@@ -92,7 +103,12 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
 
       <DetailItemComponent icon={<Phone />} label={STRINGS.phone_numbers} value={getPhoneValues()} />
 
-      <DetailItemComponent icon={<LocationPin />} label={STRINGS.patient_address} value={showAddress()} />
+      <DetailItemComponent
+        icon={<LocationPin />}
+        label={STRINGS.patient_address}
+        value={showAddress()}
+        copyText={showAddress() !== STRINGS.none ? showAddress() : undefined}
+      />
 
       {disclosure.archiveNumber && (
         <DetailItemComponent icon={<Archive />} label={STRINGS.archive_number} value={disclosure.archiveNumber} />

@@ -103,7 +103,7 @@ const DisclosureSubPatientCard = ({ subPatient, onEdit }: DisclosureSubPatientCa
 
           <DetailItemComponent label={STRINGS.job_or_school} icon={<Work />} value={subPatient.job || STRINGS.none} />
 
-          <DetailItemComponent label={STRINGS.patient_about} icon={<Info />} value={subPatient.about || STRINGS.none} />
+          <DetailItemComponent label={STRINGS.patient_about} icon={<Info />} value={subPatient.about || STRINGS.none} copyText={subPatient.about} />
         </Stack>
       }
       footerContent={null}
