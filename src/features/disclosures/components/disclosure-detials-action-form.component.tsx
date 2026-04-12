@@ -142,7 +142,12 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
   );
 
   return (
-    <Stack gap={2}>
+    <Stack
+      gap={2}
+      sx={{
+        overscrollBehavior: 'contain',
+      }}
+    >
       {/* <FormTextAreaInput
         label={STRINGS.diseases_or_surgeries}
         name="diseasesOrSurgeries"
@@ -230,6 +235,7 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
         name="note"
         value={formState.note}
         onChange={(v) => setValue({ note: v })}
+        rows={15}
       />
 
       <FormTextAreaInput
@@ -237,6 +243,7 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
         name="pros"
         value={formState.pros}
         onChange={(v) => setValue({ pros: v })}
+        rows={10}
       />
 
       <FormTextAreaInput
@@ -244,6 +251,7 @@ const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
         name="cons"
         value={formState.cons}
         onChange={(v) => setValue({ cons: v })}
+        rows={10}
       />
 
       <FormTextAreaInput

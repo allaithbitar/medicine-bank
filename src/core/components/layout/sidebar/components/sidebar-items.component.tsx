@@ -6,7 +6,7 @@ import SideBarListItem from './sidebar-list-item.component';
 import BadgeIcon from '@mui/icons-material/Badge';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+// import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
 import SidebarExpandableItem from './sidebar-expandable-list-item.component';
 import { Business as BuildingOfficeIcon, Sync, ThumbsUpDown, Payment } from '@mui/icons-material';
@@ -75,11 +75,11 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       href: '/ratings',
       icon: <ThumbsUpDown />,
     },
-    {
+    /* {
       label: STRINGS.medicines,
       href: '/medicines',
       icon: <MedicalServicesIcon />,
-    },
+    }, */
     {
       label: STRINGS.meetings,
       href: '/meetings',

@@ -22,16 +22,16 @@ import SyncPage from './features/offline/pages/sync.page';
 import EmployeeActionPage from './features/employees/pages/employee-action.page';
 import PriorityDegreesPage from './features/priority-degres/pages/priority-degrees.page';
 import SatisticsPage from './features/satistics/pages/satistics.page';
-import MedicinesPage from './features/banks/pages/medicines/medicines.page';
+// import MedicinesPage from './features/banks/pages/medicines/medicines.page';
 import AppointmentsPage from './features/appointments/pages/appointments.page';
 import DisclosureAppointmentActionPage from './features/disclosures/pages/disclosure-appointment-action.page';
 import PriorityDegreesActionPage from './features/priority-degres/pages/priority-degrees-action.page';
 import CityActionPage from './features/banks/pages/cities/city-action.page';
 import WorkAreaActionPage from './features/banks/pages/work-areas/work-area-action.page';
 import RatingActionPage from './features/ratings/pages/rating-action.page';
-import MedicineActionPage from './features/banks/pages/medicines/medicine-action.page';
-import BeneficiaryMedicineActionPage from './features/beneficiaries/pages/beneficiary-medicine-action.page';
-import BeneficiaryFamilyActionPage from './features/beneficiaries/pages/beneficiary-family-action.page';
+// import MedicineActionPage from './features/banks/pages/medicines/medicine-action.page';
+// import BeneficiaryMedicineActionPage from './features/beneficiaries/pages/beneficiary-medicine-action.page';
+// import BeneficiaryFamilyActionPage from './features/beneficiaries/pages/beneficiary-family-action.page';
 import SystemBroadcastsPage from './features/system-broadcasts/pages/system-broadcasts.page';
 import SystemBroadcastActionPage from './features/system-broadcasts/pages/system-broadcast-action.page';
 import MeetingsPage from './features/meetings/pages/meetings.page';
@@ -95,8 +95,8 @@ function App() {
                 <Route path="/beneficiaries" element={<BeneficiariesPage />} />
                 <Route path="/beneficiaries/action" element={<BeneficiaryActionPage />} />
                 <Route path="/beneficiaries/:id" element={<BeneficiaryPage />} />
-                <Route path="/beneficiaries/:id/medicine/action" element={<BeneficiaryMedicineActionPage />} />
-                <Route path="/beneficiaries/:id/family/action" element={<BeneficiaryFamilyActionPage />} />
+                {/* <Route path="/beneficiaries/:id/medicine/action" element={<BeneficiaryMedicineActionPage />} /> */}
+                {/* <Route path="/beneficiaries/:id/family/action" element={<BeneficiaryFamilyActionPage />} /> */}
 
                 <Route path="/cities" element={<Cities />} />
                 <Route path="/cities/action" element={<CityActionPage />} />
@@ -107,8 +107,8 @@ function App() {
                 <Route path="/ratings" element={<RatingsPage />} />
                 <Route path="/ratings/action" element={<RatingActionPage />} />
 
-                <Route path="/medicines" element={<MedicinesPage />} />
-                <Route path="/medicines/action" element={<MedicineActionPage />} />
+                {/* <Route path="/medicines" element={<MedicinesPage />} /> */}
+                {/* <Route path="/medicines/action" element={<MedicineActionPage />} /> */}
 
                 <Route path="/priority-degrees" element={<PriorityDegreesPage />} />
                 <Route path="/priority-degrees/action" element={<PriorityDegreesActionPage />} />
