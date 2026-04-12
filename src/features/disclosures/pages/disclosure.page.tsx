@@ -133,15 +133,11 @@ const DisclosurePage = () => {
           //       },
           //     ]
           //   : []),
-          ...(canSeeAudit
-            ? [
-                {
-                  icon: <DifferenceIcon />,
-                  label: STRINGS.audit_log,
-                  onClick: () => openAudit(),
-                },
-              ]
-            : []),
+          {
+            icon: <DifferenceIcon />,
+            label: STRINGS.audit_log,
+            onClick: () => openAudit(),
+          },
 
           ...(canSeeConsultingAdviser && !isArchived
             ? [
