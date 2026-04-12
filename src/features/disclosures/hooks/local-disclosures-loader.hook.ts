@@ -110,7 +110,7 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
             eb.or(
               priorityDegrees.map((pd) =>
                 eb.and([
-                  eb(sql.raw('createdAt'), '<=', sql.raw(`datetime('now', '-${pd.durationInDays} days')`)),
+                  eb(sql.raw('COALESCE(lastVisitDate, createdAt)'), '<=', sql.raw(`datetime('now', '-${pd.durationInDays} days')`)),
                   eb('priorityId', '=', pd.id),
                   eb('status', '=', 'active'),
                   eb('visitResult', 'is', null),
@@ -171,7 +171,7 @@ export const useLocalDisclosuresLoader = ({ pageSize, ...dto }: TGetDisclosuresD
         .withPlugin(new ParseJSONResultsPlugin())
         .limit(pageSize || DEFAULT_PAGE_SIZE)
         .offset(pageSize || DEFAULT_PAGE_SIZE! * pageParam)
-        .orderBy('createdAt', 'desc');
+        .orderBy(sql`COALESCE(updatedAt, createdAt)`, 'desc');
 
       let totalCount = 0;
 

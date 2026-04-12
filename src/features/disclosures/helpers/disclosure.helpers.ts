@@ -101,7 +101,7 @@ export const normalizeStateValuesToDto = (values: TDisclosureFiltersForm) => {
 export const getDisclosureLateDaysCount = (disclosure: TDisclosure) => {
   if (!disclosure.priority.durationInDays || !!disclosure.visitResult) return { isLate: false, lateDaysCount: 0 };
   const currentDate = new Date();
-  const diff = differenceInDays(currentDate, disclosure.createdAt);
+  const diff = differenceInDays(currentDate, disclosure.lastVisitDate || disclosure.createdAt);
   const lateDaysCount = disclosure.priority.durationInDays - diff;
   return { isLate: lateDaysCount < 0, lateDaysCount: Math.abs(lateDaysCount) };
 };

@@ -88,6 +88,7 @@ export type TDisclosure = {
   patient: TBenefieciary;
   priority: TPriorityDegree;
   isReceived: boolean;
+  lastVisitDate: string | null;
 } & TDisclosureScout &
   TCreatedBy &
   TUpdatedBy &

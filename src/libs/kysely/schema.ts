@@ -153,6 +153,7 @@ export type TLocalDb = {
     ratingNote: string | null;
     appointmentDate: string | null;
     isAppointmentCompleted: boolean | null;
+    lastVisitDate: string | null;
     createdAt: string;
     updatedAt: string | null;
     createdBy: string | null;

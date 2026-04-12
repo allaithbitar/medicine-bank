@@ -154,6 +154,7 @@ export async function createTables() {
     .addColumn('ratingNote', 'text')
     .addColumn('appointmentDate', 'date')
     .addColumn('isAppointmentCompleted', 'boolean')
+    .addColumn('lastVisitDate', 'datetime')
     .addColumn('createdAt', 'datetime', (col) => col.notNull())
     .addColumn('updatedAt', 'datetime')
     .addColumn('createdBy', 'uuid')
