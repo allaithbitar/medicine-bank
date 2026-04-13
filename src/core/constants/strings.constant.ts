@@ -483,6 +483,13 @@ const STRINGS = {
   cant_play_synced_notes: 'لا يمكن تشغيل صوت الملاحظات المزامنة بدون انترنت',
   sync_warning: 'مزامنة البيانات على الجهاز تقوم بحذف اي تعديلات غير محفوظة, رجاء قم بالتأكد من حفظ التعديلات اولا',
   go_to_unsaved_changes: 'الذهاب للبيانات غير المحفوظة',
+  runtime_automatic: 'تلقائي',
+  runtime_automatic_description: 'يعمل تلقائيًا — يبدّل بين الوضع المتصل وغير المتصل حسب حالة الشبكة.',
+  runtime_online: 'متّصل',
+  runtime_online_description: 'وضع متصل — يتطلب اتصالًا بالإنترنت لجميع العمليات ويزامن التغييرات فورًا مع النظام.',
+  runtime_offline: 'غير متّصل',
+  runtime_offline_description:
+    'وضع غير متصل — يعمل بدون إنترنت، يحفظ التعديلات محليًا ويزامنها لاحقًا عند توفر الشبكة.',
 };
 
 export default STRINGS;

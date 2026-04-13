@@ -1,4 +1,4 @@
-import { Button, Drawer, Stack } from '@mui/material';
+import { Button, Drawer, Stack, useTheme } from '@mui/material';
 import type { Dispatch, SetStateAction } from 'react';
 import SideBarItems from './components/sidebar-items.component';
 import { authActions } from '@/core/slices/auth/auth.slice';
@@ -16,6 +16,7 @@ function Sidebar({
   openSidebar: boolean;
   setOpenSidebar: Dispatch<SetStateAction<boolean>>;
 }) {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const { openModal } = useModal();
   return (
@@ -47,7 +48,11 @@ function Sidebar({
           }}
         >
           {openSidebar && (
-            <img src={'/logo.jpeg'} style={{ width: 100, marginBottom: 10, borderRadius: 8 }} alt="app-logo" />
+            <img
+              src={'/logo.jpeg'}
+              style={{ width: 100, marginBottom: 10, borderRadius: `${theme.shape.borderRadius}px` }}
+              alt="app-logo"
+            />
           )}
 
           {/* <IconButton

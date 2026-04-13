@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useAppRuntimeTypeContext } from '../context/app-runtime-type.context';
 
 const useIsOffline = () => {
+  const { type } = useAppRuntimeTypeContext();
   const [isOffline, setIsOffline] = useState(() => !window.navigator.onLine);
   useEffect(() => {
     function onOnlineHandler() {
@@ -17,6 +19,14 @@ const useIsOffline = () => {
       window.removeEventListener('offline', onOfflineHandler);
     };
   }, []);
+
+  if (type === 'online') {
+    return false;
+  }
+  if (type === 'offline') {
+    return true;
+  }
+
   return isOffline;
 };
 export default useIsOffline;

@@ -4,6 +4,7 @@ import ModalProvider from '../../common/modal/modal-provider.component';
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
+import { AppRuntimeTypeContextProvider } from '@/core/context/app-runtime-type.context';
 
 const AppUiWrapper = () => {
   const [queryClient] = useState(
@@ -11,7 +12,7 @@ const AppUiWrapper = () => {
   );
 
   return (
-    <>
+    <AppRuntimeTypeContextProvider>
       <ThemeContextProvider>
         <QueryClientProvider client={queryClient}>
           <ModalProvider>
@@ -25,7 +26,7 @@ const AppUiWrapper = () => {
           </ModalProvider>
         </QueryClientProvider>
       </ThemeContextProvider>
-    </>
+    </AppRuntimeTypeContextProvider>
   );
 };
 

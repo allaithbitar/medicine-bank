@@ -1,4 +1,4 @@
-import { Button, IconButton, Stack } from '@mui/material';
+import { Button, IconButton, Stack, useTheme } from '@mui/material';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { MdMenuOpen } from 'react-icons/md';
 import RecordVoiceOverOutlinedIcon from '@mui/icons-material/RecordVoiceOverOutlined';
@@ -7,6 +7,7 @@ import { Download } from '@mui/icons-material';
 import STRINGS from '@/core/constants/strings.constant';
 import HeaderNotificationButton from '@/features/notifications/components/header-notification-button';
 import PendingUpdatesButton from '@/features/offline/components/pending-updates-button.component';
+import RuntimeToggle from './runtime-toggle.component';
 
 // BeforeInstallPromptEvent interface
 interface BeforeInstallPromptEvent extends Event {
@@ -21,6 +22,7 @@ function Navbar({
   setOpenSidebar: Dispatch<SetStateAction<boolean>>;
   openSidebar: boolean;
 }) {
+  const theme = useTheme();
   // State to store the install prompt event
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   // State to track if the app is installed
@@ -74,7 +76,7 @@ function Navbar({
   };
 
   return (
-    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ width: '100%', p: 1, px: 2 }}>
+    <Stack direction="row" alignItems="center" sx={{ width: '100%', p: 1, px: 2 }}>
       <IconButton
         color="primary"
         onClick={() => setOpenSidebar((prev: any) => !prev)}
@@ -82,7 +84,8 @@ function Navbar({
       >
         <MdMenuOpen />
       </IconButton>
-      <Stack sx={{ gap: 1, flexDirection: 'row', alignItems: 'center' }}>
+      <RuntimeToggle />
+      <Stack sx={{ gap: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'end', width: '100%' }}>
         {installEvent && !isInstalled && (
           <Button startIcon={<Download />} onClick={handleInstallClick} title="Install App">
             {STRINGS.install_application}
@@ -102,7 +105,7 @@ function Navbar({
         </Stack>
 
         {/* Install button - only shown when app is installable and not yet installed */}
-        <img src={`/logo.jpeg`} style={{ width: 50, borderRadius: '8px' }} alt="bank-logo" />
+        <img src={`/logo.jpeg`} style={{ width: 40, borderRadius: `${theme.shape.borderRadius}px` }} alt="bank-logo" />
       </Stack>
     </Stack>
   );
