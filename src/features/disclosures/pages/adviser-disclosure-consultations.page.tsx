@@ -17,15 +17,15 @@ import useUser from '@/core/hooks/user-user.hook';
 
 function AdviserDisclosureConsultationsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = searchParams.get('tab') === 'pending' ? 'pending' : 'completed';
+  const currentTab = searchParams.get('tab') === 'completed' ? 'completed' : 'pending';
   const navigate = useNavigate();
   const { closeModal, openModal } = useModal();
   const { currentCanRate } = usePermissions();
-  const { id: userId } = useUser();
+  const { id: userId, role } = useUser();
 
   const { items, isFetching } = useDisclosureConsultationsLoader({
     consultationStatus: currentTab,
-    createdBy: userId,
+    createdBy: role === 'scout' ? userId : undefined,
   });
   const adviserConsultations = items ?? [];
 

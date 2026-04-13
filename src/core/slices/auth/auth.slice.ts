@@ -14,6 +14,7 @@ const initialState: TLogin = {
   role: "scout",
   token: "",
   updatedAt: "",
+  canBeConsulted: false,
 };
 
 const authSlice = createSlice({

@@ -14,6 +14,7 @@ import STRINGS from '@/core/constants/strings.constant';
 import CrisisAlertIcon from '@mui/icons-material/CrisisAlert';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import usePermissions from '@/core/hooks/use-permissions.hook';
+import useUser from '@/core/hooks/user-user.hook';
 
 type BaseItem = {
   label: string;
@@ -33,6 +34,7 @@ export type IItem = LinkItem | ParentItem;
 
 function SideBarItems({ onClick }: { onClick: () => void }) {
   const { hasRouteAccess, currentUserRole } = usePermissions();
+  const { canBeConsulted } = useUser();
 
   const items: IItem[] = [
     {
@@ -40,11 +42,15 @@ function SideBarItems({ onClick }: { onClick: () => void }) {
       icon: <HomeIcon />,
       href: '/',
     },
-    {
-      label: STRINGS.disclosure_consulting,
-      href: '/adviser_disclosure_consultations',
-      icon: <PsychologyAltIcon />,
-    },
+    ...(currentUserRole === 'scout' || canBeConsulted
+      ? [
+          {
+            label: STRINGS.disclosure_consulting,
+            href: '/adviser_disclosure_consultations',
+            icon: <PsychologyAltIcon />,
+          },
+        ]
+      : []),
     {
       label: currentUserRole === 'scout' ? STRINGS.employee : STRINGS.employees,
       href: '/employees',
