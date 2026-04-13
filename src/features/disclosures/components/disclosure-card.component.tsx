@@ -55,14 +55,26 @@ const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
     <CardAvatar
       name={disclosure.patient.name}
       extras={
-        <Chip
-          label={disclosure.priority.name}
-          sx={{
-            bgcolor: (theme) => disclosure.priority.color || theme.palette.grey[800],
-            color: (theme) => theme.palette.info.contrastText,
-            zIndex: 1,
-          }}
-        />
+        <Stack direction="row" gap={1}>
+          {!!disclosure.type && (
+            <Chip
+              label={STRINGS[disclosure.type]}
+              sx={{
+                bgcolor: (theme) => theme.palette.secondary.main,
+                color: (theme) => theme.palette.info.contrastText,
+                zIndex: 1,
+              }}
+            />
+          )}
+          <Chip
+            label={disclosure.priority.name}
+            sx={{
+              bgcolor: (theme) => disclosure.priority.color || theme.palette.grey[800],
+              color: (theme) => theme.palette.info.contrastText,
+              zIndex: 1,
+            }}
+          />
+        </Stack>
       }
     />
   );

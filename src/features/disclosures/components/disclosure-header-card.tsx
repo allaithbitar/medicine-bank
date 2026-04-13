@@ -18,6 +18,7 @@ import {
   ExpandMore,
   PersonAdd,
 } from '@mui/icons-material';
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import { Link } from 'react-router-dom';
 import { useMemo, useCallback, useState } from 'react';
 import { getDisclosureLateDaysCount } from '../helpers/disclosure.helpers';
@@ -178,6 +179,11 @@ const DisclosureHeaderCard = ({ disclosure }: { disclosure: TDisclosure }) => {
             />
           )}
           <DetailItem icon={<InfoOutline />} label={STRINGS.status} value={STRINGS[disclosure.status]} />
+          <DetailItem
+            icon={<LightbulbOutlinedIcon />}
+            label={STRINGS.type}
+            value={STRINGS[disclosure.type] ?? STRINGS.none}
+          />
           <DetailItem
             icon={<DirectionsWalk />}
             label={STRINGS.disclosure_scout}
