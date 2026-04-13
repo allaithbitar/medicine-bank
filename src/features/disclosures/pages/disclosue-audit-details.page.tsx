@@ -127,6 +127,9 @@ function AuditDetailsPage() {
 
     if (RAW_COLUMNS.has(item.column ?? '')) {
       if (raw === 'null') return STRINGS.none;
+      if (item.column === 'type') {
+        return STRINGS[raw as keyof typeof STRINGS] || raw;
+      }
       if (['visit_result', 'status'].includes(item.column ?? '')) return STRINGS[raw as keyof typeof STRINGS];
       if (['true', 'false'].includes(raw))
         return getStringsLabel({
