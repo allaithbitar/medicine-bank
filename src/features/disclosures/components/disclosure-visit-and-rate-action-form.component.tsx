@@ -129,7 +129,6 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclo
 
   const ratingEnabled =
     formState.visitResult?.id === 'completed' && !isFetchingConsultations && !adviserConsultations?.length;
-
   return (
     <Stack gap={2}>
       <Card>

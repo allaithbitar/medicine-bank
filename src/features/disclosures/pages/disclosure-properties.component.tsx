@@ -60,9 +60,10 @@ export default function DisclosureProperties({ disclosure }: { disclosure: TDisc
       name: 'ARCHIVE_DISCLOSURE_MODAL',
       props: {
         disclosureId: disclosure.id,
+        oldArchiveNumber: disclosure.archiveNumber,
       },
     });
-  }, [disclosure.id, openModal]);
+  }, [disclosure.archiveNumber, disclosure.id, openModal]);
 
   const handleUnarchiveDisclosure = useCallback(() => {
     openModal({

@@ -9,7 +9,6 @@ import usePermissions from '@/core/hooks/use-permissions.hook';
 
 function DisclosureVisitAndRatingSection({ disclosure }: { disclosure: TDisclosure }) {
   const { currentCanEdit } = usePermissions();
-  const isArchived = disclosure.status === 'archived';
 
   return (
     <Card>
@@ -100,7 +99,7 @@ function DisclosureVisitAndRatingSection({ disclosure }: { disclosure: TDisclosu
           )}
         </Stack>
         <Divider flexItem />
-        {currentCanEdit && !isArchived && (
+        {currentCanEdit && (
           <Link style={{ width: '100%' }} to={`/disclosures/visit-rating/action?id=${disclosure.id}`}>
             <Button fullWidth startIcon={<Edit />}>
               {`${STRINGS.edit} ${STRINGS.visit} ${STRINGS.and} ${STRINGS.rating}`}

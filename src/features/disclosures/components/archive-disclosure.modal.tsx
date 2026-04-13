@@ -17,11 +17,12 @@ import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-
 
 type TArchiveDisclosureModalProps = {
   disclosureId: string;
+  oldArchiveNumber: string | null;
 };
 
-const ArchiveDisclosureModal = ({ disclosureId }: TArchiveDisclosureModalProps) => {
+const ArchiveDisclosureModal = ({ disclosureId, oldArchiveNumber }: TArchiveDisclosureModalProps) => {
   const { closeModal } = useModal();
-  const [archiveNumber, setArchiveNumber] = useState<string>('');
+  const [archiveNumber, setArchiveNumber] = useState<string>(oldArchiveNumber || '');
   const [archiveDisclosure, { isLoading }] = disclosuresApi.useArchiveDisclosureMutation();
 
   const handleConfirm = async () => {
@@ -59,7 +60,7 @@ const ArchiveDisclosureModal = ({ disclosureId }: TArchiveDisclosureModalProps) 
             label={STRINGS.archive_number_optional}
             value={archiveNumber}
             onChange={(v) => setArchiveNumber(v)}
-            disabled={isLoading}
+            disabled={isLoading || !!oldArchiveNumber}
             placeholder={STRINGS.archive_number_optional}
           />
         </Stack>
