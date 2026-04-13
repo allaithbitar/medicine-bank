@@ -13,6 +13,7 @@ import LoadingOverlay from '@/core/components/common/loading-overlay/loading-ove
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
 import CustomAppBarComponent from '@/core/components/common/custom-app-bar/custom-app-bar.component';
 import { useDisclosureConsultationsLoader } from '../hooks/disclosure-consultations-loader.hook';
+import useUser from '@/core/hooks/user-user.hook';
 
 function AdviserDisclosureConsultationsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,9 +21,11 @@ function AdviserDisclosureConsultationsPage() {
   const navigate = useNavigate();
   const { closeModal, openModal } = useModal();
   const { currentCanRate } = usePermissions();
+  const { id: userId } = useUser();
 
   const { items, isFetching } = useDisclosureConsultationsLoader({
     consultationStatus: currentTab,
+    createdBy: userId,
   });
   const adviserConsultations = items ?? [];
 
