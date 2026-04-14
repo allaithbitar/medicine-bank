@@ -5,6 +5,7 @@ import beneficiaryApi from '../api/beneficiary.api';
 import type { TAddBeneficiaryDto, TUpdateBeneficiaryDto } from '../types/beneficiary.types';
 import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.hook';
 import { useQueryClient } from '@tanstack/react-query';
+import { getLocalUpdate } from '@/features/offline/hooks/local-update-loader.hook';
 
 type IUpdateBeneficiaryDto = { type: 'UPDATE'; dto: TUpdateBeneficiaryDto };
 
@@ -103,7 +104,7 @@ const useBeneficiaryMutation = () => {
 
       await localDb.insertInto('patients_phone_numbers').values(phoneNumbersInsertDto).execute();
 
-      const updateEntity = await localUpdatesTable.getByRecordId(beneficiaryId);
+      const updateEntity = await getLocalUpdate({ id: beneficiaryId, table: 'patients' });
 
       if (updateEntity) {
         await localUpdatesTable.updatePayload(updateEntity.id, restValues);

@@ -1,3 +1,5 @@
+import type { TLocalDb } from '@/libs/kysely/schema';
+
 export type TErrorMessage = {
   en: string;
   ar: string;
@@ -42,3 +44,5 @@ export type TAutocompleteItem = {
   id: string;
   name: string;
 } & Record<string, any>;
+
+export type TOfflineUpdate = TLocalDb['updates'];

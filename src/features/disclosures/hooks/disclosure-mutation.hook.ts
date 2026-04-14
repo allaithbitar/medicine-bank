@@ -5,6 +5,7 @@ import type { TAddDisclosureDto, TUpdateDisclosureDto } from '../types/disclosur
 import { localDb } from '@/libs/sqlocal';
 import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.hook';
 import { useQueryClient } from '@tanstack/react-query';
+import { getLocalUpdate } from '@/features/offline/hooks/local-update-loader.hook';
 
 type IUpdateDisclosureDto = { type: 'UPDATE'; dto: TUpdateDisclosureDto };
 
@@ -50,10 +51,11 @@ const useDisclosureMutation = () => {
   const handleUpdate = useCallback(
     async (dto: TUpdateDisclosureDto) => {
       const { id, ...values } = dto;
+      console.log({ id });
 
       await localDb.updateTable('disclosures').set(values).where('id', '=', id).execute();
 
-      const updateEntity = await localUpdatesTable.getByRecordId(id);
+      const updateEntity = await getLocalUpdate({ id, table: 'disclosures' });
 
       if (updateEntity) {
         localUpdatesTable.updatePayload(updateEntity.id, values);

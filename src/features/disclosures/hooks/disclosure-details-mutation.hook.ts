@@ -6,6 +6,7 @@ import type { TAddDisclosureDetailsDto, TUpdateDisclosureDetailsDto } from '../t
 import disclosuresApi from '../api/disclosures.api';
 import { useQueryClient } from '@tanstack/react-query';
 import { deleteAudioFile, saveAudioFile } from '@/core/helpers/opfs-audio.helpers';
+import { getLocalUpdate } from '@/features/offline/hooks/local-update-loader.hook';
 
 type IUpdateDisclosureDetailsDto = { type: 'UPDATE'; dto: TUpdateDisclosureDetailsDto };
 
@@ -61,7 +62,7 @@ const useDisclosureDetailsMutation = () => {
     async (dto: TUpdateDisclosureDetailsDto) => {
       const { disclosureId, audioFile, deleteAudioFile: _deleteAudioFile, ...values } = dto;
 
-      const updateEntity = await localUpdatesTable.getByRecordId(disclosureId);
+      const updateEntity = await getLocalUpdate({ parentId: disclosureId, table: 'disclosure_properties' });
 
       let audio;
 

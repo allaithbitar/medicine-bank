@@ -12,12 +12,15 @@ import Header from '@/core/components/common/header/header';
 import { Link } from 'react-router-dom';
 import DisabledOnOffline from '@/core/components/common/disabled-on-offline/disabled-on-offline.component';
 import { useOfflineSync } from '../hooks/offline-sync.hook';
+import useBulkOfflineUpdate from '../components/bulk-offline-update.component';
 
 const OfflineUpdatesPage = () => {
   const [updateIndex, setUpdateIndex] = useState<number | undefined>(undefined);
   const { data: updates, isFetching } = useLocalUpdatesLoader();
   const { handleSync, isLoading: isRefreshingLocalDb } = useOfflineSync();
   const { deleteAll } = useLocalUpdatesTable();
+  const { handleBulkSaveClick } = useBulkOfflineUpdate();
+  console.log(updates);
 
   // const { syncUpdate, syncingId } = useSyncUpdate();
 
@@ -90,38 +93,9 @@ const OfflineUpdatesPage = () => {
           </Card>
         )}
         {updates && updates[updateIndex] && <OfflineUpdate key={updateIndex} update={updates[updateIndex]} />}
-        {/*  <Card
-        sx={{
-          p: 1,
-          width: '100%',
-          position: 'fixed',
-          bottom: 0,
-          zIndex: 2,
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
-      >
-        <Stack direction="row" gap={1}>
-          <Button onClick={() => setUpdateIndex((prev) => Math.max(0, prev - 1))}>
-            <ArrowForwardIos />
-          </Button>
-
-          <Button color="success" fullWidth>
-            <Save />
-          </Button>
-
-          <Button color="error" fullWidth>
-            <DeleteOutline />
-          </Button>
-
-          <Button onClick={() => setUpdateIndex((prev) => Math.min(updates.length - 1, prev + 1))}>
-            <ArrowBackIos />
-          </Button>
-        </Stack>
-      </Card> */}
-        {/*  {data.map((u) => (
-        <OfflineUpdate key={u.id} update={u} />
-      ))} */}
+        <Button variant="outlined" onClick={handleBulkSaveClick}>
+          Save All
+        </Button>
       </Stack>
     </DisabledOnOffline>
   );

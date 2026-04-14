@@ -5,6 +5,7 @@ import useLocalUpdatesTable from '@/features/offline/hooks/local-updates-table.h
 import disclosuresApi from '../api/disclosures.api';
 import type { TAddSubPatientDto, TUpdateSubPatientDto } from '../types/disclosure.types';
 import { useQueryClient } from '@tanstack/react-query';
+import { getLocalUpdate } from '@/features/offline/hooks/local-update-loader.hook';
 
 type IUpdateDisclosureSubPatientDto = { type: 'UPDATE'; dto: TUpdateSubPatientDto };
 
@@ -52,7 +53,7 @@ const useDisclosureSubPatientMutation = () => {
 
       await localDb.updateTable('disclosure_sub_patients').set(values).where('id', '=', id).execute();
 
-      const updateEntity = await localUpdatesTable.getByRecordId(id);
+      const updateEntity = await getLocalUpdate({ id, table: 'disclosure_sub_patients' });
 
       if (updateEntity) {
         await localUpdatesTable.updatePayload(updateEntity.id, values);
