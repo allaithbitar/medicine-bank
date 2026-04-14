@@ -227,6 +227,8 @@ const STRINGS = {
   record_audio: 'تسجيل صوت',
   start_recording: 'بدء التسجيل',
   stop_recording: 'انهاء التسجيل',
+  pause_recording: 'إيقاف مؤقت',
+  resume_recording: 'استئناف التسجيل',
   upload_audio: 'رفع ملف',
   clear: 'مسح',
   audio_help_text: 'يمكن رفع نص و ملف صوتي معا',

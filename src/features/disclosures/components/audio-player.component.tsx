@@ -3,6 +3,8 @@ import { Box, Typography, Stack, Button } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import StopIcon from '@mui/icons-material/Stop';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import React, { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { notifyError } from '@/core/components/common/toast/toast';
 import { MAX_AUDIO_SIZE_BYTES } from '@/core/constants/properties.constant';
@@ -27,12 +29,66 @@ function AudioPlayer({
   setAudioFile: Dispatch<SetStateAction<TAudioFile | undefined>>;
 }) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const finalizeRef = useRef<boolean>(true);
   const [isRecording, setIsRecording] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const isOffline = useIsOffline();
   const [offlineAudioObjectUrl, setOfflineAudioObjectUrl] = useState('');
 
   const chunksRef = useRef<Blob[]>([]);
+
+  const createRecorder = (stream: MediaStream, options: MediaRecorderOptions) => {
+    const mr = new MediaRecorder(stream, options);
+
+    mediaRecorderRef.current = mr;
+
+    mr.ondataavailable = (e: BlobEvent) => {
+      if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
+    };
+
+    mr.onstop = () => {
+      if (!finalizeRef.current) {
+        return;
+      }
+
+      const blob = new Blob(chunksRef.current, {
+        type: options.mimeType || 'audio/webm',
+      });
+
+      if (blob.size > MAX_AUDIO_SIZE_BYTES) {
+        notifyError(new Error(STRINGS.file_too_large));
+        stream.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
+        mediaRecorderRef.current = null;
+        chunksRef.current = [];
+        setIsRecording(false);
+        setIsPaused(false);
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      setAudioUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return url;
+      });
+
+      setAudioFile({
+        audioName: null,
+        audioBlob: blob,
+      });
+
+      stream.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+      mediaRecorderRef.current = null;
+      chunksRef.current = [];
+      setIsRecording(false);
+      setIsPaused(false);
+    };
+
+    mr.start();
+  };
 
   useEffect(() => {
     if (audioFile?.audioName && !audioFile?.audioBlob) {
@@ -66,47 +122,22 @@ function AudioPlayer({
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
       const options: MediaRecorderOptions = {
         audioBitsPerSecond: 32000,
       };
       if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
         options.mimeType = 'audio/webm;codecs=opus';
       }
-      const mr = new MediaRecorder(stream, options);
-      mediaRecorderRef.current = mr;
+
       chunksRef.current = [];
+      finalizeRef.current = true;
 
-      mr.ondataavailable = (e: BlobEvent) => {
-        if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
-      };
+      createRecorder(stream, options);
 
-      mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, {
-          type: options.mimeType || 'audio/webm',
-        });
-
-        if (blob.size > MAX_AUDIO_SIZE_BYTES) {
-          notifyError(new Error(STRINGS.file_too_large));
-          stream.getTracks().forEach((t) => t.stop());
-          return;
-        }
-
-        const url = URL.createObjectURL(blob);
-        setAudioUrl((prev) => {
-          if (prev) URL.revokeObjectURL(prev);
-          return url;
-        });
-
-        setAudioFile({
-          audioName: null,
-          audioBlob: blob,
-        });
-
-        stream.getTracks().forEach((t) => t.stop());
-      };
-
-      mr.start();
       setIsRecording(true);
+      setIsPaused(false);
     } catch (err) {
       notifyError(err);
     }
@@ -114,10 +145,111 @@ function AudioPlayer({
 
   const stopRecording = () => {
     const mr = mediaRecorderRef.current;
-    if (!mr) return;
-    mr.stop();
-    mediaRecorderRef.current = null;
+    if (mr) {
+      finalizeRef.current = true;
+      try {
+        if (mr.state !== 'inactive') mr.stop();
+      } catch (err) {
+        notifyError(err);
+      }
+      return;
+    }
+
+    if (!chunksRef.current.length) {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
+      }
+      setIsRecording(false);
+      setIsPaused(false);
+      return;
+    }
+
+    const blob = new Blob(chunksRef.current, { type: chunksRef.current[0]?.type || 'audio/webm' });
+    if (blob.size > MAX_AUDIO_SIZE_BYTES) {
+      notifyError(new Error(STRINGS.file_too_large));
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
+      }
+      chunksRef.current = [];
+      return;
+    }
+
+    const url = URL.createObjectURL(blob);
+    setAudioUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return url;
+    });
+
+    setAudioFile({
+      audioName: null,
+      audioBlob: blob,
+    });
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+
+    chunksRef.current = [];
     setIsRecording(false);
+    setIsPaused(false);
+  };
+
+  const pauseRecording = () => {
+    const mr = mediaRecorderRef.current;
+    if (!mr) return;
+
+    try {
+      if (typeof mr.pause === 'function' && mr.state === 'recording') {
+        mr.pause();
+        setIsPaused(true);
+        setIsRecording(false);
+      } else {
+        finalizeRef.current = false;
+        mr.stop();
+        mediaRecorderRef.current = null;
+        setIsPaused(true);
+        setIsRecording(false);
+      }
+    } catch (err) {
+      notifyError(err);
+    }
+  };
+
+  const resumeRecording = () => {
+    const mr = mediaRecorderRef.current;
+    if (mr) {
+      try {
+        if (typeof mr.resume === 'function' && mr.state === 'paused') {
+          mr.resume();
+          setIsPaused(false);
+          setIsRecording(true);
+          return;
+        }
+      } catch (err) {
+        notifyError(err);
+      }
+    }
+
+    const stream = streamRef.current;
+    if (!stream) {
+      notifyError('No active recording stream to resume');
+      return;
+    }
+
+    const options: MediaRecorderOptions = {
+      audioBitsPerSecond: 32000,
+    };
+    if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+      options.mimeType = 'audio/webm;codecs=opus';
+    }
+
+    finalizeRef.current = false;
+    createRecorder(stream, options);
+    setIsPaused(false);
+    setIsRecording(true);
   };
 
   const handleFileSelect = (f?: File | null) => {
@@ -155,6 +287,23 @@ function AudioPlayer({
 
   useEffect(() => {
     return () => {
+      try {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+          finalizeRef.current = true;
+          mediaRecorderRef.current.stop();
+        }
+      } catch {
+        // ignore
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
       if (audioUrl) URL.revokeObjectURL(audioUrl);
     };
   }, [audioUrl]);
@@ -167,14 +316,25 @@ function AudioPlayer({
 
       <Stack gap={1}>
         <Stack direction="row" gap={1} alignItems="center">
-          {!isRecording ? (
+          {!isRecording && !isPaused ? (
             <Button variant="contained" startIcon={<MicIcon />} onClick={startRecording}>
               {STRINGS.start_recording}
             </Button>
           ) : (
-            <Button variant="outlined" color="error" startIcon={<StopIcon />} onClick={stopRecording}>
-              {STRINGS.stop_recording}
-            </Button>
+            <>
+              {!isPaused ? (
+                <Button variant="outlined" color="warning" startIcon={<PauseIcon />} onClick={pauseRecording}>
+                  {STRINGS.pause_recording}
+                </Button>
+              ) : (
+                <Button variant="contained" color="primary" startIcon={<PlayArrowIcon />} onClick={resumeRecording}>
+                  {STRINGS.resume_recording}
+                </Button>
+              )}
+              <Button variant="outlined" color="error" startIcon={<StopIcon />} onClick={stopRecording}>
+                {STRINGS.stop_recording}
+              </Button>
+            </>
           )}
           <Button component="label" variant="outlined" startIcon={<UploadFileIcon />}>
             {STRINGS.upload_audio}
