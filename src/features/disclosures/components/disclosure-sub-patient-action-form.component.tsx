@@ -17,7 +17,11 @@ const FormSchema = z.object({
   name: z.string().min(5, STRINGS.schema_name_too_short),
   nationalNumber: z.string(),
   about: z.string().nullable(),
-  phones: z.array(z.string().length(10, STRINGS.schema_phone_digits)),
+  phones: z.array(
+    z.string().refine((v) => v.trim() === '' || v.length === 10, {
+      message: STRINGS.schema_phone_digits,
+    })
+  ),
   birthDate: z.string(),
   gender: z
     .custom<(TListItem & { label: string }) | null>((data) => !!data, {
@@ -58,8 +62,20 @@ const DisclosureSubPatientActionForm = ({ subPatientData, formRef }: DisclosureS
   useImperativeHandle(
     formRef,
     () => ({
-      handleSubmit() {
-        return handleSubmit();
+      async handleSubmit() {
+        const result = await handleSubmit();
+        if (result?.isValid) {
+          const values = result.result as any;
+          const rawPhones = Array.isArray(values.phones) ? values.phones : [];
+          const cleaned = rawPhones
+            .map((p: string) => (p ? p.replace(/\s+/g, '').trim() : ''))
+            .filter((p: string) => p && p.length > 0);
+
+          values.phones = cleaned.length > 0 ? cleaned : null;
+          return { isValid: true, result: values };
+        }
+
+        return result;
       },
     }),
     [handleSubmit]

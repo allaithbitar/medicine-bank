@@ -1,6 +1,6 @@
 import STRINGS from '@/core/constants/strings.constant';
 import { Card, Stack } from '@mui/material';
-import type { TAddBeneficiaryDto } from '../types/beneficiary.types';
+import type { TAddBeneficiaryDto, TBenefieciary } from '../types/beneficiary.types';
 import { useCallback, useRef, useState } from 'react';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import type { TBenefificaryFormHandlers } from '../components/beneficiary-action-form.component';
@@ -42,6 +42,12 @@ const BeneficiaryActionPage = () => {
     nationalNumber?: string;
     phoneNumbers?: Record<number, string>;
   }>({});
+  const [phoneConflict, setPhoneConflict] = useState<{
+    patient: TBenefieciary;
+    phone?: string | null;
+  } | null>(null);
+  // whether the user already attempted save after seeing a phone conflict
+  const [conflictSaveAttempted, setConflictSaveAttempted] = useState(false);
 
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
 
@@ -60,8 +66,6 @@ const BeneficiaryActionPage = () => {
     const { isValid, result } = await ref.current!.handleSubmit();
     if (!isValid) return;
 
-    const normalizePhone = (phone?: string | null) => (phone ?? '').replace(/\D/g, '');
-
     let disclosureResult = null;
     if (showDisclosureForm) {
       disclosureResult = await disclosureRef.current!.handleSubmit();
@@ -69,6 +73,7 @@ const BeneficiaryActionPage = () => {
     }
 
     const errors: typeof validationErrors = {};
+    let phoneConflictLocal: { patient: TBenefieciary; phone?: string | null } | null = null;
     try {
       if (result.nationalNumber) {
         const { data } = await validateNationalNumber({
@@ -86,35 +91,31 @@ const BeneficiaryActionPage = () => {
         });
 
         if (data?.existing?.patient) {
-          const duplicatePhone = data.existing.phone;
-          const normalizedDuplicate = normalizePhone(duplicatePhone);
-          const phoneErrors: Record<number, string> = {};
-          const duplicateMessage = `${STRINGS.phone_already_exists_for_patient}: ${data.existing.patient.name}`;
-
-          result.phoneNumbers.forEach((phone, index) => {
-            if (normalizedDuplicate) {
-              if (normalizePhone(phone) === normalizedDuplicate) {
-                phoneErrors[index] = duplicateMessage;
-              }
-              return;
-            }
-            phoneErrors[index] = duplicateMessage;
-          });
-
-          if (!Object.keys(phoneErrors).length) {
-            phoneErrors[0] = duplicateMessage;
-          }
-
-          if (Object.keys(phoneErrors).length > 0) {
-            errors.phoneNumbers = phoneErrors;
-          }
+          phoneConflictLocal = data.existing;
         }
       }
-      if (Object.keys(errors).length > 0) {
-        setValidationErrors(errors);
+
+      if (errors.nationalNumber) {
+        setValidationErrors({ nationalNumber: errors.nationalNumber });
+        setPhoneConflict(phoneConflictLocal);
         return;
       }
+
       setValidationErrors({});
+      // If there is a phone conflict, require a second save attempt to proceed.
+      if (phoneConflictLocal) {
+        setPhoneConflict(phoneConflictLocal);
+        if (!conflictSaveAttempted) {
+          setConflictSaveAttempted(true);
+          return;
+        }
+        // user already attempted once; proceed with save (leave conflict visible)
+      } else {
+        // no conflict, ensure flags are cleared
+        setPhoneConflict(null);
+        setConflictSaveAttempted(false);
+      }
+
       const addDto: TAddBeneficiaryDto = {
         name: result.name,
         nationalNumber: result.nationalNumber || null,
@@ -168,6 +169,11 @@ const BeneficiaryActionPage = () => {
           beneficiaryData={beneficiaryData}
           validationErrors={validationErrors}
           onAreaChange={handleAreaChange}
+          phoneConflict={phoneConflict}
+          onPhoneChange={() => {
+            setPhoneConflict(null);
+            setConflictSaveAttempted(false);
+          }}
         />
         {showDisclosureForm && (
           <>

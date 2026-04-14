@@ -8,7 +8,7 @@ import CitiesAutocomplete from '@/features/banks/components/cities/cities-autoco
 import AreasAutocomplete from '@/features/banks/components/work-areas/work-area-autocomplete/work-area-autocomplete.component';
 import type { TCity } from '@/features/banks/types/city.types';
 import { Add, DeleteOutlined, ExpandMore } from '@mui/icons-material';
-import { Button, IconButton, Stack, Collapse, Box, Typography } from '@mui/material';
+import { Button, IconButton, Stack, Collapse, Box, Typography, Alert } from '@mui/material';
 import z from 'zod';
 import type { TBenefieciary } from '../types/beneficiary.types';
 import { useEffect, useImperativeHandle, useState, type Ref } from 'react';
@@ -51,6 +51,8 @@ type TProps = {
     phoneNumbers?: Record<number, string>;
   };
   onAreaChange?: (areaId: string | null) => void;
+  phoneConflict?: { patient: TBenefieciary; phone?: string | null } | null;
+  onPhoneChange?: () => void;
 } & (
   | {
       beneficiaryData: TBenefieciary;
@@ -60,7 +62,7 @@ type TProps = {
     }
 );
 
-function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaChange }: TProps) {
+function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaChange, phoneConflict, onPhoneChange }: TProps) {
   const [showOptionalFields, setShowOptionalFields] = useState(beneficiaryData ? true : false);
   const { formState, formErrors, handleSubmit, setFormState } = useForm({
     schema: PatientFormSchema,
@@ -217,12 +219,13 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaC
                   const sanitizedValue = arabicToWesternDigits(v.replace(/\s+/g, ''));
                   const clone = structuredClone(formState.phoneNumbers);
                   clone[index] = sanitizedValue;
-                  return setFormState((prev) => ({
+                  setFormState((prev) => ({
                     ...prev,
                     phoneNumbers: clone,
                   }));
+                  onPhoneChange?.();
                 }}
-                errorText={formErrors.phoneNumbers?.[index]?.message || validationErrors?.phoneNumbers?.[index] || ''}
+                errorText={formErrors.phoneNumbers?.[index]?.message || ''}
                 endAdornment={
                   <IconButton
                     disabled={formState.phoneNumbers.length === 1}
@@ -254,6 +257,12 @@ function BeneficiaryActionForm({ beneficiaryData, ref, validationErrors, onAreaC
           >
             {STRINGS.add}
           </Button>
+          {phoneConflict && (
+            <Alert severity="warning" sx={{ mt: 1 }}>
+              {STRINGS.phone_already_exists_for_patient}: {phoneConflict.patient.name}
+              {phoneConflict.phone ? ` (${phoneConflict.phone})` : ''}
+            </Alert>
+          )}
         </Stack>
       </FieldSet>
       <Box>
