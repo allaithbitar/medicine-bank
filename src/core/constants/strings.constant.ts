@@ -39,7 +39,7 @@ const STRINGS = {
   phones: 'ارقام الهاتف',
   name: 'الاسم',
   phone_numbers: 'أرقام الهاتف',
-  patient_about: 'ملاحظة حول المستفيد',
+  patient_about: 'معلومات عن المستفيد',
   national_number: 'الرقم الوطني',
   city: 'المدينة',
   cities: 'المدن',
@@ -315,6 +315,7 @@ const STRINGS = {
   custom_dose: 'جرعة مخصص (mg)',
   rating_available_when_visit_completed:
     'يكمن اخيتار تقييم عندما تكون الزيارة مكتملة ولا يوجد استشارة مدير غير منتهية (معلقة) لهذا الكشف',
+  appointment_available_when_visit_completed: 'يمكن اختيار موعد المراجعة عندما تكون الزيارة مكتملة',
   patient_or_surgeries: 'المريض / العمليات',
   confirm: 'تأكيد',
   r_u_sure: 'هل انت متاكد',

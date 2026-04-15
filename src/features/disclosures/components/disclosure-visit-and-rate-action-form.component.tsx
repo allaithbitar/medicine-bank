@@ -11,6 +11,9 @@ import FormCheckbxInput from '@/core/components/common/inputs/form-checkbox-inpu
 import RatingsAutocomplete from '@/features/ratings/components/ratings-autocomplete.component';
 import type { TRating } from '@/features/ratings/types/rating.types';
 import { useDisclosureConsultationsLoader } from '../hooks/disclosure-consultations-loader.hook';
+import Calendar from '@/features/appointments/components/calendar/calendar.component';
+import WarningNotice from '@/core/components/common/warning-notice/warning-notice.component';
+import { notifyInfo } from '@/core/components/common/toast/toast';
 
 const defaultRatingData = {
   rating: null,
@@ -32,6 +35,7 @@ const schema = z
     isCustomRating: z.boolean().optional(),
     customRating: z.string().optional(),
     ratingNote: z.string().optional(),
+    appointmentDate: z.string().optional(),
   })
   .superRefine((state, ctx) => {
     const resultId = state.visitResult?.id;
@@ -89,6 +93,7 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclo
       visitResult: null,
       visitReason: '',
       visitNote: '',
+      appointmentDate: '',
       ...defaultRatingData,
     },
   });
@@ -123,12 +128,23 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclo
         customRating: disclosureVisitRateData.customRating ?? '',
         ratingNote: disclosureVisitRateData.ratingNote ?? '',
         rating: disclosureVisitRateData.rating,
+        appointmentDate: (disclosureVisitRateData as any).appointmentDate ?? '',
       });
     }
   }, [disclosureVisitRateData, setFormState]);
 
   const ratingEnabled =
     formState.visitResult?.id === 'completed' && !isFetchingConsultations && !adviserConsultations?.length;
+
+  const appointmentEnabled = formState.visitResult?.id === 'completed';
+
+  const handleSelectDate = ({ d, c }: { d: string; c?: number }) => {
+    setValue({ appointmentDate: d });
+    if (!!c && c >= 5) {
+      notifyInfo(STRINGS.selected_date_cap_warning);
+    }
+  };
+
   return (
     <Stack gap={2}>
       <Card>
@@ -206,6 +222,23 @@ const DisclosureVisitAndRateActionForm = ({ ref, disclosureVisitRateData, disclo
             onChange={(ratingNote) => setValue({ ratingNote })}
             disabled={!ratingEnabled}
           />
+        </Stack>
+      </Card>
+      {!appointmentEnabled && (
+        <Box>
+          <Alert severity="info">{STRINGS.appointment_available_when_visit_completed}</Alert>
+        </Box>
+      )}
+      <Card
+        sx={{
+          opacity: appointmentEnabled ? 1 : 0.6,
+          pointerEvents: appointmentEnabled ? 'auto' : 'none',
+        }}
+      >
+        <Header title={STRINGS.appointment} />
+        <Stack gap={2}>
+          <Calendar selectedDate={formState.appointmentDate} onClick={(d, c) => handleSelectDate({ d, c })} />
+          <WarningNotice title={STRINGS.warning} message={STRINGS.appointment_warning_message} variant="outlined" />
         </Stack>
       </Card>
     </Stack>

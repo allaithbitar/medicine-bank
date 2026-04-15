@@ -1,12 +1,21 @@
 import STRINGS from '@/core/constants/strings.constant';
-import { Card, Stack } from '@mui/material';
+import {
+  Card,
+  Stack,
+  Button,
+  IconButton,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+} from '@mui/material';
 import type { TAddBeneficiaryDto, TBenefieciary } from '../types/beneficiary.types';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, createRef } from 'react';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import type { TBenefificaryFormHandlers } from '../components/beneficiary-action-form.component';
 import BeneficiaryActionForm from '../components/beneficiary-action-form.component';
 import ActionFab from '@/core/components/common/action-fab/acion-fab.component';
-import { Save } from '@mui/icons-material';
+import { Save, Add, DeleteOutlined, ExpandMore } from '@mui/icons-material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
 import Header from '@/core/components/common/header/header';
@@ -16,7 +25,11 @@ import beneficiaryApi from '../api/beneficiary.api';
 import DisclosureActionForm, {
   type TDisclosureFormHandlers,
 } from '@/features/disclosures/components/disclosure-action-form.component';
+import DisclosureSubPatientActionForm, {
+  type TSubPatientFormHandlers,
+} from '@/features/disclosures/components/disclosure-sub-patient-action-form.component';
 import useDisclosureMutation from '@/features/disclosures/hooks/disclosure-mutation.hook';
+import useDisclosureSubPatientMutation from '@/features/disclosures/hooks/disclosure-sub-patient.mutation.hook';
 import type { TAddDisclosureDto } from '@/features/disclosures/types/disclosure.types';
 
 const BeneficiaryActionPage = () => {
@@ -31,6 +44,7 @@ const BeneficiaryActionPage = () => {
 
   const [mutateBeneficiary, { isLoading: isMutating }] = useBeneficiaryMutation();
   const [mutateDisclosure, { isLoading: isMutatingDisclosure }] = useDisclosureMutation();
+  const [mutateSubPatient, { isLoading: isMutatingSubPatients }] = useDisclosureSubPatientMutation();
 
   const [validateNationalNumber, { isLoading: isValidatingNationalNumber }] =
     beneficiaryApi.useValidateNationalNumberMutation();
@@ -46,10 +60,21 @@ const BeneficiaryActionPage = () => {
     patient: TBenefieciary;
     phone?: string | null;
   } | null>(null);
-  // whether the user already attempted save after seeing a phone conflict
   const [conflictSaveAttempted, setConflictSaveAttempted] = useState(false);
 
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
+
+  const [subPatientForms, setSubPatientForms] = useState<
+    { id: string; ref: React.RefObject<TSubPatientFormHandlers | null> }[]
+  >([]);
+
+  const handleAddSubPatient = () => {
+    setSubPatientForms((prev) => [...prev, { id: crypto.randomUUID(), ref: createRef<TSubPatientFormHandlers>() }]);
+  };
+
+  const handleRemoveSubPatient = (id: string) => {
+    setSubPatientForms((prev) => prev.filter((p) => p.id !== id));
+  };
 
   const { data: beneficiaryData, isLoading: isGetting } = useBeneficiaryLoader({ id: beneficiaryId ?? '' });
 
@@ -60,7 +85,12 @@ const BeneficiaryActionPage = () => {
   }, []);
 
   const isLoading =
-    isMutating || isGetting || isValidatingNationalNumber || isValidatingPhoneNumbers || isMutatingDisclosure;
+    isMutating ||
+    isGetting ||
+    isValidatingNationalNumber ||
+    isValidatingPhoneNumbers ||
+    isMutatingDisclosure ||
+    isMutatingSubPatients;
 
   const handleSave = async () => {
     const { isValid, result } = await ref.current!.handleSubmit();
@@ -70,6 +100,28 @@ const BeneficiaryActionPage = () => {
     if (showDisclosureForm) {
       disclosureResult = await disclosureRef.current!.handleSubmit();
       if (!disclosureResult.isValid) return;
+    }
+
+    const subPatientValues: any[] = [];
+    if (showDisclosureForm && subPatientForms.length > 0) {
+      for (const sp of subPatientForms) {
+        const spResult = await sp.ref.current?.handleSubmit();
+        if (!spResult?.isValid) {
+          return;
+        }
+        const values = spResult.result;
+        if (values.gender) {
+          values.gender = values.gender.id;
+        } else {
+          values.gender = null;
+        }
+        if (values.birthDate && values.birthDate.trim() !== '') {
+          values.birthDate = values.birthDate.split('T')[0];
+        } else {
+          values.birthDate = null;
+        }
+        subPatientValues.push(values);
+      }
     }
 
     const errors: typeof validationErrors = {};
@@ -102,16 +154,13 @@ const BeneficiaryActionPage = () => {
       }
 
       setValidationErrors({});
-      // If there is a phone conflict, require a second save attempt to proceed.
       if (phoneConflictLocal) {
         setPhoneConflict(phoneConflictLocal);
         if (!conflictSaveAttempted) {
           setConflictSaveAttempted(true);
           return;
         }
-        // user already attempted once; proceed with save (leave conflict visible)
       } else {
-        // no conflict, ensure flags are cleared
         setPhoneConflict(null);
         setConflictSaveAttempted(false);
       }
@@ -151,8 +200,21 @@ const BeneficiaryActionPage = () => {
           scoutId: disclosureResult.result.employee?.id || null,
           initialNote: disclosureResult.result.initialNote || null,
         };
-        await mutateDisclosure({ type: 'INSERT', dto: disclosureDto });
+
+        const disclosureResponse = await mutateDisclosure({ type: 'INSERT', dto: disclosureDto });
+        const newDisclosureId = (disclosureResponse as any)?.id;
         notifySuccess(STRINGS.added_successfully);
+
+        if (newDisclosureId && subPatientValues.length > 0) {
+          for (const spValues of subPatientValues) {
+            try {
+              await mutateSubPatient({ type: 'INSERT', dto: { ...spValues, disclosureId: newDisclosureId } });
+            } catch (err) {
+              notifyError(err);
+            }
+          }
+          notifySuccess(STRINGS.added_successfully);
+        }
       }
       navigate(-1);
     } catch (error: any) {
@@ -179,6 +241,38 @@ const BeneficiaryActionPage = () => {
           <>
             <Header title={STRINGS.add_disclosure} />
             <DisclosureActionForm ref={disclosureRef} beneficiaryAlreadyDefined={true} areaId={selectedAreaId} />
+            <Header title={STRINGS.sub_patients} />
+            <Stack gap={2}>
+              {subPatientForms.map((sp, index) => (
+                <Accordion key={sp.id} defaultExpanded>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%">
+                      <Typography variant="subtitle1">
+                        {STRINGS.sub_patient} {index + 1}
+                      </Typography>
+                      <IconButton
+                        color="error"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveSubPatient(sp.id);
+                        }}
+                        aria-label="remove-sub-patient"
+                        size="small"
+                      >
+                        <DeleteOutlined />
+                      </IconButton>
+                    </Stack>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <DisclosureSubPatientActionForm formRef={sp.ref} />
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+
+              <Button startIcon={<Add />} onClick={handleAddSubPatient}>
+                {STRINGS.add_sub_patient}
+              </Button>
+            </Stack>
           </>
         )}
         <ActionFab icon={<Save />} color="success" onClick={handleSave} />

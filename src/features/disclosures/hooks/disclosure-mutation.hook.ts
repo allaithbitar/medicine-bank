@@ -43,6 +43,7 @@ const useDisclosureMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: ['LOCAL_DISCLOSURES'],
       });
+      return insertDto;
     },
     [localUpdatesTable, queryClient]
   );

@@ -59,6 +59,7 @@ const useBeneficiaryMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ['LOCAL_BENEFICIARIES'],
       });
+      return insertDto;
     },
     [localUpdatesTable, queryClient]
   );
@@ -66,7 +67,6 @@ const useBeneficiaryMutation = () => {
   const handleUpdate = useCallback(
     async (dto: TUpdateBeneficiaryDto) => {
       const { phoneNumbers, id: beneficiaryId, ...restValues } = dto;
-      //
       const beneficiary = await localDb
         .selectFrom('patients')
         .selectAll()

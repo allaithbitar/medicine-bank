@@ -24,7 +24,9 @@ import PhoneActionsMenu from '@/core/components/common/phone-actions-menu/phone-
 
 const DisclosureCard = ({ disclosure }: { disclosure: TDisclosure }) => {
   const navigate = useNavigate();
-  const { isLate, lateDaysCount } = useMemo(() => getDisclosureLateDaysCount(disclosure), [disclosure]);
+  const { isLate, lateDaysCount } = useMemo(() => {
+    return getDisclosureLateDaysCount(disclosure);
+  }, [disclosure]);
 
   const handleCardClick = useCallback(() => {
     navigate(`/disclosures/${disclosure.id}`);

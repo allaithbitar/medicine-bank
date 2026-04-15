@@ -5,7 +5,12 @@ import { Save } from '@mui/icons-material';
 import { notifyError, notifySuccess } from '@/core/components/common/toast/toast';
 import STRINGS from '@/core/constants/strings.constant';
 import LoadingOverlay from '@/core/components/common/loading-overlay/loading-overlay';
-import type { TDisclosureRating, TUpdateDisclosureVisitAndRatingDto, TVisit } from '../types/disclosure.types';
+import type {
+  TDisclosureRating,
+  TUpdateDisclosureVisitAndRatingDto,
+  TVisit,
+  TUpdateDisclosureDto,
+} from '../types/disclosure.types';
 
 import { Stack } from '@mui/material';
 import DisclosureVisitAndRateActionForm, {
@@ -43,7 +48,6 @@ const DisclosureVisitAndRatingActionPage = () => {
       };
 
       if (updateDto.ratingId || updateDto.customRating) {
-        // updateDto.visitNote = null;
         updateDto.visitReason = null;
       } else {
         updateDto.ratingId = null;
@@ -52,7 +56,16 @@ const DisclosureVisitAndRatingActionPage = () => {
         updateDto.customRating = null;
       }
 
-      mutateDisclosure({ type: 'UPDATE', dto: updateDto });
+      await mutateDisclosure({ type: 'UPDATE', dto: updateDto });
+
+      if (result.appointmentDate) {
+        const appointmentUpdateDto: TUpdateDisclosureDto = {
+          id: disclosure.id,
+          appointmentDate: result.appointmentDate,
+          isAppointmentCompleted: false,
+        };
+        await mutateDisclosure({ type: 'UPDATE', dto: appointmentUpdateDto });
+      }
 
       notifySuccess(STRINGS.edited_successfully);
       navigate(-1);
@@ -70,7 +83,8 @@ const DisclosureVisitAndRatingActionPage = () => {
     ratingId: disclosure?.rating?.id,
     rating: disclosure?.rating,
     ratingNote: disclosure?.ratingNote,
-  } as TDisclosureRating & TVisit;
+    appointmentDate: disclosure?.appointmentDate ?? '',
+  } as TDisclosureRating & TVisit & { appointmentDate: string };
 
   return (
     <Stack>
