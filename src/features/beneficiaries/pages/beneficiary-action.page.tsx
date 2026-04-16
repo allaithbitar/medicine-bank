@@ -244,8 +244,8 @@ const BeneficiaryActionPage = () => {
             <Header title={STRINGS.sub_patients} />
             <Stack gap={2}>
               {subPatientForms.map((sp, index) => (
-                <Accordion key={sp.id} defaultExpanded>
-                  <AccordionSummary expandIcon={<ExpandMore />}>
+                <Accordion sx={{ p: 0, boxShadow: 'none' }} key={sp.id} defaultExpanded>
+                  <AccordionSummary sx={{ p: 0 }} expandIcon={<ExpandMore />}>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%">
                       <Typography variant="subtitle1">
                         {STRINGS.sub_patient} {index + 1}
@@ -263,7 +263,7 @@ const BeneficiaryActionPage = () => {
                       </IconButton>
                     </Stack>
                   </AccordionSummary>
-                  <AccordionDetails>
+                  <AccordionDetails sx={{ p: 0, boxShadow: 'none' }}>
                     <DisclosureSubPatientActionForm formRef={sp.ref} />
                   </AccordionDetails>
                 </Accordion>
