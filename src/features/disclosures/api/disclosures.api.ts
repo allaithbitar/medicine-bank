@@ -82,7 +82,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
         url: `/disclosures/last/${patientId}`,
       }),
       providesTags: ['Disclosures'],
-      transformResponse: (res: TDisclosure) => res,
+      transformResponse: (res: ApiResponse<TDisclosure>) => res.data,
     }),
 
     getDisclosureRatings: builder.query<TPaginatedResponse<TDisclosureRating>, TGetDisclosureRatingsDto>({
@@ -324,11 +324,7 @@ export const disclosuresApi = rootApi.injectEndpoints({
       invalidatesTags: [{ type: 'Disclosure_Adviser_Consultations', id: 'LIST' }, 'Disclosure_Adviser_Consultation'],
     }),
 
-    getAuditLog: builder.infiniteQuery<
-      TPaginatedResponse<TAuditGroup>,
-      { disclosureId?: string | null },
-      number
-    >({
+    getAuditLog: builder.infiniteQuery<TPaginatedResponse<TAuditGroup>, { disclosureId?: string | null }, number>({
       query: ({ queryArg, pageParam }) => ({
         url: '/disclosures/audit-log',
         method: 'GET',
