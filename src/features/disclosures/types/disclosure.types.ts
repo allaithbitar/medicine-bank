@@ -218,6 +218,7 @@ export type TDisclosureAdviserConsultation = {
   createdAt: string;
   updatedAt: string;
   disclosure?: TDisclosure;
+  patient: TBenefieciary;
 } & TCreatedBy &
   TUpdatedBy;
 

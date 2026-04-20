@@ -27,12 +27,18 @@ export const ConsultingAdviserCard = ({
       // headerBackground={`linear-gradient(to right, ${purple[800]}, ${purple[500]})`}
       headerContent={
         <CardAvatar
-          name={`${STRINGS.consulting} - ${adviserConsultation.createdBy?.name}`}
+          name={`   ${STRINGS.the_patient} : ${adviserConsultation.patient.name}`}
           icon={<PsychologyAltIcon fontSize="large" />}
         />
       }
       bodyContent={
         <Stack gap={2} alignItems="center">
+          <Typography alignSelf="start">
+            {STRINGS.consulting} : {adviserConsultation.createdBy?.name}
+          </Typography>
+
+          <Divider flexItem />
+
           {adviserConsultation.consultationNote && (
             <>
               <Typography alignSelf="start">{adviserConsultation.consultationNote}</Typography>

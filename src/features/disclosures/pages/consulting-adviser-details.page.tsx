@@ -14,6 +14,7 @@ import { baseUrl } from '@/core/api/root.api';
 import { formatDateTime, getStringsLabel, getVoiceSrc } from '@/core/helpers/helpers';
 import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import { Comment, Visibility } from '@mui/icons-material';
+import GroupIcon from '@mui/icons-material/Group';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
@@ -95,6 +96,11 @@ function ConsultingAdviserDetailsPage() {
         <Header title={STRINGS.consulting_adviser} />
 
         <Stack gap={2}>
+          <DetailItem
+            icon={<GroupIcon />}
+            label={STRINGS.the_patient}
+            value={consultation.disclosure?.patient.name || STRINGS.none}
+          />
           <DetailItem
             icon={<Comment />}
             label={STRINGS.details}
