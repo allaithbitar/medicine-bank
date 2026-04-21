@@ -90,6 +90,7 @@ export const ROUTE_PERMISSIONS: TRoutePermission[] = [
     path: '/adviser_disclosure_consultations',
     allowedRoles: ['manager', 'scout'],
     canRate: ['manager'],
+    requiresOnline: true,
   },
   {
     path: '/consulting-adviser/:id',
