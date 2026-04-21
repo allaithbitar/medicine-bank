@@ -61,6 +61,7 @@ export type TLocalDb = {
     role: TEmployeeRole;
     createdAt: string;
     updatedAt: string | null;
+    canBeConsulted: boolean;
   };
   areas_to_employees: {
     id: string;

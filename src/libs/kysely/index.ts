@@ -33,6 +33,8 @@ export async function createTables() {
     .addColumn('password', 'text', (col) => col.notNull())
     .addColumn('phone', 'text', (col) => col.notNull())
     .addColumn('role', 'text', (col) => col.notNull())
+    .addColumn('canBeConsulted', 'boolean')
+
     .addColumn('createdAt', 'datetime', (col) => col.notNull())
     .addColumn('updatedAt', 'datetime')
     .execute();
