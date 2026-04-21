@@ -391,7 +391,7 @@ const DisclosureOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
     applyLocalization(result, 'type');
     applyLocalization(result, 'visitResult');
 
-    result = removeKeys(result, ['patientId', 'priorityId', 'ratingId', 'scoutId', 'patient']);
+    result = removeKeys(result, ['patientId', 'priorityId', 'ratingId', 'scoutId', 'patient', 'lastVisitDate']);
 
     if (!onlineDisclosureData) {
       result = removeNoLocalAndServerValues(result);
@@ -399,6 +399,8 @@ const DisclosureOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
 
     return result;
   }, [localDisclosureData, onlineDisclosureData]);
+
+  console.log({ diffs, update, localDisclosureData });
 
   if (!localDisclosureData || !update) return null;
 
