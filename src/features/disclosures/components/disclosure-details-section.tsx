@@ -49,6 +49,53 @@ const DisclosureDetailsSection = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOffline, details?.audio]);
 
+  // const getExtension = (name?: string, mime?: string) => {
+  //   if (name) {
+  //     const idx = name.lastIndexOf('.');
+  //     if (idx !== -1) return name.substring(idx);
+  //   }
+  //   if (mime && mime.includes('/')) return `.${mime.split('/')[1]}`;
+  //   return '.webm';
+  // };
+
+  // const handleDownloadAudio = async () => {
+  //   try {
+  //     if (!details?.audio) {
+  //       notifyError(STRINGS.something_went_wrong);
+  //       return;
+  //     }
+
+  //     const baseName = disclosure?.patient?.name || STRINGS.consultation_audio;
+  //     if (isOffline) {
+  //       const file = await readAudioFile(details.audio);
+  //       if (!file) {
+  //         notifyError(STRINGS.cant_play_synced_notes);
+  //         return;
+  //       }
+  //       const ext = getExtension(details.audio, file.type);
+  //       const finalName = `${baseName}${ext}`;
+  //       const newFile = new File([file], finalName, { type: file.type });
+  //       downloadAnyFile(newFile);
+  //       return;
+  //     }
+
+  //     // Online: fetch the audio and trigger a download with desired filename
+  //     const url = getVoiceSrc({ baseUrl, filePath: details.audio });
+  //     const resp = await fetch(url);
+  //     if (!resp.ok) {
+  //       notifyError(STRINGS.something_went_wrong);
+  //       return;
+  //     }
+  //     const blob = await resp.blob();
+  //     const ext = getExtension(details.audio, blob.type);
+  //     const finalName = `${baseName}${ext}`;
+  //     const file = new File([blob], finalName, { type: blob.type });
+  //     downloadAnyFile(file);
+  //   } catch (err: any) {
+  //     notifyError(err instanceof Error ? err.message : String(err));
+  //   }
+  // };
+
   const handleOpenDisclosureDetails = () => {
     navigate(`/disclosures/details/action?disclosureId=${disclosureId}`);
   };
@@ -193,11 +240,25 @@ const DisclosureDetailsSection = ({
                 </Stack>
                 <Divider />
                 {isOffline && offlineAudioObjectUrl && (
-                  <audio controls src={offlineAudioObjectUrl} style={{ width: '100%' }} />
+                  <Stack direction="row" gap={1} alignItems="center">
+                    <audio
+                      title={disclosure?.patient.name || STRINGS.consultation_audio}
+                      controls
+                      src={offlineAudioObjectUrl}
+                      style={{ width: '100%' }}
+                    />
+                  </Stack>
                 )}
 
                 {!isOffline && details.audio && (
-                  <audio controls src={getVoiceSrc({ baseUrl, filePath: details.audio })} style={{ width: '100%' }} />
+                  <Stack direction="row" gap={1} alignItems="center">
+                    <audio
+                      controls
+                      title={disclosure?.patient.name || STRINGS.consultation_audio}
+                      src={getVoiceSrc({ baseUrl, filePath: details.audio })}
+                      style={{ width: '100%' }}
+                    />
+                  </Stack>
                 )}
                 {isOffline && !offlineAudioObjectUrl && (
                   <Typography color="warning.main" variant="body2">

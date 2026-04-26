@@ -387,6 +387,7 @@ const STRINGS = {
   downloading: 'جاري التنزيل...',
   download_complete: 'تم التنزيل بنجاح',
   download_failed: 'فشل التنزيل، يرجى المحاولة مرة أخرى',
+  download: 'تنزيل',
   system_broadcast: 'اخطارات النظام',
   statistics: 'الإحصائيات',
   Calender_cancel: 'إلغاء',
@@ -493,6 +494,7 @@ const STRINGS = {
   runtime_offline: 'غير متّصل',
   runtime_offline_description:
     'وضع غير متصل — يعمل بدون إنترنت، يحفظ التعديلات محليًا ويزامنها لاحقًا عند توفر الشبكة.',
+  consultation_audio: 'تسجيل استشارة',
 };
 
 export default STRINGS;

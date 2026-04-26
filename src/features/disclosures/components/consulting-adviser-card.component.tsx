@@ -65,6 +65,7 @@ export const ConsultingAdviserCard = ({
           {adviserConsultation.consultationAudio && (
             <>
               <audio
+                title={adviserConsultation.disclosure?.patient.name || STRINGS.consultation_audio}
                 preload="metadata"
                 style={{ width: '100%' }}
                 controls

@@ -135,6 +135,7 @@ function ConsultingAdviserDetailsPage() {
               value={
                 <Stack direction="row" alignItems="center">
                   <audio
+                    title={consultation.patient.name || STRINGS.consultation_audio}
                     preload="metadata"
                     controls
                     src={getVoiceSrc({ baseUrl, filePath: consultation.consultationAudio })}

@@ -76,7 +76,7 @@ const RenderAudioFile = ({ field, isServerValue }: { field: FieldDiff; isServerV
 
   if (!objectUrl) return STRINGS.none;
 
-  return <audio controls src={objectUrl} style={{ width: '100%' }} />;
+  return <audio title={STRINGS.consultation_audio} controls src={objectUrl} style={{ width: '100%' }} />;
 };
 
 const ActionButtons = ({ onSave, disabled }: { disabled?: boolean; onSave?: () => void }) => {

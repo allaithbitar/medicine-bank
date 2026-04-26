@@ -92,7 +92,6 @@ type TProps = {
 
 const DisclosureDetailsActionForm = ({ ref, disclosureDetails }: TProps) => {
   const [audioFile, setAudioFile] = useState<TAudioFile | undefined>();
-
   const { formState, setValue, handleSubmit, setFormState } = useForm({
     schema: createDisclosureDetailsSchema(),
     initalState: {

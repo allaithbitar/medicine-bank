@@ -13,6 +13,7 @@ import { baseUrl } from '@/core/api/root.api';
 import { getVoiceSrc } from '@/core/helpers/helpers';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
 import { readAudioFile } from '@/core/helpers/opfs-audio.helpers';
+import useUser from '@/core/hooks/user-user.hook';
 
 export type TAudioFile = {
   audioBlob: Blob | null;
@@ -36,6 +37,7 @@ function AudioPlayer({
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const isOffline = useIsOffline();
   const [offlineAudioObjectUrl, setOfflineAudioObjectUrl] = useState('');
+  const { name } = useUser();
 
   const chunksRef = useRef<Blob[]>([]);
 
@@ -374,7 +376,7 @@ function AudioPlayer({
         )}
         {audioUrl && (
           <Stack direction="row" gap={1} alignItems="center">
-            <audio controls preload="metadata" src={audioUrl} style={{ flexGrow: 1 }} />
+            <audio title={name} controls preload="metadata" src={audioUrl} style={{ flexGrow: 1 }} />
             <Button size="small" onClick={clearAudio}>
               {STRINGS.clear}
             </Button>
