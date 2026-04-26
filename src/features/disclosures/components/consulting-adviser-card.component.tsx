@@ -67,7 +67,6 @@ export const ConsultingAdviserCard = ({
               <audio
                 preload="metadata"
                 style={{ width: '100%' }}
-                controlsList="nodownload"
                 controls
                 src={getVoiceSrc({ baseUrl, filePath: adviserConsultation.consultationAudio })}
               />

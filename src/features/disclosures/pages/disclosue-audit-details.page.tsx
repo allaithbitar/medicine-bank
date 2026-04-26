@@ -114,12 +114,7 @@ function AuditDetailsPage() {
         }
         return (
           <Box sx={{ mt: 1 }}>
-            <audio
-              controlsList="nodownload"
-              controls
-              src={getVoiceSrc({ baseUrl, filePath: raw })}
-              style={{ width: '100%' }}
-            />
+            <audio controls src={getVoiceSrc({ baseUrl, filePath: raw })} style={{ width: '100%' }} />
           </Box>
         );
       }

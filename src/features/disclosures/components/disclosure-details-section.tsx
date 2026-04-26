@@ -193,16 +193,11 @@ const DisclosureDetailsSection = ({
                 </Stack>
                 <Divider />
                 {isOffline && offlineAudioObjectUrl && (
-                  <audio controlsList="nodownload" controls src={offlineAudioObjectUrl} style={{ width: '100%' }} />
+                  <audio controls src={offlineAudioObjectUrl} style={{ width: '100%' }} />
                 )}
 
                 {!isOffline && details.audio && (
-                  <audio
-                    controlsList="nodownload"
-                    controls
-                    src={getVoiceSrc({ baseUrl, filePath: details.audio })}
-                    style={{ width: '100%' }}
-                  />
+                  <audio controls src={getVoiceSrc({ baseUrl, filePath: details.audio })} style={{ width: '100%' }} />
                 )}
                 {isOffline && !offlineAudioObjectUrl && (
                   <Typography color="warning.main" variant="body2">

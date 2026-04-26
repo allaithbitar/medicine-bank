@@ -60,7 +60,7 @@ const ArchiveDisclosureModal = ({ disclosureId, oldArchiveNumber }: TArchiveDisc
             label={STRINGS.archive_number_optional}
             value={archiveNumber}
             onChange={(v) => setArchiveNumber(v)}
-            disabled={isLoading || !!oldArchiveNumber}
+            disabled={isLoading}
             placeholder={STRINGS.archive_number_optional}
           />
         </Stack>

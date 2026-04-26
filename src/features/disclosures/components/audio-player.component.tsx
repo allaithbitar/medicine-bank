@@ -374,7 +374,7 @@ function AudioPlayer({
         )}
         {audioUrl && (
           <Stack direction="row" gap={1} alignItems="center">
-            <audio controlsList="nodownload" controls preload="metadata" src={audioUrl} style={{ flexGrow: 1 }} />
+            <audio controls preload="metadata" src={audioUrl} style={{ flexGrow: 1 }} />
             <Button size="small" onClick={clearAudio}>
               {STRINGS.clear}
             </Button>
