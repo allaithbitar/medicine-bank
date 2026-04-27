@@ -9,6 +9,7 @@ import type { TRating } from '@/features/ratings/types/rating.types';
 import type { ReactNode } from 'react';
 import CardAvatar from '@/core/components/common/reusable-card/card-avatar.component';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
+import AudioDownload from './audio-download.component';
 
 export const ConsultingAdviserCard = ({
   adviserConsultation,
@@ -64,12 +65,12 @@ export const ConsultingAdviserCard = ({
           )}
           {adviserConsultation.consultationAudio && (
             <>
-              <audio
+              <AudioDownload
                 title={adviserConsultation.disclosure?.patient.name || STRINGS.consultation_audio}
-                preload="metadata"
-                style={{ width: '100%' }}
-                controls
                 src={getVoiceSrc({ baseUrl, filePath: adviserConsultation.consultationAudio })}
+                filePath={adviserConsultation.consultationAudio}
+                beneficiaryName={adviserConsultation.patient.name}
+                scoutName={adviserConsultation.createdBy?.name}
               />
               {ratings && <Divider flexItem />}
             </>

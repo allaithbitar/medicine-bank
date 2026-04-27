@@ -16,6 +16,7 @@ import { baseUrl } from '@/core/api/root.api';
 import useIsOffline from '@/core/hooks/use-is-offline.hook';
 import { useEffect, useState } from 'react';
 import { readAudioFile } from '@/core/helpers/opfs-audio.helpers';
+import AudioDownload from './audio-download.component';
 
 const DisclosureDetailsSection = ({
   disclosureId,
@@ -99,6 +100,7 @@ const DisclosureDetailsSection = ({
   const handleOpenDisclosureDetails = () => {
     navigate(`/disclosures/details/action?disclosureId=${disclosureId}`);
   };
+
 
   if (isFetching) {
     return (
@@ -240,25 +242,24 @@ const DisclosureDetailsSection = ({
                 </Stack>
                 <Divider />
                 {isOffline && offlineAudioObjectUrl && (
-                  <Stack direction="row" gap={1} alignItems="center">
-                    <audio
-                      title={disclosure?.patient.name || STRINGS.consultation_audio}
-                      controls
-                      src={offlineAudioObjectUrl}
-                      style={{ width: '100%' }}
-                    />
-                  </Stack>
+                  <AudioDownload
+                    title={disclosure?.patient.name || STRINGS.consultation_audio}
+                    src={offlineAudioObjectUrl}
+                    filePath={details.audio}
+                    beneficiaryName={disclosure?.patient?.name}
+                    scoutName={disclosure?.scout?.name}
+                    getBlob={() => (details.audio ? readAudioFile(details.audio) : Promise.resolve(null))}
+                  />
                 )}
 
                 {!isOffline && details.audio && (
-                  <Stack direction="row" gap={1} alignItems="center">
-                    <audio
-                      controls
-                      title={disclosure?.patient.name || STRINGS.consultation_audio}
-                      src={getVoiceSrc({ baseUrl, filePath: details.audio })}
-                      style={{ width: '100%' }}
-                    />
-                  </Stack>
+                  <AudioDownload
+                    title={disclosure?.patient.name || STRINGS.consultation_audio}
+                    src={getVoiceSrc({ baseUrl, filePath: details.audio })}
+                    filePath={details.audio}
+                    beneficiaryName={disclosure?.patient?.name}
+                    scoutName={disclosure?.scout?.name}
+                  />
                 )}
                 {isOffline && !offlineAudioObjectUrl && (
                   <Typography color="warning.main" variant="body2">

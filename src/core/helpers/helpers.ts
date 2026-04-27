@@ -80,6 +80,38 @@ export const ACTION_COLOR_MAP: Record<string, string> = {
 export const getVoiceSrc = ({ baseUrl, filePath }: { baseUrl: string; filePath: string }) =>
   `${baseUrl}/public/audio/${filePath}`;
 
+export const getFileExtension = (filePath?: string | null, mimeType?: string) => {
+  if (filePath) {
+    const idx = filePath.lastIndexOf('.');
+    if (idx !== -1 && idx < filePath.length - 1) return filePath.substring(idx);
+  }
+  if (mimeType && mimeType.includes('/')) return `.${mimeType.split('/')[1]}`;
+  return '.webm';
+};
+
+export const sanitizeFilename = (raw: string) => {
+  const cleaned = raw.replace(/[\\/:*?"<>|]/g, '').trim();
+  return cleaned || 'audio';
+};
+
+export const buildAudioDownloadFilename = ({
+  beneficiaryName,
+  scoutName,
+  filePath,
+  mimeType,
+}: {
+  beneficiaryName?: string | null;
+  scoutName?: string | null;
+  filePath?: string | null;
+  mimeType?: string;
+}) => {
+  const safeBeneficiary = beneficiaryName ? sanitizeFilename(beneficiaryName) : '';
+  const safeScout = scoutName ? sanitizeFilename(scoutName) : '';
+  const baseName = [safeBeneficiary, safeScout].filter(Boolean).join('-') || 'audio';
+  const ext = getFileExtension(filePath, mimeType);
+  return `${baseName}${ext}`;
+};
+
 export const sanitizePhoneForTel = (raw: string) => raw.replace(/[^\d+]/g, '');
 
 export const downloadAnyFile = (file: File) => {

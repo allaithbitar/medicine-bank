@@ -19,6 +19,7 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { EventAvailable, Person, ThumbsUpDown } from '@mui/icons-material';
 import { usePermissions } from '@/core/hooks/use-permissions.hook';
 import { useDisclosureConsultationLoader } from '../hooks/disclosure-consultaion-loader.hook';
+import AudioDownload from '../components/audio-download.component';
 
 function ConsultingAdviserDetailsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -70,6 +71,7 @@ function ConsultingAdviserDetailsPage() {
     },
     [handleSelectRating, openModal]
   );
+
 
   useEffect(() => {
     if (searchParams.get('redirectToDisclosure') && consultation?.disclosureId) {
@@ -133,14 +135,13 @@ function ConsultingAdviserDetailsPage() {
               icon={<VolumeDownIcon />}
               label={''}
               value={
-                <Stack direction="row" alignItems="center">
-                  <audio
-                    title={consultation.patient.name || STRINGS.consultation_audio}
-                    preload="metadata"
-                    controls
-                    src={getVoiceSrc({ baseUrl, filePath: consultation.consultationAudio })}
-                  />
-                </Stack>
+                <AudioDownload
+                  title={consultation.patient.name || STRINGS.consultation_audio}
+                  src={getVoiceSrc({ baseUrl, filePath: consultation.consultationAudio })}
+                  filePath={consultation.consultationAudio}
+                  beneficiaryName={consultation.disclosure?.patient.name}
+                  scoutName={consultation.disclosure?.scout?.name}
+                />
               }
             />
           )}

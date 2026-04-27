@@ -14,6 +14,7 @@ import { useEmployeesAutocompleteLoader } from '@/features/autocomplete/hooks/em
 import type { TAutocompleteItem } from '@/core/types/common.types';
 import Header from '@/core/components/common/header/header';
 import { baseUrl } from '@/core/api/root.api';
+import AudioDownload from '../components/audio-download.component';
 
 const RAW_COLUMNS = new Set([
   'is_custom_rating',
@@ -114,11 +115,10 @@ function AuditDetailsPage() {
         }
         return (
           <Box sx={{ mt: 1 }}>
-            <audio
+            <AudioDownload
               title={STRINGS.consultation_audio}
-              controls
               src={getVoiceSrc({ baseUrl, filePath: raw })}
-              style={{ width: '100%' }}
+              filePath={raw}
             />
           </Box>
         );

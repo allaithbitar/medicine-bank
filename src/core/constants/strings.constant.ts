@@ -387,7 +387,7 @@ const STRINGS = {
   downloading: 'جاري التنزيل...',
   download_complete: 'تم التنزيل بنجاح',
   download_failed: 'فشل التنزيل، يرجى المحاولة مرة أخرى',
-  download: 'تنزيل',
+  download: 'تنزيل تسجيل الصوت',
   system_broadcast: 'اخطارات النظام',
   statistics: 'الإحصائيات',
   Calender_cancel: 'إلغاء',
