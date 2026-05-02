@@ -72,7 +72,6 @@ function ConsultingAdviserDetailsPage() {
     [handleSelectRating, openModal]
   );
 
-
   useEffect(() => {
     if (searchParams.get('redirectToDisclosure') && consultation?.disclosureId) {
       setSearchParams(
@@ -136,7 +135,7 @@ function ConsultingAdviserDetailsPage() {
               label={''}
               value={
                 <AudioDownload
-                  title={consultation.patient.name || STRINGS.consultation_audio}
+                  title={consultation?.patient?.name || STRINGS.consultation_audio}
                   src={getVoiceSrc({ baseUrl, filePath: consultation.consultationAudio })}
                   filePath={consultation.consultationAudio}
                   beneficiaryName={consultation.disclosure?.patient.name}

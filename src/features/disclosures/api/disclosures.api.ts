@@ -1,4 +1,5 @@
 import { rootApi } from '@/core/api/root.api';
+import { getFileExtension } from '@/core/helpers/helpers';
 import type { ApiResponse, TPaginatedResponse } from '@/core/types/common.types';
 import type {
   TAddDisclosureAdviserConsultationPayload,
@@ -195,7 +196,8 @@ export const disclosuresApi = rootApi.injectEndpoints({
         if (noteText && noteText.trim().length > 0) formData.append('noteText', noteText.trim());
         if (noteAudio && noteAudio instanceof Blob) {
           // fd.append('deleteAudioFile', 'false');
-          formData.append('audioFile', noteAudio, `audio-${Date.now()}.webm`);
+          const ext = getFileExtension(undefined, (noteAudio as Blob).type);
+          formData.append('audioFile', noteAudio, `audio-${Date.now()}${ext}`);
         }
         // else {
         //   fd.append('deleteAudioFile', 'true');
@@ -227,7 +229,8 @@ export const disclosuresApi = rootApi.injectEndpoints({
         if (noteText && noteText.trim().length > 0) formData.append('noteText', noteText.trim());
 
         if (noteAudio && noteAudio instanceof Blob) {
-          formData.append('audioFile', noteAudio, `audio-${Date.now()}.webm`);
+          const ext = getFileExtension(undefined, (noteAudio as Blob).type);
+          formData.append('audioFile', noteAudio, `audio-${Date.now()}${ext}`);
           formData.append('deleteAudioFile', 'true');
         }
 
@@ -253,7 +256,8 @@ export const disclosuresApi = rootApi.injectEndpoints({
         if (consultationNote && consultationNote.trim().length > 0)
           formData.append('consultationNote', consultationNote.trim());
         if (consultationAudio && consultationAudio instanceof Blob) {
-          const name = `audio-${Date.now()}.webm`;
+          const ext = getFileExtension(undefined, (consultationAudio as Blob).type);
+          const name = `audio-${Date.now()}${ext}`;
           formData.append('consultationAudioFile', consultationAudio, name);
         }
         return {
@@ -273,7 +277,8 @@ export const disclosuresApi = rootApi.injectEndpoints({
         if (consultationNote && consultationNote.trim().length > 0)
           formData.append('consultationNote', consultationNote.trim());
         if (consultationAudio && consultationAudio instanceof Blob) {
-          const name = `audio-${Date.now()}.webm`;
+          const ext = getFileExtension(undefined, (consultationAudio as Blob).type);
+          const name = `audio-${Date.now()}${ext}`;
           formData.append('consultationAudioFile', consultationAudio, name);
           formData.append('deleteAudioFile', 'true');
         }
@@ -383,7 +388,8 @@ export const disclosuresApi = rootApi.injectEndpoints({
 
         if (payload.audioFile && payload.audioFile instanceof Blob) {
           // fd.append('deleteAudioFile', 'false');
-          formData.append('audioFile', payload.audioFile, `audio-${Date.now()}.webm`);
+          const ext = getFileExtension(undefined, (payload.audioFile as Blob).type);
+          formData.append('audioFile', payload.audioFile, `audio-${Date.now()}${ext}`);
         }
         return {
           url: '/disclosures/properties',
@@ -408,7 +414,8 @@ export const disclosuresApi = rootApi.injectEndpoints({
 
         if (payload.audioFile && payload.audioFile instanceof Blob) {
           // fd.append('deleteAudioFile', 'false');
-          formData.append('audioFile', payload.audioFile, `audio-${Date.now()}.webm`);
+          const ext = getFileExtension(undefined, (payload.audioFile as Blob).type);
+          formData.append('audioFile', payload.audioFile, `audio-${Date.now()}${ext}`);
         }
 
         if (payload.deleteAudioFile) formData.append('deleteAudioFile', 'true');

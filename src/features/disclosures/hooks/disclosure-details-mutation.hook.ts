@@ -6,6 +6,7 @@ import type { TAddDisclosureDetailsDto, TUpdateDisclosureDetailsDto } from '../t
 import disclosuresApi from '../api/disclosures.api';
 import { useQueryClient } from '@tanstack/react-query';
 import { deleteAudioFile, saveAudioFile } from '@/core/helpers/opfs-audio.helpers';
+import { getFileExtension } from '@/core/helpers/helpers';
 
 type IUpdateDisclosureDetailsDto = { type: 'UPDATE'; dto: TUpdateDisclosureDetailsDto };
 
@@ -27,7 +28,8 @@ const useDisclosureDetailsMutation = () => {
       let audio: string | null = null;
       if (audioFile && audioFile instanceof Blob) {
         const id = crypto.randomUUID();
-        const name = id + '.webm';
+        const ext = getFileExtension(undefined, audioFile.type);
+        const name = id + ext;
         await saveAudioFile(name, audioFile);
         audio = name;
       }
@@ -67,7 +69,8 @@ const useDisclosureDetailsMutation = () => {
 
       if (audioFile && audioFile instanceof Blob) {
         const audioId = crypto.randomUUID();
-        const name = audioId + '.webm';
+        const ext = getFileExtension(undefined, audioFile.type);
+        const name = audioId + ext;
         await saveAudioFile(name, audioFile);
         audio = name;
       }

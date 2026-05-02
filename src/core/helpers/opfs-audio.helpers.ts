@@ -26,7 +26,7 @@ export async function saveAudioFile(name: string, data: Blob | ArrayBuffer, opti
   const fileHandle: any = await dirHandle.getFileHandle(name, { create: true });
   const writable: any = await fileHandle.createWritable();
   try {
-    const blob = data instanceof Blob ? data : new Blob([data], { type: options?.mimeType || 'audio/webm' });
+    const blob = data instanceof Blob ? data : new Blob([data], { type: options?.mimeType || 'audio/mp3' });
     // Write blob to file
     await writable.write(blob);
   } finally {

@@ -41,8 +41,80 @@ function AudioPlayer({
 
   const chunksRef = useRef<Blob[]>([]);
 
-  const createRecorder = (stream: MediaStream, options: MediaRecorderOptions) => {
-    const mr = new MediaRecorder(stream, options);
+  const recordingMimeRef = useRef<string | undefined>(undefined);
+
+  const ensureOpusPolyfill = async () => {
+    if (typeof window === 'undefined') return undefined;
+    if (typeof (window as any).MediaRecorder === 'undefined') {
+      await new Promise<void>((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = '/opus-media-recorder/OpusMediaRecorder.umd.js';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Failed to load OpusMediaRecorder'));
+        document.head.appendChild(script);
+      });
+
+      await new Promise<void>((resolve) => {
+        const script = document.createElement('script');
+        script.src = '/opus-media-recorder/encoderWorker.umd.js';
+        script.onload = () => resolve();
+        script.onerror = () => resolve();
+        document.head.appendChild(script);
+      });
+
+      if ((window as any).OpusMediaRecorder) {
+        (window as any).MediaRecorder = (window as any).OpusMediaRecorder;
+      }
+      return undefined;
+    }
+
+    try {
+      if (!(window as any).MediaRecorder.isTypeSupported?.('audio/ogg;codecs=opus')) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = '/opus-media-recorder/OpusMediaRecorder.umd.js';
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error('Failed to load OpusMediaRecorder'));
+          document.head.appendChild(script);
+        });
+
+        await new Promise<void>((resolve) => {
+          const script = document.createElement('script');
+          script.src = '/opus-media-recorder/encoderWorker.umd.js';
+          script.onload = () => resolve();
+          script.onerror = () => resolve();
+          document.head.appendChild(script);
+        });
+
+        if ((window as any).OpusMediaRecorder) {
+          (window as any).MediaRecorder = (window as any).OpusMediaRecorder;
+        }
+      }
+    } catch (err) {
+      console.warn('Opus polyfill load failed', err);
+    }
+    return undefined;
+  };
+
+  const createRecorder = async (stream: MediaStream, options: MediaRecorderOptions) => {
+    await ensureOpusPolyfill();
+
+    const isOpus =
+      typeof (window as any).OpusMediaRecorder !== 'undefined' &&
+      (window as any).MediaRecorder === (window as any).OpusMediaRecorder;
+    const workerOptions = isOpus
+      ? {
+          OggOpusEncoderWasmPath: '/opus-media-recorder/OggOpusEncoder.wasm',
+          WebMOpusEncoderWasmPath: '/opus-media-recorder/WebMOpusEncoder.wasm',
+          encoderWorkerFactory: () => new Worker('/opus-media-recorder/encoderWorker.umd.js'),
+          preferredSampleRate: 16000,
+          preferredChannelCount: 1,
+        }
+      : undefined;
+
+    const mr = workerOptions
+      ? new (window as any).MediaRecorder(stream, options, workerOptions)
+      : new (window as any).MediaRecorder(stream, options);
 
     mediaRecorderRef.current = mr;
 
@@ -56,7 +128,7 @@ function AudioPlayer({
       }
 
       const blob = new Blob(chunksRef.current, {
-        type: options.mimeType || 'audio/webm',
+        type: options.mimeType || recordingMimeRef.current || 'audio/ogg',
       });
 
       if (blob.size > MAX_AUDIO_SIZE_BYTES) {
@@ -127,16 +199,15 @@ function AudioPlayer({
       streamRef.current = stream;
 
       const options: MediaRecorderOptions = {
-        audioBitsPerSecond: 32000,
+        mimeType: 'audio/ogg;codecs=opus',
+        audioBitsPerSecond: 64000,
       };
-      if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-        options.mimeType = 'audio/webm;codecs=opus';
-      }
+      recordingMimeRef.current = options.mimeType;
 
       chunksRef.current = [];
       finalizeRef.current = true;
 
-      createRecorder(stream, options);
+      await createRecorder(stream, options);
 
       setIsRecording(true);
       setIsPaused(false);
@@ -167,7 +238,9 @@ function AudioPlayer({
       return;
     }
 
-    const blob = new Blob(chunksRef.current, { type: chunksRef.current[0]?.type || 'audio/webm' });
+    const blob = new Blob(chunksRef.current, {
+      type: recordingMimeRef.current || chunksRef.current[0]?.type || 'audio/mp3',
+    });
     if (blob.size > MAX_AUDIO_SIZE_BYTES) {
       notifyError(new Error(STRINGS.file_too_large));
       if (streamRef.current) {
@@ -220,7 +293,7 @@ function AudioPlayer({
     }
   };
 
-  const resumeRecording = () => {
+  const resumeRecording = async () => {
     const mr = mediaRecorderRef.current;
     if (mr) {
       try {
@@ -242,14 +315,13 @@ function AudioPlayer({
     }
 
     const options: MediaRecorderOptions = {
-      audioBitsPerSecond: 32000,
+      mimeType: 'audio/ogg;codecs=opus',
+      audioBitsPerSecond: 64000,
     };
-    if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-      options.mimeType = 'audio/webm;codecs=opus';
-    }
+    recordingMimeRef.current = options.mimeType;
 
     finalizeRef.current = false;
-    createRecorder(stream, options);
+    await createRecorder(stream, options);
     setIsPaused(false);
     setIsRecording(true);
   };
@@ -260,6 +332,7 @@ function AudioPlayer({
       notifyError(STRINGS.file_too_large);
       return;
     }
+    recordingMimeRef.current = f.type || undefined;
     setAudioFile({
       audioName: f.name,
       audioBlob: f,

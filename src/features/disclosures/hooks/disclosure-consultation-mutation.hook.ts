@@ -10,6 +10,7 @@ import disclosuresApi from '../api/disclosures.api';
 import useUser from '@/core/hooks/user-user.hook';
 import { deleteAudioFile, saveAudioFile } from '@/core/helpers/opfs-audio.helpers';
 import { useQueryClient } from '@tanstack/react-query';
+import { getFileExtension } from '@/core/helpers/helpers';
 
 type IUpdateDisclosureConsultationDto = { type: 'UPDATE'; dto: TUpdateDisclosureAdviserConsultationPayload };
 
@@ -39,7 +40,8 @@ const useDisclsoureConsultationMutation = () => {
       let audioName: string | null = null;
       if (consultationAudio && consultationAudio instanceof Blob) {
         const id = crypto.randomUUID();
-        const name = id + '.webm';
+        const ext = getFileExtension(undefined, consultationAudio.type);
+        const name = id + ext;
         await saveAudioFile(name, consultationAudio);
         audioName = name;
       }
@@ -82,7 +84,8 @@ const useDisclsoureConsultationMutation = () => {
 
       if (consultationAudio && consultationAudio instanceof Blob) {
         const audioId = crypto.randomUUID();
-        const name = audioId + '.webm';
+        const ext = getFileExtension(undefined, consultationAudio.type);
+        const name = audioId + ext;
         await saveAudioFile(name, consultationAudio);
         newConsultationAudio = name;
       }

@@ -85,7 +85,32 @@ export const getFileExtension = (filePath?: string | null, mimeType?: string) =>
     const idx = filePath.lastIndexOf('.');
     if (idx !== -1 && idx < filePath.length - 1) return filePath.substring(idx);
   }
-  if (mimeType && mimeType.includes('/')) return `.${mimeType.split('/')[1]}`;
+  if (mimeType) {
+    const MIME_EXT_MAP: Record<string, string> = {
+      'audio/mpeg': '.mp3',
+      'audio/mp3': '.mp3',
+      'audio/mp4': '.m4a',
+      'audio/aac': '.aac',
+      'audio/wav': '.wav',
+      'audio/x-wav': '.wav',
+      'audio/ogg': '.ogg',
+      'audio/webm': '.webm',
+      'audio/amr': '.amr',
+      // codec-specific forms
+      'audio/webm;codecs=opus': '.webm',
+      'audio/ogg;codecs=opus': '.ogg',
+    };
+
+    for (const key of Object.keys(MIME_EXT_MAP)) {
+      if (mimeType.includes(key)) return MIME_EXT_MAP[key];
+    }
+
+    if (mimeType.includes('/')) {
+      const sub = mimeType.split('/')[1].split(';')[0].trim();
+      return `.${sub}`;
+    }
+  }
+
   return '.webm';
 };
 

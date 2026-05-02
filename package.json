@@ -26,6 +26,7 @@
     "date-fns": "^4.1.0",
     "kysely": "^0.28.5",
     "kysely-plugin-serialize": "^0.8.2",
+    "opus-media-recorder": "^0.8.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",

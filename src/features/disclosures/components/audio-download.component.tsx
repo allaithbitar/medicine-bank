@@ -32,7 +32,6 @@ const AudioDownload = ({
     setIsDownloading(true);
     try {
       let blob: Blob | null = null;
-
       if (getBlob) {
         blob = await getBlob();
       } else if (filePath) {
