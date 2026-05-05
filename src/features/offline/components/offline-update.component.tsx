@@ -782,8 +782,10 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
           dto.disclosureId = (parentDisclosureUpdate.serverRecordId || dto.disclosureId || update.parentId!) ?? '';
         }
 
-        if (!dto.disclosureId && localDisclosureData) {
-          dto.disclosureId = localDisclosureData.id || '';
+        if (!dto.disclosureId) {
+          await localUpdateTable.updateById(update.id, { serverRecordId, status: 'success' });
+          notifySuccess(STRINGS.action_done_successfully);
+          return;
         }
         await addDisclosureDetails(dto).unwrap();
         serverRecordId = dto.disclosureId;
