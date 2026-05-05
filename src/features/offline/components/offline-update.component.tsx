@@ -781,6 +781,10 @@ const DisclosureDetialsOfflineUpdate: TOfflineUpdateComponent = ({ id }) => {
         if (parentDisclosureUpdate) {
           dto.disclosureId = (parentDisclosureUpdate.serverRecordId || dto.disclosureId || update.parentId!) ?? '';
         }
+
+        if (!dto.disclosureId && localDisclosureData) {
+          dto.disclosureId = localDisclosureData.id || '';
+        }
         await addDisclosureDetails(dto).unwrap();
         serverRecordId = dto.disclosureId;
       } else {
