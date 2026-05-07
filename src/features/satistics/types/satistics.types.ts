@@ -9,6 +9,7 @@ export type TGetSatisticsDto = {
 
 export type TSummaryReportResult = {
   addedDisclosuresCount: number;
+  paymentEligibleDisclosuresCount: number;
   completedVisitsCount: number;
   uncompletedVisitsCount: number;
   cantBeCompletedVisitsCount: number;

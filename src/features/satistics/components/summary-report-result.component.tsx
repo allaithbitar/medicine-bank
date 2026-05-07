@@ -23,6 +23,10 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
       : []),
 
     {
+      label: STRINGS.eligible_disclosures,
+      value: result.paymentEligibleDisclosuresCount,
+    },
+    {
       label: STRINGS.completed_visits,
       value: result.completedVisitsCount,
       // bgcolor: cyan[50],
@@ -91,6 +95,11 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
                 fill: CHART_COLORS[0],
               },
               {
+                label: STRINGS.eligible_disclosures,
+                [STRINGS.the_count]: result.paymentEligibleDisclosuresCount,
+                fill: CHART_COLORS[5],
+              },
+              {
                 label: STRINGS.late_disclosures,
                 [STRINGS.the_count]: result.lateDisclosuresCount,
                 fill: CHART_COLORS[2],
@@ -123,6 +132,10 @@ const SummaryReportResult = ({ result }: { result: TSummaryReportResult }) => {
               {
                 label: STRINGS.added_disclosures,
                 color: CHART_COLORS[0],
+              },
+              {
+                label: STRINGS.eligible_disclosures,
+                color: CHART_COLORS[5],
               },
               {
                 label: STRINGS.late_disclosures,
