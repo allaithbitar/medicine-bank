@@ -16,6 +16,7 @@ export type TPaymentRating = {
 
 export type TPaymentEligibleItem = {
   disclosureId: string;
+  disclosureCreatedAt: string;
   scout: TPaymentScout;
   patient: TPaymentPatient;
   rating: TPaymentRating;

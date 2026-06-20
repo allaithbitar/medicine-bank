@@ -24,6 +24,13 @@ const EligiblePaymentCard = ({ item }: IEligiblePaymentCardProps) => {
       <DetailItemComponent icon={<Star />} label={STRINGS.rating} value={ratingValue} iconColorPreset="blue" />
       <DetailItemComponent
         icon={<AccessTime />}
+        label={STRINGS.disclosure_created_at}
+        value={formatDateTime(item.disclosureCreatedAt)}
+        iconColorPreset="deepPurple"
+      />
+
+      <DetailItemComponent
+        icon={<AccessTime />}
         label={STRINGS.completed_at}
         value={formatDateTime(item.rating.completedAt)}
         iconColorPreset="green"
