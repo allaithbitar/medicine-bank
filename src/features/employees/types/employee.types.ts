@@ -15,6 +15,7 @@ export type TAddEmployeeDto = {
   areaIds?: string[];
   phone: string;
   role: TEmployeeRole;
+  canBeConsulted: boolean;
 };
 
 export type TUpdateEmployeeDto = TAddEmployeeDto & { id: string };
@@ -36,6 +37,7 @@ export type TEmployee = {
   name: string;
   phone: string;
   role: TEmployeeRole;
+  canBeConsulted: boolean;
   createdAt: string;
   updatedAt: string;
 } & TEmployeeAreas;

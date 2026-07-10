@@ -44,6 +44,7 @@ const EmployeeActionPage = () => {
         areaIds: result.areas.map((a) => a.id),
         password: result.password,
         role: result.role!.id,
+        canBeConsulted: result.canBeConsulted,
       };
 
       if (!employeeId) {

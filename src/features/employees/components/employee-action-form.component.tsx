@@ -1,7 +1,7 @@
 import useForm, { type TFormSubmitResult } from '@/core/hooks/use-form.hook';
 import z from 'zod';
 import EmployeeRoleAutocomplete from './employee-role-autocomplete.component';
-import { Stack } from '@mui/material';
+import { Stack, FormControlLabel, Switch } from '@mui/material';
 import FormTextFieldInput from '@/core/components/common/inputs/form-text-field-input.component';
 import STRINGS from '@/core/constants/strings.constant';
 import CitiesAutocomplete from '@/features/banks/components/cities/cities-autocomplete/cities-autocomplete.component';
@@ -22,6 +22,7 @@ const createEmployeeFormSchema = (optionalPassword = false) => {
       name: z.string().min(5, { message: STRINGS.schema_name_too_short }),
       password: z.string(),
       phone: z.string().min(10, { message: STRINGS.schema_invalid_phone_format }),
+      canBeConsulted: z.boolean(),
       city: z.custom<TAutocompleteItem | null>(),
       areas: z.custom<TAutocompleteItem[]>(),
     })
@@ -57,6 +58,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
       name: '',
       password: '',
       phone: '',
+      canBeConsulted: false,
       city: null,
       areas: [],
     },
@@ -95,6 +97,7 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
           areas: _areas,
           city: _city,
           phone: employeeData.phone,
+          canBeConsulted: employeeData.canBeConsulted,
           role: {
             id: employeeData.role,
             label: STRINGS[employeeData.role as keyof typeof STRINGS],
@@ -139,6 +142,12 @@ const EmployeeActionForm = ({ ref, employeeData }: TProps) => {
         onChange={(v) => setValue({ role: v })}
         errorText={formErrors.role?.[0].message}
       />
+      {(['manager', 'supervisor'] as TEmployeeRole[]).includes(formState.role?.id as any) && (
+        <FormControlLabel
+          control={<Switch checked={formState.canBeConsulted} onChange={(_, v) => setValue({ canBeConsulted: v })} />}
+          label={STRINGS.can_be_consulted}
+        />
+      )}
       {formState.role?.id == 'scout' && (
         <>
           <CitiesAutocomplete

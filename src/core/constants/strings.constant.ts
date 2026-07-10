@@ -495,6 +495,7 @@ const STRINGS = {
   runtime_offline_description:
     'وضع غير متصل — يعمل بدون إنترنت، يحفظ التعديلات محليًا ويزامنها لاحقًا عند توفر الشبكة.',
   consultation_audio: 'تسجيل استشارة',
+  can_be_consulted: 'يمكن استشارته',
 };
 
 export default STRINGS;
