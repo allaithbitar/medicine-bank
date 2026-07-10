@@ -15,7 +15,7 @@ export type TAddEmployeeDto = {
   areaIds?: string[];
   phone: string;
   role: TEmployeeRole;
-  canBeConsulted: boolean;
+  canBeConsulted?: boolean;
 };
 
 export type TUpdateEmployeeDto = TAddEmployeeDto & { id: string };
